@@ -3,11 +3,11 @@ Vizsgaremek
 
 ```
 __Csapattagok:__
-```
+
 Tamás Dávid
 Szalontai Olivér
 ```
-```
+
 ```
 musclemind/
 ├─ backend/
