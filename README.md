@@ -1,9 +1,9 @@
 # MuscleMind
 Vizsgaremek
 
-```
-**Csapattagok:**
 
+**Csapattagok:**
+```
 Tamás Dávid
 Szalontai Olivér
 ```
