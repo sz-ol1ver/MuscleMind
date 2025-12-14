@@ -2,7 +2,7 @@
 Vizsgaremek
 
 ```
-__Csapattagok:__
+**Csapattagok:**
 
 Tamás Dávid
 Szalontai Olivér
