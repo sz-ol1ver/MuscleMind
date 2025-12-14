@@ -1,5 +1,13 @@
 # MuscleMind
 Vizsgaremek
+
+```
+__Csapattagok:__
+```
+Tamás Dávid
+Szalontai Olivér
+```
+```
 ```
 musclemind/
 ├─ backend/
@@ -73,3 +81,4 @@ musclemind/
 ├─ .prettierrc
 └─ README.md
 ```
+
