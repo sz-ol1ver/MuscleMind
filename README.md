@@ -43,12 +43,11 @@ musclemind/
 │  │  ├─ login.html              # bejelentkezés
 │  │  ├─ register.html           # regisztráció
 │  │  ├─ questionnaire.html      # kezdeti kérdőív
-│  │  ├─ index.html              # főoldal / dashboard
+│  │  ├─ index.html              # főoldal / dashboard --> naptár, emlékeztetők
 │  │  ├─ workout.html            # edzéstervek
 │  │  ├─ meals.html              # receptek, ételajánló
 │  │  ├─ profile.html            # felhasználói profil
 │  │  ├─ friends.html            # barátlista, ranglista
-│  │  ├─ calendar.html           # naptár, emlékeztetők
 │  │  └─ admin.html              # admin felület
 │  │
 │  ├─ javascript/
