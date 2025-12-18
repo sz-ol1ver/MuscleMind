@@ -25,7 +25,7 @@ app.use(
 //!Routing
 //?Főoldal:
 router.get('/', (request, response) => {
-    response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
+    response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
 });
 
 //!API endpoints
