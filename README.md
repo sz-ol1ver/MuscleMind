@@ -40,15 +40,15 @@ musclemind/
 │
 ├─ frontend/
 │  ├─ html/
-│  │  ├─ login.html              # bejelentkezés
-│  │  ├─ register.html           # regisztráció
-│  │  ├─ questionnaire.html      # kezdeti kérdőív
-│  │  ├─ index.html              # főoldal / dashboard --> naptár, emlékeztetők
-│  │  ├─ workout.html            # edzéstervek
-│  │  ├─ meals.html              # receptek, ételajánló
-│  │  ├─ profile.html            # felhasználói profil
-│  │  ├─ friends.html            # barátlista, ranglista
-│  │  └─ admin.html              # admin felület
+│  │  ├─ login.html              # bejelentkezés - Oliver
+│  │  ├─ register.html           # regisztráció - Oliver
+│  │  ├─ questionnaire.html      # kezdeti kérdőív - Oliver
+│  │  ├─ index.html              # főoldal / dashboard --> naptár, emlékeztetők - David
+│  │  ├─ workout.html            # edzéstervek - David
+│  │  ├─ meals.html              # receptek, ételajánló - Oliver
+│  │  ├─ profile.html            # felhasználói profil - David
+│  │  ├─ friends.html            # barátlista, ranglista - David
+│  │  └─ admin.html              # admin felület - Oliver
 │  │
 │  ├─ javascript/
 │  │  ├─ auth.js                 # token kezelés, belépés ellenőrzés
