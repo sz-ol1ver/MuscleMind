@@ -1,0 +1,15 @@
+/* XS */
+@media only screen and (max-width: 600px) {}
+/* S */
+@media only screen and (min-width: 600px) {}
+/* M */
+@media only screen and (min-width: 768px) {
+    body{
+        background: url("../images/register-desktop.png") no-repeat center center;
+        background-size: cover;
+    }
+}
+/* L */
+@media only screen and (min-width: 992px) {}
+/* XL */
+@media only screen and (min-width: 1200px) {}

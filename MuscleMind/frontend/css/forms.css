@@ -1,0 +1,19 @@
+.card{
+    background-color: rgba(202, 120, 237, 0.496);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+hr{
+    color: #ffffff;
+    border: 1px solid white;
+}
+
+.form-input{
+    background-color: rgba(76, 32, 95, 0.496);
+}
+
+.form-control:focus{
+    background-color: rgba(76, 32, 95, 0.496)
+}

@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html lang="HU">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MuscleMind - Login</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
-    <script src="../bootstrap/js/popper.min.js"></script>
-    <script src="../bootstrap/js/bootstrap.min.js"></script>
-</head>
-<body>
-    <div class="container"></div>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MuscleMind - Login</title>
+        <!--bootstarp-->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
+        <script src="../bootstrap/js/popper.min.js"></script>
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
+        <!--css-->
+        <link rel="stylesheet" href="../css/background-res.css" type="text/css">
+        <link rel="stylesheet" href="../css/forms.css" type="text/css">
+        
+    </head>
+    <body>
+        <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
+            <div class="card text-center mt-2 w-50">
+                <div class="card-header">
+                    <h1 class="fw-bold text-light mt-2">MuscleMind</h1>
+                </div>
+                <div class="card-body">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control form-input" id="email-login" placeholder="pelda@gmail.com" required>
+                        <label for="email-login" class="text-light">E-mail cím</label>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="password" class="form-control form-input" id="password-login" placeholder="Jelszo" required>
+                        <label for="password" class="text-light">Jelszó</label>
+                    </div>
+                    <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link text-muted btn-sm d-block ms-auto">
+                    <hr class="mt-2">
+                    <input type="button" value="Nincs meg fiókod? Regisztrálj" id="register-in" class="btn btn-link text-muted btn-sm">
+                    <input type="button" id="login-in" value="Bejelentkezés" class="btn btn-outline-light">
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
