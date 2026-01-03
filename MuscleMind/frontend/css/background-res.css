@@ -1,15 +1,15 @@
 /* XS */
 @media only screen and (max-width: 600px) {}
 /* S */
-@media only screen and (min-width: 600px) {}
+@media only screen and (min-width: 600px) and (max-width:767px) {}
 /* M */
-@media only screen and (min-width: 768px) {
-    body{
-        background: url("../images/register-desktop.png") no-repeat center center;
+@media only screen and (min-width: 768px) and (max-width:991px){
+    #login{
+        background: url("../images/login.png") no-repeat center center;
         background-size: cover;
     }
 }
 /* L */
-@media only screen and (min-width: 992px) {}
+@media only screen and (min-width: 992px) and (max-width:1199px){}
 /* XL */
-@media only screen and (min-width: 1200px) {}
+@media only screen and (min-width: 1200px){}
