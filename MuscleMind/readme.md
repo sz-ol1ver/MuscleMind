@@ -152,3 +152,9 @@ Nyisd meg a böngésződben a **http://localhost:3000** címet.
 `npx kill-port port`<br>
 
 `npx kill-port 3000`<br>
+
+
+## nodejs install - mac
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install 24
