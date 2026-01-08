@@ -18,7 +18,11 @@
 /* M */
 @media only screen and (min-width: 768px) and (max-width:991px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat center bottom;
+        background: url("../images/login-16-9.png") no-repeat center center;
+        background-size: cover;
+    }
+    #registration{
+        background: url("../images/registration-16-9.png") no-repeat center center;
         background-size: cover;
     }
 }
@@ -31,15 +35,23 @@
     #login-card{
         width: 40% !important; 
     }
+    #registration{
+        background: url("../images/registration-16-9.png") no-repeat center center;
+        background-size: cover;
+    }
 }
 /* XL */
 @media only screen and (min-width: 1450px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat 50% 50%;
+        background: url("../images/login-16-9.png") no-repeat center center;
         background-size: cover;
         background-color: black;
     }
     #login-card{
         width: 30% !important; 
+    }
+    #registration{
+        background: url("../images/registration-16-9.png") no-repeat center center;
+        background-size: cover;
     }
 }

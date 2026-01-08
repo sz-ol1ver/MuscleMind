@@ -1,41 +1,55 @@
-.card{
+.card-login{
     background-color: rgba(202, 120, 237, 0.496);
 
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
 }
+.card-registration{
+    background-color: rgba(101, 149, 253, 0.496);
 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+.btn-link{
+    color: black !important;
+}
 hr{
     color: #ffffff;
     border: 1px solid white;
 }
 
-.form-input{
-    background-color: rgba(79, 26, 102, 0.496);
-}
-
-.form-control:focus{
-    background-color: rgba(47, 16, 60, 0.496);
-}
-.btn-link{
-    color: black !important;
-}
+/*! Login page */
 .btn-link-login:hover{
     color: rgb(208, 164, 250) !important;
+}
+.login-inputs{
+    background-color: rgba(79, 26, 102, 0.496);
+}
+.login-inputs:focus{
+    background-color: rgba(47, 16, 60, 0.496);
 }
 .login-inputs{
     color: rgb(217, 146, 255) !important;
     border: none !important;
 }
-.login-label{
-    border: none !important;
-}
 .login-inputs:focus {
-    animation: active_input 1.5s infinite;
+    animation: login_input 1.5s infinite;
 }
-
-@keyframes active_input {
+@keyframes login_input {
     0%   { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
     50%  { box-shadow: 0 0 10px 3px rgb(40, 0, 86); }
     100% { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
+}
+
+/*! Registration page */
+.regist-inputs{
+    background-color: rgba(68, 126, 252, 0.496);
+    color: rgb(159, 255, 183) !important;
+}
+.regist-inputs:focus{
+    background-color: rgba(68, 126, 252, 0.496);
+}
+.form-select{
+    background-color: rgba(68, 126, 252, 0.496);
+    color: white;
 }

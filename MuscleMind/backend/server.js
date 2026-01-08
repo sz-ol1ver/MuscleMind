@@ -27,10 +27,10 @@ app.use(
 router.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
-router.get('/login', (request, response) => {
+router.get('/bejelentkezes', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
 });
-router.get('/registration', (request, response) => {
+router.get('/regisztracio', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/registration.html'));
 });
 
