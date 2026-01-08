@@ -23,6 +23,7 @@ hr{
 }
 .login-inputs{
     border: none;
+    color: white;
 }
 .login-inputs:hover{
     border:2px solid rgb(36, 0, 72) !important;
