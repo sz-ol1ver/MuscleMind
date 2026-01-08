@@ -18,14 +18,14 @@
 /* M */
 @media only screen and (min-width: 768px) and (max-width:991px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat center center;
+        background: url("../images/login-16-9.png") no-repeat center bottom;
         background-size: cover;
     }
 }
 /* L */
 @media only screen and (min-width: 992px) and (max-width:1449px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat center center;
+        background: url("../images/login-16-9.png") no-repeat center top;
         background-size: cover;
     }
     #login-card{
@@ -35,8 +35,9 @@
 /* XL */
 @media only screen and (min-width: 1450px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat center center;
+        background: url("../images/login-16-9.png") no-repeat 50% 50%;
         background-size: cover;
+        background-color: black;
     }
     #login-card{
         width: 30% !important; 

@@ -1,8 +1,8 @@
 .card{
     background-color: rgba(202, 120, 237, 0.496);
 
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 hr{
@@ -17,16 +17,18 @@ hr{
 .form-control:focus{
     background-color: rgba(47, 16, 60, 0.496);
 }
-
+.btn-link{
+    color: black !important;
+}
 .btn-link-login:hover{
     color: rgb(208, 164, 250) !important;
 }
 .login-inputs{
-    border: none;
-    color: white;
+    color: rgb(217, 146, 255) !important;
+    border: none !important;
 }
-.login-inputs:hover{
-    border:2px solid rgb(36, 0, 72) !important;
+.login-label{
+    border: none !important;
 }
 .login-inputs:focus {
     animation: active_input 1.5s infinite;
