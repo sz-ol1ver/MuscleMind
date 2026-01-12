@@ -16,8 +16,50 @@
     </head>
     <body>
         <div class="container-fluid">
-            <div class="row text-center">
-                <h1 class="display-1">A szerver fut.</h1>
+            <!-- Első sor -->
+            <div id="UpperRow" class="row mx-0 align-items-center px-3">
+                <div class="col-12 d-flex align-items-center justify-content-between">
+                    <h2  class="m-0 fw-bold">MuscleMind</h2>
+                    <p class="m-0 fw-bold">Főoldal</p>
+
+                    <div class="d-flex align-items-center gap-5">
+                        <!-- Téma váltás (Világos/Sötét) -->
+                        <input type="button" class="btn" id="LightDarkButton" value="Világos/Sötét">
+
+                        <!-- Profil buborék -->
+                        <div id="ProfileBubble">
+                            <div id="ProfilePic"></div>
+                            <div id="Username">Sajtos Lajos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Második sor -->
+            <div id="MainRow" class="row">
+                <!-- Bal oldali blokk -->
+                <div class="col-2" id="SideNav">
+                    <ul class="nav flex-column d-flex">
+                        <li class="nav-item">asdasd</li>
+                        <li class="nav-item">asdasd</li>
+                        <li class="nav-item">asdasd</li>
+                    </ul>
+                </div>    
+                <!-- Középső blokk -->
+                <div class="col-7 p-3" id="MiddlePart">
+                    <div id="Stats" class="row mb-3">
+                        <div class="col-7">stats</div>
+                    </div>
+                    
+                    <div id="RanglistCalendar" class="row p-3">
+                        <div id="Ranglist" class="col-7">Ranglista</div>
+                        <div id="Calendar" class="col-5">Naptár</div>
+                    </div>
+                </div>
+                <!-- Jobb oldali blokk -->
+                <div id="MuscleTracker" class="col-3">Ember cucc</div>
+
             </div>
         </div>
     </body>
