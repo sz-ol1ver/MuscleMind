@@ -1,26 +1,40 @@
-body{
+html,body{
     background-color: #0b0b10;
     color: #f5f5ff;
+
 }
 
-/* Felső sor */
-#UpperRow{
+
+/* Felső sor ----------------------------*/
+#upper-row{
     height: 70px;
-    background-color: #0f0f17;;
+    background-color: #0f0f17;
+    border-bottom: 1px groove #7c3aed;
+    /* animation: FadingBorder 2s infinite; */
 }
-#LightDarkButton{
-    font-weight: bold;
+#main-title{
+    animation: ForTitle 1.5s infinite alternate;
+}
+
+.button-sample{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 120px;
+    font-size: 15px;
+    font-weight: 600;
     background-color: #2c203b;
     color: white;
+    
 }
 
-#LightDarkButton:hover{
+.button-sample:hover{
     background-color: #7c3aed;
     color: #22192e;
     font-weight: bold;
 }
 
-#ProfileBubble{
+#profile-bubble{
     display: flex;
     align-items: center;
     gap: 7px;
@@ -29,47 +43,130 @@ body{
     border-radius: 999px;
 }
 
-#ProfilePic{
+#profile-pic{
     width: 32px;
     height: 32px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.185);
 }
 
+@keyframes FadingBorder{
+    0%{
+        border-color: #4c2491;
+    }
+    20%{
+        border-color: #4c2491d2;
+    }
+    40%{
+        border-color: #4c2491a8;
+    }
+    60%{
+        border-color: #4c249177;
+    }
+    80%{
+        border-color: #4c24919f;
+    }
+    100%{
+        border-color: #4c2491da;
+    }
+}
+
+@keyframes ForTitle{
+    from{
+        color: #814fd8;
+    }
+    to{
+        color: #814fd87c;
+    }
+}
 
 
 
 
-#SideNav{
-    border: 2px solid rgba(255,255,255,.10);
+
+/* Navbar rész  ----------------------------*/
+#side-nav{
+    border: 1px solid rgba(255,255,255,.10);
     height: calc(100vh - 70px);
+    background-color: #0f0f17;
+}
+.nav-item{
+    padding: 0;
+    border: 2px solid #612eb9;
+    border-radius: 12px;
+    width: 270px;
+    height: 55px;
+    color: white;
+    
+}
+.nav-item:hover{
+    animation: NavSelection 700ms infinite alternate;
 }
 
-#MiddlePart{
-    border: 2px solid rgba(255,255,255,.10);
+.nav-link{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+}
+.nav-link:hover{
+    color: white;
 }
 
-#Stats{
+.selected-navoption{
+    background-color: #612eb96c;
+    color: white;
+}
+
+@keyframes NavSelection{
+    from{
+        background-color: #612eb9;
+    }
+    to{
+        background-color: #612eb900;;
+    }
+}
+
+
+
+
+
+/* Középső rész */
+#middle-part{
+    border:1px solid #0b0b10;
+}
+
+#stats{
     border: 2px solid rgba(255,255,255,.10);
     height: 40%;
+    border-radius: 20px;
+    margin: 1px;
+    background-color: #0f0f17;
 }
 
-#RanglistCalendar{
-    /* border: 2px solid black; */
+#ranglist-calendar{
     height: 60%;
-    padding-right: 20px;
+    
 }
 
-#Ranglist{
+#ranglist, #calendar{
     border: 2px solid rgba(255,255,255,.10);
+    border-radius: 20px;
+    background-color: #0f0f17;
 }
 
-#Calendar{
+/* Jobb oldali rész */
+#muscle-tracker{
+    background-color: #0f0f17;
     border: 2px solid rgba(255,255,255,.10);
-}
+    border-radius: 16px;
+    margin-bottom: 20px;
+    margin-top: 13px;
 
-#MuscleTracker{
-    border: 2px solid rgba(255,255,255,.10);
 }
 
 

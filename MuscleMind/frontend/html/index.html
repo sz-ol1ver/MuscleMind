@@ -17,19 +17,25 @@
     <body>
         <div class="container-fluid">
             <!-- Első sor -->
-            <div id="UpperRow" class="row mx-0 align-items-center px-3">
-                <div class="col-12 d-flex align-items-center justify-content-between">
-                    <h2  class="m-0 fw-bold">MuscleMind</h2>
-                    <p class="m-0 fw-bold">Főoldal</p>
+            <div id="upper-row" class="row">
+                <div class="col-12  d-flex align-items-center justify-content-between">
+                    
+                    <h2  class="ps-3 m-0 fw-bold">MuscleMind</h2>
+                    
+                    <p id="main-title" class="m-0 fw-bold fs-3">Főoldal</p>
 
-                    <div class="d-flex align-items-center gap-5">
+                    <div class="d-flex align-items-center gap-3">
                         <!-- Téma váltás (Világos/Sötét) -->
-                        <input type="button" class="btn" id="LightDarkButton" value="Világos/Sötét">
+                        <input type="button" class="btn button-sample" value="Világos/Sötét">
 
                         <!-- Profil buborék -->
-                        <div id="ProfileBubble">
-                            <div id="ProfilePic"></div>
-                            <div id="Username">Sajtos Lajos</div>
+                        <div id="profile-bubble">
+                            <div id="profile-pic"></div>
+                            <div id="username">Sajtos Lajos</div>
+                        </div>
+
+                        <div id="logout">
+                            <input type="button" class="btn button-sample" value="Kilépés">
                         </div>
                     </div>
                 </div>
@@ -37,28 +43,54 @@
 
 
             <!-- Második sor -->
-            <div id="MainRow" class="row">
-                <!-- Bal oldali blokk -->
-                <div class="col-2" id="SideNav">
-                    <ul class="nav flex-column d-flex">
-                        <li class="nav-item">asdasd</li>
-                        <li class="nav-item">asdasd</li>
-                        <li class="nav-item">asdasd</li>
+            <div id="main-row" class="row">
+                <!-- Navbar -->
+                <div class="col-2" id="side-nav">
+                    
+                    <div class="m-2">MENÜ</div>
+
+                    <ul class="nav flex-column d-flex gap-4 align-items-center">
+
+                        <!-- Opciók -->
+                        <li class="nav-item selected-navoption">
+                            <a class="nav-link"  href="">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Tiramisu</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Palacsinta</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Kókuszgolyó</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Puncs torta</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Bejgli</a>
+                        </li>
                     </ul>
                 </div>    
+
                 <!-- Középső blokk -->
-                <div class="col-7 p-3" id="MiddlePart">
-                    <div id="Stats" class="row mb-3">
+                <div class="col-7 p-3" id="middle-part">
+                    <div id="stats" class="row mx-4">
                         <div class="col-7">stats</div>
                     </div>
                     
-                    <div id="RanglistCalendar" class="row p-3">
-                        <div id="Ranglist" class="col-7">Ranglista</div>
-                        <div id="Calendar" class="col-5">Naptár</div>
+                    <div id="ranglist-calendar" class="row p-3">
+                        <div id="ranglist" class="col-6 ms-3">Ranglista</div>
+                        <div id="calendar" class="col-5 ms-5">Naptár</div>
                     </div>
                 </div>
                 <!-- Jobb oldali blokk -->
-                <div id="MuscleTracker" class="col-3">Ember cucc</div>
+                <div id="muscle-tracker" class="col-3 ">Ember cucc</div>
 
             </div>
         </div>
