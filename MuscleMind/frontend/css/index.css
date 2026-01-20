@@ -101,6 +101,8 @@ html,body{
 }
 .nav-item:hover{
     animation: NavSelection 700ms infinite alternate;
+    /* border-left: 10px solid #612eb9;
+    border-bottom: 10px solid #612eb9; */
 }
 
 .nav-link{
@@ -123,12 +125,14 @@ html,body{
 }
 
 @keyframes NavSelection{
+    
     from{
         background-color: #612eb9;
     }
     to{
         background-color: #612eb900;;
     }
+    
 }
 
 
