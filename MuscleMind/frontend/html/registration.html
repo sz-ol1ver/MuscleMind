@@ -18,39 +18,35 @@
                 <div class="card-header">
                     <h1 class="fw-bold text-light mt-2" title="Regisztráció">MuscleMind</h1>
                 </div>
-                <div class="card-body">
-                    <div class="form-floating mb-3">
+                <div class="card-body row">
+                    <div class="form-floating mb-3 d-flex mx-auto col-lg-6">
                         <input type="text" class="form-control regist-inputs" id="last-name" placeholder="xy" required>
-                        <label for="last-name" class="text-light">Vezetéknév</label>
+                        <label for="last-name" class="text-light ms-2">Vezetéknév</label>
                     </div>
-                    <div class="form-floating mb-3">
+                    <div class="form-floating mb-3 d-flex mx-auto col-lg-6">
                         <input type="text" class="form-control regist-inputs" id="first-name" placeholder="xy" required>
-                        <label for="first-name" class="text-light">Keresztnév</label>
+                        <label for="first-name" class="text-light ms-2">Keresztnév</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" required>
-                        <label for="userName" class="text-light">Felhasználónév</label>
+                        <label for="userName" class="text-light ms-2">Felhasználónév</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="date" class="form-control regist-inputs" id="birthDate" placeholder="xxxx" required>
-                        <label for="birthDate" class="text-light">Születési dátum</label>
+                        <label for="birthDate" class="text-light ms-2">Születési dátum</label>
                     </div>
-                    <select class="form-select form-select-sm mb-3">
-                        <option value="0">Férfi</option>
-                        <option value="1">Nő</option>
-                    </select>
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" required>
-                        <label for="userName" class="text-light">Felhasználónév</label>
-                    </div>
-                    <div class="form-floating mb-2">
+                    <div class="form-floating mb-2 col-lg-6">
                         <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszo" required>
-                        <label for="password-regist" class="text-light">Jelszó</label>
+                        <label for="password-regist" class="text-light ms-2">Jelszó</label>
+                    </div>
+                    <div class="form-floating mb-2 col-lg-6">
+                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszo" required>
+                        <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
                     </div>
                     <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-login btn-link btn-sm d-block ms-auto">
                     <hr class="mt-2">
                     <input type="button" value="Nincs még fiókod? Regisztrálj" id="register-in" class="btn btn-link-login btn-link btn-sm">
-                    <input type="button" id="login-in" value="Bejelentkezés" class="btn btn-outline-light">
+                    <input type="button" id="login-in" value="Regisztáció" class="btn btn-outline-light">
                 </div>
             </div>
         </div>
