@@ -12,15 +12,22 @@ html,body{
     border-bottom: 1px groove #7c3aed;
     /* animation: FadingBorder 2s infinite; */
 }
-#main-title{
-    animation: ForTitle 1.5s infinite alternate;
+#shifting-text1{
+    animation: ForTitle1 1s infinite alternate;
+}
+
+#shifting-text2{
+    animation: ForTitle2 1s infinite alternate;
+}
+#main-page-title{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .button-sample{
     display: flex;
     align-items: center;
     height: 40px;
-    width: 120px;
+    width: 80px;
     font-size: 15px;
     font-weight: 600;
     background-color: #2c203b;
@@ -67,16 +74,25 @@ html,body{
         border-color: #4c24919f;
     }
     100%{
-        border-color: #4c2491da;
+        border-color: #4c2491;
     }
 }
 
-@keyframes ForTitle{
+@keyframes ForTitle1{
     from{
         color: #814fd8;
     }
     to{
-        color: #814fd87c;
+        color: white;
+    }
+}
+
+@keyframes ForTitle2{
+    from{
+        color: white;
+    }
+    to{
+        color: #814fd8;
     }
 }
 
@@ -150,6 +166,10 @@ html,body{
     border-radius: 20px;
     margin: 1px;
     background-color: #0f0f17;
+}
+#stat-title{
+    font-size: larger ;
+    text-align: center;
 }
 
 #ranglist-calendar{
