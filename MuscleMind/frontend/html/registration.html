@@ -11,42 +11,78 @@
         <!--css-->
         <link rel="stylesheet" href="../css/background-res.css" type="text/css">
         <link rel="stylesheet" href="../css/forms.css" type="text/css">
+        <!--js-->
+        <script src="../javascript/forms.js"></script>
     </head>
     <body id="registration">
+        <!-- container: középre igazítás, full screen -->
         <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
+
+            <!-- regisztrációs kártya -->
             <div class="card card-registration text-center mt-2 w-50" id="registration-card">
+
+                <!-- fejléc: app név -->
                 <div class="card-header">
                     <h1 class="fw-bold text-light mt-2" title="Regisztráció">MuscleMind</h1>
                 </div>
+
+                <!-- űrlap mezők -->
                 <div class="card-body row">
+
+                    <!-- vezetéknév -->
                     <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
                         <input type="text" class="form-control regist-inputs" id="last-name" placeholder="xy" required>
                         <label for="last-name" class="text-light ms-2">Vezetéknév</label>
                     </div>
+
+                    <!-- keresztnév -->
                     <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
                         <input type="text" class="form-control regist-inputs" id="first-name" placeholder="xy" required>
                         <label for="first-name" class="text-light ms-2">Keresztnév</label>
                     </div>
+
+                    <!-- felhasználónév -->
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" required>
                         <label for="userName" class="text-light ms-2">Felhasználónév</label>
                     </div>
+
+                    <!-- születési dátum -->
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control regist-inputs" id="birthDate" placeholder="xxxx" value="2000-01-01" required>
+                        <input type="date" class="form-control regist-inputs" id="birthDate" value="2000-01-01" required>
                         <label for="birthDate" class="text-light ms-2">Születési dátum</label>
                     </div>
+
+                    <!-- jelszó -->
                     <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszo" required>
+                        <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszó" required>
                         <label for="password-regist" class="text-light ms-2">Jelszó</label>
                     </div>
+
+                    <!-- jelszó megerősítés -->
                     <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszo" required>
+                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszó" required disabled>
                         <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
                     </div>
-                    <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-regist btn-link btn-sm d-block ms-auto">
+
+                    <!-- jelszó egyezés visszajelzés -->
+                    <p id="password-feedback"></p>
+
+                    <!-- elválasztó -->
                     <hr class="mt-2">
-                    <input type="button" value="Van már fiókod? Jelentkezz be" id="register-in" class="btn btn-link-regist btn-link btn-sm">
-                    <input type="button" id="login-in" value="Regisztáció" class="w-75 btn btn-outline-light d-block mx-auto">
+
+                    <!-- link bejelentkezéshez -->
+                    <input type="button"
+                        value="Van már fiókod? Jelentkezz be"
+                        id="register-in"
+                        class="btn btn-link-regist btn-link btn-sm">
+
+                    <!-- regisztráció gomb -->
+                    <input type="button"
+                        id="regist-in"
+                        value="Regisztáció"
+                        class="w-75 btn btn-outline-light d-block mx-auto"
+                        disabled>
                 </div>
             </div>
         </div>
