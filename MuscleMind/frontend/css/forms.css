@@ -22,18 +22,14 @@ hr{
 .btn-link-login:hover{
     color: rgb(208, 164, 250) !important;
 }
-.login-inputs{
-    background-color: rgba(79, 26, 102, 0.496);
-}
 .login-inputs:focus{
     background-color: rgba(47, 16, 60, 0.496);
+    animation: login_input 1.5s infinite;
 }
 .login-inputs{
     color: rgb(217, 146, 255) !important;
     border: none !important;
-}
-.login-inputs:focus {
-    animation: login_input 1.5s infinite;
+    background-color: rgba(79, 26, 102, 0.496);
 }
 @keyframes login_input {
     0%   { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
@@ -47,9 +43,17 @@ hr{
     color: rgb(159, 255, 183) !important;
 }
 .regist-inputs:focus{
-    background-color: rgba(68, 126, 252, 0.496);
+    background-color: rgba(39, 93, 207, 0.496);
+    animation: regist_input 1.5s infinite;
 }
-.form-select{
-    background-color: rgba(68, 126, 252, 0.496);
-    color: white;
+#birthDate{
+    color-scheme: dark;
+}
+.btn-link-regist:hover{
+    color: rgb(159, 255, 183) !important;
+}
+@keyframes regist_input {
+    0%   { box-shadow: 0 0 10px 2px rgba(0, 63, 200, 0.496); }
+    50%  { box-shadow: 0 0 10px 3px rgb(0, 1, 86); }
+    100% { box-shadow: 0 0 10px 2px rgba(0, 63, 200, 0.496); }
 }
