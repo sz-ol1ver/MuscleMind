@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MuscleMind - Login</title>
+        <link rel="icon" type="image/png" href="../images/login-16-9.png">
         <!--bootstarp-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
         <script src="../bootstrap/js/popper.min.js"></script>
@@ -11,27 +12,39 @@
         <!--css-->
         <link rel="stylesheet" href="../css/background-res.css" type="text/css">
         <link rel="stylesheet" href="../css/forms.css" type="text/css">
+        <!--js-->
+        <script src="../javascript/login.js"></script>
     </head>
     <body id="login">
+        <!-- container: középre igazítás, full screen -->
         <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
+            <!-- regisztrációs kártya -->
             <div class="card card-login text-center mt-2 w-50" id="login-card">
+                <!-- fejléc: app név / jelen oldal-->
                 <div class="card-header">
                     <h1 class="fw-bold text-light mt-2" title="Bejelentkezés">MuscleMind</h1>
                     <p class="mb-0 text-light fs-5">Bejelentkezés</p>
                 </div>
+                <!-- űrlap mezők -->
                 <div class="card-body">
+                    <!--email cim input-->
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control login-inputs" id="email-login" placeholder="@" required>
                         <label for="email-login" class="text-light">E-mail cím</label>
                     </div>
+                    <!--jelszo input-->
                     <div class="form-floating mb-2">
-                        <input type="password" class="form-control login-inputs" id="password-login" placeholder="xxx" required>
+                        <input type="password" class="form-control login-inputs" id="password-login" placeholder="xxx" required disabled>
                         <label for="password-login" class="text-light">Jelszó</label>
                     </div>
+                    <!--link elfelejtett jelszo btn-->
                     <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-login btn-link btn-sm d-block ms-auto">
+                    <!--elvalaszto vonal-->
                     <hr class="mt-2">
+                    <!--link regisztacio btn-->
                     <input type="button" value="Nincs még fiókod? Regisztrálj" id="register-in" class="btn btn-link-login btn-link btn-sm">
-                    <input type="button" id="login-in" value="Bejelentkezés" class="btn btn-outline-light">
+                    <!--bejelentkezes btn-->
+                    <input type="button" id="login-in" value="Bejelentkezés" class="btn btn-outline-light" disabled>
                 </div>
             </div>
         </div>

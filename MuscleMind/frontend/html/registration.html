@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="../css/background-res.css" type="text/css">
         <link rel="stylesheet" href="../css/forms.css" type="text/css">
         <!--js-->
-        <script src="../javascript/forms.js"></script>
+        <script src="../javascript/register.js"></script>
     </head>
     <body id="registration">
         <!-- container: középre igazítás, full screen -->
@@ -21,9 +21,10 @@
             <!-- regisztrációs kártya -->
             <div class="card card-registration text-center mt-2 w-50" id="registration-card">
 
-                <!-- fejléc: app név -->
+                <!-- fejléc: app név / jelen oldal-->
                 <div class="card-header">
                     <h1 class="fw-bold text-light mt-2" title="Regisztráció">MuscleMind</h1>
+                    <p class="mb-0 text-light fs-5">Regisztráció</p>
                 </div>
 
                 <!-- űrlap mezők -->
@@ -31,37 +32,37 @@
 
                     <!-- vezetéknév -->
                     <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
-                        <input type="text" class="form-control regist-inputs" id="last-name" placeholder="xy" required>
+                        <input type="text" class="form-control regist-inputs" id="last-name" placeholder="xy" >
                         <label for="last-name" class="text-light ms-2">Vezetéknév</label>
                     </div>
 
                     <!-- keresztnév -->
                     <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
-                        <input type="text" class="form-control regist-inputs" id="first-name" placeholder="xy" required>
+                        <input type="text" class="form-control regist-inputs" id="first-name" placeholder="xy" >
                         <label for="first-name" class="text-light ms-2">Keresztnév</label>
                     </div>
 
                     <!-- felhasználónév -->
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" required>
+                        <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" >
                         <label for="userName" class="text-light ms-2">Felhasználónév</label>
                     </div>
 
-                    <!-- születési dátum -->
+                    <!-- email address -->
                     <div class="form-floating mb-3">
-                        <input type="date" class="form-control regist-inputs" id="birthDate" value="2000-01-01" required>
-                        <label for="birthDate" class="text-light ms-2">Születési dátum</label>
+                        <input type="email" class="form-control regist-inputs" id="email-regist">
+                        <label for="email-regist" class="text-light ms-2">E-mail cím</label>
                     </div>
 
                     <!-- jelszó -->
                     <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszó" required>
+                        <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszó" >
                         <label for="password-regist" class="text-light ms-2">Jelszó</label>
                     </div>
 
                     <!-- jelszó megerősítés -->
                     <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszó" required disabled>
+                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszó" disabled>
                         <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
                     </div>
 

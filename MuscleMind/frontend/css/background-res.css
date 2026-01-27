@@ -57,7 +57,7 @@
 /* XL */
 @media only screen and (min-width: 1450px){
     #login{
-        background: url("../images/login-16-9.png") no-repeat center center;
+        background: url("../images/login-16-9.png") no-repeat center top;
         background-size: cover;
         background-color: black;
     }
