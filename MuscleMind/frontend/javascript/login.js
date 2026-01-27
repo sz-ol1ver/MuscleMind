@@ -32,7 +32,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if(email.value != ''){
             password.disabled = false;
         }else{
+            password.value = '';
             password.disabled = true;
+            loginBtn.disabled = true;
         }
     })
 })
