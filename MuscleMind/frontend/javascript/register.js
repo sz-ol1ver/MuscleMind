@@ -90,6 +90,11 @@ document.addEventListener('DOMContentLoaded',()=>{
                                 feedBack.innerHTML = '';
                                 pass.style.border = '1px solid white';
                                 passConf.disabled = false;
+                                if(pass.value != passConf.value){
+                                    registBtn.disabled=true;
+                                }else{
+                                    registBtn.disabled=false;
+                                }
                             }else{
                                 feedBack.style.color = 'red';
                                 feedBack.innerHTML = 'Jelszó: a-z & A-Z & 0-9!'
@@ -150,11 +155,49 @@ document.addEventListener('DOMContentLoaded',()=>{
             feedBack.style.color = 'lightgreen';
             feedBack.innerHTML = 'A jelszó megegyezik!';
             registBtn.disabled = false;
-        }else if(passConf.value == ''){//* Ures jelszo megerosito
-            feedBack.innerHTML ='';
-        }else{//* Minden mas esetben
+        }else if(passConf.value != pass.value){//* Ha kulonbozik a ketto
             feedBack.style.color = 'red';
-            feedBack.innerHTML = 'A két jelszó különbözik!';
+            feedBack.innerHTML ='A két jelszó különbözik!';
+            registBtn.disabled = true;
+        }else{//* Ures jelszo megerosito / barmi mas
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = '';
+            registBtn.disabled = true;
+        }
+    })
+
+    //! input final validation
+    registBtn.addEventListener('click', ()=>{
+        if(lastN.value == '' || firstN.value == ''){
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Hiányos név!';
+            lastN.style.border = '2px solid red';
+            firstN.style.border = '2px solid red';
+            passConf.value ='';
+            registBtn.disabled = true;
+        }else if(userName.value == ''){
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva felhasználónév!'
+            userName.style.border = '2px solid red';
+            passConf.value ='';
+            registBtn.disabled = true;
+        }else if(email.value == ''){
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva e-mail cím!'
+            email.style.border = '2px solid red';
+            passConf.value ='';
+            registBtn.disabled = true;
+        }else{
+            feedBack.style.color = 'lightgreen';
+            feedBack.innerHTML = 'Sikeres regisztráció!'
+            lastN.value ='';
+            firstN.value = '';
+            userName.value = '';
+            email.value = '';
+            pass.value = '';
+            passConf.value = '';
+            passConf.disabled = true;
+            registBtn.disabled = true;
         }
     })
 })
