@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded',()=>{
     const feedBack = document.getElementById('password-feedback');
     const registBtn = document.getElementById('regist-in');
 
+    //? Nev megengedett karakterei
+    const patterName = /^[a-zA-Z]*$/ 
     //? Felhasznalonev megengedett karakterei
     const patterUser = /^[a-z0-9]*$/ 
     //? Jelszo megengedett karakterei
@@ -69,57 +71,70 @@ document.addEventListener('DOMContentLoaded',()=>{
             feedBack.innerHTML='';
             lastN.style.border = '1px solid white';
             firstN.style.border = '1px solid white';
-            //* Felhasznalonev ures-e
-            if(userName.value!=''){
-                feedBack.innerHTML ='';
-                userName.style.border = '1px solid white';
-                //* Felhasznalonev karakter vizsgalata
-                if(patterUser.test(userName.value)==true){
+            //* Nev karakter ellenorzes
+            if(patterName.test(lastN.value) == true && patterName.test(firstN.value) == true){
+                feedBack.innerHTML='';
+                lastN.style.border = '1px solid white';
+                firstN.style.border = '1px solid white';
+                //* Felhasznalonev ures-e
+                if(userName.value!=''){
+                    feedBack.innerHTML ='';
                     userName.style.border = '1px solid white';
-                    feedBack.innerHTML = '';
-                    //* Email cim ures-e
-                    if(email.value!=''){
+                    //* Felhasznalonev karakter vizsgalata
+                    if(patterUser.test(userName.value)==true){
+                        userName.style.border = '1px solid white';
                         feedBack.innerHTML = '';
-                        email.style.border = '1px solid white';
-                        //* Jelszo ures-e
-                        if(pass.value!=''){
+                        //* Email cim ures-e
+                        if(email.value!=''){
                             feedBack.innerHTML = '';
-                            pass.style.border = '1px solid white';
-                            //* Jelszo karakter vizsgalata
-                            if(patterPass.test(pass.value)==true){
+                            email.style.border = '1px solid white';
+                            //* Jelszo ures-e
+                            if(pass.value!=''){
                                 feedBack.innerHTML = '';
                                 pass.style.border = '1px solid white';
-                                passConf.disabled = false;
-                                if(pass.value != passConf.value){
-                                    registBtn.disabled=true;
+                                //* Jelszo karakter vizsgalata
+                                if(patterPass.test(pass.value)==true){
+                                    feedBack.innerHTML = '';
+                                    pass.style.border = '1px solid white';
+                                    passConf.disabled = false;
+                                    if(pass.value != passConf.value){
+                                        registBtn.disabled=true;
+                                    }else{
+                                        registBtn.disabled=false;
+                                    }
                                 }else{
-                                    registBtn.disabled=false;
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Jelszó: a-z & A-Z & 0-9!'
+                                    pass.style.border = '2px solid red';
+                                    passConf.value ='';
+                                    passConf.disabled = true;
                                 }
                             }else{
                                 feedBack.style.color = 'red';
-                                feedBack.innerHTML = 'Jelszó: a-z & A-Z & 0-9!'
+                                feedBack.innerHTML = 'Nincs megadva jelszó!'
                                 pass.style.border = '2px solid red';
                                 passConf.value ='';
                                 passConf.disabled = true;
                             }
                         }else{
                             feedBack.style.color = 'red';
-                            feedBack.innerHTML = 'Nincs megadva jelszó!'
-                            pass.style.border = '2px solid red';
+                            feedBack.innerHTML = 'Nincs megadva e-mail cím!'
+                            email.style.border = '2px solid red';
+                            pass.value = '';
                             passConf.value ='';
                             passConf.disabled = true;
                         }
                     }else{
                         feedBack.style.color = 'red';
-                        feedBack.innerHTML = 'Nincs megadva e-mail cím!'
-                        email.style.border = '2px solid red';
+                        feedBack.innerHTML = 'Felhasználónév: a-z & 0-9!'
+                        userName.style.border = '2px solid red';
                         pass.value = '';
                         passConf.value ='';
                         passConf.disabled = true;
                     }
                 }else{
                     feedBack.style.color = 'red';
-                    feedBack.innerHTML = 'Felhasználónév: a-z & 0-9!'
+                    feedBack.innerHTML = 'Nincs megadva felhasználónév!'
                     userName.style.border = '2px solid red';
                     pass.value = '';
                     passConf.value ='';
@@ -127,10 +142,11 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
             }else{
                 feedBack.style.color = 'red';
-                feedBack.innerHTML = 'Nincs megadva felhasználónév!'
-                userName.style.border = '2px solid red';
+                feedBack.innerHTML = 'Csak a-z & A-Z';
+                lastN.style.border = '2px solid red';
+                firstN.style.border = '2px solid red';
                 pass.value = '';
-                passConf.value ='';
+                passConf.value =''
                 passConf.disabled = true;
             }
         }else{
@@ -198,6 +214,9 @@ document.addEventListener('DOMContentLoaded',()=>{
             passConf.value = '';
             passConf.disabled = true;
             registBtn.disabled = true;
+            setTimeout(()=>{
+                feedBack.innerHTML = '';
+            }, 3000)
         }
     })
 })
