@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     let selectedValue = null;
 
     next.addEventListener('click', ()=>{
-        console.log(currentIndex);
         if(currentIndex < custom_qtn.length){
             const rangeValue = document.getElementById("range_input").value;
             switch (currentIndex){
@@ -97,7 +96,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 window.alert('Válassz egy lehetőséget');
                 return;
             }
-            console.log(selectedValue)
             const answIndex = currentIndex-3;
             switch (answIndex){
                 case 0: userProfile.gender = selectedValue; break;
