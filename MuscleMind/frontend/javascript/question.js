@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 case 6: userProfile.mealsPerDay = selectedValue; break;
         }}
         if(currentIndex+1 == 10){
-            console.log(userProfile)
+            console.log(userProfile);
         }else{
             currentIndex++;
             loadQuestion();
