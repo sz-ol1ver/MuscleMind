@@ -11,19 +11,22 @@
     <script src="../bootstrap/js/bootstrap.min.js"></script>
     <!--css-->
     <link rel="stylesheet" href="../css/questionnaire.css" type="text/css">
+    <link rel="stylesheet" href="../css/background-res.css" type="text/css">
     <!--js-->
     <script src="../javascript/question.js"></script>
 </head>
-<body id="kerdoiv">
-    <div class="container mt-3">
+<body id="kerdoiv" class="d-flex vh-100 vw-100 align-items-center justify-content-center">
+    <div class="container mt-3 w-50 " id="kerdoiv-con">
         <div class="row text-center">
             <h3 class="fsw-1" id="question"></h3>
         </div>
-        <div class="row my-3" id="answ">
+        <hr>
+        <div class="row my-3 text-center" id="answ">
 
         </div>
+        <hr>
         <div class="row">
-            <input type="button" class="btn btn-outline-success" value="Következő" id="submit-qtn">
+            <input type="button" class="btn btn-outline-dark" value="Következő" id="submit-qtn">
         </div>
     </div>
 </body>

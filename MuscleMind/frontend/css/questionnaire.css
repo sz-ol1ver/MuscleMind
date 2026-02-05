@@ -1,0 +1,44 @@
+#kerdoiv-con{
+    background-color: rgba(225, 128, 255, 0.496);
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    padding:30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+}
+#question{
+    color: rgb(0, 0, 0);
+    margin-top: 15px;
+    font-weight: bolder;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+#rangeValue{
+    color: white;
+}
+#range_input{
+    accent-color: rgb(221, 170, 255);
+}
+hr{
+    color: rgb(255, 255, 255);
+    border: 1px solid white;
+}
+#answ{
+    padding: 20px;
+}
+#answ>h3{
+    padding-top: 10px;
+}
+.active{
+    animation: border_in 2s infinite;
+}
+@keyframes border_in{
+    0%   { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
+    50%  { box-shadow: 0 0 10px 3px rgb(40, 0, 86); }
+    100% { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
+}
+#submit-qtn{
+    font-weight: bolder;
+    border: 2px solid black;
+}

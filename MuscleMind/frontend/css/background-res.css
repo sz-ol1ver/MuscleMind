@@ -14,6 +14,14 @@
     #registration-card{
         width: 70% !important; 
     }
+    #kerdoiv{
+        background: url("../images/kerdoiv-9-16.png") no-repeat center center;
+        background-size: cover;
+        height: 100vh;
+    }
+    #kerdoiv-con{
+        width: 80% !important;
+    }
 }
 /* S */
 @media only screen and (min-width: 800px) and (max-width:767px) {
@@ -25,6 +33,14 @@
         background: url("../images/registration-9-16.png") no-repeat center center;
         background-size: cover;
     }
+    #kerdoiv{
+        background: url("../images/kerdoiv-9-16.png") no-repeat center center;
+        background-size: cover;
+        height: 100vh;
+    }
+    #kerdoiv-con{
+        width: 80% !important;
+    }
 }
 /* M */
 @media only screen and (min-width: 768px) and (max-width:991px){
@@ -35,6 +51,11 @@
     #registration{
         background: url("../images/registration-16-9.png") no-repeat center center;
         background-size: cover;
+    }
+    #kerdoiv{
+        background: url("../images/kerdoiv-16-9.png") no-repeat center center;
+        background-size: cover;
+        height: 100vh;
     }
 }
 /* L */
@@ -53,6 +74,14 @@
     #registration-card{
         width: 40% !important; 
     }
+    #kerdoiv{
+        background: url("../images/kerdoiv-16-9.png") no-repeat center center;
+        background-size: cover;
+        height: 100vh;
+    }
+    #kerdoiv-con{
+        width: 40% !important;
+    }
 }
 /* XL */
 @media only screen and (min-width: 1450px){
@@ -70,5 +99,13 @@
     }
     #registration-card{
         width: 30% !important; 
+    }
+    #kerdoiv{
+        background: url("../images/kerdoiv-16-9.png") no-repeat center center;
+        background-size: cover;
+        height: 100vh;
+    }
+    #kerdoiv-con{
+        width: 30% !important;
     }
 }

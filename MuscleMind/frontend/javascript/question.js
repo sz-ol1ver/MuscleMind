@@ -139,13 +139,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 rangeIn.value = 175;
             }
 
-            const rangeFeedback = document.createElement('span');
+            const rangeFeedback = document.createElement('h3');
             rangeFeedback.id = 'rangeValue';
-            rangeFeedback.innerHTML = rangeIn.value;
-            rangeFeedback.style.fontWeight = "bold";
+            switch(currentIndex){
+                case 0: rangeFeedback.innerHTML = rangeIn.value + " kg"; break;
+                case 1: rangeFeedback.innerHTML = rangeIn.value; break;
+                case 2: rangeFeedback.innerHTML = rangeIn.value + " cm"; break;
+            }
+            rangeFeedback.style.fontWeight = "bold";    
 
             rangeIn.addEventListener('input', ()=>{
-                rangeFeedback.innerHTML = rangeIn.value;
+                switch(currentIndex){
+                case 0: rangeFeedback.innerHTML = rangeIn.value + " kg"; break;
+                case 1: rangeFeedback.innerHTML = rangeIn.value; break;
+                case 2: rangeFeedback.innerHTML = rangeIn.value + " cm"; break;
+            }
             })
 
             answer.appendChild(rangeIn);
@@ -168,7 +176,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.innerHTML = option;
-                btn.classList.add('btn', 'btn-outline-dark');
+                btn.classList.add('btn', 'btn-outline-light');
 
                 btn.addEventListener('click', ()=>{
                     selectedValue = option;
