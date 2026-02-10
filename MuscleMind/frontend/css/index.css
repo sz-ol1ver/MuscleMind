@@ -41,6 +41,37 @@ html,body{
 }
 
 
+.switch {
+  appearance: none;
+  width: 60px;
+  height: 34px;
+  background: #612eb9;
+  border-radius: 34px;
+  position: relative;
+  cursor: pointer;
+  transition: background .3s;
+}
+
+.switch:before {
+  content: "🌙";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 4px;
+  left: 4px;
+  border-radius: 50%;
+  transition: transform .3s;
+}
+
+.switch:checked {
+  background: white;
+}
+
+.switch:checked::before {
+  content: "☀️";
+  transform: translateX(26px);
+}
+
 #profile-bubble{
     display: flex;
     align-items: center;
@@ -254,3 +285,5 @@ html,body{
         font-size: 14px;
     }
 }
+
+
