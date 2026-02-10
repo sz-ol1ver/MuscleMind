@@ -1,6 +1,7 @@
 html,body{
     background-color: #0b0b10;
     color: #f5f5ff;
+    /* color: rgb(201, 239, 235); */
 
 }
 
@@ -18,6 +19,15 @@ html,body{
 #shifting-text2{
     animation: ForTitle2 1s infinite alternate;
 }
+
+#shifting-textForLightTheme1{
+    animation: ForTitleLightTheme1 1s infinite alternate;
+}
+
+#shifting-textForLightTheme2{
+    animation: ForTitleLightTheme2 1s infinite alternate;
+}
+
 #main-page-title{
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
@@ -121,6 +131,24 @@ html,body{
 @keyframes ForTitle2{
     from{
         color: white;
+    }
+    to{
+        color: #814fd8;
+    }
+}
+
+@keyframes ForTitleLightTheme1{
+    from{
+        color: #814fd8;
+    }
+    to{
+        color: #2c203b;
+    }
+}
+
+@keyframes ForTitleLightTheme2{
+    from{
+        color: #2c203b;
     }
     to{
         color: #814fd8;
