@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="HU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuscleMind – Admin Panel</title>
+
+    <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
+    <script src="../bootstrap/js/popper.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-bg">
+    <div class="container py-4">
+        <h1 class="text-center mb-5 admin-title">MuscleMind – Admin Panel</h1>
+        
+        <div class="admin-card mb-4">
+            <h4>Összes felhasználó</h4>
+
+            <div class="row g-3 mt-3">
+                <!-- Példa felhasználói profil kártya -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="user-card">
+                        <h5>PéldaUser</h5>
+                        <p><strong>Email:</strong> peld@example.com</p>
+                        <p><strong>Testsúly:</strong> 75 kg</p>
+                        <p><strong>Életkor:</strong> 28</p>
+                        <p><strong>Magasság:</strong> 180 cm</p>
+                        <p><strong>Nem:</strong> férfi</p>
+                        <p><strong>Cél:</strong> tömegnövelés</p>
+                        <p><strong>Tapasztalat:</strong> középhaladó</p>
+                        <p><strong>Edzésnapok:</strong> 4 nap</p>
+                        <p><strong>Edzés helye:</strong> konditeremben</p>
+                        <p><strong>Étrend:</strong> mindenevő</p>
+                        <p><strong>Étkezések száma:</strong> 4–5 alkalom</p>
+                        <p><strong>Admin:</strong> NO</p>
+                    </div>
+                </div>
+
+                <!-- Több felhasználó ide jöhet -->
+                <div class="col-md-6 col-lg-4">
+                    <div class="user-card">
+                        <h5>KovácsAnna</h5>
+                        <p><strong>Email:</strong> anna@example.com</p>
+                        <p><strong>Testsúly:</strong> 60 kg</p>
+                        <p><strong>Életkor:</strong> 25</p>
+                        <p><strong>Magasság:</strong> 165 cm</p>
+                        <p><strong>Nem:</strong> nő</p>
+                        <p><strong>Cél:</strong> szálkásítás</p>
+                        <p><strong>Tapasztalat:</strong> kezdő</p>
+                        <p><strong>Edzésnapok:</strong> 2–3 nap</p>
+                        <p><strong>Edzés helye:</strong> otthon, saját testsúllyal</p>
+                        <p><strong>Étrend:</strong> vegetáriánus</p>
+                        <p><strong>Étkezések száma:</strong> 2–3 alkalom</p>
+                        <p><strong>Admin:</strong> NO</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="admin-card mb-4">
+            <h4>Felhasználó szerkesztése</h4>
+
+            <!-- KERESÉS -->
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="Email vagy felhasználónév">
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-purple w-100">Betölt</button>
+                </div>
+            </div>
+
+            <!-- ADATOK -->
+            <div class="user-card">
+
+                <div class="row g-2 mb-3">
+                    <div class="col-md-3">
+                        <input class="form-control" placeholder="Email">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control" placeholder="Felhasználónév">
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control" placeholder="Új jelszó">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select">
+                            <option>Admin: NO</option>
+                            <option>Admin: YES</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-2">
+                    <div class="col-md-2">
+                        <input class="form-control" placeholder="Testsúly (kg)">
+                    </div>
+                    <div class="col-md-2">
+                        <input class="form-control" placeholder="Életkor">
+                    </div>
+                    <div class="col-md-2">
+                        <input class="form-control" placeholder="Magasság (cm)">
+                    </div>
+
+                    <!-- GENDER -->
+                    <div class="col-md-2">
+                        <select class="form-select">
+                            <option disabled selected>Nem</option>
+                            <option>férfi</option>
+                            <option>nő</option>
+                        </select>
+                    </div>
+
+                    <!-- GOAL -->
+                    <div class="col-md-2">
+                        <select class="form-select">
+                            <option disabled selected>Cél</option>
+                            <option>tömegnövelés</option>
+                            <option>szálkásítás</option>
+                            <option>szintentartás</option>
+                        </select>
+                    </div>
+
+                    <!-- EXPERIENCE -->
+                    <div class="col-md-2">
+                        <select class="form-select">
+                            <option disabled selected>Tapasztalat</option>
+                            <option>kezdő (0–6 hónap)</option>
+                            <option>középhaladó (6–24 hónap)</option>
+                            <option>haladó (2+ év)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-2 mb-3">
+                    <!-- TRAINING DAYS -->
+                    <div class="col-md-3">
+                        <select class="form-select">
+                            <option disabled selected>Edzésnapok</option>
+                            <option>2–3 nap</option>
+                            <option>4 nap</option>
+                            <option>5–6 nap</option>
+                        </select>
+                    </div>
+
+                    <!-- LOCATION -->
+                    <div class="col-md-3">
+                        <select class="form-select">
+                            <option disabled selected>Edzés helye</option>
+                            <option>konditeremben</option>
+                            <option>otthon, súlyzókkal</option>
+                            <option>otthon, saját testsúllyal</option>
+                        </select>
+                    </div>
+
+                    <!-- DIET -->
+                    <div class="col-md-3">
+                        <select class="form-select">
+                            <option disabled selected>Étrend</option>
+                            <option>mindenevő</option>
+                            <option>vegetáriánus</option>
+                            <option>vegán</option>
+                        </select>
+                    </div>
+
+                    <!-- MEALS -->
+                    <div class="col-md-3">
+                        <select class="form-select">
+                            <option disabled selected>Étkezések száma</option>
+                            <option>2–3 alkalom</option>
+                            <option>4–5 alkalom</option>
+                            <option>6 vagy több alkalom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button class="btn btn-success">Mentés</button>
+                    <button class="btn btn-danger">Felhasználó törlése</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="admin-card mb-4">
+            <h4>Ételek kezelése</h4>
+
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <input class="form-control" placeholder="Food ID (egyedi)">
+                </div>
+                <div class="col-md-4">
+                    <input class="form-control" placeholder="Étel neve">
+                </div>
+            </div>
+
+            <textarea class="form-control mb-2" rows="3" placeholder="Leírás"></textarea>
+
+            <div class="text-end">
+                <button class="btn btn-purple">Hozzáadás / Módosítás</button>
+                <button class="btn btn-danger">Törlés</button>
+            </div>
+        </div>
+
+        <div class="admin-card mb-4">
+            <h4>Edzéstervek kezelése</h4>
+
+            <div class="row g-2 mb-2">
+                <div class="col-md-3">
+                    <input class="form-control" placeholder="Edzésterv ID">
+                </div>
+                <div class="col-md-5">
+                    <input class="form-control" placeholder="Cím">
+                </div>
+            </div>
+
+            <textarea class="form-control mb-2" rows="2" placeholder="Leírás"></textarea>
+            <textarea class="form-control mb-2" rows="4" placeholder="Gyakorlatok (pl. fekvenyomás, guggolás...)"></textarea>
+
+            <div class="text-end">
+                <button class="btn btn-purple">Hozzáadás / Módosítás</button>
+                <button class="btn btn-danger">Törlés</button>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

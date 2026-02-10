@@ -1,0 +1,61 @@
+body.admin-bg {
+    background: radial-gradient(circle at top, #2a003d, #000000);
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.admin-title {
+    color: #b86bff;
+    font-weight: 700;
+}
+
+.admin-card {
+    background: #111;
+    border: 1px solid #6f2dbd;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.user-card {
+    background: #1a1a1a;
+    border: 1px solid #3a006f;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.user-card h5 {
+    color: #c77dff;
+    margin-bottom: 15px;
+}
+
+.form-control,
+.form-select {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #6f2dbd;
+}
+
+.form-control::placeholder {
+    color: #888;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #c77dff;
+    box-shadow: 0 0 0 0.2rem rgba(199,125,255,.25);
+}
+
+.btn-purple {
+    background-color: #6f2dbd;
+    color: white;
+    border: none;
+}
+
+.btn-purple:hover {
+    background-color: #9d4edd;
+}
+
+hr {
+    border-color: #6f2dbd;
+}

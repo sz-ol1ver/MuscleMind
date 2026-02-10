@@ -36,6 +36,10 @@ router.get('/regisztracio', (request, response) => {
 router.get('/kerdoiv', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/questionnaire.html'));
 });
+router.get('/admin', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/admin.html'));
+});
+
 
 //!API endpoints
 app.use('/', router);
