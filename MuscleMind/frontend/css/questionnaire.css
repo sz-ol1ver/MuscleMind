@@ -11,6 +11,7 @@
 #question{
     color: rgb(0, 0, 0);
     margin-top: 15px;
+    font-size: xx-large;
     font-weight: bolder;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
@@ -18,7 +19,10 @@
     color: white;
 }
 #range_input{
-    accent-color: rgb(221, 170, 255);
+    accent-color: rgb(0, 0, 0);
+}
+#range_input:active{
+    accent-color: rgb(189, 153, 255);
 }
 hr{
     color: rgb(255, 255, 255);
@@ -34,11 +38,15 @@ hr{
     animation: border_in 2s infinite;
 }
 @keyframes border_in{
-    0%   { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
-    50%  { box-shadow: 0 0 10px 3px rgb(40, 0, 86); }
-    100% { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
+    0%   { box-shadow: 0 0 10px 3px rgba(100, 0, 200, 0.496); }
+    50%  { box-shadow: 0 0 10px 4px rgb(40, 0, 86); }
+    100% { box-shadow: 0 0 10px 3px rgba(100, 0, 200, 0.496); }
 }
 #submit-qtn{
     font-weight: bolder;
     border: 2px solid black;
+}
+#submit-qtn:hover{
+    background-color: rgb(243, 172, 252);
+    color: white;
 }
