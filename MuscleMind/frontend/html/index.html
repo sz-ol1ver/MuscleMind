@@ -19,15 +19,23 @@
         <div class="container-fluid">
             <!-- Első sor -->
             <div id="upper-row" class="row">
-                <div class="col-12  d-flex align-items-center justify-content-between">
-                    
-                    <h2  class="ps-3 m-0 fw-bold"><span id="shifting-text1">Muscle</span><span id="shifting-text2">Mind</span></h2>
-                    
+                <div class="col-12  d-flex align-items-center justify-content-between px-3">
+
+                    <!-- Hamburger gomb -->
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn button-sample d-lg-none justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Menü" id="hamburgerBtn">☰</button>
+
+                        <!-- Logo -->
+                        <h2  class="m-0 fw-bold d-none d-lg-block"><span id="shifting-text1">Muscle</span><span id="shifting-text2">Mind</span></h2>
+                    </div>
+                        
+                    <!-- Cím -->
                     <p id="main-page-title" class="m-0 fw-bold fs-3">Főoldal</p>
+
 
                     <div class="d-flex align-items-center gap-3">
                         <!-- Téma váltás (Világos/Sötét) -->
-                        <input type="button" class="btn button-sample" value="🌙/☀️">
+                        <input id="theme-switch" type="button" class="btn button-sample" value="🌙/☀️">
 
                         <!-- Profil buborék -->
                         <div id="profile-bubble">
@@ -36,17 +44,69 @@
                         </div>
 
                         <div id="logout">
-                            <input type="button" class="btn button-sample" value="Kilépés">
+                            <input type="button" class="btn button-sample d-block mx-auto" value="Kilépés">
                         </div>
                     </div>
+
+
                 </div>
             </div>
 
+            <!-- Offcanvas mobil cucc -->
+            <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
 
-            <!-- Második sor -->
+                <div class="offcanvas-header mobile-menu-header">
+                    <h5 class="offcanvas-title" id="mobileMenuLabel">MENÜ</h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Bezárás"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <ul class="nav flex-column d-flex gap-3">
+
+                        <li class="nav-item selected-navoption">
+                            <a class="nav-link"  href="">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Ranglista</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Naptár</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Tiramisu</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Palacsinta</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Kókuszgolyó</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Puncs torta</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Bejgli</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Második sor/Main sor -->
             <div id="main-row" class="row me-2">
                 <!-- Navbar -->
-                <div class="col-2" id="side-nav">
+                <div class="col-lg-3 col-xl-2 d-none d-lg-block" id="side-nav">
                     
                     <div class="m-2">MENÜ</div>
 
@@ -54,7 +114,19 @@
 
                         <!-- Opciók -->
                         <li class="nav-item selected-navoption">
-                            <a class="nav-link"  href="">Főoldal</a>
+                            <a class="nav-link"  href="index.html">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Ranglista</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Naptár</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
                         </li>
 
                         <li class="nav-item">
@@ -80,22 +152,32 @@
                 </div>    
 
                 <!-- Középső blokk -->
-                <div class="col-7 p-3" id="middle-part">
-                    <div id="stats" class="row mx-4">
+                <div class="col-12 col-lg-9 col-xl-7 p-3" id="middle-part">
+
+                    <!-- Statisztikák -->
+                    <div id="stats" class="row mx-0">
                         <div class="col-12">
                             <div id="stat-title" class="mt-2">Statisztikák</div>
                             <hr>
                             <!-- <input type="button" class="btn col-2 d-block mt-3 bg-primary" value="Időtartam"> -->
                         </div>
                     </div>
-                    
-                    <div id="ranglist-calendar" class="row p-3">
-                        <div id="ranglist" class="col-6 ms-3">Ranglista</div>
-                        <div id="calendar" class="col-5 ms-5">Naptár</div>
+
+                    <!-- Ranglista, Naptár -->
+                    <div id="ranglist-calendar" class="row p-3 g-3 d-none d-xl-flex">
+                        <div class="col-12 col-xxl-7">
+                            <div id="ranglist" class="col-6 mx-0">Ranglista</div>
+                        </div>
+                        
+                        <div class="col-12 col-xxl-5">
+                            <div id="calendar" class="col-5 mx-0">Naptár</div>
+                        </div>
+                        
                     </div>
                 </div>
-                <!-- Jobb oldali blokk -->
-                <div id="muscle-tracker" class="col-3">Ember cucc</div>
+
+                <!-- Jobb oldali blokk/Izom követő -->
+                <div id="muscle-tracker" class="col-3 d-none d-xl-block">Ember cucc</div>
 
             </div>
         </div>
