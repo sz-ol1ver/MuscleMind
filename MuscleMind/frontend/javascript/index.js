@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+
+
+  //Világos/Sötét mód gomb
   document.getElementById("theme-switch").addEventListener("change", (a) => {
     if (a.target.checked){
         
@@ -122,4 +125,28 @@ document.addEventListener("DOMContentLoaded", () => {
         "rgba(255,255,255,0.144)";
     }
   });
+
+
+  //Muscle Tracker oldal változtatás
+  const img = document.getElementById('muscle-picture')
+  let oldal = 'elol'
+
+  document.getElementById('front-back').addEventListener('click', ()=>{
+    if(oldal == 'elol'){
+      console.log('Ember: hátul')
+      img.src = "../images/muscle-tracker/alaphatul.png"
+      oldal = 'hatul'
+    }
+    else if(oldal == 'hatul'){
+      console.log('Ember: elől')
+      img.src = "../images/muscle-tracker/alapelol.png"
+      oldal = 'elol'
+    }
+  })
+
+
+  
+  
+
+
 });
