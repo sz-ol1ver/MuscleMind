@@ -250,7 +250,11 @@ html,body{
     border-radius: 16px;
     margin-bottom: 20px;
     margin-top: 13px;
-
+}
+#muscle-picture{
+    width: 100%;
+    height: 100%;
+    padding: 16px;
 }
 
 

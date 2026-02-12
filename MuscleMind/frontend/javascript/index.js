@@ -69,8 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementsByClassName("button-sample").style.color = "#ffffff";
 
       // Profil buborék
-      document.getElementById("profile-bubble").style.backgroundColor =
-        "#94a3b8";
+      document.getElementById('profile-bubble').style.backgroundColor = "white";
     }
 
     else {
