@@ -203,6 +203,12 @@ document.addEventListener('DOMContentLoaded',()=>{
             email.style.border = '2px solid red';
             passConf.value ='';
             registBtn.disabled = true;
+        }else if(patterUser.test(userName.value)==false){
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Helytelen felhasználónév!'
+            userName.style.border = '2px solid red';
+            passConf.value ='';
+            registBtn.disabled = true;
         }else{
             feedBack.style.color = 'lightgreen';
             feedBack.innerHTML = 'Sikeres regisztráció!'
