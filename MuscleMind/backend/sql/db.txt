@@ -1,0 +1,97 @@
+                                         +-------------------+
+                                         |    leaderboards   |
+                                         +-------------------+
+                                         | id (PK)           |
+                                         | user_id (FK)      |
+                                         | period            |
+                                         | start_date        |
+                                         | end_date          |
+                                         | points            |
+                                         | rank              |
+                                         | created_at        |
+                                         +-------------------+
+                                                 ^
+                                                 |
+                                                 |
+                                         +-------------------+
+                                         |    activities     |
+                                         +-------------------+
+                                         | id (PK)           |
+                                         | user_id (FK)      |
+                                         | date              |
+                                         | type              |
+                                         | points            |
+                                         | created_at        |
+                                         +-------------------+
+                                                 ^
+                                                 |
+                                                 |
++--------------------+        +-------------------+        +-------------------+
+|       users        |<------>|    friendships    |        | user_workouts?    |
++--------------------+        +-------------------+        +-------------------+
+| id (PK)            |        | id (PK)           |        | user_id (FK)      |
+| email              |        | user_id (FK)      |        | workout_plan_id(FK)|
+| username           |        | friend_id (FK)    |        +-------------------+
+| password_hash      |        | status            |
+| weight             |        | created_at        |
+| age                |        | updated_at        |
+| height             |        +-------------------+
+| gender             |
+| goal               |
+| experience_level   |
+| training_days      |
+| training_location  |
+| diet_type          |
+| meals_per_day      |
+| created_at         |
+| updated_at         |
++--------------------+
+
+         |1
+         |
+         |N
++--------------------+        +-------------------+
+|       foods        |<------>|    food_goals     |
++--------------------+        +-------------------+
+| id (PK)            |        | id (PK)           |
+| name               |        | food_id (FK)      |
+| description        |        | goal              |
+| calories           |        | created_at        |
+| protein            |        +-------------------+
+| carbs              |
+| fat                |
+| created_at         |
+| updated_at         |
++--------------------+
+
+         |1
+         |
+         |N
++--------------------+        +-------------------+
+|   workout_plans    |<------>|   workout_goals   |
++--------------------+        +-------------------+
+| id (PK)            |        | id (PK)           |
+| name               |        | workout_plan_id(FK)|
+| description        |        | goal              |
+| location           |        | created_at        |
+| equipment_needed   |        +-------------------+
+| level              |
+| created_at         |
+| updated_at         |
++--------------------+
+         |
+         |1
+         |
+         |N
++---------------------------+
+| workout_plan_exercises    |
++---------------------------+
+| id (PK)                   |
+| workout_plan_id (FK)      |
+| exercise_name             |
+| sets                      |
+| reps                      |
+| rest_seconds              |
+| created_at                |
+| updated_at                |
++---------------------------+
