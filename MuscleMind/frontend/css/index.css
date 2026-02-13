@@ -156,6 +156,7 @@ html,body{
 }
 
 
+/* Main-row */
 
 
 
@@ -223,7 +224,7 @@ html,body{
     height: 40%;
     border-radius: 20px;
     margin: 1px;
-    background-color: #0f0f17;
+    background-color: #6c6c862a;
 }
 #stat-title{
     font-size: larger ;
@@ -238,7 +239,7 @@ html,body{
 #ranglist, #calendar{
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 20px;
-    background-color: #0f0f17;
+    background-color: #6c6c862a;
     width: 100%;
     height: 100%;
 }

@@ -127,10 +127,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  //Muscle Tracker oldal változtatás
+  //Muscle Tracker oldal változtatás(elől/hátul)
   const img = document.getElementById('muscle-picture')
   let oldal = 'elol'
-
+  
   document.getElementById('front-back').addEventListener('click', ()=>{
     if(oldal == 'elol'){
       console.log('Ember: hátul')
@@ -143,6 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
       oldal = 'elol'
     }
   })
+
+  //Muscle Tracker izmok
+  let select = document.getElementById('muscles').  
 
 
   
