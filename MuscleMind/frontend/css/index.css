@@ -89,6 +89,12 @@ html,body{
     padding: 10px;
     background-color: rgba(255, 255, 255, 0.144);
     border-radius: 999px;
+    color: wheat;
+}
+
+#profile-bubble:hover{
+    cursor: pointer;
+    outline: auto;
 }
 
 #profile-pic{
@@ -214,7 +220,7 @@ html,body{
 }
 
 
-/* Középső rész */
+/* Középső rész -------------------------*/
 #middle-part{
     border:1px solid #0b0b10;
 }
@@ -225,6 +231,8 @@ html,body{
     border-radius: 20px;
     margin: 1px;
     background-color: #6c6c862a;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 #stat-title{
     font-size: larger ;
@@ -233,6 +241,7 @@ html,body{
 
 #ranglist-calendar{
     height: 60%;
+    width: 100%;
     
 }
 
@@ -244,9 +253,116 @@ html,body{
     height: 100%;
 }
 
-/* Jobb oldali rész */
+#ranglist{
+    padding-bottom: 2px;
+    padding: 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#ranglist-title{
+    text-align: center;
+    font-size: large;
+}
+
+#first-second-third{
+    padding-bottom: 20px;
+    text-align: center;
+    
+}
+
+#first-place{
+    border: 2px solid gold;
+    height: max-content;
+    margin-top: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+
+    box-shadow: 0 0 15px 2px rgba(255, 215, 0, 0.6);
+}
+
+#first-place-sign{
+    margin-top: 20px;
+    border-bottom: 2px solid gold;
+}
+
+#second-place{
+    border: 2px solid silver;
+    height: max-content;
+    margin-top: 50px;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+
+    box-shadow: 0 0 15px 2px rgba(192, 192, 192, 0.5);
+}
+
+#second-place-sign{
+    margin-top: 50px;
+    border-bottom: 2px solid silver;
+}
+
+#third-place{
+    border: 2px solid rgb(185, 124, 9);
+    height: max-content;
+    margin-top: 60px;
+    box-sizing: border-box;
+    overflow: hidden;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+
+    box-shadow: 0 0 15px 2px rgba(185, 124, 9, 0.5);
+}
+
+#third-place-sign{
+    margin-top: 60px;
+    border-bottom: 2px solid rgb(185, 124, 9);
+}
+
+#outside-top-three{
+    padding-left: 6px;
+    padding-right: 6px;
+    
+}
+
+.ranglisted-people{
+    width: 100%;
+    height: 50px;
+    border: 2px solid grey;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+}
+
+
+.placement{
+    padding-left: 2px;
+    padding-right: 2px;
+    border-radius: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+}
+
+
+
+.name{
+    padding: 8px 16px;
+}
+
+.points{
+    margin-left: auto;
+}
+
+/* Jobb oldali rész --------------------------*/
 #front-back{
     margin: 10px;
+    width: 100%;
 }
 #muscle-tracker{
   background-color: #0f0f17;

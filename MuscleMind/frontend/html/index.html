@@ -42,10 +42,10 @@
                         <input type="checkbox" id="theme-switch" class="switch">
 
                         <!-- Profil buborék -->
-                        <div id="profile-bubble">
+                        <a href="" class="btn" id="profile-bubble">
                             <div id="profile-pic"></div>
                             <div id="username">Sajtos Lajos</div>
-                        </div>
+                        </a>
 
                         <div id="logout">
                             <input type="button" class="btn button-sample d-block mx-auto" value="Kilépés">
@@ -160,7 +160,7 @@
 
                     <!-- Statisztikák -->
                     <div id="stats" class="row mx-0">
-                        <div class="col-12">
+                        <div class="col-12 px-0">
                             <div id="stat-title" class="mt-2">Statisztikák</div>
                             <hr>
                             <!-- <input type="button" class="btn col-2 d-block mt-3 bg-primary" value="Időtartam"> -->
@@ -170,7 +170,62 @@
                     <!-- Ranglista, Naptár -->
                     <div id="ranglist-calendar" class="row p-3 g-3 d-none d-xl-flex">
                         <div class="col-12 col-xxl-7">
-                            <div id="ranglist" class="col-6 mx-0">Ranglista</div>
+                            <div id="ranglist" class="col-6 mx-0">
+
+                                <div id="ranglist-title">
+                                    Ranglista
+                                    <hr>
+                                </div>
+
+                                <!-- 1. 2. 3. -->
+                                <div class="row" id="first-second-third">
+                                    <div class="col-4">
+                                        <div id="second-place">
+                                            <span id="second-place-sign" class="placement">2.</span>
+                                            <br>
+                                            Istense Tudja
+                                            <br>
+                                            67676767
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div id="first-place">
+                                            <span id="first-place-sign" class="placement">1.</span>
+                                            <br>
+                                            Istense Tudja
+                                            <br>
+                                            67676767
+                                        </div>
+                                    </div>
+
+                                    <div class="col-4">
+                                        <div id="third-place">
+                                            <span id="third-place-sign" class="placement">3.</span>
+                                            <br>
+                                            Istense Tudja
+                                            <br>
+                                            676767
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Mindenki más -->
+                                 <div class="row" id="outside-top-three">
+                                    <div class="col-12">
+                                        <div class="ranglisted-people">
+                                            <span class="placement">4.</span>
+                                            <span class="name">Sajtos Lajos</span>
+                                            <span class="points">67</span>
+                                        </div>
+
+                                        <!-- <div class="ranglisted-people">
+                                            <span class="placement">5.</span>
+                                            <span class="name">Sajtos János</span>
+                                            <span class="points">76</span>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="col-12 col-xxl-5">
@@ -183,15 +238,14 @@
                 <!-- Jobb oldali blokk/Izom követő -->
                 <div id="muscle-tracker" class="col-3 d-none d-xl-block">
 
-                    <div>
-                        <input id="front-back" class="btn button-sample col-2" value="Fordítás" type="button">
-                    </div>
+                        <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
+                    
 
                     <div>
                         <label for="muscles">Válasszon izmot:</label>
                         <select class="form-control" name="Izmok" id="muscles">
                             <option id="chest">Mell</option>
-                            <option id="shoudlers">Váll</option>
+                            <option id="shoulders">Váll</option>
                             <option id="thighs">Comb</option>
                             <option id="calves">Vádli</option>
                             <option id="back">Hát</option>
@@ -203,6 +257,8 @@
                     </div>
 
                     <img id="muscle-picture" src="../images/muscle-tracker/alapelol.png" alt="Izom követő">
+                    <br>
+
                 </div>
             </div>
         </div>

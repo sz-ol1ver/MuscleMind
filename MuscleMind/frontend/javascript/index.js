@@ -106,10 +106,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.getElementById("stats").style.border =
         "2px solid rgba(255,255,255,.10)";
+
+      document.getElementById("stats").style.backgroundColor =
+        "#6c6c862a";
+
       document.getElementById("ranglist").style.border =
         "2px solid rgba(255,255,255,.10)";
+
+      document.getElementById("ranglist").style.backgroundColor =
+        "#6c6c862a";
+
       document.getElementById("calendar").style.border =
         "2px solid rgba(255,255,255,.10)";
+      
+      document.getElementById("calendar").style.backgroundColor =
+        "#6c6c862a";
+        
       document.getElementById("muscle-tracker").style.border =
         "2px solid rgba(255,255,255,.10)";
 
@@ -128,6 +140,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   //Muscle Tracker oldal változtatás(elől/hátul)
+  // let muscles = [
+  //   'vall',
+  //   'mell',
+  //   'alkar',
+  //   'bicepsz',
+  //   'comb',
+  //   'has',
+  //   'hat',
+  //   'tricepsz',
+  //   'vadli'
+
+  // ]
+
+  // let pics = [
+  //   '../images/muscle-tracker/alapelol.png',
+  //   '../images/muscle-tracker/mell.png',
+  //   '../images/muscle-tracker/alkar.png',
+  //   '../images/muscle-tracker/bicepsz.png',
+  //   '../images/muscle-tracker/comb.png',
+  //   '../images/muscle-tracker/has.png',
+  //   '../images/muscle-tracker/hat.png',
+  //   '../images/muscle-tracker/tricepsz.png',
+  //   '../images/muscle-tracker/vadli.png',
+
+  // ]
+
   const img = document.getElementById('muscle-picture')
   let oldal = 'elol'
   
@@ -145,7 +183,10 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   //Muscle Tracker izmok
-  let select = document.getElementById('muscles').  
+  // let select = document.getElementById('muscles')
+  // select.addEventListener('change', ()=>{
+  //   if(select.value)
+  // })
 
 
   
