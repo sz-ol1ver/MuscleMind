@@ -124,8 +124,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
             const rangeIn = document.createElement('input');
             rangeIn.type = 'range';
             rangeIn.id = 'range_input';
+            
 
             if(currentIndex == 0){
+                rangeIn.step = 0.1;
                 rangeIn.min = 40;
                 rangeIn.max = 200;
                 rangeIn.value = 70;
@@ -138,11 +140,26 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 rangeIn.max = 220;
                 rangeIn.value = 175;
             }
-
-            const rangeFeedback = document.createElement('h3');
+            
+            let rangeFeedback = document.createElement('h3');
             rangeFeedback.id = 'rangeValue';
+
             switch(currentIndex){
-                case 0: rangeFeedback.innerHTML = rangeIn.value + " kg"; break;
+                case 0: 
+                rangeFeedback = document.createElement('input');
+                rangeFeedback.type = 'number';
+                rangeFeedback.min = 40;
+                rangeFeedback.max = 200;
+                rangeFeedback.classList.add('w-25', 'd-block', 'mx-auto', 'mt-2','form-control', 'bg-dark', 'text-white');
+                rangeFeedback.value = rangeIn.value
+                rangeFeedback.addEventListener('change', ()=>{
+                    if(rangeFeedback.value <= 200 && rangeFeedback.value >=40){
+                        rangeIn.value = rangeFeedback.value;
+                    }else{
+                        rangeFeedback.value = rangeIn.value;
+                    }
+                })
+                break;
                 case 1: rangeFeedback.innerHTML = rangeIn.value; break;
                 case 2: rangeFeedback.innerHTML = rangeIn.value + " cm"; break;
             }
@@ -150,7 +167,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
             rangeIn.addEventListener('input', ()=>{
                 switch(currentIndex){
-                case 0: rangeFeedback.innerHTML = rangeIn.value + " kg"; break;
+                case 0: rangeFeedback.value = rangeIn.value; break;
                 case 1: rangeFeedback.innerHTML = rangeIn.value; break;
                 case 2: rangeFeedback.innerHTML = rangeIn.value + " cm"; break;
             }
@@ -176,7 +193,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 const btn = document.createElement('button');
                 btn.type = 'button';
                 btn.innerHTML = option;
-                btn.classList.add('btn', 'btn-outline-light');
+                btn.classList.add('btn', 'btn-outline-light', "btn-lg");
 
                 btn.addEventListener('click', ()=>{
                     selectedValue = option;
