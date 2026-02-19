@@ -39,6 +39,9 @@ router.get('/kerdoiv', (request, response) => {
 router.get('/admin', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/admin.html'));
 });
+router.get('/profil', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/profile.html'));
+});
 
 
 //!API endpoints

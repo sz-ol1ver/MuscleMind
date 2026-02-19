@@ -12,6 +12,7 @@
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
+        <link rel="stylesheet" href="../css/profile.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
     </head>
@@ -30,7 +31,7 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Főoldal</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Profil szerkesztés</p>
                     
 
 
@@ -68,8 +69,8 @@
                 <div class="offcanvas-body">
                     <ul class="nav flex-column d-flex gap-3">
 
-                        <li class="nav-item selected-navoption">
-                            <a class="nav-link"  href="">Főoldal</a>
+                        <li class="nav-item">
+                            <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
@@ -117,8 +118,8 @@
                     <ul class="nav flex-column d-flex gap-4 align-items-center">
 
                         <!-- Opciók -->
-                        <li class="nav-item selected-navoption">
-                            <a class="nav-link" href="">Főoldal</a>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
@@ -156,130 +157,16 @@
                 </div>    
 
                 <!-- Középső blokk -->
-                <div class="col-12 col-lg-9 col-xl-7 p-3" id="middle-part">
-
-                    <!-- Statisztikák -->
-                    <div id="stats" class="row mx-0">
-                        <div class="col-12 px-0">
-                            <div id="stat-title" class="mt-2">Statisztikák</div>
-                            <hr>
-
-                            <!--
-                            Statisztikába kiirando
-                             -edzés szám ami már lement, ami még jön
-                                -pihenő napok száma
-                                -edzés streak
-                                -legnagyobb súllyal végzett gyakorlat
-                                -megmozgatott súly összesen
-                                -kihagyott napok szám -->
-
-
-                            <!-- Ajánlott edzéstervek
-                                -ppl
-                                -upper lower
-                                -full body x
-                                -Arnold split
-                                -bro split
- 
-                            -->
-
-
-                            <!-- <input type="button" class="btn col-2 d-block mt-3 bg-primary" value="Időtartam"> -->
-                        </div>
-                    </div>
-
-                    <!-- Ranglista, Naptár -->
-                    <div id="ranglist-calendar" class="row p-3 g-3 d-none d-xl-flex">
-                        <div class="col-12 col-xxl-7">
-                            <div id="ranglist" class="col-6 mx-0">
-
-                                <div id="ranglist-title">
-                                    Ranglista
-                                    <hr>
-                                </div>
-
-                                <!-- 1. 2. 3. -->
-                                <div class="row" id="first-second-third">
-                                    <div class="col-4">
-                                        <div id="second-place">
-                                            <span id="second-place-sign" class="placement">2.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
-                                        </div>
-                                    </div>
-
-                                    <div class="col-4">
-                                        <div id="first-place">
-                                            <span id="first-place-sign" class="placement">1.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
-                                        </div>
-                                    </div>
-
-                                    <div class="col-4">
-                                        <div id="third-place">
-                                            <span id="third-place-sign" class="placement">3.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            676767
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Mindenki más -->
-                                 <div class="row" id="outside-top-three">
-                                    <div class="col-12">
-                                        <div class="ranglisted-people">
-                                            <span class="placement">4.</span>
-                                            <span class="name">Sajtos Lajos</span>
-                                            <span class="points">67</span>
-                                        </div>
-
-                                        <!-- <div class="ranglisted-people">
-                                            <span class="placement">5.</span>
-                                            <span class="name">Sajtos János</span>
-                                            <span class="points">76</span>
-                                        </div> -->
-                                    </div>
+                <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
+                    
+                    <div class="row">
+                        <div class="col-10 profile-main-bubble">
+                            <div class="col-5 m-2">
+                                <div id="profile-picture">
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="col-12 col-xxl-5">
-                            <div id="calendar" class="col-5 mx-0">Naptár</div>
-                        </div>
-                        
                     </div>
-                </div>
-
-                <!-- Jobb oldali blokk/Izom követő -->
-                <div id="muscle-tracker" class="col-3 d-none d-xl-block">
-
-                        <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
-                    
-
-                    <div>
-                        <label for="muscles">Válasszon izmot:</label>
-                        <select class="form-control" name="Izmok" id="muscles">
-                            <option id="chest">Mell</option>
-                            <option id="shoulders">Váll</option>
-                            <option id="thighs">Comb</option>
-                            <option id="calves">Vádli</option>
-                            <option id="back">Hát</option>
-                            <option id="biceps">Bicepsz</option>
-                            <option id="triceps">Tricepsz</option>
-                            <option id="forearm">Alkar</option>
-                            <option id="abs">Has</option>
-                        </select>
-                    </div>
-
-                    <img id="muscle-picture" src="../images/muscle-tracker/alapelol.png" alt="Izom követő">
-                    <br>
-
                 </div>
             </div>
         </div>
