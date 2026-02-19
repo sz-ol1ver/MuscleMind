@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 rangeFeedback.type = 'number';
                 rangeFeedback.min = 40;
                 rangeFeedback.max = 200;
+                rangeFeedback.step = 0.1;
                 rangeFeedback.classList.add('w-25', 'd-block', 'mx-auto', 'mt-2','form-control', 'bg-dark', 'text-white');
                 rangeFeedback.value = rangeIn.value
                 rangeFeedback.addEventListener('change', ()=>{
