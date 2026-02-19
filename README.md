@@ -81,3 +81,4 @@ musclemind/
 └─ README.md
 ```
 
+email kuldes backend - brevo
