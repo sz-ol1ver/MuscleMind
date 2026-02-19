@@ -1,9 +1,10 @@
-CREATE DATABASE musclemind
-COLLATE utf8_hungarian_ci
-DEFAULT CHARACTER set utf8;
+CREATE DATABASE IF NOT EXISTS musclemind
+  DEFAULT CHARACTER SET utf8
+  COLLATE utf8_hungarian_ci;
+
 USE musclemind;
 
-CREATE TABLE logs (
+CREATE TABLE IF NOT EXISTS logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     user_id INT NOT NULL,
@@ -18,10 +19,12 @@ CREATE TABLE logs (
 );
 
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    full_name VARCHAR(100) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
@@ -32,10 +35,10 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE user_profiles (
-    id INT AUTO_INCREMENT PRIMARY KEY,
 
-    weight DECIMAL(5,1) NULL,
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id INT PRIMARY KEY,
+
     age INT NULL,
     height INT NULL,
 
@@ -80,7 +83,22 @@ CREATE TABLE user_profiles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (id)
+    CONSTRAINT fk_user_profiles_users
+        FOREIGN KEY (id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS user_weights (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+    weight DECIMAL(5,1) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user_weights_users
+        FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
 );
