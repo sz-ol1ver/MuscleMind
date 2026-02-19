@@ -17,7 +17,14 @@ async function selectall() {
     const [rows] = await pool.execute(query);
     return rows;
 }
+
+async function registration_insert(fN, lN, uN, eM, p) {
+    const insert = 'INSERT INTO users(first_name, last_name,username, email, password_hash) VALUES (?,?,?,?,?)';
+    const [result] = await pool.execute(insert, [fN, lN, uN, eM, p]);
+    return result;
+}
 //!Export
 module.exports = {
-    selectall
+    selectall,
+    registration_insert
 };

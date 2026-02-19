@@ -35,7 +35,11 @@
                         *password confirm
                             !regist btn activation
 */
+import {registration} from './api.js';
+
 document.addEventListener('DOMContentLoaded',()=>{
+    
+
     //! id
     //? last-name -- Vezeteknev --> lastN
     //? first-name -- Keresztnev --> fistN
@@ -212,6 +216,21 @@ document.addEventListener('DOMContentLoaded',()=>{
         }else{
             feedBack.style.color = 'lightgreen';
             feedBack.innerHTML = 'Sikeres regisztráció!'
+            const postData = async()=>{
+                try {
+                    const postObj = {
+                        firstN: firstN.value,
+                        lastN: lastN.value,
+                        userN: userName.value,
+                        email: email.value,
+                        pass: pass.value
+                    }
+                    const data = await registration('http://127.0.0.1:3000/api/reg', postObj);
+                } catch (error) {
+                    console.error(error.message);
+                }
+            }
+            postData();
             lastN.value ='';
             firstN.value = '';
             userName.value = '';
