@@ -194,23 +194,27 @@ document.addEventListener('DOMContentLoaded',()=>{
             lastN.style.border = '2px solid red';
             firstN.style.border = '2px solid red';
             passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else if(userName.value == ''){
             feedBack.style.color = 'red';
             feedBack.innerHTML = 'Nincs megadva felhasználónév!'
             userName.style.border = '2px solid red';
             passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else if(email.value == ''){
             feedBack.style.color = 'red';
             feedBack.innerHTML = 'Nincs megadva e-mail cím!'
             email.style.border = '2px solid red';
             passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else if(patterUser.test(userName.value)==false){
             feedBack.style.color = 'red';
             feedBack.innerHTML = 'Helytelen felhasználónév!'
             userName.style.border = '2px solid red';
+            pass.value ='';
             passConf.value ='';
             registBtn.disabled = true;
         }else{
@@ -226,6 +230,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                         pass: pass.value
                     }
                     const data = await registration('http://127.0.0.1:3000/api/reg', postObj);
+                    console.log(data)
                 } catch (error) {
                     console.error(error.message);
                 }

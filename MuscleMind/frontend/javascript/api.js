@@ -6,7 +6,8 @@ export async function registration(url, value){
             body: JSON.stringify(value)
         })
         if(!data.ok){
-            throw new Error(data.status + " "+ data.statusText);
+            const res = await data.json();
+            throw new Error(res.message + " " + res.error);
         }
         return await data.json();
     } catch (error) {

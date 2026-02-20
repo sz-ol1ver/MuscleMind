@@ -36,6 +36,7 @@ router.post('/', validateRegistration, async(request, response) => {
     try {
         const data = request.body;
         const ip = requestIp.getClientIp(request);
+        console.log(data)
     } catch (error) {
         console.log(error.message)
         response.status(500).json({
