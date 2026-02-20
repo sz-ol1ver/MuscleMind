@@ -1,17 +1,83 @@
-.profile-main-bubble{
-    height: 200px;
-    text-align: center;
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container-fluid {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#upper-row {
+    flex-shrink: 0;
+}
+
+#main-row {
+    flex: 1;
+    overflow: hidden;
+}
+
+#side-nav {
+    height: 100%;
+    overflow: hidden;
+}
+
+#middle-part {
+    height: 100%;
+    overflow-y: auto;
+}
+
+
+
+.profile-main-bubble {
     margin-left: 100px;
-    background-color: #6c6c862a;
+    background-color: #6c6c8636;
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.profile-picture-wrapper{
+    margin-left: 40px;
 }
 
 #profile-picture{
-    background-color: white;
-    justify-content: center;
+    height: 250px;
+    width: 250px;
+    border-radius: 50%;
+    background-position: center;
+    border: 3px solid #8a5cff;
+}
+.line{
+    border-color: #8a5cff;
+    border-width: 3px;
+    opacity: 1;
+}
+
+.first-block{
+    flex: 1;
+    border: 1px solid #8a5cff;
+    border-radius: 10px;
     padding: 10px;
-    height: 120px;
-    width: 120px;
-    border-radius: 100%;
+}
+.save-personal-btn{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.second-block{
+    border: 1px solid #8a5cff;
+    border-radius: 10px;
+    padding: 10px;
+    justify-content: center;
+}
+
+.questions{
+    border: 1px solid #8a5cff;
+    border-radius: 10px;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
 }

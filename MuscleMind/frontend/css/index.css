@@ -4,13 +4,15 @@ html,body{
     /* color: rgb(201, 239, 235); */
 
 }
+a{
+    text-decoration: none;
+}
 
 /* Felső sor ----------------------------*/
 #upper-row{
     height: 70px;
     background-color: #0f0f17;
     border-bottom: 1px groove #7c3aed;
-    /* animation: FadingBorder 2s infinite; */
 }
 #shifting-text1{
     animation: ForTitle1 1s infinite alternate;
@@ -85,8 +87,6 @@ html,body{
 #profile-bubble{
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 10px;
     background-color: rgba(255, 255, 255, 0.144);
     border-radius: 999px;
     color: wheat;
@@ -101,28 +101,12 @@ html,body{
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.185);
 }
 
-@keyframes FadingBorder{
-    0%{
-        border-color: #4c2491;
-    }
-    20%{
-        border-color: #4c2491d2;
-    }
-    40%{
-        border-color: #4c2491a8;
-    }
-    60%{
-        border-color: #4c249177;
-    }
-    80%{
-        border-color: #4c24919f;
-    }
-    100%{
-        border-color: #4c2491;
-    }
+#profile-pic-forced{
+    width: 32px;
+    height: 32px;
+
 }
 
 @keyframes ForTitle1{

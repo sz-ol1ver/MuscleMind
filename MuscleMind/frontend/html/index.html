@@ -43,12 +43,14 @@
 
                         <!-- Profil buborék -->
                         <a href="/profil" class="btn" id="profile-bubble">
-                            <div id="profile-pic"></div>
+                            <div id="profile-pic">
+                                <img id="profile-pic-forced" src="../images/alap_profilkep.png" alt="">
+                            </div>
                             <div id="username">Sajtos Lajos</div>
                         </a>
 
                         <div id="logout">
-                            <input type="button" class="btn button-sample d-block mx-auto" value="Kilépés">
+                            <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
 
@@ -260,7 +262,7 @@
                 <div id="muscle-tracker" class="col-3 d-none d-xl-block">
 
                         <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
-                    
+                        
 
                     <div>
                         <label for="muscles">Válasszon izmot:</label>
