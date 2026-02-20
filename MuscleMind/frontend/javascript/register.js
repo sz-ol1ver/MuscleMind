@@ -35,7 +35,11 @@
                         *password confirm
                             !regist btn activation
 */
+import {registration} from './api.js';
+
 document.addEventListener('DOMContentLoaded',()=>{
+    
+
     //! id
     //? last-name -- Vezeteknev --> lastN
     //? first-name -- Keresztnev --> fistN
@@ -190,39 +194,128 @@ document.addEventListener('DOMContentLoaded',()=>{
             lastN.style.border = '2px solid red';
             firstN.style.border = '2px solid red';
             passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else if(userName.value == ''){
             feedBack.style.color = 'red';
             feedBack.innerHTML = 'Nincs megadva felhasználónév!'
             userName.style.border = '2px solid red';
             passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else if(email.value == ''){
             feedBack.style.color = 'red';
             feedBack.innerHTML = 'Nincs megadva e-mail cím!'
             email.style.border = '2px solid red';
             passConf.value ='';
-            registBtn.disabled = true;
-        }else if(patterUser.test(userName.value)==false){
-            feedBack.style.color = 'red';
-            feedBack.innerHTML = 'Helytelen felhasználónév!'
-            userName.style.border = '2px solid red';
-            passConf.value ='';
+            pass.value ='';
             registBtn.disabled = true;
         }else{
-            feedBack.style.color = 'lightgreen';
-            feedBack.innerHTML = 'Sikeres regisztráció!'
-            lastN.value ='';
-            firstN.value = '';
-            userName.value = '';
-            email.value = '';
-            pass.value = '';
-            passConf.value = '';
-            passConf.disabled = true;
-            registBtn.disabled = true;
-            setTimeout(()=>{
-                feedBack.innerHTML = '';
-            }, 3000)
+            const postData = async()=>{
+                try {
+                    const postObj = {
+                        firstN: firstN.value,
+                        lastN: lastN.value,
+                        userN: userName.value,
+                        email: email.value,
+                        pass: pass.value
+                    }
+                    const data = await registration('http://127.0.0.1:3000/api/reg', postObj);
+                    feedBack.style.color = 'lightgreen';
+                    feedBack.innerHTML = 'Sikeres regisztráció!';
+                    lastN.value ='';
+                    firstN.value = '';
+                    userName.value = '';
+                    email.value = '';
+                    pass.value = '';
+                    passConf.value = '';
+                    passConf.disabled = true;
+                    registBtn.disabled = true;
+                    setTimeout(()=>{
+                        feedBack.innerHTML = '';
+                    }, 3000)
+                } catch (error) {
+                    //?error.obj - ?hiban beluli sorszam
+                    //?error.id - hiba sorszama
+                    console.error(error.id);
+                    console.error(error.obj);
+                    switch(error.id){
+                        case 1:
+                            console.error(error.id);
+                            console.error(error.obj);
+                            feedBack.style.color = 'red';
+                            feedBack.innerHTML = 'Hiányos név!';
+                            pass.value = '';
+                            passConf.value = '';
+                            passConf.disabled = true;
+                            registBtn.disabled = true;
+                            break;
+                        case 2:
+                            console.error(error.id);
+                            console.error(error.obj);
+                            switch(error.obj){
+                                case 1:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Nev: a-z & A-Z';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                                case 2:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Felhasználónév: 3–20 karakter, csak kisbetű és szám';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                                case 3:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Helytelen email cim megadás!';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                                case 4:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett";
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                            }
+                            break;
+                        case 3:
+                            console.error(error.id);
+                            console.error(error.obj);
+                            switch(error.obj){
+                                case 1:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Foglalt felhasználónév!';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                                case 2:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Már regisztrált e-mail cím!';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                            }
+                            break;
+                    }
+                    console.error(error.id);
+                    console.error(error.obj);
+                }
+            }
+            postData();
         }
     })
 })

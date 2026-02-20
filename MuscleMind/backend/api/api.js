@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../sql/database.js');
 const fs = require('fs/promises');
+const registRoutes = require('./registration.routes.js')
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -19,15 +20,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //!Endpoints:
-//?GET /api/test
-router.get('/test', (request, response) => {
-    response.status(200).json({
-        message: 'Ez a végpont működik.'
-    });
-});
+router.use('/reg', registRoutes);
 
 //?GET /api/testsql
-router.get('/testsql', async (request, response) => {
+/*router.get('/testsql', async (request, response) => {
     try {
         const selectall = await db.selectall();
         response.status(200).json({
@@ -39,6 +35,6 @@ router.get('/testsql', async (request, response) => {
             message: 'Ez a végpont nem működik.'
         });
     }
-});
+});*/
 
 module.exports = router;
