@@ -237,9 +237,12 @@ document.addEventListener('DOMContentLoaded',()=>{
                 } catch (error) {
                     //?error.obj - ?hiban beluli sorszam
                     //?error.id - hiba sorszama
-                    console.error(error);
+                    console.error(error.id);
+                    console.error(error.obj);
                     switch(error.id){
                         case 1:
+                            console.error(error.id);
+                            console.error(error.obj);
                             feedBack.style.color = 'red';
                             feedBack.innerHTML = 'Hiányos név!';
                             pass.value = '';
@@ -248,6 +251,8 @@ document.addEventListener('DOMContentLoaded',()=>{
                             registBtn.disabled = true;
                             break;
                         case 2:
+                            console.error(error.id);
+                            console.error(error.obj);
                             switch(error.obj){
                                 case 1:
                                     feedBack.style.color = 'red';
@@ -259,7 +264,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     break;
                                 case 2:
                                     feedBack.style.color = 'red';
-                                    feedBack.innerHTML = 'Felhasználónév: a-z & 0-9!';
+                                    feedBack.innerHTML = 'Felhasználónév: 3–20 karakter, csak kisbetű és szám';
                                     pass.value = '';
                                     passConf.value = '';
                                     passConf.disabled = true;
@@ -275,14 +280,17 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     break;
                                 case 4:
                                     feedBack.style.color = 'red';
-                                    feedBack.innerHTML = 'Jelszó: a-z & A-Z & 0-9!';
+                                    feedBack.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett";
                                     pass.value = '';
                                     passConf.value = '';
                                     passConf.disabled = true;
                                     registBtn.disabled = true;
                                     break;
                             }
+                            break;
                         case 3:
+                            console.error(error.id);
+                            console.error(error.obj);
                             switch(error.obj){
                                 case 1:
                                     feedBack.style.color = 'red';
@@ -301,7 +309,10 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     registBtn.disabled = true;
                                     break;
                             }
+                            break;
                     }
+                    console.error(error.id);
+                    console.error(error.obj);
                 }
             }
             postData();

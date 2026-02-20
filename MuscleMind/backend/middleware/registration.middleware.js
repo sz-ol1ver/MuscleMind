@@ -24,9 +24,9 @@ const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_
 //? Nev megengedett karakterei
 const patternName = /^[a-zA-Z]*$/;
 //? Felhasznalonev megengedett karakterei
-const patternUser = /^[a-z0-9]*$/;
+const patternUser = /^[a-z0-9]{3,20}$/;
 //? Jelszo megengedett karakterei
-const patternPass = /^[a-zA-Z0-9]*$/;
+const patternPass = /^[a-zA-Z0-9#?!\-]{8,64}$/;
 
 async function validateRegistration(req, res, next) {
     try {

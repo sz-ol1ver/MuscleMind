@@ -51,6 +51,12 @@ app.use('/api', endpoints);
 
 //! Globális hibakezelő middleware
 app.use((err, req, res, next) => {
+    // DUPLICATE KEY
+    if (err.code === "ER_DUP_ENTRY") {
+        return res.status(409).json({
+        message: "Már létező felhasználó!"
+        });
+    }
     console.error(err.message); // log a szerveren
     res.status(400).json({
          message: err.message,
