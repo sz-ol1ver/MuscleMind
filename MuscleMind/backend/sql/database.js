@@ -45,8 +45,13 @@ async function email_exist(email) {
         return 1;
     }
 }
-// log registration
-async function log_reg(id, userName, action, desc, ip) {
+
+// ----
+// LOG
+// ----
+
+// log data
+async function log(id, userName, action, desc, ip) {
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
     const [result] = await pool.execute(insert, [id, userName, action, desc, ip]);
     return result.insertId;
@@ -58,5 +63,5 @@ module.exports = {
     registration_insert,
     username_exist,
     email_exist,
-    log_reg
+    log
 };

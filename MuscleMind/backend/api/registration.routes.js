@@ -21,22 +21,22 @@ HTTP státuszok a regisztrációs folyamatnál:
    - 503 Service Unavailable   : Adatbázis vagy szolgáltatás ideiglenesen nem elérhető.
 */
 const express = require('express');
-const { registration_insert } = require('../sql/database');
+const db = require('../sql/database');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const requestIp = require('request-ip');
+const bcrypt = require('bcrypt'); // npm install bcrypt
+const requestIp = require('request-ip'); // npm install request-ip
 const validateRegistration = require('../middleware/registration.middleware.js');
 
 const saltRounds = 12;
-
-//const insert = await registration_insert(data.firstN, data.lastN, data.userN, data.email, data.pass);
-//console.log(insert)
 
 router.post('/', validateRegistration, async(request, response) => {
     try {
         const data = request.body;
         const ip = requestIp.getClientIp(request);
-        console.log(data)
+        const hashed = await bcrypt.hash(data.pass, saltRounds);
+        const insert = await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed);
+        console.log(insert);
+        await db.log(insert, data.userN, 'registration', 'registration 1/2',ip);
     } catch (error) {
         console.log(error.message)
         response.status(500).json({

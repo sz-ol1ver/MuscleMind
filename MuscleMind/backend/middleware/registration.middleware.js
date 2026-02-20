@@ -56,6 +56,7 @@ async function validateRegistration(req, res, next) {
                 error: patterError
             })
         }
+
         let exist =[];
         const emailExist = await db.username_exist(userN);
         if(emailExist == 1){
@@ -71,6 +72,7 @@ async function validateRegistration(req, res, next) {
                 error: exist
             })
         }
+        
         next();
     } catch (error) {
         next(error)
