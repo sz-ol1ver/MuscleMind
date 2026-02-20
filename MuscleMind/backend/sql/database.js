@@ -57,5 +57,6 @@ module.exports = {
     selectall,
     registration_insert,
     username_exist,
-    email_exist
+    email_exist,
+    log_reg
 };
