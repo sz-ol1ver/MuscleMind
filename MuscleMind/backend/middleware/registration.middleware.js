@@ -34,7 +34,8 @@ async function validateRegistration(req, res, next) {
 
         if(!firstN || !lastN || !userN || !email || !pass){
             return res.status(400).json({
-                error: 'Hiányzó vagy érvénytelen mezők'
+                message: 'Hiányzó vagy érvénytelen mezők',
+                id:1
             })
         }
         let patterError = [];
@@ -53,6 +54,7 @@ async function validateRegistration(req, res, next) {
         if(patterError.length>0){
             return res.status(400).json({
                 message: 'Érvénytelen adat(ok)',
+                id: 2,
                 error: patterError
             })
         }
@@ -69,6 +71,7 @@ async function validateRegistration(req, res, next) {
         if(exist.length >0){
             return res.status(409).json({
                 message: 'Ütközés a meglévő felhasználóval',
+                id: 3,
                 error: exist
             })
         }

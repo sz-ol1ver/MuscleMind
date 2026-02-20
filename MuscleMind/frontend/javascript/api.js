@@ -7,10 +7,23 @@ export async function registration(url, value){
         })
         if(!data.ok){
             const res = await data.json();
-            throw new Error(res.message + " " + res.error);
+            const err = new Error(res.message);
+            switch(res.id){
+                case 1:
+                    err.obj = null;
+                    break;
+                case 2: 
+                    err.obj = res.error[0];
+                    break;
+                case 3: 
+                    err.obj = res.error[0];
+                    break;
+            }
+            err.id = res.id;
+            throw err;
         }
         return await data.json();
     } catch (error) {
-        throw new Error(error.message);
+        throw error;
     }
 }
