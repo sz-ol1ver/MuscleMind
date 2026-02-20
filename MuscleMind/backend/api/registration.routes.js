@@ -20,46 +20,19 @@ HTTP státuszok a regisztrációs folyamatnál:
    - 500 Internal Server Error : Váratlan backend vagy adatbázis hiba.
    - 503 Service Unavailable   : Adatbázis vagy szolgáltatás ideiglenesen nem elérhető.
 */
-
 const express = require('express');
 const { registration_insert } = require('../sql/database');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const requestIp = require('request-ip');
+const validateRegistration = require('../middleware/registration.middleware.js');
 
 const saltRounds = 12;
-// email validation regex
-/*1️⃣ Local part (before @):
-   - [a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+
-     → allows letters, numbers, and valid special characters
-   - (\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?
-     → optional single dot in the local part
-     → prevents consecutive dots, start/end dots
-
-2️⃣ @ symbol:
-   - Literal '@' separating local part and domain
-
-3️⃣ Domain part (after @):
-   - [a-zA-Z0-9-]+
-     → first part of the domain: letters, numbers, hyphens
-   - (\.[a-zA-Z0-9-]+)*
-     → optional subdomains (e.g., .com, .co.uk)
-   - Allows numbers and letters in the domain
-
-4️⃣ Anchors:
-   - ^ and $ ensure the entire string matches*/
-const emailRegex = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
-//? Nev megengedett karakterei
-const patterName = /^[a-zA-Z]*$/;
-//? Felhasznalonev megengedett karakterei
-const patterUser = /^[a-z0-9]*$/;
-//? Jelszo megengedett karakterei
-const patterPass = /^[a-zA-Z0-9]*$/;
 
 //const insert = await registration_insert(data.firstN, data.lastN, data.userN, data.email, data.pass);
 //console.log(insert)
 
-router.post('/', async(request, response) => {
+router.post('/', validateRegistration, async(request, response) => {
     try {
         const data = request.body;
         const ip = requestIp.getClientIp(request);

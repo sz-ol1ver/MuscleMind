@@ -49,6 +49,15 @@ app.use('/', router);
 const endpoints = require('./api/api.js');
 app.use('/api', endpoints);
 
+//! Globális hibakezelő middleware
+app.use((err, req, res, next) => {
+    console.error(err.message); // log a szerveren
+    res.status(400).json({
+         message: err.message,
+         status: err.status
+        }); // vissza a kliensnek JSON-ban
+});
+
 //!Szerver futtatása
 app.use(express.static(path.join(__dirname, '../frontend'))); //?frontend mappa tartalmának betöltése az oldal működéséhez
 app.listen(port, ip, () => {
