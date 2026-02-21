@@ -37,6 +37,9 @@ router.post('/', validateRegistration, async(request, response) => {
         const insert = await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed);
         console.log(insert);
         await db.log(insert, data.userN, 'registration', 'registration 1/2',ip);
+        response.status(201).json({
+            message: 'Sikeres regisztráció'
+        })
     } catch (error) {
         console.log(error.message)
         response.status(500).json({
