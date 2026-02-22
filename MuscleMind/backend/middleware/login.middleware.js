@@ -50,9 +50,9 @@ async function validateLogin(req, res, next) {
         }
 
         const emailExist = await db.email_exist(email);
-        if(emailExist == 1){
+        if(emailExist != 1){
             return res.status(409).json({
-                message: 'Ütközés a meglévő felhasználóval',
+                message: 'Nincs regisztrálva',
                 id: 3,
             })
         }
