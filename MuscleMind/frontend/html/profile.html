@@ -16,9 +16,19 @@
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
         <script src="../javascript/profile.js"></script>
+        <script src="../javascript/loading-overlay.js"></script>
     </head>
     <body>
         <div class="container-fluid">
+
+            <!-- Loading overlay -->
+            <div id="loading-overlay" class="loading-overlay">
+                <div class="loader-content">
+                    <div class="spinner"></div>
+                    <p>Nyugibugi...</p>
+                </div>
+            </div>
+
             <!-- Első sor -->
             <div id="upper-row" class="row">
                 <div class="col-12  d-flex align-items-center justify-content-between px-3">
@@ -71,7 +81,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -99,12 +109,12 @@
                     <ul class="nav flex-column d-flex gap-4 align-items-center">
 
                         <!-- Opciók -->
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -262,7 +272,6 @@
                             <!-- Mentés button -->
                             <input type="button" class="btn button-sample save-personal-btn" value="Mentés">
                         </div>
-
                     </div>
                 </div>
             </div>
