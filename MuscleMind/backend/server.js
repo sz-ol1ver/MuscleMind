@@ -54,7 +54,8 @@ app.use((err, req, res, next) => {
     // DUPLICATE KEY
     if (err.code === "ER_DUP_ENTRY") {
         return res.status(409).json({
-        message: "Már létező felhasználó!"
+        message: "Már létező felhasználó!",
+        id:3
         });
     }
     console.error(err.message); // log a szerveren

@@ -19,7 +19,7 @@ async function selectall() {
 }
 
 // ----
-// REGISTRATION
+// REGISTRATION / LOGIN
 // ----
 
 // regisztracio adatok --> db
