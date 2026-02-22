@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="../css/profile.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
+        <script src="../javascript/profile.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -36,10 +37,6 @@
 
 
                     <div class="d-flex align-items-center gap-3">
-
-                        <!-- Téma váltás (Világos/Sötét) -->
-                        <!-- <input id="theme-switch" type="button" class="btn button-sample" value="🌙/☀️"> -->
-
                         <input type="checkbox" id="theme-switch" class="switch">
 
                         <!-- Profil buborék -->
@@ -54,8 +51,6 @@
                             <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -88,23 +83,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Tiramisu</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Palacsinta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Kókuszgolyó</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Puncs torta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Bejgli</a>
+                            <a class="nav-link" href="">Statisztikák</a>
                         </li>
                     </ul>
                 </div>
@@ -137,23 +116,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Tiramisu</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Palacsinta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Kókuszgolyó</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Puncs torta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Bejgli</a>
+                            <a class="nav-link" href="">Statisztikák</a>
                         </li>
                     </ul>
                 </div>    
@@ -238,15 +201,63 @@
                                     <div class="questions">
                                         <label for="Cél">Mi a fő célod az edzéssel?</label>
                                         <br>
-                                        <input class="btn bg-white" id="Cél" type="button" value="tömegnövelés">
-                                        <input class="btn bg-white" id="Cél" type="button" value="szálkásítás">
-                                        <input class="btn bg-white" id="Cél" type="button" value="szintentartás">
+                                        <input class="btn purpose" id="Cél" type="button" value="tömegnövelés">
+                                        <input class="btn purpose" id="Cél" type="button" value="szálkásítás">
+                                        <input class="btn purpose" id="Cél" type="button" value="szintentartás">
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="questions">
+                                        <label for="Cél">Hetente hány napot tudsz edzésre szánni?</label>
+                                        <br>
+                                        <input class="btn purpose" id="Cél" type="button" value="2–3 nap">
+                                        <input class="btn purpose" id="Cél" type="button" value="4 nap">
+                                        <input class="btn purpose" id="Cél" type="button" value="5–6 nap">
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="questions">
+                                        <label for="Cél">Milyen az edzettségi szinted?</label>
+                                        <br>
+                                        <input class="btn purpose" id="Cél" type="button" value="kezdő (0–6 hónap)">
+                                        <input class="btn purpose" id="Cél" type="button" value="középhaladó (6–24 hónap)">
+                                        <input class="btn purpose" id="Cél" type="button" value="haladó (2+ év)">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
+                                <div class="col-4">
+                                    <div class="questions">
+                                        <label for="Cél">Hol edzel leggyakrabban?</label>
+                                        <br>
+                                        <input class="btn purpose" id="Cél" type="button" value="konditeremben">
+                                        <input class="btn purpose" id="Cél" type="button" value="otthon, súlyzókkal">
+                                        <input class="btn purpose" id="Cél" type="button" value="otthon, saját testsúllyal">
+                                    </div>
+                                </div>
 
+                                <div class="col-4">
+                                    <div class="questions">
+                                        <label for="Cél">Milyen étrendet követsz?</label>
+                                        <br>
+                                        <input class="btn purpose" id="Cél" type="button" value="mindenevő">
+                                        <input class="btn purpose" id="Cél" type="button" value="vegetáriánus">
+                                        <input class="btn purpose" id="Cél" type="button" value="vegán">
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="questions">
+                                        <label for="Cél">Naponta általában hányszor étkezel?</label>
+                                        <br>
+                                        <input class="btn purpose" id="Cél" type="button" value="2–3 alkalom">
+                                        <input class="btn purpose" id="Cél" type="button" value="4–5 alkalom">
+                                        <input class="btn purpose" id="Cél" type="button" value="6 vagy több alkalom">
+                                    </div>
+                                </div>
                             </div>
                             <!-- Mentés button -->
                             <input type="button" class="btn button-sample save-personal-btn" value="Mentés">

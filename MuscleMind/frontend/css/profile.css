@@ -28,8 +28,6 @@ html, body {
     overflow-y: auto;
 }
 
-
-
 .profile-main-bubble {
     margin-left: 100px;
     background-color: #6c6c8636;
@@ -80,4 +78,38 @@ html, body {
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Gombok alapállapota */
+.purpose {
+    border-radius: 999px;
+    background-color: white;
+    color: black;
+    /* Alapból adunk neki egy 3px-es keretet, de átlátszót, hogy ne ugráljon */
+    border: 3px solid transparent; 
+    transition: all 0.2s ease-in-out;
+    margin: 5px; /* Kicsi térköz a gombok között */
+}
+
+/* Hover állapot - most már nem mozgatja a többi elemet */
+.purpose:hover {
+    background-color: white;
+    border: 3px solid #8a5cff;
+    color: black;
+}
+
+/* Aktív állapot */
+.purpose.active {
+    background-color: #8a5cff !important;
+    border: 3px solid #8a5cff;
+    color: white !important; /* Fehér szöveg jobban néz ki a lilán */
+}
+
+/* Extra: a .questions blokkon belüli inputok (súly/magasság) stílusosabbá tétele */
+.questions input[type="number"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 80%;
 }
