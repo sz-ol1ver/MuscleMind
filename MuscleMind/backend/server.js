@@ -42,6 +42,9 @@ router.get('/admin', (request, response) => {
 router.get('/profil', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/profile.html'));
 });
+router.get('/ranglista', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
+});
 
 
 //!API endpoints

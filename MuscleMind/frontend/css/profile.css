@@ -28,10 +28,10 @@ html, body {
     overflow-y: auto;
 }
 
-
-
 .profile-main-bubble {
-    margin-left: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 100%; 
     background-color: #6c6c8636;
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 20px;
@@ -39,15 +39,31 @@ html, body {
     display: flex;
     flex-direction: column;
 }
-.profile-picture-wrapper{
-    margin-left: 40px;
+
+@media (max-width: 991px) {
+    html, body {
+        overflow-y: auto;
+    }
+    .container-fluid {
+        height: auto;
+    }
+    .profile-picture-wrapper {
+        margin-left: 0;
+    }
 }
 
-#profile-picture{
-    height: 250px;
-    width: 250px;
+@media (min-width: 992px) {
+    .profile-main-bubble {
+        margin-left: 100px; 
+    }
+}
+
+#profile-picture {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
-    background-position: center;
     border: 3px solid #8a5cff;
 }
 .line{
@@ -80,4 +96,34 @@ html, body {
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.purpose {
+    border-radius: 999px;
+    background-color: white;
+    color: black;
+    border: 3px solid transparent; 
+    transition: all 0.2s ease-in-out;
+    margin: 5px; 
+}
+
+.purpose:hover {
+    background-color: white;
+    border: 3px solid #8a5cff;
+    color: black;
+}
+
+
+.purpose.active {
+    background-color: #8a5cff !important;
+    border: 3px solid #8a5cff;
+    color: white !important;
+}
+
+.questions input[type="number"] {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    width: 80%;
 }

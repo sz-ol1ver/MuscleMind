@@ -15,9 +15,20 @@
         <link rel="stylesheet" href="../css/profile.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
+        <script src="../javascript/profile.js"></script>
+        <script src="../javascript/loading-overlay.js"></script>
     </head>
     <body>
         <div class="container-fluid">
+
+            <!-- Loading overlay -->
+            <div id="loading-overlay" class="loading-overlay">
+                <div class="loader-content">
+                    <div class="spinner"></div>
+                    <p>Nyugibugi...</p>
+                </div>
+            </div>
+
             <!-- Első sor -->
             <div id="upper-row" class="row">
                 <div class="col-12  d-flex align-items-center justify-content-between px-3">
@@ -36,10 +47,6 @@
 
 
                     <div class="d-flex align-items-center gap-3">
-
-                        <!-- Téma váltás (Világos/Sötét) -->
-                        <!-- <input id="theme-switch" type="button" class="btn button-sample" value="🌙/☀️"> -->
-
                         <input type="checkbox" id="theme-switch" class="switch">
 
                         <!-- Profil buborék -->
@@ -54,8 +61,6 @@
                             <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -76,7 +81,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -88,23 +93,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Tiramisu</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Palacsinta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Kókuszgolyó</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Puncs torta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Bejgli</a>
+                            <a class="nav-link" href="">Statisztikák</a>
                         </li>
                     </ul>
                 </div>
@@ -120,12 +109,12 @@
                     <ul class="nav flex-column d-flex gap-4 align-items-center">
 
                         <!-- Opciók -->
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -137,121 +126,131 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Tiramisu</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Palacsinta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Kókuszgolyó</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Puncs torta</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Bejgli</a>
+                            <a class="nav-link" href="">Statisztikák</a>
                         </li>
                     </ul>
                 </div>    
 
                 <!-- Középső blokk -->
-                <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
+                <div class="col-12 col-lg-9 col-xl-10 p-3" id="middle-part">
 
-                    <div class="row mb-3">
-                        <div class="col-10 profile-main-bubble">
-
-                            <div class="row flex-grow-1">
-                                <div class="col-4">
-                                    <div class="profile-picture-wrapper">
-                                        <img id="profile-picture" src="../images/alap_profilkep.png" alt="">
+                    <div class="row mb-3 justify-content-center">
+                        <div class="col-12 col-xl-10 profile-main-bubble">
+                            <div class="row g-4 flex-grow-1">
+                                <div class="col-12 col-lg-5 col-xl-4 text-center">
+                                    <div class="profile-picture-wrapper mx-auto">
+                                        <img id="profile-picture" src="../images/alap_profilkep.png" alt="Profilkép" class="img-fluid">
                                     </div>
-                                    <input type="file" name="" id="">
+                                    <input type="file" class="form-control mt-3" id="fileInput">
                                 </div>
 
-                                <div class="col-4 first-block fw-bold">
-                                    <!-- Felhasználónév -->
+                                <div class="col-12 col-lg-7 col-xl-8 first-block fw-bold">
                                     <label for="Nev">Írja be az új felhasználónevét:</label>
-                                    <input class="form-control" type="text" id="Nev">
+                                    <input class="form-control mb-2" type="text" id="Nev">
                                     <hr class="line">
 
-                                    <!-- Vezetéknév,Keresztnév -->
-                                    <label for="Vezetéknév">Új név:</label>
-                                    <input class="form-control" type="text" placeholder="Vezetéknév" id="Vezetéknév">
-                                    <br>
+                                    <label>Új név:</label>
+                                    <input class="form-control mb-2" type="text" placeholder="Vezetéknév" id="Vezetéknév">
                                     <input class="form-control" type="text" placeholder="Keresztnév" id="Keresztnév">
                                     <hr class="line">
 
-                                    <!-- Életkor -->
                                     <label for="Kor">Új életkor:</label>
                                     <input class="form-control" type="text" placeholder="Életkor" id="Kor">
                                     <hr class="line">
 
-                                    <!-- Email cím -->
                                     <label for="Email">Új email cím:</label>
                                     <input class="form-control" type="email" placeholder="sajt32@gmail.com" id="Email">
                                     <hr class="line">
                                     
-                                    <!-- Jelszo -->
                                     <label for="Jelszo">Új jelszó:</label>
                                     <input class="form-control" type="password" placeholder="********" id="Jelszo">
                                 </div>
                             </div>
-
-                            <!-- Mentés button -->
                             <input type="button" class="btn button-sample save-personal-btn" value="Mentés">
                         </div>
-
                     </div>
 
-                    <div class="row">
-                        <div class="col-10 profile-main-bubble">
-
-                            <div class="row flex-grow-1"> 
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-xl-10 profile-main-bubble">
+                            <div class="row"> 
                                 <div class="text-center fw-bold fs-4 mb-1">Kérdőívben kérdezett kérdések</div>
                                 <hr>
                             </div>
 
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-12 col-md-6">
                                     <div class="questions">
-                                        <label for="Súly">Mennyi a testsúlyod? (kg)</label>
-                                        <br>
-                                        <input class="text-center" id="Súly" type="number" value="">
+                                        <label for="Súly">Mennyi a testsúlyod? (kg)</label><br>
+                                        <input class="text-center" id="Súly" type="number">
                                     </div>
                                 </div>
-
-                                <div class="col-6">
+                                <div class="col-12 col-md-6">
                                     <div class="questions">
-                                        <label for="Nev">Mekkora a testmagasságod? (cm)</label>
-                                        <br>
-                                        <input class="text-center" type="number" value="">
+                                        <label>Mekkora a testmagasságod? (cm)</label><br>
+                                        <input class="text-center" type="number">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-4">
+                                <div class="col-12 col-lg-4">
                                     <div class="questions">
-                                        <label for="Cél">Mi a fő célod az edzéssel?</label>
-                                        <br>
-                                        <input class="btn bg-white" id="Cél" type="button" value="tömegnövelés">
-                                        <input class="btn bg-white" id="Cél" type="button" value="szálkásítás">
-                                        <input class="btn bg-white" id="Cél" type="button" value="szintentartás">
+                                        <label>Mi a fő célod az edzéssel?</label><br>
+                                        <input class="btn purpose" type="button" value="tömegnövelés">
+                                        <input class="btn purpose" type="button" value="szálkásítás">
+                                        <input class="btn purpose" type="button" value="szintentartás">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-4">
+                                    <div class="questions">
+                                        <label>Hetente hány napot tudsz edzésre szánni?</label><br>
+                                        <input class="btn purpose" type="button" value="2–3 nap">
+                                        <input class="btn purpose" type="button" value="4 nap">
+                                        <input class="btn purpose" type="button" value="5–6 nap">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-4">
+                                    <div class="questions">
+                                        <label>Milyen az edzettségi szinted?</label><br>
+                                        <input class="btn purpose" type="button" value="kezdő (0–6 hónap)">
+                                        <input class="btn purpose" type="button" value="középhaladó (6–24 hónap)">
+                                        <input class="btn purpose" type="button" value="haladó (2+ év)">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
+                                <div class="col-12 col-lg-4">
+                                    <div class="questions">
+                                        <label>Hol edzel leggyakrabban?</label><br>
+                                        <input class="btn purpose" type="button" value="konditeremben">
+                                        <input class="btn purpose" type="button" value="otthon, súlyzókkal">
+                                        <input class="btn purpose" type="button" value="otthon, saját testsúllyal">
+                                    </div>
+                                </div>
 
+                                <div class="col-12 col-lg-4">
+                                    <div class="questions">
+                                        <label>Milyen étrendet követsz?</label><br>
+                                        <input class="btn purpose" type="button" value="mindenevő">
+                                        <input class="btn purpose" type="button" value="vegetáriánus">
+                                        <input class="btn purpose" type="button" value="vegán">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-lg-4">
+                                    <div class="questions">
+                                        <label>Naponta hányszor étkezel?</label><br>
+                                        <input class="btn purpose" type="button" value="2–3 alkalom">
+                                        <input class="btn purpose" type="button" value="4–5 alkalom">
+                                        <input class="btn purpose" type="button" value="6 vagy több alkalom">
+                                    </div>
+                                </div>
                             </div>
-                            <!-- Mentés button -->
                             <input type="button" class="btn button-sample save-personal-btn" value="Mentés">
                         </div>
-
                     </div>
                 </div>
             </div>

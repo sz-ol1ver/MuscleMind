@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 
-  //Világos/Sötét mód gomb
+  //Világos/Sötét mód gomb------------------------------------
   document.getElementById("theme-switch").addEventListener("change", (a) => {
     if (a.target.checked){
         
@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "1px solid #94a3b8";
 
 
-      // Profil buborék
     }
 
     else {
@@ -169,10 +168,5 @@ document.addEventListener("DOMContentLoaded", () => {
   // select.addEventListener('change', ()=>{
   //   if(select.value)
   // })
-
-
-  
-  
-
 
 });

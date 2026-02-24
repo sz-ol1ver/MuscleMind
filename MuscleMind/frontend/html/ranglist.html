@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Főoldal</title>
+        <title>Profil szerkesztés</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -12,6 +12,7 @@
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
+        <link rel="stylesheet" href="../css/ranglist.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
@@ -27,10 +28,9 @@
                 </div>
             </div>
 
-
             <!-- Első sor -->
             <div id="upper-row" class="row">
-                <div class="col-12 d-flex align-items-center justify-content-between px-3">
+                <div class="col-12  d-flex align-items-center justify-content-between px-3">
 
                     <!-- Hamburger gomb -->
                     <div class="d-flex align-items-center gap-3">
@@ -41,15 +41,11 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Főoldal</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Ranglista</p>
                     
 
 
                     <div class="d-flex align-items-center gap-3">
-
-                        <!-- Téma váltás (Világos/Sötét) -->
-                        <!-- <input id="theme-switch" type="button" class="btn button-sample" value="🌙/☀️"> -->
-
                         <input type="checkbox" id="theme-switch" class="switch">
 
                         <!-- Profil buborék -->
@@ -64,8 +60,6 @@
                             <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -81,11 +75,11 @@
                 <div class="offcanvas-body">
                     <ul class="nav flex-column d-flex gap-3">
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
@@ -96,7 +90,7 @@
                         <li class="nav-item">
                             <a class="nav-link" href="">Izom követés</a>
                         </li>
-                        
+
                         <li class="nav-item">
                             <a class="nav-link" href="">Statisztikák</a>
                         </li>
@@ -114,11 +108,11 @@
                     <ul class="nav flex-column d-flex gap-4 align-items-center">
 
                         <!-- Opciók -->
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
@@ -137,43 +131,10 @@
                 </div>    
 
                 <!-- Középső blokk -->
-                <div class="col-12 col-lg-9 col-xl-7 p-3" id="middle-part">
-
-                    <!-- Statisztikák -->
-                    <div id="stats" class="row mx-0">
-                        <div class="col-12 px-0">
-                            <div id="stat-title" class="mt-2">Statisztikák</div>
-                            <hr>
-
-                            <!--
-                            Statisztikába kiirando
-                             -edzés szám ami már lement, ami még jön
-                                -pihenő napok száma
-                                -edzés streak
-                                -legnagyobb súllyal végzett gyakorlat
-                                -megmozgatott súly összesen
-                                -kihagyott napok szám -->
-
-
-                            <!-- Ajánlott edzéstervek
-                                -ppl
-                                -upper lower
-                                -full body x
-                                -Arnold split
-                                -bro split
- 
-                            -->
-
-
-                            <!-- <input type="button" class="btn col-2 d-block mt-3 bg-primary" value="Időtartam"> -->
-                        </div>
-                    </div>
-
-                    <!-- Ranglista, Naptár -->
-                    <div id="ranglist-calendar" class="row p-3 g-3 d-none d-xl-flex">
-                        <div class="col-12 col-xxl-7">
-                            <div id="ranglist" class="col-6 mx-0">
-
+                <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="ranglist">
                                 <div id="ranglist-title">
                                     Ranglista
                                     <hr>
@@ -229,38 +190,7 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <div class="col-12 col-xxl-5">
-                            <div id="calendar" class="col-5 mx-0">Naptár</div>
-                        </div>
-                        
                     </div>
-                </div>
-
-                <!-- Jobb oldali blokk/Izom követő -->
-                <div id="muscle-tracker" class="col-3 d-none d-xl-block">
-
-                        <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
-                        
-
-                    <div>
-                        <label for="muscles">Válasszon izmot:</label>
-                        <select class="form-control" name="Izmok" id="muscles">
-                            <option id="chest">Mell</option>
-                            <option id="shoulders">Váll</option>
-                            <option id="thighs">Comb</option>
-                            <option id="calves">Vádli</option>
-                            <option id="back">Hát</option>
-                            <option id="biceps">Bicepsz</option>
-                            <option id="triceps">Tricepsz</option>
-                            <option id="forearm">Alkar</option>
-                            <option id="abs">Has</option>
-                        </select>
-                    </div>
-
-                    <img id="muscle-picture" src="../images/muscle-tracker/alapelol.png" alt="Izom követő">
-                    <br>
-
                 </div>
             </div>
         </div>
