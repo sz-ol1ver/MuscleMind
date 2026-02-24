@@ -38,6 +38,18 @@ export async function login(url, value) {
         if(!data.ok){
             const res = await data.json();
             const err = new Error(res.message)
+            switch(res.id){
+                case 1: 
+                    err.error = null;
+                    break;
+                case 2:
+                    err.error = res.error[0];
+                    break;
+                case 3:
+                    err.error = null;
+                    break;
+            }
+            err.id = res.id;
             throw err;
         }
         return await data.json();

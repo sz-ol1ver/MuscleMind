@@ -1,5 +1,5 @@
 .card-login{
-    background-color: rgba(202, 120, 237, 0.496);
+    background-color: rgba(147, 73, 179, 0.496);
 
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
@@ -29,7 +29,7 @@ hr{
 .login-inputs{
     color: rgb(217, 146, 255) !important;
     border: none !important;
-    background-color: rgba(79, 26, 102, 0.496);
+    background-color: rgba(51, 20, 67, 0.583);
 }
 @keyframes login_input {
     0%   { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
@@ -37,7 +37,7 @@ hr{
     100% { box-shadow: 0 0 10px 2px rgba(100, 0, 200, 0.496); }
 }
 #password-login:disabled{
-    background-color: rgba(216, 149, 252, 0.583);
+    background-color: rgba(255, 255, 255, 0.583);
 }
 
 /*! Registration page */

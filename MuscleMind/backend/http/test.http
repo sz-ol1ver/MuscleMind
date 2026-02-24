@@ -1,9 +1,10 @@
 ###
 GET http://127.0.0.1:3000/api/testsql
 ###
-POST http://127.0.0.1:3000/api/reg
+POST http://127.0.0.1:3000/api/login
 Content-Type: application/json
 
 {
-    "name": "asd"
+    "email":"varga.marton@gmail.com",
+    "pass": "marcika2006"
 }
