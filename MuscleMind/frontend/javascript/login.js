@@ -1,3 +1,5 @@
+import {login} from './api.js';
+
 document.addEventListener('DOMContentLoaded', ()=>{
     //! id
     //? email --> email-login
@@ -8,6 +10,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const email = document.getElementById('email-login');
     const password = document.getElementById('password-login');
     const loginBtn = document.getElementById('login-in');
+    const feedback = document.getElementById('password-feedback');
 
     //! login btn tiltas / aktivalas
     // folyamatos ellenőrzés minden karakter után 
@@ -35,6 +38,43 @@ document.addEventListener('DOMContentLoaded', ()=>{
             password.value = '';
             password.disabled = true;
             loginBtn.disabled = true;
+        }
+    })
+    //! login button - click
+    loginBtn.addEventListener('click', async()=>{
+        try {
+            const postObj = {
+                email: email.value,
+                pass: password.value
+            }
+            const data = await login('http://127.0.0.1:3000/api/login', postObj)
+            console.log(data.message)
+            setTimeout(()=>{
+                email.value = '';
+                password.value = '';
+                password.disabled = true;
+            }, 3000)
+        } catch (error) {
+            feedback.style.color = 'rgba(255, 30, 30, 1)';
+            feedback.style.fontWeight = 'bolder';
+            switch(error.id){
+                case 1:
+                    feedback.innerHTML = error.message;
+                    break;
+                case 2:
+                    switch(error.error){
+                        case 1:
+                            feedback.innerHTML = 'Helytelen email cim megadás!'
+                            break;
+                        case 2:
+                            feedback.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett"
+                            break;
+                    }
+                    break;
+                case 3:
+                    feedback.innerHTML = error.message;
+                    break;
+            }
         }
     })
 })

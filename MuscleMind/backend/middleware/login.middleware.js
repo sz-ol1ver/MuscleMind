@@ -1,6 +1,6 @@
 const db = require('../sql/database.js');
 
-// email validation regex
+//? email validation regex
 /*1️⃣ Local part (before @):
    - [a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+
      → allows letters, numbers, and valid special characters
@@ -21,35 +21,25 @@ const db = require('../sql/database.js');
 4️⃣ Anchors:
    - ^ and $ ensure the entire string matches*/
 const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
-//? Nev megengedett karakterei
-const patternName = /^[a-zA-Z]*$/;
-//? Felhasznalonev megengedett karakterei
-const patternUser = /^[a-z0-9]{3,20}$/;
 //? Jelszo megengedett karakterei
 const patternPass = /^[a-zA-Z0-9#?!\-]{8,64}$/;
 
-async function validateRegistration(req, res, next) {
+async function validateLogin(req, res, next) {
     try {
-        const { firstN, lastN, userN, email, pass } = req.body;
+        const { email, pass } = req.body;
 
-        if(!firstN || !lastN || !userN || !email || !pass){
+        if(!email || !pass){
             return res.status(400).json({
                 message: 'Hiányzó vagy érvénytelen mezők',
                 id:1
             })
         }
         let patterError = [];
-        if(!patternName.test(firstN) || !patternName.test(lastN)){
-            patterError.push(1);
-        } 
-        if(!patternUser.test(userN)){
-            patterError.push(2);
-        }
         if(!patternEmail.test(email)){
-            patterError.push(3);
+            patterError.push(1);
         }  
         if(!patternPass.test(pass)){
-            patterError.push(4);
+            patterError.push(2);
         }
         if(patterError.length>0){
             return res.status(400).json({
@@ -59,20 +49,11 @@ async function validateRegistration(req, res, next) {
             })
         }
 
-        let exist =[];
         const emailExist = await db.email_exist(email);
-        if(emailExist == 1){
-            exist.push(1);
-        }
-        const usernameExist = await db.username_exist(userN);
-        if(usernameExist == 1){
-            exist.push(2);
-        }
-        if(exist.length >0){
+        if(emailExist != 1){
             return res.status(409).json({
-                message: 'Ütközés a meglévő felhasználóval',
+                message: 'Nincs regisztrálva',
                 id: 3,
-                error: exist
             })
         }
         
@@ -82,4 +63,4 @@ async function validateRegistration(req, res, next) {
     }
 }
 
-module.exports = validateRegistration;
+module.exports = validateLogin;

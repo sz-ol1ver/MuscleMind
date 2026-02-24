@@ -19,7 +19,7 @@ async function selectall() {
 }
 
 // ----
-// REGISTRATION
+// REGISTRATION / LOGIN
 // ----
 
 // regisztracio adatok --> db
@@ -46,6 +46,13 @@ async function email_exist(email) {
     }
 }
 
+// user adatai session / jelszo ellenorzeshez
+async function findUser(email) {
+    const select = 'SELECT id,username,password_hash,admin FROM users WHERE email = ?';
+    const [rows] = await pool.execute(select, [email]);
+    return rows[0];
+}
+
 // ----
 // LOG
 // ----
@@ -63,5 +70,6 @@ module.exports = {
     registration_insert,
     username_exist,
     email_exist,
-    log
+    log,
+    findUser
 };

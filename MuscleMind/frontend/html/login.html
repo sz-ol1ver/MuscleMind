@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="../css/background-res.css" type="text/css">
         <link rel="stylesheet" href="../css/forms.css" type="text/css">
         <!--js-->
-        <script src="../javascript/login.js"></script>
+        <script type="module" src="../javascript/login.js"></script>
     </head>
     <body id="login">
         <!-- container: középre igazítás, full screen -->
@@ -37,12 +37,14 @@
                         <input type="password" class="form-control login-inputs" id="password-login" placeholder="xxx" required disabled>
                         <label for="password-login" class="text-light">Jelszó</label>
                     </div>
+                    <p id="password-feedback"></p>
                     <!--link elfelejtett jelszo btn-->
                     <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-login btn-link btn-sm d-block ms-auto">
                     <!--elvalaszto vonal-->
                     <hr class="mt-2">
                     <!--link regisztacio btn-->
-                    <input type="button" value="Nincs még fiókod? Regisztrálj" id="register-in" class="btn btn-link-login btn-link btn-sm">
+                    <a href="/regisztracio">
+                    <input type="button" value="Nincs még fiókod? Regisztrálj" id="register-in" class="btn btn-link-login btn-link btn-sm"></a>
                     <!--bejelentkezes btn-->
                     <input type="button" id="login-in" value="Bejelentkezés" class="btn btn-outline-light" disabled>
                 </div>

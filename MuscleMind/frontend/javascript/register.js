@@ -280,6 +280,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     passConf.disabled = true;
                                     registBtn.disabled = true;
                                     break;
+                                default:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = "Érvénytelen adat(ok)";
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
                             }
                             break;
                         case 3:
@@ -295,6 +303,14 @@ document.addEventListener('DOMContentLoaded',()=>{
                                 case 2:
                                     feedBack.style.color = 'red';
                                     feedBack.innerHTML = 'Már regisztrált e-mail cím!';
+                                    pass.value = '';
+                                    passConf.value = '';
+                                    passConf.disabled = true;
+                                    registBtn.disabled = true;
+                                    break;
+                                default:
+                                    feedBack.style.color = 'red';
+                                    feedBack.innerHTML = 'Ütközés a meglévő felhasználóval';
                                     pass.value = '';
                                     passConf.value = '';
                                     passConf.disabled = true;
