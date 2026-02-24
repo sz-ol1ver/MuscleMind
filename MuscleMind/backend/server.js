@@ -45,6 +45,12 @@ router.get('/profil', (request, response) => {
 router.get('/ranglista', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });
+router.get('/etrend', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/meals.html'));
+});
+router.get('/edzesterv', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/workout.html'));
+});
 
 
 //!API endpoints
