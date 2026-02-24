@@ -68,7 +68,7 @@
         width: 40% !important; 
     }
     #registration{
-        background: url("../images/registration-16-9.png") no-repeat center center;
+        background: url("../images/registration-16-9.png") no-repeat center top;
         background-size: cover;
     }
     #registration-card{
@@ -94,7 +94,7 @@
         width: 30% !important; 
     }
     #registration{
-        background: url("../images/registration-16-9.png") no-repeat center center;
+        background: url("../images/registration-16-9.png") no-repeat center top;
         background-size: cover;
     }
     #registration-card{
