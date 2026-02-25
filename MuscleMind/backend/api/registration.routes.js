@@ -34,12 +34,13 @@ router.post('/', validateRegistration, async(request, response) => {
         const data = request.body;
         const ip = requestIp.getClientIp(request);
         const hashed = await bcrypt.hash(data.pass, saltRounds);
-        const insert = await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed);
+        const insert = Number(await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed));
         await db.log(insert, data.userN, 'registration', 'registration 1/2',ip);
         const admin = await db.ifAdmin(insert);
-        request.session.user.id = insert;
-        request.session.user.id = admin;
-        
+        request.session.user = {
+            id: insert,
+            admin: admin
+        }
         response.status(201).json({
             message: 'Sikeres regisztráció'
         })

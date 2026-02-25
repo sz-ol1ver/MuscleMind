@@ -21,7 +21,7 @@ router.post('/', validateLogin, async(request, response)=>{
         }
         request.session.user = {
             id: user.id,
-            role: user.admin
+            admin: user.admin
         }
         await db.log(user.id, user.username,'login','Sikeres bejelentkezés', ip);
         response.status(200).json({
