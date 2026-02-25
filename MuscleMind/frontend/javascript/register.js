@@ -233,7 +233,10 @@ document.addEventListener('DOMContentLoaded',()=>{
                     registBtn.disabled = true;
                     setTimeout(()=>{
                         feedBack.innerHTML = '';
-                    }, 3000)
+                        setTimeout(()=>{
+                            window.location.href = '/kerdoiv'
+                        }, 300)
+                    }, 2000)
                 } catch (error) {
                     //?error.obj - ?hiban beluli sorszam
                     //?error.id - hiba sorszama

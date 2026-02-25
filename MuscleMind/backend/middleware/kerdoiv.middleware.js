@@ -1,7 +1,7 @@
 const db = require('../sql/database.js');
 async function registrationComplete(req, res, next) {
     try {
-        if(!req.session.user || !req.session){
+        if(!req.session || !req.session.user || !req.session.user.id){
             return res.status(401).json({
                 message: 'Authentication required!'
             })
