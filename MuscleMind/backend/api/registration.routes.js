@@ -36,7 +36,10 @@ router.post('/', validateRegistration, async(request, response) => {
         const hashed = await bcrypt.hash(data.pass, saltRounds);
         const insert = await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed);
         await db.log(insert, data.userN, 'registration', 'registration 1/2',ip);
-        console.log(insert);
+        const admin = await db.ifAdmin(insert);
+        request.session.user.id = insert;
+        request.session.user.id = admin;
+        
         response.status(201).json({
             message: 'Sikeres regisztráció'
         })

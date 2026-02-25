@@ -19,7 +19,7 @@ async function selectall() {
 }
 
 // ----
-// REGISTRATION / LOGIN
+// REGISTRATION / LOGIN / KERODIV
 // ----
 
 // regisztracio adatok --> db
@@ -53,6 +53,20 @@ async function findUser(email) {
     return rows[0];
 }
 
+async function ifAdmin(id) {
+    const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+    const [rows] = await pool.execute(userN, [id]);
+    return rows.id;
+}
+
+async function registComp(id) {
+    const userN = 'SELECT id FROM users WHERE id = ? AND registered = 1';
+    const [rows] = await pool.execute(userN, [id]);
+    if(rows.length>0){
+        return 1;
+    }
+}
+
 // ----
 // LOG
 // ----
@@ -71,5 +85,7 @@ module.exports = {
     username_exist,
     email_exist,
     log,
-    findUser
+    findUser,
+    registComp,
+    ifAdmin
 };
