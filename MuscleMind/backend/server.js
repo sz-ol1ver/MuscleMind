@@ -2,7 +2,8 @@
 const express = require('express'); //?npm install express
 const session = require('express-session'); //?npm install express-session
 const path = require('path');
-const registrationValidate = require('./middleware/kerdoiv.middleware.js');
+const registrationComplete = require('./middleware/kerdoiv.middleware.js');
+const loginMw = require('./middleware/login.middleware.js');
 
 //!Beállítások
 const app = express();
@@ -35,13 +36,13 @@ app.use(
 router.get('/', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
-router.get('/bejelentkezes', (request, response) => {
+router.get('/bejelentkezes', loginMw.loggedIn ,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
 });
-router.get('/regisztracio', (request, response) => {
+router.get('/regisztracio', loginMw.loggedIn,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/registration.html'));
 });
-router.get('/kerdoiv', registrationValidate,(request, response) => {
+router.get('/kerdoiv', registrationComplete,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/questionnaire.html'));
 });
 router.get('/admin', (request, response) => {

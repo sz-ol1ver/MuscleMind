@@ -63,4 +63,14 @@ async function validateLogin(req, res, next) {
     }
 }
 
-module.exports = validateLogin;
+function loggedIn(req, res, next){
+    if(req.session?.user?.id){
+        return res.redirect('/kerdoiv');
+    }
+    next()
+}
+
+module.exports = {
+    validateLogin,
+    loggedIn
+}

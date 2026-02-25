@@ -4,7 +4,7 @@ const db = require('../sql/database.js');
 const fs = require('fs/promises');
 const bcrypt = require('bcrypt'); // npm install bcrypt
 const requestIp = require('request-ip'); // npm install request-ip
-const validateLogin = require('../middleware/login.middleware.js');
+const loginMw = require('../middleware/login.middleware.js');
 const validateRegistration = require('../middleware/registration.middleware.js');
 
 const saltRounds = 12;
@@ -33,7 +33,7 @@ router.post('/registration', validateRegistration, async(request, response) => {
     }
 });
 
-router.post('/login', validateLogin, async(request, response)=>{
+router.post('/login', loginMw.validateLogin, async(request, response)=>{
     try {
         const {email, pass} = request.body;
         const ip = requestIp.getClientIp(request);

@@ -48,12 +48,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 pass: password.value
             }
             const data = await login('http://127.0.0.1:3000/api/auth/login', postObj)
-            console.log(data.message)
+            feedback.style.color = 'lightgreen';
+            feedback.innerHTML = data.message;
             setTimeout(()=>{
+                feedback.innerHTML = '';
                 email.value = '';
                 password.value = '';
                 password.disabled = true;
-            }, 3000)
+                setTimeout(()=>{
+                    window.location.href = '/kerdoiv'
+                }, 300)
+            }, 2000)
         } catch (error) {
             feedback.style.color = 'rgba(255, 30, 30, 1)';
             feedback.style.fontWeight = 'bolder';
