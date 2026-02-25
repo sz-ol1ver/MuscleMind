@@ -1,10 +1,6 @@
 ###
 GET http://127.0.0.1:3000/api/testsql
 ###
-POST http://127.0.0.1:3000/api/login
+POST http://127.0.0.1:3000/api/auth/logout
 Content-Type: application/json
 
-{
-    "email":"varga.marton@gmail.com",
-    "pass": "marcika2006"
-}

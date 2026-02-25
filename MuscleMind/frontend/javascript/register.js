@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                         email: email.value,
                         pass: pass.value
                     }
-                    const data = await registration('http://127.0.0.1:3000/api/reg', postObj);
+                    const data = await registration('http://127.0.0.1:3000/api/auth/registration', postObj);
                     feedBack.style.color = 'lightgreen';
                     feedBack.innerHTML = data.message;
                     lastN.value ='';

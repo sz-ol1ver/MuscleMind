@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../sql/database.js');
 const fs = require('fs/promises');
-const registRoutes = require('./registration.routes.js')
-const loginRoutes = require('./login.routes.js')
+const auth = require('./auth.routes.js')
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -21,8 +20,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 //!Endpoints:
-router.use('/reg', registRoutes);
-router.use('/login', loginRoutes)
+router.use('/auth', auth);
 
 //?GET /api/testsql
 /*router.get('/testsql', async (request, response) => {

@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 email: email.value,
                 pass: password.value
             }
-            const data = await login('http://127.0.0.1:3000/api/login', postObj)
+            const data = await login('http://127.0.0.1:3000/api/auth/login', postObj)
             console.log(data.message)
             setTimeout(()=>{
                 email.value = '';
