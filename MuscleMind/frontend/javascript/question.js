@@ -112,7 +112,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
             try {
                 const data = userAns('http://127.0.0.1:3000/api/question', userProfile);
             } catch (error) {
-                console.log(error);
+                currentIndex = 0;
+                loadQuestion();
             }
         }else{
             currentIndex++;
