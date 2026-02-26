@@ -1,4 +1,3 @@
-const { response } = require('express');
 const db = require('../sql/database.js');
 async function registrationComplete(req, res, next) {
     try {
@@ -16,4 +15,18 @@ async function registrationComplete(req, res, next) {
     }
 }
 
-module.exports = registrationComplete;
+async function validateInput(req, res, next){
+    try {
+        const {weight, age, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = req.body;
+
+        
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+module.exports = {
+    registrationComplete,
+    validateInput
+};

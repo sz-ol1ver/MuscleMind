@@ -57,3 +57,21 @@ export async function login(url, value) {
         throw error;
     }
 }
+
+export async function userAns(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}

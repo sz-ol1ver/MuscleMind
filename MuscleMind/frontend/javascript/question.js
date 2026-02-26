@@ -1,3 +1,5 @@
+import {userAns} from './api.js';
+
 const custom_qtn = [
     'Mennyi a testsúlyod? (kg)',
     'Hány éves vagy?',
@@ -107,7 +109,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 case 6: userProfile.mealsPerDay = selectedValue; break;
         }}
         if(currentIndex+1 == 10){
-            console.log(userProfile);
+            try {
+                const data = userAns('http://127.0.0.1:3000/api/question', userProfile);
+            } catch (error) {
+                console.log(error);
+            }
         }else{
             currentIndex++;
             loadQuestion();
@@ -210,6 +216,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
             answer.appendChild(optionsDiv);
         }
     }
-
     loadQuestion();
 })
