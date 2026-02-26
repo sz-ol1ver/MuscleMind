@@ -60,22 +60,25 @@ async function validateInput(req, res, next){
             ]
         ];
         const {weight, age, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = req.body;
-
+        let index = 0;
         if(weight<40 || weight >200 || weight ==null){
             return res.status(400).json({
-                message: 'Validation error'
+                message: 'Validation error',
+                id: index
             })
-        }
+        }else{index++}
         if(age<18 || age >99 || age ==null){
             return res.status(400).json({
-                message: 'Validation error'
+                message: 'Validation error',
+                id: index
             })
-        }
+        }else{index++}
         if(height<140 || height >220 || height ==null){
             return res.status(400).json({
-                message: 'Validation error'
+                message: 'Validation error',
+                id: index
             })
-        }
+        }else{index++}
 
         const answers = [
             gender,
@@ -95,8 +98,9 @@ async function validateInput(req, res, next){
                 return res.status(400).json({ message: "Validation error" });
             }
             if(!validAns[i].includes(userValue)){
-                return res.status(400).json({ message: "Validation error" });
-            }
+                return res.status(400).json({ message: "Validation error",
+                id: index });
+            }else{index++}
         }
 
         next();

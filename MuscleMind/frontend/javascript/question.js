@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     let currentIndex = 0;
     let selectedValue = null;
 
-    next.addEventListener('click', ()=>{
+    next.addEventListener('click', async()=>{
         if(currentIndex < custom_qtn.length){
             const rangeValue = document.getElementById("range_input").value;
             switch (currentIndex){
@@ -110,10 +110,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }}
         if(currentIndex+1 == 10){
             try {
-                const data = userAns('http://127.0.0.1:3000/api/question', userProfile);
+                const data = await userAns('http://127.0.0.1:3000/api/question', userProfile);
             } catch (error) {
-                currentIndex = 0;
+                currentIndex = error.id;
                 loadQuestion();
+                window.alert('Hibás választ adtál meg!\nA hibás választól újra indul a kérdőív!');
             }
         }else{
             currentIndex++;

@@ -68,6 +68,7 @@ export async function userAns(url, value) {
         if(!data.ok){
             const res = await data.json();
             const err = new Error(res.message);
+            err.id = res.id;
             throw err;
         }
         return await data.json();
