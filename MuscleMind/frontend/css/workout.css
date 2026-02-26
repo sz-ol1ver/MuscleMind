@@ -1,0 +1,25 @@
+.workout-plan{
+    border: 2px solid rgba(255,255,255,.10);
+    border-radius: 20px;
+    margin: 10px;
+    background-color: #6c6c862a;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 40vh;
+}
+
+#recommended-title{
+    text-align: center;
+    font-weight: 600;
+    font-size: larger;
+    margin-top: 10px;
+    color: #a24ddb;
+}
+
+#personal-title{
+    text-align: center;
+    font-weight: 600;
+    font-size: larger;
+    margin-top: 10px;
+    color: #0fece1;
+}

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Edzésterv</title>
+        <title>Statisztikák</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -12,7 +12,6 @@
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
-        <link rel="stylesheet" href="../css/workout.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
@@ -41,7 +40,7 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Edzésterv</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Statisztikák</p>
                     
 
 
@@ -79,7 +78,7 @@
                             <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/statisztika">Statisztikák</a>
                         </li>
 
@@ -88,7 +87,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Naptár></a>
+                            <a class="nav-link" href="">Naptár</a>
                         </li>
 
                         <li class="nav-item">
@@ -96,11 +95,11 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/etrend">Étrend</a>
+                            <a class="nav-link" href="">Étrend</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
-                            <a class="nav-link" href="/edzesterv">Edzésterv</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Edzésterv</a>
                         </li>
                     </ul>
                 </div>
@@ -120,11 +119,11 @@
                             <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/statisztika">Statisztikák</a>
                         </li>
 
-                        <li class="nav-item ">
+                        <li class="nav-item">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
@@ -140,7 +139,7 @@
                             <a class="nav-link" href="/etrend">Étrend</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
                         </li>
                     </ul>
@@ -148,16 +147,85 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="workout-plan">
-                                <div id="recommended-title"">Ajánlott edzéstervek <hr></div>
-
+                    <!-- Statisztikák -->
+                    <div id="stats" class="row mx-0">
+                        <div class="col-12 px-0">
+                            <div id="stat-title" class="mt-2">Statisztikák
+                                <select name="Időtartam" id="timezone">
+                                    <option value="Daily">Napi</option>
+                                    <option value="Weekly">Heti</option>
+                                    <option value="Monthly">Havi</option>
+                                </select>
                             </div>
+                            <hr>
 
-                            <div class="workout-plan">
+                            <div class="row g-4 mt-2 stats-grid">
 
-                                <div id="personal-title"">Saját edzéstervek <hr></div>
+                                <!-- Letudott edzések -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">🏋️</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="completed-workouts">?</div>
+                                            <div class="stat-label">Letudott edzések</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Közelgő edzések -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">📅</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="upcoming-workouts">?</div>
+                                            <div class="stat-label">Közelgő edzések</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pihenőnapok -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">😴</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="rest-days">?</div>
+                                            <div class="stat-label">Pihenőnapok</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Edzés streak -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card highlight-card">
+                                        <div class="stat-icon">🔥</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="streak">?</div>
+                                            <div class="stat-label">Aktív streak</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Megmozgatott súly -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">⚡</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="total-weight">?</div>
+                                            <div class="stat-label">Összes megmozgatott súly(kg)</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kihagyott napok -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card danger-card">
+                                        <div class="stat-icon">❌</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="missed-days">?</div>
+                                            <div class="stat-label">Kihagyott napok</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

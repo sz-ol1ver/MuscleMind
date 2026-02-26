@@ -60,6 +60,9 @@ router.get('/etrend', (request, response) => {
 router.get('/edzesterv', (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/workout.html'));
 });
+router.get('/statisztika', (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/stats.html'));
+});
 
 
 //!API endpoints

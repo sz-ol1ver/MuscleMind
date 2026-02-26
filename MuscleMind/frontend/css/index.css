@@ -260,10 +260,84 @@ a{
     background-color: #6c6c862a;
     padding-left: 10px;
     padding-right: 10px;
+    text-align: center;
 }
 #stat-title{
     font-size: larger ;
     text-align: center;
+}
+
+.stats-grid {
+    padding-bottom: 20px;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #141420, #1b1b2b);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+    border: 1px solid #7c3aed;
+}
+
+.stat-icon {
+    font-size: 28px;
+    width: 60px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(124, 58, 237, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #b8b8d4;
+    letter-spacing: 0.5px;
+}
+
+.highlight-card {
+    border: 1px solid #ff7a18;
+    box-shadow: 0 0 20px rgba(255,122,24,0.3);
+}
+
+.highlight-card .stat-icon {
+    background: rgba(255,122,24,0.2);
+}
+
+.danger-card {
+    border: 1px solid #ff3c5f;
+}
+
+.danger-card .stat-icon {
+    background: rgba(255,60,95,0.2);
+}
+
+#timezone{
+    border-radius: 100px;
+    float: right;
+    margin: 5px;
 }
 
 #ranglist-calendar{

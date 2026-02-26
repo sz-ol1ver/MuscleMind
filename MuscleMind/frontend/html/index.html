@@ -84,6 +84,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="/statisztika">Statisztikák</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
@@ -95,10 +99,6 @@
                             <a class="nav-link" href="">Izom követés</a>
                         </li>
                         
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Statisztikák</a>
-                        </li>
-
                         <li class="nav-item">
                             <a class="nav-link" href="">Étrend</a>
                         </li>
@@ -125,6 +125,10 @@
                         </li>
 
                         <li class="nav-item">
+                            <a class="nav-link" href="/statisztika">Statisztikák</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
@@ -134,10 +138,6 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="">Izom követés</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Statisztikák</a>
                         </li>
 
                         <li class="nav-item">
@@ -152,34 +152,86 @@
 
                 <!-- Középső blokk -->
                 <div class="col-12 col-lg-9 col-xl-7 p-3" id="middle-part">
-
                     <!-- Statisztikák -->
                     <div id="stats" class="row mx-0">
                         <div class="col-12 px-0">
-                            <div id="stat-title" class="mt-2">Statisztikák</div>
+                            <div id="stat-title" class="mt-2">Statisztikák
+                                <select name="Időtartam" id="timezone">
+                                    <option value="Daily">Napi</option>
+                                    <option value="Weekly">Heti</option>
+                                    <option value="Monthly">Havi</option>
+                                </select>
+                            </div>
                             <hr>
 
-                            <!--
-                            Statisztikába kiirando
-                             -edzés szám ami már lement, ami még jön
-                                -pihenő napok száma
-                                -edzés streak
-                                -legnagyobb súllyal végzett gyakorlat
-                                -megmozgatott súly összesen
-                                -kihagyott napok szám -->
+                            <div class="row g-4 mt-2 stats-grid">
 
+                                <!-- Letudott edzések -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">🏋️</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="completed-workouts">?</div>
+                                            <div class="stat-label">Letudott edzések</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- Ajánlott edzéstervek
-                                -ppl
-                                -upper lower
-                                -full body x
-                                -Arnold split
-                                -bro split
- 
-                            -->
+                                <!-- Közelgő edzések -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">📅</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="upcoming-workouts">?</div>
+                                            <div class="stat-label">Közelgő edzések</div>
+                                        </div>
+                                    </div>
+                                </div>
 
+                                <!-- Pihenőnapok -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">😴</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="rest-days">?</div>
+                                            <div class="stat-label">Pihenőnapok</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                            <!-- <input type="button" class="btn col-2 d-block mt-3 bg-primary" value="Időtartam"> -->
+                                <!-- Edzés streak -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card highlight-card">
+                                        <div class="stat-icon">🔥</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="streak">?</div>
+                                            <div class="stat-label">Aktív streak</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Megmozgatott súly -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card">
+                                        <div class="stat-icon">⚡</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="total-weight">?</div>
+                                            <div class="stat-label">Összes megmozgatott súly(kg)</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Kihagyott napok -->
+                                <div class="col-12 col-md-6 col-xl-4">
+                                    <div class="stat-card danger-card">
+                                        <div class="stat-icon">❌</div>
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="missed-days">?</div>
+                                            <div class="stat-label">Kihagyott napok</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

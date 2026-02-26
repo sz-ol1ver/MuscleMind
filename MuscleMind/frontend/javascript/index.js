@@ -121,32 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   //Muscle Tracker oldal változtatás(elől/hátul)
-  // let muscles = [
-  //   'vall',
-  //   'mell',
-  //   'alkar',
-  //   'bicepsz',
-  //   'comb',
-  //   'has',
-  //   'hat',
-  //   'tricepsz',
-  //   'vadli'
-
-  // ]
-
-  // let pics = [
-  //   '../images/muscle-tracker/alapelol.png',
-  //   '../images/muscle-tracker/mell.png',
-  //   '../images/muscle-tracker/alkar.png',
-  //   '../images/muscle-tracker/bicepsz.png',
-  //   '../images/muscle-tracker/comb.png',
-  //   '../images/muscle-tracker/has.png',
-  //   '../images/muscle-tracker/hat.png',
-  //   '../images/muscle-tracker/tricepsz.png',
-  //   '../images/muscle-tracker/vadli.png',
-
-  // ]
-
   const img = document.getElementById('muscle-picture')
   let oldal = 'elol'
   
