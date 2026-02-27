@@ -172,7 +172,7 @@
                                     <hr class="line">
 
                                     <label for="Kor">Új életkor:</label>
-                                    <input class="form-control" type="text" placeholder="Életkor" id="Kor">
+                                    <input class="form-control" min="18" max="99" type="text" placeholder="Életkor" id="Kor">
                                     <hr class="line">
 
                                     <label for="Email">Új email cím:</label>
@@ -198,13 +198,13 @@
                                 <div class="col-12 col-md-6">
                                     <div class="questions">
                                         <label for="Súly">Mennyi a testsúlyod? (kg)</label><br>
-                                        <input class="text-center" id="Súly" type="number">
+                                        <input class="text-center" id="Súly" max="200" min="40" step="0.1" type="number">
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="questions">
                                         <label>Mekkora a testmagasságod? (cm)</label><br>
-                                        <input class="text-center" type="number">
+                                        <input class="text-center" min="140" max="220" type="number">
                                     </div>
                                 </div>
                             </div>

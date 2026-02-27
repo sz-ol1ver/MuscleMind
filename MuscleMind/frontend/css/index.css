@@ -337,7 +337,7 @@ a{
 #timezone{
     border-radius: 100px;
     float: right;
-    margin: 5px;
+    color-scheme: dark;
 }
 
 #ranglist-calendar{
