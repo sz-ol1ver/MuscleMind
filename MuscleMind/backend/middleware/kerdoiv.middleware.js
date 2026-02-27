@@ -17,6 +17,12 @@ async function registrationComplete(req, res, next) {
 
 async function validateInput(req, res, next){
     try {
+        const keyCount = Object.keys(req.body).length;
+        if(keyCount != 10){
+            return res.status(400).json({
+                message: 'Validation error'
+            })
+        }
         const validAns = [
             [
                 "férfi",
