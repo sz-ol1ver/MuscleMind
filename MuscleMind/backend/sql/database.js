@@ -67,14 +67,31 @@ async function registComp(id) {
     }
 }
 
+//user kerdoiv adatok (insert) /without weight
+async function insertPreferences(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const data = 'Insert into user_profiles(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) VALUES (?,?,?,?,?,?,?,?,?,?)';
+    const [rows] = await pool.execute(data, [id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day])
+    return rows.insertId;
+}
+
+//user kerdoiv suly (insert) /without other preferences
+async function insertWeight(id, weight) {
+    const data = 'Insert into user_weights(user_id, weight) VALUES (?,?)';
+    const [rows] = await pool.execute(data, [id, weight])
+    return rows.insertId;
+}
+
+
 // ----
 // LOG
 // ----
 
 // log data
-async function log(id, userName, action, desc, ip) {
+async function log(id, action, desc, ip) {
+    const userName = 'SELECT username FROM users WHERE id = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
-    const [result] = await pool.execute(insert, [id, userName, action, desc, ip]);
+    const [nameResult] = await pool.execute(userName, [id]);
+    const [result] = await pool.execute(insert, [id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
 
@@ -87,5 +104,7 @@ module.exports = {
     log,
     findUser,
     registComp,
-    ifAdmin
+    ifAdmin,
+    insertPreferences,
+    insertWeight
 };
