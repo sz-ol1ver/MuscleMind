@@ -81,6 +81,13 @@ async function insertWeight(id, weight) {
     return rows.insertId;
 }
 
+//user update registered
+async function updateRegistered(id) {
+    const update = 'UPDATE users SET registered = 1 WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows;
+}
+
 
 // ----
 // LOG
@@ -106,5 +113,6 @@ module.exports = {
     registComp,
     ifAdmin,
     insertPreferences,
-    insertWeight
+    insertWeight,
+    updateRegistered
 };

@@ -81,6 +81,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const question = document.getElementById('question');
     const answer = document.getElementById('answ');
     const next = document.getElementById('submit-qtn');
+    const successCon = document.getElementById('success');
+    const messageCon = document.getElementById('message');
+    const kerdoivCon = document.getElementById('kerdoiv-con');
 
     let currentIndex = 0;
     let selectedValue = null;
@@ -98,7 +101,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 window.alert('Válassz egy lehetőséget');
                 return;
             }
-            const answIndex = currentIndex-3;
+            const answIndex = currentIndex - custom_qtn.length;
             switch (answIndex){
                 case 0: userProfile.gender = selectedValue; break;
                 case 1: userProfile.goal = selectedValue; break;
@@ -111,7 +114,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if(currentIndex+1 == 10){
             try {
                 const data = await userAns('http://127.0.0.1:3000/api/question', userProfile);
+                kerdoivCon.style.display = 'none';
+                successCon.style.display = 'block';
+                messageCon.innerHTML = data.message;
+                setTimeout(()=>{
+                    successCon.style.display = 'none';
+                    setTimeout(()=>{
+                        window.location.href = '/';
+                    }, 200)
+                }, 3000)
             } catch (error) {
+                console.log(error)
                 currentIndex = error.id;
                 loadQuestion();
                 window.alert('Hibás választ adtál meg!\nA hibás választól újra indul a kérdőív!');
@@ -185,8 +198,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
             answer.appendChild(rangeIn);
             answer.appendChild(rangeFeedback);
         }else{
-            const answIndex = currentIndex-3;
+            const answIndex = currentIndex - custom_qtn.length;
             question.innerHTML = ans_qtn[answIndex];
+            if (!ans[answIndex]) {
+                return;
+            }
 
             const optionsDiv = document.createElement("div");
             optionsDiv.classList.add(
@@ -218,5 +234,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
             answer.appendChild(optionsDiv);
         }
     }
-    loadQuestion();
+    if(currentIndex == 0){
+        loadQuestion();
+    }
+    
 })
