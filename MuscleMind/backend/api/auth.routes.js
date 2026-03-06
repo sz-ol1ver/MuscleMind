@@ -43,7 +43,8 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
         if(compare == false){
             await db.log(user.id,'login','Sikertelen bejelentkezés', ip);
             return response.status(401).json({
-                message: 'Helytelen jelszó!'
+                message: 'Helytelen jelszó!',
+                id: 4
             })
         }
         request.session.user = {

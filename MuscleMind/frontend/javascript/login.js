@@ -79,6 +79,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 case 3:
                     feedback.innerHTML = error.message;
                     break;
+                case 4:
+                    feedback.innerHTML = error.message;
+                    break;
             }
         }
     })
