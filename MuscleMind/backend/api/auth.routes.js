@@ -15,7 +15,7 @@ router.post('/registration', validateRegistration, async(request, response) => {
         const ip = requestIp.getClientIp(request);
         const hashed = await bcrypt.hash(data.pass, saltRounds);
         const insert = Number(await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed));
-        await db.log(insert, data.userN, 'registration', 'registration 1/2',ip);
+        await db.log(insert, 'registration', 'registration 1/2',ip);
         const admin = await db.ifAdmin(insert);
         request.session.user = {
             id: insert,
@@ -41,7 +41,7 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
         const compare = await bcrypt.compare(pass, user.password_hash);
 
         if(compare == false){
-            await db.log(user.id, user.username,'login','Sikertelen bejelentkezés', ip);
+            await db.log(user.id,'login','Sikertelen bejelentkezés', ip);
             return response.status(401).json({
                 message: 'Helytelen jelszó!'
             })
@@ -50,7 +50,7 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
             id: user.id,
             admin: user.admin
         }
-        await db.log(user.id, user.username,'login','Sikeres bejelentkezés', ip);
+        await db.log(user.id,'login','Sikeres bejelentkezés', ip);
         response.status(200).json({
             message: 'Sikeres bejelentkezés!'
         })

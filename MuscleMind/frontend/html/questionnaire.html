@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../css/questionnaire.css" type="text/css">
     <link rel="stylesheet" href="../css/background-res.css" type="text/css">
     <!--js-->
-    <script src="../javascript/question.js"></script>
+    <script type="module" src="../javascript/question.js"></script>
 </head>
 <body id="kerdoiv" class="d-flex vh-100 vw-100 align-items-center justify-content-center">
     <div class="container mt-3 w-50 " id="kerdoiv-con">
@@ -27,6 +27,11 @@
         <hr>
         <div class="row">
             <input type="button" class="btn btn-dark" value="Következő" id="submit-qtn">
+        </div>
+    </div>
+    <div class="container mt-3" id="success">
+        <div class="row text-center" id="kerdoiv-message">
+            <h3 class="fsw-4" id="message"></h3>
         </div>
     </div>
 </body>

@@ -100,6 +100,6 @@ CREATE TABLE IF NOT EXISTS user_weights (
 
     CONSTRAINT fk_user_weights_users
         FOREIGN KEY (user_id)
-        REFERENCES users(id)
+        REFERENCES user_profiles(id)
         ON DELETE CASCADE
 );
