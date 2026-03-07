@@ -12,73 +12,87 @@ Szalontai Olivér
 musclemind/
 ├─ backend/
 │  ├─ api/
-│  │  ├─ auth.routes.js          # bejelentkezés, regisztráció
-│  │  ├─ user.routes.js          # profil, kérdőív, felhasználói adatok
-│  │  ├─ workout.routes.js       # edzéstervek kezelése
-│  │  ├─ meal.routes.js          # receptek, ételajánló
-│  │  ├─ stats.routes.js         # statisztikák, progress
-│  │  ├─ friends.routes.js       # barátlista, ranglista
-│  │  └─ admin.routes.js         # admin funkciók
+│  │  ├─ api.js                        # közös API logika / helper függvények
+│  │  ├─ auth.routes.js                # bejelentkezés, regisztráció, session kezelés
+│  │  ├─ questionnaire.routes.js       # kérdőív API végpontok
+│  │  ├─ workout.routes.js             # edzéstervek kezelése
+│  │  ├─ meal.routes.js                # étrend / ételek API
+│  │  ├─ stats.routes.js               # statisztikák és progress adatok
+│  │  ├─ profile.routes.js             # felhasználó profil kezelése
+│  │  ├─ ranglist.routes.js            # ranglista és közösségi adatok
+│  │  └─ admin.routes.js               # admin API
 │  │
 │  ├─ middleware/
-│  │  ├─ auth.middleware.js      # JWT alapú jogosultság ellenőrzés
-│  │  └─ admin.middleware.js     # admin jogosultság ellenőrzés
+│  │  ├─ is-auth.middleware.js         # csak belépett user mehet tovább
+│  │  ├─ is-guest.middleware.js        # ha már be van lépve ne mehessen loginra
+│  │  ├─ registration-complete.middleware.js # kérdőív / regisztráció 2. rész ellenőrzése
+│  │  ├─ is-admin.middleware.js        # admin jogosultság
+│  │  ├─ kerdoiv.middleware.js         # kérdőív kitöltés ellenőrzés
+│  │  ├─ login.middleware.js           # session ellenőrzés
+│  │  └─ registration.middleware.js    # regisztráció állapot ellenőrzése
 │  │
 │  ├─ sql/
-│  │  ├─ database.js             # adatbázis kapcsolat
-│  │  ├─ user.model.js           # felhasználók
-│  │  ├─ workout.model.js        # edzéstervek
-│  │  ├─ meal.model.js           # ételek, receptek
-│  │  ├─ stats.model.js          # statisztikai adatok
-│  │  └─ friends.model.js        # barátrendszer, ranglista
+│  │  ├─ database.js                   # MySQL kapcsolat
+│  │  ├─ database.sql                  # teljes adatbázis séma
+│  │  └─ db_quick.sql                  # tesztadatok / seed
 │  │
-│  ├─ uploads/                   # feltöltött fájlok
-│  ├─ server.js                  # Express szerver belépési pont
-│  ├─ nodemon.json
-│  ├─ package.json
-│  └─ package-lock.json
+│  ├─ http/
+│  │  └─ test.http                     # REST Client API teszt
+│  │
+│  ├─ node_modules/                    # npm csomagok
+│  │
+│  ├─ nodemon.json                     # nodemon config
+│  ├─ package.json                     # dependency-k
+│  ├─ package-lock.json
+│  └─ server.js                        # Express szerver
 │
 ├─ frontend/
 │  ├─ html/
-│  │  ├─ login.html              # bejelentkezés - Oliver
-│  │  ├─ register.html           # regisztráció - Oliver
-│  │  ├─ questionnaire.html      # kezdeti kérdőív - Oliver
-│  │  ├─ index.html              # főoldal / dashboard --> naptár, emlékeztetők - David
-│  │  ├─ workout.html            # edzéstervek - David
-│  │  ├─ meals.html              # receptek, ételajánló - Oliver
-│  │  ├─ profile.html            # felhasználói profil - David
-│  │  ├─ friends.html            # barátlista, ranglista - David
-│  │  └─ admin.html              # admin felület - Oliver
+│  │  ├─ index.html                    # dashboard
+│  │  ├─ login.html                    # login
+│  │  ├─ registration.html             # regisztráció
+│  │  ├─ questionnaire.html            # kérdőív
+│  │  ├─ profile.html                  # profil
+│  │  ├─ workout.html                  # edzéstervek
+│  │  ├─ userWorkout.html              # saját edzések
+│  │  ├─ meals.html                    # étrend
+│  │  ├─ stats.html                    # statisztikák
+│  │  ├─ ranglist.html                 # ranglista
+│  │  └─ admin.html                    # admin felület
 │  │
 │  ├─ javascript/
-│  │  ├─ auth.js                 # token kezelés, belépés ellenőrzés
-│  │  ├─ api.js                  # backend API hívások
-│  │  ├─ login.js
-│  │  ├─ register.js
-│  │  ├─ questionnaire.js
-│  │  ├─ index.js
-│  │  ├─ workout.js
-│  │  ├─ meals.js
-│  │  ├─ profile.js
-│  │  ├─ friends.js
-│  │  ├─ calendar.js
-│  │  └─ admin.js
+│  │  ├─ api.js                        # frontend fetch wrapper
+│  │  ├─ login.js                      # login logika
+│  │  ├─ register.js                   # regisztráció logika
+│  │  ├─ question.js                   # kérdőív logika
+│  │  ├─ index.js                      # dashboard működés
+│  │  ├─ profile.js                    # profil JS
+│  │  ├─ workout.js                    # edzéstervek kezelése
+│  │  ├─ userWorkout.js                # user edzések
+│  │  ├─ meals.js                      # étrend logika
+│  │  ├─ stats.js                      # statisztikák
+│  │  ├─ ranglist.js                   # ranglista logika
+│  │  ├─ admin.js                      # admin JS
+│  │  └─ loading-overlay.js            # globális loading overlay
 │  │
 │  ├─ css/
+│  │  ├─ forms.css
 │  │  ├─ index.css
-│  │  ├─ auth.css
-│  │  ├─ dashboard.css
-│  │  └─ admin.css
+│  │  ├─ profile.css
+│  │  ├─ questionnaire.css
+│  │  ├─ workout.css
+│  │  ├─ userWorkout.css
+│  │  ├─ ranglist.css
+│  │  ├─ admin.css
+│  │  └─ background-res.css
 │  │
-│  ├─ images/
-│  ├─ bootstrap/
-│  │  ├─ css/
-│  │  └─ js/
+│  ├─ images/                          # képek / assetek
+│  ├─ bootstrap/                       # bootstrap lokális fájlok
 │  └─ favicon.ico
 │
-├─ .gitignore
-├─ .prettierrc
-└─ README.md
-```
-
+├─ .prettierrc                         # prettier szabályok
+├─ .gitattributes                      # git fájlkezelési beállítások
+├─ .gitignore                          # ignorált fájlok
+├─ readme.md                           # dokumentáció
+└─ README.md                           # fő readme
 email kuldes backend - brevo
