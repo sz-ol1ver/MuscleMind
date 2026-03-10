@@ -1,4 +1,21 @@
 const db = require('../sql/database.js');
+
+async function requireComplete(req, res, next) {
+    try {
+        if (!req.session || !req.session.user || !req.session.user.id) {
+            return res.redirect('/bejelentkezes');
+        }
+        const id = req.session.user.id;
+        const completed = await db.registComp(id);
+        if (completed != 1) {
+            return res.redirect('/kerdoiv');
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 async function registrationComplete(req, res, next) {
     try {
         if(!req.session || !req.session.user || !req.session.user.id){
@@ -117,5 +134,6 @@ async function validateInput(req, res, next){
 
 module.exports = {
     registrationComplete,
-    validateInput
+    validateInput,
+    requireComplete
 };

@@ -2,7 +2,7 @@
 const express = require('express'); //?npm install express
 const session = require('express-session'); //?npm install express-session
 const path = require('path');
-const {registrationComplete} = require('./middleware/kerdoiv.middleware.js');
+const {registrationComplete, requireComplete} = require('./middleware/kerdoiv.middleware.js');
 const loginMw = require('./middleware/login.middleware.js');
 
 //!Beállítások
@@ -33,7 +33,7 @@ app.use(
 
 //!Routing
 //?Főoldal:
-router.get('/', (request, response) => {
+router.get('/', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 router.get('/bejelentkezes', loginMw.loggedIn ,(request, response) => {
@@ -45,22 +45,22 @@ router.get('/regisztracio', loginMw.loggedIn,(request, response) => {
 router.get('/kerdoiv', registrationComplete,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/questionnaire.html'));
 });
-router.get('/admin', (request, response) => {
+router.get('/admin', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/admin.html'));
 });
-router.get('/profil', (request, response) => {
+router.get('/profil', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/profile.html'));
 });
-router.get('/ranglista', (request, response) => {
+router.get('/ranglista', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });
-router.get('/etrend', (request, response) => {
+router.get('/etrend', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/meals.html'));
 });
-router.get('/edzesterv', (request, response) => {
+router.get('/edzesterv', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/workout.html'));
 });
-router.get('/statisztika', (request, response) => {
+router.get('/statisztika', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/stats.html'));
 });
 
