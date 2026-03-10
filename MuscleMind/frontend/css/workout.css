@@ -5,7 +5,7 @@
     background-color: #6c6c862a;
     padding-left: 10px;
     padding-right: 10px;
-    height: 40vh;
+    height: auto;
 }
 
 #recommended-title{
@@ -22,4 +22,18 @@
     font-size: larger;
     margin-top: 10px;
     color: #0fece1;
+}
+
+#new-title{
+    text-align: center;
+    font-weight: 600;
+    font-size: larger;
+    margin-top: 10px;
+    color: #0fece1;
+}
+
+.day{
+    width: auto;
+    height: 10px;
+    background-color: rgb(114, 114, 114);
 }
