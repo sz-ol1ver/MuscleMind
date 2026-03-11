@@ -6,6 +6,7 @@
     padding-left: 10px;
     padding-right: 10px;
     height: auto;
+    padding-bottom: 40px;
 }
 
 #recommended-title{
@@ -31,9 +32,50 @@
     margin-top: 10px;
     color: #0fece1;
 }
-
-.day{
-    width: auto;
-    height: 10px;
-    background-color: rgb(114, 114, 114);
+.routine{
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 5px;
+}
+.routine table{
+    width:100%;
+    padding: 10px;
+}
+.routine th,td{
+    vertical-align: middle;
+    padding: 20px;
+}
+table,tr,th,td{
+    background-color: #0f0f17 !important;
+    color: white !important;
+    text-align: center;
+}
+tr{
+    border: 2px solid #612eb9 !important;
+}
+th{
+    background-color: #29154c !important;
+}
+#btn-hr{
+    width: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.num-in, select{
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #612eb9 !important;
+}
+.day-selector button:hover{
+    color: #612eb9;
+}
+.active{
+    border: 2px solid #612eb9 !important;
+    color: #a276ef !important;
+    font-weight: bolder;
+    font-style: italic;
+}
+input:disabled{
+    background-color: #6b6b6b !important;
 }

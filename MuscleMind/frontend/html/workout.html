@@ -16,6 +16,7 @@
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
+        <script type="module" src="../javascript/workout.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -151,7 +152,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="workout-plan" id="recommended-plan">
-                                <div id="recommended-title">Ajánlott edzéstervek <hr></div>
+                                <div id="recommended-title">
+                                    <h3>
+                                        Ajánlott edzéstervek
+                                    </h3> 
+                                </div>
+                                <hr>
                                 <div class="container" id="recommended-items">
                                     <br>
                                     <br>
@@ -159,8 +165,11 @@
                                     <br>
                                 </div>
                             </div>
-                            <div class="workout-plan" id="user-plan">
-                                <div id="personal-title">Saját edzéstervek <hr></div>
+                            <div class="workout-plan p-3" id="user-plan">
+                                <div class="position-relative text-center">
+                                    <h3 class="text-info m-0">Saját edzéstervek</h3>
+                                </div>
+                                <hr>
                                 <div class="container" id="personal-items">
                                     <br>
                                     <br>
@@ -169,16 +178,61 @@
                                 </div>
                             </div>
                             <div class="workout-plan" id="new-plan">
-                                <div id="new-title">Új edzésterv<hr></div>
-                                <div class="container" id="new-items">
-                                    <div class="row">
-                                        <div class="day">DAY-1</div>
-                                        <div class="day">DAY-2</div>
-                                        <div class="day">DAY-3</div>
-                                        <div class="day">DAY-4</div>
-                                        <div class="day">DAY-5</div>
-                                        <div class="day">DAY-6</div>
-                                        <div class="day">DAY-7</div>
+                                <div id="new-title">
+                                    <h3>
+                                        Új edzésterv
+                                    </h3> 
+                                </div>
+                                <hr>
+                                <div class="day-selector d-flex justify-content-around align-self-center flex-wrap">
+                                    <button type="button" id="day-1" class="day-box btn">Day 1</button>
+                                    <button type="button" id="day-2" class="day-box btn">Day 2</button>
+                                    <button type="button" id="day-3" class="day-box btn">Day 3</button>
+                                    <button type="button" id="day-4" class="day-box btn">Day 4</button>
+                                    <button type="button" id="day-5" class="day-box btn">Day 5</button>
+                                    <button type="button" id="day-6" class="day-box btn">Day 6</button>
+                                    <button type="button" id="day-7" class="day-box btn">Day 7</button>
+                                </div>
+                                <hr>
+                                <div class="row day-editor justify-content-center">
+                                    <div class="routine col-10 col-sm-10 col-md-8 col-lg-9 col-xl-9">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Gyakorlat</th>
+                                                    <th>Set</th>
+                                                    <th>Ismétlés</th>
+                                                    <th>Súly</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="exercise">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="routine-data col-10 col-sm-10 col-md-3 col-lg-2 col-xl-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" value="1" id="rest">
+                                            <label class="form-check-label" for="rest">
+                                                Pihenő nap
+                                            </label>
+                                        </div>
+                                        <select name="gyakorlat" id="gyakorlat" class="form-control bg-dark text-light border-1 mt-2 d-block">
+                                            <option value="" selected disabled>
+                                                Válassz gyakorlatot
+                                            </option>
+                                            <option value="" disabled>-</option>
+                                        </select>
+                                        <hr>
+                                        <label for="set" class="form-label">Set: </label>
+                                        <input type="number" name="set" id="set" min="1" max="12" value="4" class="form-control bg-dark text-light num-in">
+                                        <label for="rep" class="form-label">Ismétlés: </label>
+                                        <input type="number" name="rep" id="rep" min="1" max="36" value="8" class="form-control bg-dark text-light num-in">
+                                        <label for="weight" class="form-label">Súly(kg): </label>
+                                        <input type="number" name="weight" id="weight" min="1" max="500" step="0.1" value="100" class="form-control bg-dark text-light num-in">
+                                        <hr id="btn-hr">
+                                        <input type="button" value="Hozzáadás" id="add" class="btn btn-outline-success w-100">
                                     </div>
                                 </div>
                             </div>
