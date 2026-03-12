@@ -62,7 +62,7 @@ th{
     margin-left: auto;
     margin-right: auto;
 }
-.num-in, select{
+select{
     text-align: center;
     font-weight: bold;
     border: 1px solid #612eb9 !important;
@@ -78,4 +78,7 @@ th{
 }
 input:disabled{
     background-color: #6b6b6b !important;
+}
+.day-box{
+    color: #616161;
 }

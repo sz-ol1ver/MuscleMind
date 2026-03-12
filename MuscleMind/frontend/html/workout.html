@@ -195,23 +195,25 @@
                                 </div>
                                 <hr>
                                 <div class="row day-editor justify-content-center">
-                                    <div class="routine col-10 col-sm-10 col-md-8 col-lg-9 col-xl-9">
+                                    <div class="routine col-10 col-sm-10 col-md-6 col-lg-7 col-xl-6">
                                         <table class="table">
                                             <thead>
                                                 <tr>
                                                     <th>Gyakorlat</th>
-                                                    <th>Set</th>
-                                                    <th>Ismétlés</th>
-                                                    <th>Súly</th>
+                                                    <th>Sorrend</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody id="exercise">
-                                                
+                                                <tr>
+                                                    <td>Lat-pulldown</td>
+                                                    <td><input type="number" name="sorrend" id="lat" value="1" min="1"></td>
+                                                    <td><input type="button" value="Törlés" class="btn btn-outline-danger"></td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="routine-data col-10 col-sm-10 col-md-3 col-lg-2 col-xl-2">
+                                    <div class="routine-data col-10 col-sm-10 col-md-3 col-lg-3 col-xl-2">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" value="1" id="rest">
                                             <label class="form-check-label" for="rest">
@@ -224,13 +226,6 @@
                                             </option>
                                             <option value="" disabled>-</option>
                                         </select>
-                                        <hr>
-                                        <label for="set" class="form-label">Set: </label>
-                                        <input type="number" name="set" id="set" min="1" max="12" value="4" class="form-control bg-dark text-light num-in">
-                                        <label for="rep" class="form-label">Ismétlés: </label>
-                                        <input type="number" name="rep" id="rep" min="1" max="36" value="8" class="form-control bg-dark text-light num-in">
-                                        <label for="weight" class="form-label">Súly(kg): </label>
-                                        <input type="number" name="weight" id="weight" min="1" max="500" step="0.1" value="100" class="form-control bg-dark text-light num-in">
                                         <hr id="btn-hr">
                                         <input type="button" value="Hozzáadás" id="add" class="btn btn-outline-success w-100">
                                     </div>
