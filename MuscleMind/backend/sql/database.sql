@@ -103,3 +103,120 @@ CREATE TABLE IF NOT EXISTS user_weights (
         REFERENCES user_profiles(id)
         ON DELETE CASCADE
 );
+
+-- WORKOUT --
+--? gyakorlatok
+CREATE TABLE IF NOT EXISTS exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    muscle_group ENUM(
+        'mell',
+        'hát',
+        'váll',
+        'bicepsz',
+        'tricepsz',
+        'alkar',
+        'has',
+        'ferde_has',
+        'alsó_hát',
+        'comb_elso',
+        'comb_hatso',
+        'farizom',
+        'vádli',
+        'teljes_test'
+    ) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workout_plans(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(100) NOT NULL,
+    is_public BOOLEAN DEFAULT FALSE,
+    days_count TINYINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_workout_plans_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS workout_days(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_id INT NOT NULL,
+    day_number TINYINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    image_name VARCHAR(100) NULL,
+
+    CONSTRAINT fk_workout_days_workout_plans
+        FOREIGN KEY (plan_id)
+        REFERENCES workout_plans(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_days_plan_day
+        UNIQUE (plan_id, day_number)
+);
+
+CREATE TABLE IF NOT EXISTS day_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    exercise_order INT NOT NULL,
+
+    CONSTRAINT fk_day_exercises_workout_days
+        FOREIGN KEY (day_id)
+        REFERENCES workout_days(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_day_exercises_exercise
+        FOREIGN KEY (exercise_id)
+        REFERENCES exercises(id)
+        ON DELETE RESTRICT,
+    CONSTRAINT uq_day_exercises_unique_per_day
+        UNIQUE (day_id, exercise_id),
+    CONSTRAINT uq_day_exercises_order
+        UNIQUE (day_id, exercise_order)
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_logs(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workout_plan_id INT NOT NULL,
+    workout_day_id INT NOT NULL,
+    workout_date DATE NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_workout_calendar_logs_users
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_logs_plans
+        FOREIGN KEY (workout_plan_id)
+        REFERENCES workout_plans(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_logs_days
+        FOREIGN KEY (workout_day_id)
+        REFERENCES workout_days(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_calendar_logs_user_date
+        UNIQUE (user_id, workout_date)
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_log_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    sets_done INT NOT NULL,
+    reps_done INT NOT NULL,
+    weight_done DECIMAL(6,2) NOT NULL,
+
+    CONSTRAINT fk_workout_calendar_exercises_log
+        FOREIGN KEY (workout_calendar_log_id)
+        REFERENCES workout_calendar_logs(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_exercises_exercises
+        FOREIGN KEY (exercise_id)
+        REFERENCES exercises(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_calendar_exercise_unique
+        UNIQUE (workout_calendar_log_id, exercise_id)
+);
