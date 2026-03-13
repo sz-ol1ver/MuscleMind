@@ -128,6 +128,120 @@ CREATE TABLE IF NOT EXISTS exercises(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO exercises (name, muscle_group)
+VALUES
+-- mell
+('Ferde padon csiga tárogatás', 'mell'),
+('Lejtős padon csiga mellnyomás', 'mell'),
+('Ferde padon rúddal fekvenyomás', 'mell'),
+('Fekvenyomás kézisúlyzóval', 'mell'),
+('Fekvőtámasz', 'mell'),
+('Tolódzkodás mellre döntve', 'mell'),
+
+-- hát
+('Csiga lehúzás ferde fogással', 'hát'),
+('Ülő evezőgép ferde háttámasz', 'hát'),
+('Evezés padon rúddal', 'hát'),
+('Egykezes evezés kézisúlyzóval', 'hát'),
+('Húzódzkodás', 'hát'),
+('Fordított evezés testsúllyal', 'hát'),
+
+-- váll
+('Ferde padon csiga vállnyomás', 'váll'),
+('Hátsó delt csiga ferde ülés', 'váll'),
+('Vállból nyomás rúddal', 'váll'),
+('Oldalemelés kézisúlyzóval', 'váll'),
+('Kézenállás tartás', 'váll'),
+('Pike push-up', 'váll'),
+
+-- bicepsz
+('Csiga bicepsz hajlítás', 'bicepsz'),
+('Gépi bicepsz hajlítás', 'bicepsz'),
+('Rúddal bicepsz hajlítás', 'bicepsz'),
+('Kalapács bicepsz kézisúlyzóval', 'bicepsz'),
+('Húzódzkodás szűk fogással', 'bicepsz'),
+('Bicepsz tartás testsúllyal', 'bicepsz'),
+
+-- tricepsz
+('Csiga tricepsz letolás', 'tricepsz'),
+('Csiga tricepsz nyújtás fej felett', 'tricepsz'),
+('Fekvenyomás szűk fogással', 'tricepsz'),
+('Tricepsz kickback kézisúlyzóval', 'tricepsz'),
+('Tolódzkodás', 'tricepsz'),
+('Szűk fekvőtámasz', 'tricepsz'),
+
+-- alkar
+('Csukló hajlítás csigán', 'alkar'),
+('Fordított csukló hajlítás csigán', 'alkar'),
+('Rúddal csukló hajlítás', 'alkar'),
+('Kézisúlyzó tartás', 'alkar'),
+('Tárcsa csípés', 'alkar'),
+('Rúdon függés', 'alkar'),
+
+-- has
+('Csiga hasprés', 'has'),
+('Csiga lábemelés', 'has'),
+('Súlyozott felülés', 'has'),
+('Oldalirányú csavarás kézisúlyzóval', 'has'),
+('Plank', 'has'),
+('Mountain climbers', 'has'),
+
+-- ferde has
+('Csiga oldalsó csavarás', 'ferde_has'),
+('Pallof press', 'ferde_has'),
+('Orosz csavar kézisúlyzóval', 'ferde_has'),
+('Oldalsó plank súlyzóval', 'ferde_has'),
+('Oldalsó plank', 'ferde_has'),
+('Ferde has V-emelés', 'ferde_has'),
+
+-- alsó hát
+('Hátfeszítés csigán', 'alsó_hát'),
+('Ülő csiga hátfeszítés', 'alsó_hát'),
+('Román felhúzás rúddal', 'alsó_hát'),
+('Good morning kézisúlyzóval', 'alsó_hát'),
+('Superman tartás', 'alsó_hát'),
+('Bird-Dog', 'alsó_hát'),
+
+-- comb elülső
+('Lábtolás csigán', 'comb_elso'),
+('Lábfeszítés csigán', 'comb_elso'),
+('Rúddal guggolás', 'comb_elso'),
+('Sétáló kitörés kézisúlyzóval', 'comb_elso'),
+('Testtömeg guggolás', 'comb_elso'),
+('Falnál ülés', 'comb_elso'),
+
+-- comb hátsó
+('Lábhajlítás csigán ülve', 'comb_hatso'),
+('Lábhajlítás csigán fekve', 'comb_hatso'),
+('Egylábas román felhúzás kézisúlyzóval', 'comb_hatso'),
+('Lábhajlítás kézisúlyzóval', 'comb_hatso'),
+('Nordic hamstring curl', 'comb_hatso'),
+('Egylábas farizom emelés testsúllyal', 'comb_hatso'),
+
+-- farizom
+('Csípőnyomás csigán', 'farizom'),
+('Kickback csigán', 'farizom'),
+('Hip thrust rúddal', 'farizom'),
+('Lépés padra kézisúlyzóval', 'farizom'),
+('Glute bridge testsúllyal', 'farizom'),
+('Donkey kicks testsúllyal', 'farizom'),
+
+-- vádli
+('Ülő vádli csigán', 'vádli'),
+('Álló vádli csigán', 'vádli'),
+('Álló rúddal vádli emelés', 'vádli'),
+('Kézisúlyzóval vádli emelés', 'vádli'),
+('Testtömeg vádli emelés', 'vádli'),
+('Ugrókötél vádli edzés', 'vádli'),
+
+-- teljes test
+('Felhúzás rúddal', 'teljes_test'),
+('Guggolás rúddal', 'teljes_test'),
+('Clean & Press rúddal', 'teljes_test'),
+('Burpee testsúllyal', 'teljes_test'),
+('Kettlebell swing', 'teljes_test'),
+('Farmer walk kézisúlyzóval', 'teljes_test');
+
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
