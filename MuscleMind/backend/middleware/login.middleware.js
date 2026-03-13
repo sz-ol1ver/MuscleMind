@@ -69,8 +69,15 @@ function loggedIn(req, res, next){
     }
     next()
 }
+function userLoggedIn(req, res, next){
+    if(!req.session?.user?.id){
+        return res.redirect('/bejelentkezes');
+    }
+    next()
+}
 
 module.exports = {
     validateLogin,
-    loggedIn
+    loggedIn,
+    userLoggedIn
 }
