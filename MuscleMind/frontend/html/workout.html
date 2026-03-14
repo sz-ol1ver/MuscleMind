@@ -184,23 +184,24 @@
                                     </h3>
                                 </div>
                                 <hr>
-                                <div class="row">
-                                    <div class="routine-main-data d-flex flex-column justify-content-center col-12 col-sm-12 col-md-4 col-lg-3 col-xl-2">
+                                <div class="row justify-content-center">
+                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-6 col-md-6 col-lg-5 col-xl-3">
                                         <label for="routine-name" class="form-label">Edzésterv neve:</label>
                                         <input type="text" name="routine-name" id="routine-name" value="new_workout" class="form-control">
                                         <label for="routine-day" class="form-label mt-2">Napok száma:</label>
                                         <input type="number" name="routine-day" id="routine-day" placeholder="Napok száma" class="form-control" min="1" max="7">
+                                        <hr class="w-50 d-block mx-auto">
+                                        <input type="button" value="Tovább" id="next" class="btn btn-outline-success w-50 d-block mx-auto">
                                     </div>
-                                    <hr class="d-md-none d-lg-none d-xl-none mt-3">
-                                    <div class="col-12 col-sm-12 col-md-8 col-lg-9 col-xl-10">
+                                    <div id="info" class="routine-second d-none col-10 col-sm-10 col-md-6 col-lg-6 col-xl-2">
                                         <div class="day-selector d-flex justify-content-around align-self-center flex-wrap">
-                                            <button type="button" id="day-1" class="day-box btn">Day 1</button>
-                                            <button type="button" id="day-2" class="day-box btn">Day 2</button>
-                                            <button type="button" id="day-3" class="day-box btn">Day 3</button>
-                                            <button type="button" id="day-4" class="day-box btn">Day 4</button>
-                                            <button type="button" id="day-5" class="day-box btn">Day 5</button>
-                                            <button type="button" id="day-6" class="day-box btn">Day 6</button>
-                                            <button type="button" id="day-7" class="day-box btn">Day 7</button>
+                                            <button type="button" value="1" id="day-1" class="day-box btn active">Day 1</button>
+                                            <button type="button" value="2" id="day-2" class="day-box btn">Day 2</button>
+                                            <button type="button" value="3" id="day-3" class="day-box btn">Day 3</button>
+                                            <button type="button" value="4" id="day-4" class="day-box btn">Day 4</button>
+                                            <button type="button" value="5" id="day-5" class="day-box btn">Day 5</button>
+                                            <button type="button" value="6" id="day-6" class="day-box btn">Day 6</button>
+                                            <button type="button" value="7" id="day-7" class="day-box btn">Day 7</button>
                                         </div>
                                         <hr>
                                         <div>
@@ -218,19 +219,13 @@
                                                             <th></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody id="exercise">
-                                                        <tr>
-                                                            <td>Lat-pulldown</td>
-                                                            <td class="w-25"><input type="number" class="form-control d-block mx-auto" name="sorrend" id="lat" value="1" min="1"></td>
-                                                            <td><input type="button" value="Törlés" class="btn btn-outline-danger"></td>
-                                                        </tr>
-                                                    </tbody>
+                                                    <tbody id="exercise"></tbody>
                                                 </table>
                                             </div>
                                             <hr class="mt-4 d-lg-none d-xl-none d-md-none">
                                             <div class="routine-data mt-2 col-10 col-sm-10 col-md-4 col-lg-4 col-xl-3">
                                                 <select name="gyakorlat" id="gyakorlat" class="form-control bg-dark text-light border-1 d-block">
-                                                    <option value="" selected disabled>
+                                                    <option value="0" selected disabled>
                                                         Gyakorlat kiválasztása ▼
                                                     </option>
                                                     <option value="" disabled>-</option>
@@ -246,8 +241,9 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row mt-4">
-                                    <input type="button" value="Mentés" class="btn btn-outline-success w-25 d-block mx-auto">
+                                <div class="row justify-content-center">
+                                    <input type="button" value="Mégse" id="cancel" class="btn btn-outline-danger w-25 d-none m-1">
+                                    <input type="button" value="Mentés" id="save" class="btn btn-outline-success w-25 d-none m-1">
                                 </div>
                             </div>
                         </div>

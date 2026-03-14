@@ -76,3 +76,20 @@ export async function userAns(url, value) {
         throw error;
     }
 }
+
+export async function getExercises(url) {
+    try {
+        const data = await fetch(url, {
+            method: 'GET',
+            headers: {'Content-type':'application/json'}
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}

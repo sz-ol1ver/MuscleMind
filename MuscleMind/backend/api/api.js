@@ -4,6 +4,7 @@ const db = require('../sql/database.js');
 const fs = require('fs/promises');
 const auth = require('./auth.routes.js');
 const qtn = require('./questionnaire.routes.js')
+const wOut = require('./workout.routes.js');
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -23,6 +24,7 @@ const upload = multer({ storage });
 //!Endpoints:
 router.use('/auth', auth);
 router.use('/question', qtn);
+router.use('/workout', wOut);
 
 //?GET /api/testsql
 /*router.get('/testsql', async (request, response) => {

@@ -88,6 +88,16 @@ async function updateRegistered(id) {
     return rows;
 }
 
+// -------
+// WORKOUT
+// -------
+
+async function allExercises() {
+    const all = 'SELECT id, name, muscle_group FROM exercises';
+    const [rows] = await pool.execute(all);
+    return rows;
+}
+
 
 // ----
 // LOG
@@ -114,5 +124,6 @@ module.exports = {
     ifAdmin,
     insertPreferences,
     insertWeight,
-    updateRegistered
+    updateRegistered,
+    allExercises
 };
