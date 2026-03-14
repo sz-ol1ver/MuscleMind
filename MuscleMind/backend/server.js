@@ -36,10 +36,10 @@ app.use(
 router.get('/', requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
-router.get('/bejelentkezes', loginMw.loggedIn ,(request, response) => {
+router.get('/bejelentkezes', loginMw.redirectIfLoggedIn ,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
 });
-router.get('/regisztracio', loginMw.loggedIn,(request, response) => {
+router.get('/regisztracio', loginMw.redirectIfLoggedIn,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/registration.html'));
 });
 router.get('/kerdoiv', registrationComplete,(request, response) => {

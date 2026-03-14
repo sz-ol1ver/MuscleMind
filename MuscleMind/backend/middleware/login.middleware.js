@@ -63,21 +63,31 @@ async function validateLogin(req, res, next) {
     }
 }
 
-function loggedIn(req, res, next){
+function redirectIfLoggedIn(req, res, next){
     if(req.session?.user?.id){
         return res.redirect('/kerdoiv');
     }
     next()
 }
-function userLoggedIn(req, res, next){
+function requireAuthPage(req, res, next){
     if(!req.session?.user?.id){
         return res.redirect('/bejelentkezes');
     }
     next()
 }
 
+function requireAuthApi(req, res, next){
+    if(!req.session?.user?.id){
+        return res.status(401).json({
+            message: 'Nincs bejelentkezve!'
+        });
+    }
+    next()
+}
+
 module.exports = {
     validateLogin,
-    loggedIn,
-    userLoggedIn
+    redirectIfLoggedIn,
+    requireAuthPage,
+    requireAuthApi
 }

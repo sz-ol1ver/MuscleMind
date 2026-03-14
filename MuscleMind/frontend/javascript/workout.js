@@ -1,4 +1,4 @@
-import {getExercises} from './api.js';
+import {getExercises, postNewPlan} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
@@ -117,12 +117,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
             if(days == db){
                 return alert('Edzésterv nem állhat csak pihenőnapból!')
             }
-            
-            console.log(workoutPlan);
+            postPlan(workoutPlan);
         }
         
     })
 });
+
+async function postPlan(obj) {
+    try {
+        const data = await postNewPlan('http://127.0.0.1:3000/api/workout/newPlan', obj);
+        console.log(data);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 
 async function loadExercises() {
     const select = document.getElementById('gyakorlat');
