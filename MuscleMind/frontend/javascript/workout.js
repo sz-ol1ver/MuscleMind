@@ -88,31 +88,39 @@ document.addEventListener('DOMContentLoaded', ()=>{
     rest.addEventListener('change', ()=>{
         if(rest.checked){
             workoutPlan.days[currentDay].restDay = true;
-            workoutPlan.days[currentDay].exercises = [];
+            workoutPlan.days[currentDay].exercises.push({
+                exerciseId: '0',
+                name: 'REST DAY',
+                order: ''
+            })
             select.disabled = true;
             renderTable();
         }else{
             workoutPlan.days[currentDay].restDay = false;
+            workoutPlan.days[currentDay].exercises = [];
             select.disabled = false;
             renderTable();
         }
     })
     save.addEventListener('click', ()=>{
-        const days = workoutPlan.days.length;
-        let db = 0;
-        for(let i = 0; i<workoutPlan.days.length;i++){
-            if(workoutPlan.days[i].restDay == false && workoutPlan.days[i].exercises.length == 0){
-                return alert('Az edzésterv nem teljes!')
+        if(create.classList.contains('d-none') && !info.classList.contains('d-none')){
+            const days = workoutPlan.days.length;
+            let db = 0;
+            for(let i = 0; i<workoutPlan.days.length;i++){
+                if(workoutPlan.days[i].restDay == false && workoutPlan.days[i].exercises.length == 0){
+                    return alert('Az edzésterv nem teljes!')
+                }
+                if(workoutPlan.days[i].restDay == true){
+                    db++
+                }
             }
-            if(workoutPlan.days[i].restDay == true){
-                db++
+            if(days == db){
+                return alert('Edzésterv nem állhat csak pihenőnapból!')
             }
-        }
-        if(days == db){
-            return alert('Edzésterv nem állhat csak pihenőnapból!')
+            
+            console.log(workoutPlan);
         }
         
-        console.log(workoutPlan);
     })
 });
 
@@ -163,9 +171,9 @@ function renderTable(){
             }
             renderTable();
         });
-
-        tdDelete.appendChild(btn);
-
+        if(exercises[i].exerciseId != 0){
+            tdDelete.appendChild(btn);
+        }
         tr.appendChild(tdName);
         tr.appendChild(tdOrder);
         tr.appendChild(tdDelete);
