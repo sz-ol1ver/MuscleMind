@@ -104,6 +104,7 @@ export async function postNewPlan(url, value) {
         if(!data.ok){
             const res = await data.json();
             const err = new Error(res.message);
+            err.error = res.error;
             throw err;
         }
         return await data.json();

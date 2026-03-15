@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     rest.addEventListener('change', ()=>{
         if(rest.checked){
             workoutPlan.days[currentDay].restDay = true;
+            workoutPlan.days[currentDay].exercises = [];
             workoutPlan.days[currentDay].exercises.push({
                 exerciseId: 0,
                 name: 'REST DAY',
@@ -124,11 +125,22 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 async function postPlan(obj) {
+    const alert = document.getElementById('alert');
     try {
         const data = await postNewPlan('http://127.0.0.1:3000/api/workout/newPlan', obj);
-        console.log(data);
+        alert.innerHTML = data.message;
+        alert.classList.add('alert-success');
+        alert.classList.remove('d-none');
+        setTimeout(()=>{
+            location.reload();
+        }, 2000)
     } catch (error) {
-        console.error(error.message);
+        alert.innerHTML = error.message+ "\n"+error.error;
+        alert.classList.add('alert-danger');
+        alert.classList.remove('d-none');
+        setTimeout(()=>{
+            location.reload();
+        }, 2000)
     }
 }
 
