@@ -254,7 +254,6 @@ a{
 
 #stats{
     border: 2px solid rgba(255,255,255,.10);
-    height: 40%;
     border-radius: 20px;
     margin: 1px;
     background-color: #6c6c862a;
@@ -496,7 +495,7 @@ a{
         padding-right: 0 !important;
     }
     #stats{
-        height: calc(100vh - 70px);
+        height: auto;
         margin: 12px;
     }
 }
