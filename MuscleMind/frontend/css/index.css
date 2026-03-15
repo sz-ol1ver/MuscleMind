@@ -500,6 +500,28 @@ a{
     }
 }
 
+@media (min-width:1200px){
+    #main-row{
+        height: calc(100vh - 70px);
+    }
+
+    #middle-part{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    #stats{
+        margin-bottom: 14px;
+    }
+
+    #ranglist-calendar{
+        flex: 1 1 auto;
+        height: auto;
+        overflow: auto;
+    }
+}
+
 .offcanvas{
     background-color: #0f0f17;
 }
