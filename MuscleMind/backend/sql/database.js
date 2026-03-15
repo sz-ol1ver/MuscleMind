@@ -98,6 +98,12 @@ async function allExercises() {
     return rows;
 }
 
+async function exerciseExist(exerciseId) {
+    const exercise = 'SELECT name FROM exercises WHERE id = ?';
+    const [rows] = await pool.execute(exercise, [exerciseId]);
+    return rows.length > 0;
+}
+
 
 // ----
 // LOG
@@ -125,5 +131,6 @@ module.exports = {
     insertPreferences,
     insertWeight,
     updateRegistered,
-    allExercises
+    allExercises,
+    exerciseExist
 };

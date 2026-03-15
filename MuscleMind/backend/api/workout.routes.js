@@ -22,7 +22,7 @@ router.get('/exercises', requireAuthApi, async(req, res)=>{
 })
 router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
     try {
-        console.log(req.body.days);
+        console.log(req.body);
 
         res.status(200).json({
             message: 'saved!'

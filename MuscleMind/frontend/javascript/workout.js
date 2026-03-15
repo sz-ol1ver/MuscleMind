@@ -89,9 +89,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if(rest.checked){
             workoutPlan.days[currentDay].restDay = true;
             workoutPlan.days[currentDay].exercises.push({
-                exerciseId: '0',
+                exerciseId: 0,
                 name: 'REST DAY',
-                order: ''
+                order: null
             })
             select.disabled = true;
             renderTable();
