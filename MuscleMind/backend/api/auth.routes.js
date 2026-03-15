@@ -41,7 +41,7 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
         const compare = await bcrypt.compare(pass, user.password_hash);
 
         if(compare == false){
-            await db.log(user.id,'login','Sikertelen bejelentkezés', ip);
+            await db.log(user.id,'login','Sikertelen bejelentkezés (Helytelen jelszó)', ip);
             return response.status(401).json({
                 message: 'Helytelen jelszó!',
                 id: 4

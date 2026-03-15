@@ -21,18 +21,69 @@ router.get('/exercises', requireAuthApi, async(req, res)=>{
     }
 })
 router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
-    try {
-        console.log(req.body);
+    const conn = await db.pool.getConnection();
 
-        res.status(200).json({
-            message: 'saved!'
-        })
+    try {
+        await conn.beginTransaction();
+
+        const workoutPlan = req.body;
+        const userId = req.session.user.id;
+        const ip = requestIp.getClientIp(req);
+        const planId = await db.createWorkoutPlan(
+            conn,
+            userId,
+            workoutPlan.name.trim(),
+            workoutPlan.days.length
+        );
+        for (let i = 0; i < workoutPlan.days.length; i++) {
+            const day = workoutPlan.days[i];
+            const dayId = await db.createWorkoutDay(
+                conn,
+                planId,
+                day.dayNumber,
+                day.name.trim()
+            );
+            if (!day.restDay) {
+                for (let j = 0; j < day.exercises.length; j++) {
+                    const exercise = day.exercises[j];
+                    await db.createDayExercise(
+                        conn,
+                        dayId,
+                        exercise.exerciseId,
+                        exercise.order
+                    );
+                }
+            }
+        }
+
+        await conn.commit();
+
+        await db.log(
+            userId,
+            'WORKOUT_PLAN_CREATE',
+            `Új edzésterv létrehozva. planId: ${planId}`,
+            ip
+        );
+
+        return res.status(201).json({
+            message: 'Edzésterv sikeresen létrehozva.'
+        });
+
     } catch (error) {
-        console.log(error.message)
-        res.status(500).json({
-            message: 'Sikertelen mentés',
+        await conn.rollback();
+        console.log(error.message);
+        await db.log(
+            userId,
+            'ERR_WORKOUT_PLAN_CREATE',
+            `Új edzésterv sikertelen létrehozása. `+error.message,
+            ip
+        );
+        return res.status(500).json({
+            message: 'Sikertelen mentés.',
             error: error.message
-        })
+        });
+    } finally {
+        conn.release();
     }
 })
 

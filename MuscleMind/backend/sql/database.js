@@ -104,6 +104,31 @@ async function exerciseExist(exerciseId) {
     return rows.length > 0;
 }
 
+async function createWorkoutPlan(conn, userId, name, daysCount) {
+    const sql = `
+        INSERT INTO workout_plans (user_id, name, days_count)
+        VALUES (?, ?, ?)
+    `;
+    const [result] = await conn.execute(sql, [userId, name, daysCount]);
+    return result.insertId;
+}
+
+async function createWorkoutDay(conn, planId, dayNumber, name) {
+    const sql = `
+        INSERT INTO workout_days (plan_id, day_number, name)
+        VALUES (?, ?, ?)
+    `;
+    const [result] = await conn.execute(sql, [planId, dayNumber, name]);
+    return result.insertId;
+}
+
+async function createDayExercise(conn, dayId, exerciseId, exerciseOrder) {
+    const sql = `
+        INSERT INTO day_exercises (day_id, exercise_id, exercise_order)
+        VALUES (?, ?, ?)
+    `;
+    await conn.execute(sql, [dayId, exerciseId, exerciseOrder]);
+}
 
 // ----
 // LOG
@@ -120,6 +145,7 @@ async function log(id, action, desc, ip) {
 
 //!Export
 module.exports = {
+    pool,
     selectall,
     registration_insert,
     username_exist,
@@ -132,5 +158,8 @@ module.exports = {
     insertWeight,
     updateRegistered,
     allExercises,
-    exerciseExist
+    exerciseExist,
+    createWorkoutPlan,
+    createWorkoutDay,
+    createDayExercise
 };
