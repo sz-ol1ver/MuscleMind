@@ -53,6 +53,13 @@ async function findUser(email) {
     return rows[0];
 }
 
+//username kiírás jobbfelül minden oldalon
+async function getUsernameById(id) {
+    const select = 'SELECT username FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0];
+}
+
 async function ifAdmin(id) {
     const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(userN, [id]);
@@ -120,6 +127,7 @@ module.exports = {
     email_exist,
     log,
     findUser,
+    getUsernameById,
     registComp,
     ifAdmin,
     insertPreferences,
