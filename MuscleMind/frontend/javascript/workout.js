@@ -1,4 +1,4 @@
-import {getExercises, postNewPlan} from './api.js';
+import {getWorkout, postNewPlan} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //* id: day-1 ... day-7
 
     //! start
+    loadWorkouts();
+
     cancel.addEventListener('click', ()=>{
         workoutPlan = null;
         location.reload();
@@ -32,7 +34,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 for(let i = 1; i <= plan_days.value; i++){
                     workoutPlan.days.push({
                         dayNumber: i,
-                        name: "Day " + i,
+                        name: "Nap " + i,
                         restDay: false,
                         exercises: []
                     });
@@ -147,7 +149,7 @@ async function postPlan(obj) {
 async function loadExercises() {
     const select = document.getElementById('gyakorlat');
     try {
-        const data = await getExercises('http://127.0.0.1:3000/api/workout/exercises');
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/exercises');
         const exercises = data.message;
         for(let gyakorlat of exercises){
             let option = document.createElement('option');
@@ -156,9 +158,66 @@ async function loadExercises() {
             select.appendChild(option);
         }
     } catch (error) {
-        console.error(error.message);
+        console.error(error.message + "\n"+error.error);
     }
 }
+
+async function loadWorkouts() {
+    try {
+        const workoutDiv = document.getElementById('personal-items');
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
+
+        workoutDiv.innerHTML = '';
+
+        for (let i = 0; i < data.plans.length; i++) {
+            const card = document.createElement('div');
+            card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
+            card.style.minWidth = 'auto';
+
+            const title = document.createElement('h2');
+            title.className = 'mb-1 d-block fw-bold';
+            title.textContent = data.plans[i].name;
+
+            const day = document.createElement('p');
+            day.className = 'mb-4 d-block';
+            day.textContent = "Napok száma: "+data.plans[i].days_count;
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'd-flex gap-2';
+
+            const detailsBtn = document.createElement('button');
+            detailsBtn.className = 'btn btn-primary';
+            detailsBtn.type = 'button';
+            detailsBtn.textContent = 'Részletek';
+            detailsBtn.setAttribute('data-bs-toggle', 'collapse');
+            detailsBtn.setAttribute('data-bs-target', `#workout-details-${data.plans[i].id}`);
+            detailsBtn.setAttribute('aria-expanded', 'false');
+            detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
+
+            const selectBtn = document.createElement('button');
+            selectBtn.className = 'btn btn-outline-light';
+            selectBtn.type = 'button';
+            selectBtn.textContent = 'Kiválasztás';
+
+            const collapseDiv = document.createElement('div');
+            collapseDiv.className = 'detailCard collapse mt-3 card p-3';
+            collapseDiv.id = `workout-details-${data.plans[i].id}`;
+
+            buttonContainer.appendChild(detailsBtn);
+            buttonContainer.appendChild(selectBtn);
+
+            card.appendChild(title);
+            card.appendChild(day);
+            card.appendChild(buttonContainer);
+            card.appendChild(collapseDiv);
+
+            workoutDiv.appendChild(card);
+        }
+    } catch (error) {
+        console.error(error.message + '\n' + error.error);
+    }
+}
+
 
 function renderTable(){
     const tbody = document.getElementById('exercise');

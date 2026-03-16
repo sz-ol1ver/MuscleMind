@@ -130,6 +130,12 @@ async function createDayExercise(conn, dayId, exerciseId, exerciseOrder) {
     await conn.execute(sql, [dayId, exerciseId, exerciseOrder]);
 }
 
+async function allUserPlans(userId) {
+    const sql = 'SELECT id, name, days_count FROM workout_plans WHERE user_id = ? ORDER BY id DESC';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
 // ----
 // LOG
 // ----
@@ -161,5 +167,6 @@ module.exports = {
     exerciseExist,
     createWorkoutPlan,
     createWorkoutDay,
-    createDayExercise
+    createDayExercise,
+    allUserPlans
 };

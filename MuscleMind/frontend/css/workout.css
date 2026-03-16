@@ -14,7 +14,7 @@
     font-weight: 600;
     font-size: larger;
     margin-top: 10px;
-    color: #a24ddb;
+    color: #b58bfd;
 }
 
 #personal-title{
@@ -22,7 +22,7 @@
     font-weight: 600;
     font-size: larger;
     margin-top: 10px;
-    color: #0fece1;
+    color: #b58bfd;
 }
 
 #new-title{
@@ -30,7 +30,7 @@
     font-weight: 600;
     font-size: larger;
     margin-top: 10px;
-    color: #0fece1;
+    color: #b58bfd;
 }
 .routine{
     overflow-x: scroll;
@@ -81,4 +81,27 @@ input:disabled{
 }
 .day-box{
     color: #616161;
+}
+#personal-items{
+    overflow-x: scroll;
+    white-space: nowrap;
+    padding: 5px;
+}
+
+.mainCard{
+    border: 2px solid rgb(92, 92, 92);
+    background-color: #2a2a2a;
+    color: white;
+}
+.mainCard:hover{
+    border: 2px solid #b58bfd !important;
+    box-shadow:
+        0 0 6px #8c65d0 ,
+        0 0 12px #603f9b,
+        0 0 20px #4d2198 !important;
+}
+.detailCard{
+    border: 3px solid rgb(92, 92, 92) !important;
+    background-color: #343434;
+    color: rgb(255, 251, 251);
 }

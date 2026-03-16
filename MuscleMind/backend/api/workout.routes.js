@@ -87,4 +87,20 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
     }
 })
 
+router.get('/my-plans', requireAuthApi, async(req, res)=>{
+    try {
+        const userId = req.session.user.id;
+        const workouts = await db.allUserPlans(userId);
+        return res.status(200).json({
+            plans: workouts
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
+
 module.exports = router;

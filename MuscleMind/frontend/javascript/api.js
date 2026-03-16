@@ -77,7 +77,7 @@ export async function userAns(url, value) {
     }
 }
 
-export async function getExercises(url) {
+export async function getWorkout(url) {
     try {
         const data = await fetch(url, {
             method: 'GET',
@@ -86,6 +86,7 @@ export async function getExercises(url) {
         if(!data.ok){
             const res = await data.json();
             const err = new Error(res.message);
+            err.error = res.error;
             throw err;
         }
         return await data.json();
