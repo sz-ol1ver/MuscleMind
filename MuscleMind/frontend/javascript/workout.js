@@ -188,6 +188,7 @@ async function loadWorkouts() {
             const detailsBtn = document.createElement('button');
             detailsBtn.className = 'btn btn-primary';
             detailsBtn.type = 'button';
+            detailsBtn.value = data.plans[i].id;
             detailsBtn.textContent = 'Részletek';
             detailsBtn.setAttribute('data-bs-toggle', 'collapse');
             detailsBtn.setAttribute('data-bs-target', `#workout-details-${data.plans[i].id}`);

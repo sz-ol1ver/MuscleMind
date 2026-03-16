@@ -113,12 +113,12 @@ async function createWorkoutPlan(conn, userId, name, daysCount) {
     return result.insertId;
 }
 
-async function createWorkoutDay(conn, planId, dayNumber, name) {
+async function createWorkoutDay(conn, planId, dayNumber, name, restDay) {
     const sql = `
-        INSERT INTO workout_days (plan_id, day_number, name)
-        VALUES (?, ?, ?)
+        INSERT INTO workout_days (plan_id, day_number, name, isRestDay)
+        VALUES (?, ?, ?,  ?)
     `;
-    const [result] = await conn.execute(sql, [planId, dayNumber, name]);
+    const [result] = await conn.execute(sql, [planId, dayNumber, name, restDay]);
     return result.insertId;
 }
 

@@ -261,6 +261,7 @@ CREATE TABLE IF NOT EXISTS workout_days(
     plan_id INT NOT NULL,
     day_number TINYINT NOT NULL,
     name VARCHAR(100) NOT NULL,
+    isRestDay BOOLEAN DEFAULT FALSE,
 
     CONSTRAINT fk_workout_days_workout_plans
         FOREIGN KEY (plan_id)

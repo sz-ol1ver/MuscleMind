@@ -41,7 +41,8 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
                 conn,
                 planId,
                 day.dayNumber,
-                day.name.trim()
+                day.name.trim(),
+                day.restDay
             );
             if (!day.restDay) {
                 for (let j = 0; j < day.exercises.length; j++) {
