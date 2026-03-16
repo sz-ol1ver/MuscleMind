@@ -194,6 +194,10 @@ async function loadWorkouts() {
             detailsBtn.setAttribute('data-bs-target', `#workout-details-${data.plans[i].id}`);
             detailsBtn.setAttribute('aria-expanded', 'false');
             detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
+            //? load details
+            detailsBtn.addEventListener('click', ()=>{
+                loadWorkoutDetail(detailsBtn.value);
+            })
 
             const selectBtn = document.createElement('button');
             selectBtn.className = 'btn btn-outline-light';
@@ -218,8 +222,44 @@ async function loadWorkouts() {
         console.error(error.message + '\n' + error.error);
     }
 }
+async function loadWorkoutDetail(id) {
+    try {
+        const detailDiv = document.getElementById(`workout-details-${id}`);
+        detailDiv.innerHTML = '';
 
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+        const details = data.details;
 
+        for (const day of details) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'workout-day fw-bold mt-2';
+            dayDiv.textContent = `Day ${day.dayNumber} - ${day.name}`;
+            detailDiv.appendChild(dayDiv);
+
+            const exerciseContainer = document.createElement('div');
+            exerciseContainer.className = 'ms-3';
+
+            if (day.isRestDay) {
+                const rest = document.createElement('div');
+                rest.textContent = 'Pihenőnap';
+                exerciseContainer.appendChild(rest);
+            } else {
+                for (let i = 0; i < day.exercises.length; i++) {
+                    const ex = day.exercises[i];
+
+                    const exDiv = document.createElement('div');
+                    exDiv.textContent = `${ex.order}. ${ex.name}`;
+
+                    exerciseContainer.appendChild(exDiv);
+                }
+            }
+
+            detailDiv.appendChild(exerciseContainer);
+        }
+    } catch (error) {
+        console.error(error.message + '\n' + error.error);
+    }
+}
 function renderTable(){
     const tbody = document.getElementById('exercise');
     tbody.innerHTML = "";

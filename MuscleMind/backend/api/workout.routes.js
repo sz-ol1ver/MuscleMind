@@ -104,4 +104,44 @@ router.get('/my-plans', requireAuthApi, async(req, res)=>{
     }
 })
 
+router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
+    try {
+        const wpId = req.params.id;
+        const userId = req.session.user.id;
+        const wpDetail = await db.getWorkoutPlanDetails(userId, wpId);
+        const planDays = {};
+        for(const row of wpDetail){
+            // ha még nincs létrehozva ez a nap
+            if(!planDays[row.day_id]){
+                planDays[row.day_id] = {
+                    dayId: row.day_id,
+                    dayNumber: row.day_number,
+                    name: row.day_name,
+                    isRestDay: !!row.isRestDay,
+                    exercises: []
+                };
+            }
+            // ha nem pihenőnap és van gyakorlat
+            if(row.exercise_id && !row.isRestDay){
+                planDays[row.day_id].exercises.push({
+                    id: row.exercise_id,
+                    name: row.exercise_name,
+                    muscleGroup: row.muscle_group,
+                    order: row.exercise_order
+                });
+            }
+        }
+
+        return res.status(200).json({
+            details: Object.values(planDays)
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
+
 module.exports = router;

@@ -247,6 +247,7 @@ CREATE TABLE IF NOT EXISTS workout_plans(
     user_id INT,
     name VARCHAR(100) NOT NULL,
     is_public BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT FALSE,
     days_count TINYINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

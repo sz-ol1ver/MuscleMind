@@ -92,6 +92,7 @@ input:disabled{
     border: 2px solid rgb(92, 92, 92);
     background-color: #2a2a2a;
     color: white;
+    width: 400px;
 }
 .mainCard:hover{
     border: 2px solid #b58bfd !important;
@@ -104,4 +105,7 @@ input:disabled{
     border: 3px solid rgb(92, 92, 92) !important;
     background-color: #343434;
     color: rgb(255, 251, 251);
+    overflow-x: scroll;
+    white-space: nowrap;
+    max-width: 100%;
 }
