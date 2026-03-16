@@ -144,4 +144,31 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
     }
 })
 
+router.delete('/my-plan/delete/:id', requireAuthApi, async(req, res)=>{
+    try {
+        const planId = req.params.id;
+        const userId = req.session.user.id;
+        const ip = requestIp.getClientIp(req);
+
+        const deleted = await db.deletePlan(userId, planId);
+    
+        await db.log(
+            userId,
+            'WORKOUT_PLAN_DELETE',
+            `Edzésterv törölve. planId: ${planId}`,
+            ip
+        );
+        return res.status(200).json({
+            message: 'Sikeres törlés!',
+            row: deleted
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
+
 module.exports = router;

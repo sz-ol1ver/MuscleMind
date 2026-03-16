@@ -95,6 +95,24 @@ export async function getWorkout(url) {
     }
 }
 
+export async function deleteWorkout(url) {
+    try {
+        const data = await fetch(url, {
+            method: 'DELETE',
+            headers: {'Content-type':'application/json'}
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function postNewPlan(url, value) {
     try {
         const data = await fetch(url, {

@@ -1,4 +1,4 @@
-import {getWorkout, postNewPlan} from './api.js';
+import {getWorkout, postNewPlan, deleteWorkout} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
@@ -125,27 +125,48 @@ document.addEventListener('DOMContentLoaded', ()=>{
         
     })
 });
-
+async function deletePlan(id) {
+    try {
+        const alertDelete = document.getElementById('alert-delete');
+        const data = await deleteWorkout('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
+        alertDelete.innerHTML = data.message;
+        alertDelete.classList.add('alert-success');
+        alertDelete.classList.remove('d-none');
+        setTimeout(()=>{
+            location.reload();
+        }, 2000);
+    } catch (error) {
+        console.error(error.message);
+        alertDelete.innerHTML = data.message;
+        alertDelete.classList.add('alert-danger');
+        alertDelete.classList.remove('d-none');
+        setTimeout(()=>{
+            alertDelete.innerHTML = '';
+            alertDelete.classList.add('d-none');
+            alertDelete.classList.remove('alert-danger');
+        }, 2000);
+    }
+}
 async function postPlan(obj) {
-    const alert = document.getElementById('alert');
+    const alert = document.getElementById('alert-save');
+    
     try {
         const data = await postNewPlan('http://127.0.0.1:3000/api/workout/newPlan', obj);
         alert.innerHTML = data.message;
-        alert.classList.add('alert-success');
+        alert.classList.add('alert-success', 'w-100');
         alert.classList.remove('d-none');
         setTimeout(()=>{
             location.reload();
         }, 2000)
     } catch (error) {
         alert.innerHTML = error.message+ "\n"+error.error;
-        alert.classList.add('alert-danger');
+        alert.classList.add('alert-danger', 'w-100');
         alert.classList.remove('d-none');
         setTimeout(()=>{
             location.reload();
         }, 2000)
     }
 }
-
 async function loadExercises() {
     const select = document.getElementById('gyakorlat');
     try {
@@ -161,15 +182,19 @@ async function loadExercises() {
         console.error(error.message + "\n"+error.error);
     }
 }
-
 async function loadWorkouts() {
     try {
+        const userPlans = document.getElementById('user-plan');
         const workoutDiv = document.getElementById('personal-items');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
 
         workoutDiv.innerHTML = '';
 
-        for (let i = 0; i < data.plans.length; i++) {
+        if(data.plans.length == 0){
+            userPlans.classList.add('d-none')
+        }else{
+            userPlans.classList.remove('d-none');
+            for (let i = 0; i < data.plans.length; i++) {
             const card = document.createElement('div');
             card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
             card.style.minWidth = 'auto';
@@ -217,7 +242,8 @@ async function loadWorkouts() {
             card.appendChild(collapseDiv);
 
             workoutDiv.appendChild(card);
-        }
+        }};
+        
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }
@@ -233,7 +259,12 @@ async function loadWorkoutDetail(id) {
         for (const day of details) {
             const dayDiv = document.createElement('div');
             dayDiv.className = 'workout-day fw-bold mt-2';
-            dayDiv.textContent = `Day ${day.dayNumber} - ${day.name}`;
+            if(day.name != 'Nap '+day.dayNumber){
+                dayDiv.textContent = `Nap ${day.dayNumber} - ${day.name}`;
+            }else{
+                dayDiv.textContent = `${day.name}`;
+            }
+            
             detailDiv.appendChild(dayDiv);
 
             const exerciseContainer = document.createElement('div');
@@ -256,6 +287,27 @@ async function loadWorkoutDetail(id) {
 
             detailDiv.appendChild(exerciseContainer);
         }
+        let hr = document.createElement('hr');
+
+        let alertDiv = document.createElement('div');
+        alertDiv.className = 'alert d-block mx-auto d-none col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center fw-bold';
+        alertDiv.id = 'alert-delete';
+
+        let deleteDiv = document.createElement('div');
+        deleteDiv.className = 'text-end'
+
+        let deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-outline-danger mt-1 w-50';
+        deleteButton.id = 'deleteBtn';
+        deleteButton.textContent = 'Törlés';
+        deleteButton.addEventListener('click', ()=>{
+            deletePlan(id);
+        })
+
+        deleteDiv.appendChild(deleteButton);
+        detailDiv.appendChild(hr);
+        detailDiv.appendChild(alertDiv);
+        detailDiv.appendChild(deleteDiv);
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }

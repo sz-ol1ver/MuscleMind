@@ -179,6 +179,12 @@ async function getWorkoutPlanDetails(userId, planId){
     return rows;
 }
 
+async function deletePlan(userId, planId) {
+    const sql = 'DELETE FROM workout_plans WHERE user_id = ? AND id = ?';
+    const [rows] = await pool.execute(sql, [userId, planId]);
+    return rows.affectedRows;
+}
+
 // ----
 // LOG
 // ----
@@ -212,5 +218,6 @@ module.exports = {
     createWorkoutDay,
     createDayExercise,
     allUserPlans,
-    getWorkoutPlanDetails
+    getWorkoutPlanDetails,
+    deletePlan
 };
