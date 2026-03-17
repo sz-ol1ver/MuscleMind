@@ -123,7 +123,8 @@ CREATE TABLE IF NOT EXISTS exercises(
         'comb_hatso',
         'farizom',
         'vádli',
-        'teljes_test'
+        'teljes_test',
+        'cardio'
     ) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -241,11 +242,22 @@ VALUES
 ('Burpee testsúllyal', 'teljes_test'),
 ('Kettlebell swing', 'teljes_test'),
 ('Farmer walk kézisúlyzóval', 'teljes_test');
+-- cardio
+('Futópad', 'cardio'),
+('Lépcsőző gép', 'cardio'),
+('Elliptikus tréner', 'cardio'),
+('Szobakerékpár', 'cardio'),
+('Evezőgép', 'cardio');
 
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     name VARCHAR(100) NOT NULL,
+    level ENUM('kezdo', 'kozep', 'halado') DEFAULT NULL,
+    location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
+    goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    image_url VARCHAR(255) DEFAULT NULL,
     is_public BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT FALSE,
     days_count TINYINT NOT NULL,
