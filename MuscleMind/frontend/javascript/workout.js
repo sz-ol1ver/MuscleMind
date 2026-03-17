@@ -4,6 +4,12 @@ let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
 let mode = "save" //! save / edit
 let planEditId = null;
+const filters = {
+    level: 'all',
+    location: 'all',
+    goal: 'all',
+    days: 'all'
+};
 
 let plan_name;
 let plan_days;
