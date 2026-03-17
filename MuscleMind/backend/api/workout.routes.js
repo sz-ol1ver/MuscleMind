@@ -4,7 +4,7 @@ const db = require('../sql/database.js');
 const fs = require('fs/promises');
 const requestIp = require('request-ip');
 const {requireAuthApi} = require('../middleware/login.middleware.js');
-const {validateNewPlan} = require('../middleware/workout.middleware.js');
+const {validateNewPlan, validateUpdate} = require('../middleware/workout.middleware.js');
 
 router.get('/exercises', requireAuthApi, async(req, res)=>{
     try {
@@ -73,6 +73,8 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
     } catch (error) {
         await conn.rollback();
         console.log(error.message);
+        const userId = req.session.user.id;
+        const ip = requestIp.getClientIp(req);
         await db.log(
             userId,
             'ERR_WORKOUT_PLAN_CREATE',
@@ -109,31 +111,37 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
         const wpId = req.params.id;
         const userId = req.session.user.id;
         const wpDetail = await db.getWorkoutPlanDetails(userId, wpId);
-        const planDays = {};
+        const plan = {
+            name: wpDetail[0].plan_name,
+            days_count: wpDetail[0].days_count,
+            days: []
+        };
+        let currentDay = null;
         for(const row of wpDetail){
             // ha még nincs létrehozva ez a nap
-            if(!planDays[row.day_id]){
-                planDays[row.day_id] = {
+            if (!currentDay || currentDay.dayId !== row.day_id) {
+                currentDay = {
                     dayId: row.day_id,
                     dayNumber: row.day_number,
                     name: row.day_name,
-                    isRestDay: !!row.isRestDay,
+                    restDay: row.isRestDay,
                     exercises: []
                 };
+
+                plan.days.push(currentDay);
             }
-            // ha nem pihenőnap és van gyakorlat
-            if(row.exercise_id && !row.isRestDay){
-                planDays[row.day_id].exercises.push({
-                    id: row.exercise_id,
+
+            if (row.exercise_id && !row.isRestDay) {
+                currentDay.exercises.push({
+                    exerciseId: row.exercise_id,
                     name: row.exercise_name,
-                    muscleGroup: row.muscle_group,
                     order: row.exercise_order
                 });
             }
         }
 
         return res.status(200).json({
-            details: Object.values(planDays)
+            details: plan
         })
     } catch (error) {
         console.log(error.message);
@@ -141,6 +149,52 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
             message: 'Sikertelen elérés!',
             error: error.message
         });
+    }
+})
+
+router.put('/my-plan/update/:id', requireAuthApi,validateUpdate, async(req, res)=>{
+    const conn = await db.pool.getConnection();
+    
+    try {
+        const planId = req.params.id;
+        const userId = req.session.user.id;
+        const ip = requestIp.getClientIp(req);
+        const days = req.body.days;
+
+        await conn.beginTransaction();
+
+        await db.updateWorkoutPlanDays(conn, days);
+
+        await conn.commit();
+
+        await db.log(
+            userId,
+            'WORKOUT_PLAN_UPDATE',
+            `Edzésterv frissítve. planId: ${planId}`,
+            ip
+        );
+        return res.status(200).json({
+            message: 'Edzésterv sikeresen frissítve!'
+        });
+
+    } catch (error) {
+        await conn.rollback();
+        console.log(error.message);
+        const userId = req.session.user.id;
+        const planId = req.params.id;
+        const ip = requestIp.getClientIp(req);
+        await db.log(
+            userId,
+            'ERR_WORKOUT_PLAN_UPDATE',
+            `Edzésterv sikertelen frissítése. planId: ${planId}`,
+            ip
+        );
+        return res.status(500).json({
+            message: 'Sikertelen frissítés!',
+            error: error.message
+        });
+    } finally {
+        conn.release();
     }
 })
 

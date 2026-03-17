@@ -1,20 +1,33 @@
-import {getWorkout, postNewPlan, deleteWorkout} from './api.js';
+import {getWorkout, postNewPlan, deleteWorkout, putPlan} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
+let mode = "save" //! save / edit
+let planEditId = null;
+
+let plan_name;
+let plan_days;
+let next;
+let day_name;
+let select;
+let rest;
+let save;
+let cancel;
+let create;
+let info;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     //? id
-    const plan_name = document.getElementById('routine-name');
-    const plan_days = document.getElementById('routine-day');
-    const next = document.getElementById('next');
-    const day_name = document.getElementById('day_name');
-    const select = document.getElementById('gyakorlat');
-    const rest = document.getElementById('rest');
-    const save = document.getElementById('save');
-    const cancel = document.getElementById('cancel');
-    const create = document.getElementById('create');
-    const info = document.getElementById('info');
+    plan_name = document.getElementById('routine-name');
+    plan_days = document.getElementById('routine-day');
+    next = document.getElementById('next');
+    day_name = document.getElementById('day_name');
+    select = document.getElementById('gyakorlat');
+    rest = document.getElementById('rest');
+    save = document.getElementById('save');
+    cancel = document.getElementById('cancel');
+    create = document.getElementById('create');
+    info = document.getElementById('info');
     //* id: day-1 ... day-7
 
     //! start
@@ -120,7 +133,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
             if(days == db){
                 return alert('Edzésterv nem állhat csak pihenőnapból!')
             }
-            postPlan(workoutPlan);
+            if(mode == 'save'){
+                postPlan(workoutPlan);
+            }else if(mode == 'edit'){
+                updatePlan(workoutPlan)
+            }
+            
         }
         
     })
@@ -165,6 +183,32 @@ async function postPlan(obj) {
         setTimeout(()=>{
             location.reload();
         }, 2000)
+    }
+}
+async function updatePlan(obj) {
+    const alert = document.getElementById('alert-save');
+    try {
+        console.log(obj)
+        for(let i = 0; i<obj.days.length;i++){
+            if(obj.days[i].name == ''){
+                obj.days[i].name = 'Nap '+(i+1);
+            }
+        }
+        const data = await putPlan('http://127.0.0.1:3000/api/workout/my-plan/update/'+planEditId, obj);
+        alert.innerHTML = data.message;
+        alert.classList.add('alert-success', 'w-100');
+        alert.classList.remove('d-none');
+        console.log(obj);
+        setTimeout(()=>{
+            location.reload();
+        }, 3000)
+    } catch (error) {
+        alert.innerHTML = error.message+ "\n"+error.error;
+        alert.classList.add('alert-danger', 'w-100');
+        alert.classList.remove('d-none');
+        setTimeout(()=>{
+            location.reload();
+        }, 3000)
     }
 }
 async function loadExercises() {
@@ -228,6 +272,7 @@ async function loadWorkouts() {
             selectBtn.className = 'btn btn-outline-light';
             selectBtn.type = 'button';
             selectBtn.textContent = 'Kiválasztás';
+            selectBtn.value = data.plans[i].id;
 
             const collapseDiv = document.createElement('div');
             collapseDiv.className = 'detailCard collapse mt-3 card p-3';
@@ -254,7 +299,7 @@ async function loadWorkoutDetail(id) {
         detailDiv.innerHTML = '';
 
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
-        const details = data.details;
+        const details = data.details.days;
 
         for (const day of details) {
             const dayDiv = document.createElement('div');
@@ -270,9 +315,9 @@ async function loadWorkoutDetail(id) {
             const exerciseContainer = document.createElement('div');
             exerciseContainer.className = 'ms-3';
 
-            if (day.isRestDay) {
+            if (day.restDay) {
                 const rest = document.createElement('div');
-                rest.textContent = 'Pihenőnap';
+                rest.textContent = '- Pihenőnap';
                 exerciseContainer.appendChild(rest);
             } else {
                 for (let i = 0; i < day.exercises.length; i++) {
@@ -293,24 +338,93 @@ async function loadWorkoutDetail(id) {
         alertDiv.className = 'alert d-block mx-auto d-none col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center fw-bold';
         alertDiv.id = 'alert-delete';
 
+        let editDiv = document.createElement('div');
+        editDiv.className = 'text-end'
         let deleteDiv = document.createElement('div');
-        deleteDiv.className = 'text-end'
+        deleteDiv.className = 'text-end mt-2'
 
         let deleteButton = document.createElement('button');
-        deleteButton.className = 'btn btn-outline-danger mt-1 w-50';
+        deleteButton.className = 'btn btn-outline-danger w-50';
         deleteButton.id = 'deleteBtn';
         deleteButton.textContent = 'Törlés';
         deleteButton.addEventListener('click', ()=>{
             deletePlan(id);
         })
+        let editButton = document.createElement('button');
+        editButton.className = 'btn btn-outline-warning w-50';
+        editButton.id = 'editBtn';
+        editButton.textContent = 'Szerkesztés';
+        editButton.addEventListener('click', ()=>{
+            mode = 'edit';
+            editWorkout(id);
+        })
 
+        editDiv.appendChild(editButton);
         deleteDiv.appendChild(deleteButton);
+        
         detailDiv.appendChild(hr);
         detailDiv.appendChild(alertDiv);
+        detailDiv.appendChild(editDiv);
         detailDiv.appendChild(deleteDiv);
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }
+}
+async function editWorkout(id) {
+    const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+    planEditId = id;
+    workoutPlan = data.details;
+    for(let i = 0; i<workoutPlan.days.length; i++){
+        if(workoutPlan.days[i].restDay == true){
+            workoutPlan.days[i].exercises.push({
+                exerciseId: 0,
+                name: 'REST DAY',
+                order: null
+            })
+        }
+    }
+    const editTitle = document.getElementById('newPlanTitle');
+    editTitle.innerHTML = workoutPlan.name + " - szerkesztés";
+    //? display
+    create.classList.add('d-none');
+    info.classList.remove('d-none');
+    save.classList.remove('d-none');
+    cancel.classList.remove('d-none');
+    location.href = '#action';
+
+
+    loadExercises();
+    currentDay = 0;
+    renderTable();
+    if(workoutPlan.days[currentDay].restDay == false){
+        rest.checked = false;
+        select.disabled = false;
+    }else{
+        rest.checked = true;
+        select.disabled = true;
+    }
+    day_name.value = workoutPlan.days[currentDay].name;
+    document.querySelectorAll(".day-box").forEach(button => {
+        if(button.value > workoutPlan.days_count){
+            button.classList.add("d-none");
+        }
+        button.addEventListener("click", () => {
+            currentDay = Number(button.value) - 1;
+            renderTable();
+            if(workoutPlan.days[currentDay].restDay == false){
+                rest.checked = false;
+                select.disabled = false;
+            }else{
+                rest.checked = true;
+                select.disabled = true;
+            }
+            day_name.value = workoutPlan.days[currentDay].name;
+            document.querySelectorAll(".day-box").forEach(button => {
+                button.classList.remove('active');
+            });
+            button.classList.add('active');
+        });
+    });
 }
 function renderTable(){
     const tbody = document.getElementById('exercise');

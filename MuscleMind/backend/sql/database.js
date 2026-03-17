@@ -185,6 +185,51 @@ async function deletePlan(userId, planId) {
     return rows.affectedRows;
 }
 
+async function updateWorkoutPlanDays(conn, days) {
+    for (const day of days) {
+        // 1. workout_days update
+        const updateDaySql = `
+            UPDATE workout_days
+            SET name = ?, isRestDay = ?
+            WHERE id = ?
+        `;
+        await conn.execute(updateDaySql, [
+            day.name.trim(),
+            day.restDay,
+            day.dayId
+        ]);
+
+        // 2. régi gyakorlatok törlése
+        const deleteExercisesSql = `
+            DELETE FROM day_exercises
+            WHERE day_id = ?
+        `;
+        await conn.execute(deleteExercisesSql, [day.dayId]);
+
+        // 3. ha nem pihenőnap, új gyakorlatok insert
+        if (!day.restDay) {
+            for (const exercise of day.exercises) {
+                const insertExerciseSql = `
+                    INSERT INTO day_exercises
+                    (day_id, exercise_id, exercise_order)
+                    VALUES (?, ?, ?)
+                `;
+                await conn.execute(insertExerciseSql, [
+                    day.dayId,
+                    exercise.exerciseId,
+                    exercise.order
+                ]);
+            }
+        }
+    }
+}
+
+async function selectUpdatePlan(userId, planId) {
+    const sql ='SELECT id FROM workout_plans WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
 // ----
 // LOG
 // ----
@@ -219,5 +264,7 @@ module.exports = {
     createDayExercise,
     allUserPlans,
     getWorkoutPlanDetails,
-    deletePlan
+    deletePlan,
+    updateWorkoutPlanDays,
+    selectUpdatePlan
 };
