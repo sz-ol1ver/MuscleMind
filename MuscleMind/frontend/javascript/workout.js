@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     //! start
     loadWorkouts();
+    loadRecWorkouts();
 
     cancel.addEventListener('click', ()=>{
         workoutPlan = null;
@@ -145,7 +146,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function deletePlan(id) {
     try {
-        const alertDelete = document.getElementById('alert-delete');
+        const alertDelete = document.getElementById('alert-delete-'+id);
         const data = await deleteWorkout('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
         alertDelete.innerHTML = data.message;
         alertDelete.classList.add('alert-success');
@@ -231,6 +232,7 @@ async function loadWorkouts() {
         const userPlans = document.getElementById('user-plan');
         const workoutDiv = document.getElementById('personal-items');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
+        console.log(data)
 
         workoutDiv.innerHTML = '';
 
@@ -266,6 +268,73 @@ async function loadWorkouts() {
             //? load details
             detailsBtn.addEventListener('click', ()=>{
                 loadWorkoutDetail(detailsBtn.value);
+            })
+
+            const selectBtn = document.createElement('button');
+            selectBtn.className = 'btn btn-outline-light';
+            selectBtn.type = 'button';
+            selectBtn.textContent = 'Kiválasztás';
+            selectBtn.value = data.plans[i].id;
+
+            const collapseDiv = document.createElement('div');
+            collapseDiv.className = 'detailCard collapse mt-3 card p-3';
+            collapseDiv.id = `workout-details-${data.plans[i].id}`;
+
+            buttonContainer.appendChild(detailsBtn);
+            buttonContainer.appendChild(selectBtn);
+
+            card.appendChild(title);
+            card.appendChild(day);
+            card.appendChild(buttonContainer);
+            card.appendChild(collapseDiv);
+
+            workoutDiv.appendChild(card);
+        }};
+        
+    } catch (error) {
+        console.error(error.message + '\n' + error.error);
+    }
+}
+async function loadRecWorkouts() {
+    try {
+        const userPlans = document.getElementById('recommended-plan');
+        const workoutDiv = document.getElementById('recommended-items');
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plans');
+
+        workoutDiv.innerHTML = '';
+
+        if(data.plans.length == 0){
+            userPlans.classList.add('d-none')
+        }else{
+            userPlans.classList.remove('d-none');
+            for (let i = 0; i < data.plans.length; i++) {
+            const card = document.createElement('div');
+            card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
+            card.style.minWidth = 'auto';
+
+            const title = document.createElement('h2');
+            title.className = 'mb-1 d-block fw-bold';
+            title.textContent = data.plans[i].name;
+
+            const day = document.createElement('p');
+            day.className = 'mb-4 d-block';
+            day.textContent = "Napok száma: "+data.plans[i].days_count;
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'd-flex gap-2';
+
+            const detailsBtn = document.createElement('button');
+            detailsBtn.className = 'btn btn-primary';
+            detailsBtn.type = 'button';
+            detailsBtn.value = data.plans[i].id;
+            detailsBtn.textContent = 'Részletek';
+            detailsBtn.setAttribute('data-bs-toggle', 'collapse');
+            detailsBtn.setAttribute('data-bs-target', `#workout-details-${data.plans[i].id}`);
+            detailsBtn.setAttribute('aria-expanded', 'false');
+            detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
+            //? load details
+            detailsBtn.addEventListener('click', ()=>{
+                loadRecWorkoutDetail(detailsBtn.value);
             })
 
             const selectBtn = document.createElement('button');
@@ -336,7 +405,7 @@ async function loadWorkoutDetail(id) {
 
         let alertDiv = document.createElement('div');
         alertDiv.className = 'alert d-block mx-auto d-none col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center fw-bold';
-        alertDiv.id = 'alert-delete';
+        alertDiv.id = 'alert-delete-'+id;
 
         let editDiv = document.createElement('div');
         editDiv.className = 'text-end'
@@ -366,6 +435,49 @@ async function loadWorkoutDetail(id) {
         detailDiv.appendChild(alertDiv);
         detailDiv.appendChild(editDiv);
         detailDiv.appendChild(deleteDiv);
+    } catch (error) {
+        console.error(error.message + '\n' + error.error);
+    }
+}
+async function loadRecWorkoutDetail(id) {
+    try {
+        const detailDiv = document.getElementById(`workout-details-${id}`);
+        detailDiv.innerHTML = '';
+
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plan/' + id);
+        const details = data.details.days;
+
+        for (const day of details) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'workout-day fw-bold mt-2';
+            if(day.name != 'Nap '+day.dayNumber){
+                dayDiv.textContent = `Nap ${day.dayNumber} - ${day.name}`;
+            }else{
+                dayDiv.textContent = `${day.name}`;
+            }
+            
+            detailDiv.appendChild(dayDiv);
+
+            const exerciseContainer = document.createElement('div');
+            exerciseContainer.className = 'ms-3';
+
+            if (day.restDay) {
+                const rest = document.createElement('div');
+                rest.textContent = '- Pihenőnap';
+                exerciseContainer.appendChild(rest);
+            } else {
+                for (let i = 0; i < day.exercises.length; i++) {
+                    const ex = day.exercises[i];
+
+                    const exDiv = document.createElement('div');
+                    exDiv.textContent = `${ex.order}. ${ex.name}`;
+
+                    exerciseContainer.appendChild(exDiv);
+                }
+            }
+
+            detailDiv.appendChild(exerciseContainer);
+        }
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }

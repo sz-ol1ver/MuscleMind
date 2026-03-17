@@ -105,12 +105,70 @@ router.get('/my-plans', requireAuthApi, async(req, res)=>{
         });
     }
 })
+router.get('/default-plans', requireAuthApi, async(req, res)=>{
+    try {
+        const workouts = await db.allDefaultPlans();
+        return res.status(200).json({
+            plans: workouts
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
 
 router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
     try {
         const wpId = req.params.id;
         const userId = req.session.user.id;
         const wpDetail = await db.getWorkoutPlanDetails(userId, wpId);
+        const plan = {
+            name: wpDetail[0].plan_name,
+            days_count: wpDetail[0].days_count,
+            days: []
+        };
+        let currentDay = null;
+        for(const row of wpDetail){
+            // ha még nincs létrehozva ez a nap
+            if (!currentDay || currentDay.dayId !== row.day_id) {
+                currentDay = {
+                    dayId: row.day_id,
+                    dayNumber: row.day_number,
+                    name: row.day_name,
+                    restDay: row.isRestDay,
+                    exercises: []
+                };
+
+                plan.days.push(currentDay);
+            }
+
+            if (row.exercise_id && !row.isRestDay) {
+                currentDay.exercises.push({
+                    exerciseId: row.exercise_id,
+                    name: row.exercise_name,
+                    order: row.exercise_order
+                });
+            }
+        }
+
+        return res.status(200).json({
+            details: plan
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
+router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
+    try {
+        const wpId = req.params.id;
+        const wpDetail = await db.getDefaultWorkoutPlanDetails(wpId);
         const plan = {
             name: wpDetail[0].plan_name,
             days_count: wpDetail[0].days_count,

@@ -136,6 +136,12 @@ async function allUserPlans(userId) {
     return rows;
 }
 
+async function allDefaultPlans() {
+    const sql = 'SELECT id, name, days_count FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
+
 async function getWorkoutPlanDetails(userId, planId){
     const sql = `
         SELECT
@@ -176,6 +182,50 @@ async function getWorkoutPlanDetails(userId, planId){
     `;
 
     const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
+async function getDefaultWorkoutPlanDetails(planId){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.is_active,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.id = ?
+        AND wp.user_id is NULL
+        AND wp.is_public = TRUE
+
+        ORDER BY
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [planId]);
     return rows;
 }
 
@@ -266,5 +316,7 @@ module.exports = {
     getWorkoutPlanDetails,
     deletePlan,
     updateWorkoutPlanDays,
-    selectUpdatePlan
+    selectUpdatePlan,
+    allDefaultPlans,
+    getDefaultWorkoutPlanDetails
 };
