@@ -158,9 +158,79 @@
                                     </h3> 
                                 </div>
                                 <hr>
-                                <div class="container">
+                                <div class="container-fluid">
+                                    <!-- Mobil gomb -->
+                                    <div class="mb-3 text-end">
+                                        <button 
+                                            class="btn btn-outline-light w-25" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#mobileFilters" 
+                                            aria-expanded="false" 
+                                            aria-controls="mobileFilters">
+                                            ☰ Szűrők
+                                        </button>
+                                    </div>
+                                    <!-- Mobilon collapse -->
+                                    <div class="collapse" id="mobileFilters">
+                                        <hr class="d-lg-none d-md-none">
+                                        <div class="row g-3">
+
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <label for="filter-level" class="form-label fw-bold">Szint</label>
+                                                <select id="filter-level" class="form-select">
+                                                    <option value="all">Összes szint</option>
+                                                    <option value="kezdo">Kezdő</option>
+                                                    <option value="kozep">Középhaladó</option>
+                                                    <option value="halado">Haladó</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <label for="filter-location" class="form-label fw-bold">Helyszín</label>
+                                                <select id="filter-location" class="form-select">
+                                                    <option value="all">Összes helyszín</option>
+                                                    <option value="gym">Konditerem</option>
+                                                    <option value="home_weights">Otthon (súlyzókkal)</option>
+                                                    <option value="home_bodyweight">Otthon (testsúllyal)</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <label for="filter-goal" class="form-label fw-bold">Cél</label>
+                                                <select id="filter-goal" class="form-select">
+                                                    <option value="all">Összes cél</option>
+                                                    <option value="tomeg">Tömegnövelés</option>
+                                                    <option value="szalkasitas">Szálkásítás</option>
+                                                    <option value="szintentartas">Szintentartás</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <label for="filter-days" class="form-label fw-bold">Edzésnapok</label>
+                                                <select id="filter-days" class="form-select">
+                                                    <option value="all">Összes</option>
+                                                    <option value="1">1 nap</option>
+                                                    <option value="2">2 nap</option>
+                                                    <option value="3">3 nap</option>
+                                                    <option value="4">4 nap</option>
+                                                    <option value="5">5 nap</option>
+                                                    <option value="6">6 nap</option>
+                                                    <option value="7">7 nap</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-2">
+                                            <button type="button" class="btn btn-outline-primary w-50 d-block mx-auto">Szűrés</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="container-fluid">
                                     <div class="d-flex align-items-start" id="recommended-items">
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +239,7 @@
                                     <h3>Saját edzéstervek</h3>
                                 </div>
                                 <hr>
-                                <div class="container">
+                                <div class="container-fluid">
                                     <div id="personal-items" class="d-flex align-items-start">
 
                                     </div>
