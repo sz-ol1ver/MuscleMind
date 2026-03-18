@@ -248,7 +248,7 @@ VALUES
 ('Clean & Press rúddal', 'teljes_test'),
 ('Burpee testsúllyal', 'teljes_test'),
 ('Kettlebell swing', 'teljes_test'),
-('Farmer walk kézisúlyzóval', 'teljes_test');
+('Farmer walk kézisúlyzóval', 'teljes_test'),
 -- cardio
 ('Futópad', 'cardio'),
 ('Lépcsőző gép', 'cardio'),
@@ -264,7 +264,6 @@ CREATE TABLE IF NOT EXISTS workout_plans(
     location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
     goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
     description VARCHAR(255) DEFAULT NULL,
-    image_url VARCHAR(255) DEFAULT NULL,
     is_public BOOLEAN DEFAULT FALSE,
     days_count TINYINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -281,6 +280,7 @@ CREATE TABLE IF NOT EXISTS workout_days(
     day_number TINYINT NOT NULL,
     name VARCHAR(100) NOT NULL,
     isRestDay BOOLEAN DEFAULT FALSE,
+    image_url VARCHAR(255) DEFAULT NULL,
 
     CONSTRAINT fk_workout_days_workout_plans
         FOREIGN KEY (plan_id)
