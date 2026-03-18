@@ -3,13 +3,18 @@ import {getWorkout, postNewPlan, deleteWorkout, putPlan} from './api.js';
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
 let currentDay = 0; //? selected day
+
 let mode = "save" //! save / edit
 let planEditId = null;
+
+let activePlan = null;
+
 let recommendedPlans = [];
 let filteredPlans = [];
 let exercisesList = [];
 let filteredExercisesList = [];
 let muscle_groups = [];
+
 const filters = {
     level: 'all',
     location: 'all',
@@ -36,6 +41,8 @@ let goal;
 let wLocation;
 let days;
 let reset;
+let selectedDiv;
+let selectedDivItems;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     //? id
@@ -54,12 +61,13 @@ document.addEventListener('DOMContentLoaded', ()=>{
     wLocation = document.getElementById('filter-location');
     goal = document.getElementById('filter-goal');
     days = document.getElementById('filter-days');
-    reset = document.getElementById('filter-reset-btn')
+    reset = document.getElementById('filter-reset-btn');
+    selectedDiv = document.getElementById('selected-plan');
+    selectedDivItems = document.getElementById('selected-items');
     //* id: day-1 ... day-7
 
     //! start
-    loadWorkouts();
-    loadRecWorkouts();
+    getActive();
 
     //! addeventlistener
     level.addEventListener('change', ()=>{
@@ -196,8 +204,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     })
 });
 async function deletePlan(id) {
+    const alertDelete = document.getElementById('alert-delete-'+id);
     try {
-        const alertDelete = document.getElementById('alert-delete-'+id);
         const data = await deleteWorkout('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
         alertDelete.innerHTML = data.message;
         alertDelete.classList.add('alert-success');
@@ -207,7 +215,7 @@ async function deletePlan(id) {
         }, 2000);
     } catch (error) {
         console.error(error.message);
-        alertDelete.innerHTML = data.message;
+        alertDelete.innerHTML = error.message || 'Hiba történt törlés közben.';
         alertDelete.classList.add('alert-danger');
         alertDelete.classList.remove('d-none');
         setTimeout(()=>{
@@ -315,8 +323,34 @@ function filterMuscleGroups(){
         }
         filteredExercisesList.push(row);
     }
-    console.log(filteredExercisesList)
     renderExercises(filteredExercisesList);
+}
+async function getActive() {
+    try {
+        const data = await getWorkout('http://127.0.0.1:3000/api/workout/plans/active');
+        activePlan = data.active;
+        if(activePlan < 1){
+            selectedDiv.classList.add('d-none');
+        }else{
+            selectedDiv.classList.remove('d-none');
+        }
+        selectedDivItems.innerHTML = '';
+        await loadWorkouts();
+        await loadRecWorkouts();
+    } catch (error) {
+        return console.error(error.message);
+    }
+}
+async function updateActive(id) {
+    try {
+        const obj = {
+            active: id
+        }
+        const data = await putPlan('http://127.0.0.1:3000/api/workout/plans/active', obj);
+        await getActive();
+    } catch (error) {
+        console.error(error.message);
+    }
 }
 async function loadWorkouts() {
     try {
@@ -334,6 +368,7 @@ async function loadWorkouts() {
             const card = document.createElement('div');
             card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
             card.style.minWidth = 'auto';
+            card.id = 'mainCard-'+data.plans[i].id;
 
             const title = document.createElement('h2');
             title.className = 'mb-1 d-block fw-bold';
@@ -365,6 +400,13 @@ async function loadWorkouts() {
             selectBtn.type = 'button';
             selectBtn.textContent = 'Kiválasztás';
             selectBtn.value = data.plans[i].id;
+            selectBtn.addEventListener('click', ()=>{
+                if(activePlan === Number(selectBtn.value)){
+                    updateActive(null);
+                }else{
+                    updateActive(Number(selectBtn.value));
+                }
+            })
 
             const collapseDiv = document.createElement('div');
             collapseDiv.className = 'detailCard collapse mt-3 card p-3';
@@ -378,7 +420,12 @@ async function loadWorkouts() {
             card.appendChild(buttonContainer);
             card.appendChild(collapseDiv);
 
-            workoutDiv.appendChild(card);
+            if(activePlan == data.plans[i].id){
+                card.id = 'selectedPlan';
+                selectedDivItems.appendChild(card);
+            }else{
+                workoutDiv.appendChild(card);
+            }
         }};
         
     } catch (error) {
@@ -433,6 +480,13 @@ function renderRecWorkouts(plans){
         selectBtn.type = 'button';
         selectBtn.textContent = 'Kiválasztás';
         selectBtn.value = plans[i].id;
+        selectBtn.addEventListener('click', ()=>{
+            if(activePlan === Number(selectBtn.value)){
+                updateActive(null);
+            }else{
+                updateActive(Number(selectBtn.value));
+            }
+        })
 
         const collapseDiv = document.createElement('div');
         collapseDiv.className = 'detailCard collapse mt-3 card p-3';
@@ -446,7 +500,12 @@ function renderRecWorkouts(plans){
         card.appendChild(buttonContainer);
         card.appendChild(collapseDiv);
 
-        workoutDiv.appendChild(card);
+        if(activePlan == plans[i].id){
+            card.id = 'selectedPlan';
+            selectedDivItems.appendChild(card);
+        }else{
+            workoutDiv.appendChild(card);
+        }
     }
 }
 async function loadRecWorkouts() {

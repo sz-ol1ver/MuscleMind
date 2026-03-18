@@ -284,11 +284,16 @@ async function selectUpdatePlan(userId, planId) {
     return rows;
 }
 
-/*async function updateActive(status,id) {
-    const sql = 'UPDATE users SET active_plan = ?';
-    const [rows] = await pool.execute(sql, [status, id]);
+async function getActive(id) {
+    const sql = 'SELECT active_plan FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].active_plan;
+}
+async function updateActive(userId,plan) {
+    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
+    const [rows] = await pool.execute(sql, [plan, userId]);
     return rows.affectedRows;
-}*/
+}
 
 // ----
 // LOG
@@ -328,5 +333,7 @@ module.exports = {
     updateWorkoutPlanDays,
     selectUpdatePlan,
     allDefaultPlans,
-    getDefaultWorkoutPlanDetails
+    getDefaultWorkoutPlanDetails,
+    getActive,
+    updateActive
 };

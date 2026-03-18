@@ -9,7 +9,7 @@
     padding-bottom: 40px;
 }
 
-#recommended-title{
+#recommended-title, #selected-title{
     text-align: center;
     font-weight: 600;
     font-size: larger;
@@ -112,4 +112,11 @@ input:disabled{
     white-space: nowrap;
     width: auto;
     max-width: 400px !important;
+}
+#selectedPlan{
+    width: 100% !important;
+    align-items: center;
+}
+#selectedPlan>.detailCard{
+    max-width: none !important;
 }

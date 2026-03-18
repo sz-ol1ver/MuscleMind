@@ -4,7 +4,7 @@ const db = require('../sql/database.js');
 const fs = require('fs/promises');
 const requestIp = require('request-ip');
 const {requireAuthApi} = require('../middleware/login.middleware.js');
-const {validateNewPlan, validateUpdate} = require('../middleware/workout.middleware.js');
+const {validateNewPlan, validateUpdate, validateActive} = require('../middleware/workout.middleware.js');
 
 router.get('/exercises', requireAuthApi, async(req, res)=>{
     try {
@@ -215,6 +215,22 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
         });
     }
 })
+router.get('/plans/active', requireAuthApi, async(req,res)=>{
+    try {
+        const userId = req.session.user.id;
+        const activeP = await db.getActive(userId);
+
+        return res.status(200).json({
+            active: activeP
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
+    }
+})
 
 router.put('/my-plan/update/:id', requireAuthApi,validateUpdate, async(req, res)=>{
     const conn = await db.pool.getConnection();
@@ -259,6 +275,23 @@ router.put('/my-plan/update/:id', requireAuthApi,validateUpdate, async(req, res)
         });
     } finally {
         conn.release();
+    }
+})
+router.put('/plans/active', requireAuthApi,validateActive, async(req, res)=>{
+    try {
+        const userId = req.session.user.id;
+        const plan = req.body.active;
+        await db.updateActive(userId, plan);
+
+        return res.status(200).json({
+            message: 'Aktív edzésterv frissítve.'
+        })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({
+            message: 'Sikertelen elérés!',
+            error: error.message
+        });
     }
 })
 

@@ -355,7 +355,7 @@ VALUES
 ('Szobakerékpár', 'cardio'),
 ('Evezőgép', 'cardio');
 
--- INSERT recommended plans
+-- INSERT recommended plans (for testing)
 INSERT INTO workout_plans (user_id, name, level, location, goal, description, is_public, days_count)
 SELECT
     NULL AS user_id,

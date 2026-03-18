@@ -346,7 +346,49 @@ async function validateUpdate(req,res,next) {
         next(error);
     }
 }
+async function validateActive(req, res, next) {
+    try {
+        const allowedKeys = ['active'];
+        const bodyKeys = Object.keys(req.body);
+
+        // 1. csak az 'active' kulcs lehet
+        for (let key of bodyKeys) {
+            if (!allowedKeys.includes(key)) {
+                return res.status(400).json({
+                    message: `Nem megengedett mező: ${key}`
+                });
+            }
+        }
+
+        const { active } = req.body;
+
+        // 2. kötelező mező
+        if (active === undefined) {
+            return res.status(400).json({
+                message: "Hiányzó 'active' mező."
+            });
+        }
+
+        // 3. null megengedett
+        if (active === null) {
+            return next();
+        }
+
+        // 4. típus ellenőrzés
+        if (typeof active !== 'number' || !Number.isInteger(active) || active <= 0) {
+            return res.status(400).json({
+                message: "Érvénytelen 'active' érték."
+            });
+        }
+
+        next();
+
+    } catch (error) {
+        next(error);
+    }
+}
 module.exports = {
     validateNewPlan,
-    validateUpdate
+    validateUpdate,
+    validateActive
 }
