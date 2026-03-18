@@ -105,6 +105,202 @@ async function allExercises() {
     return rows;
 }
 
+async function exerciseExist(exerciseId) {
+    const exercise = 'SELECT name FROM exercises WHERE id = ?';
+    const [rows] = await pool.execute(exercise, [exerciseId]);
+    return rows.length > 0;
+}
+
+async function createWorkoutPlan(conn, userId, name, daysCount) {
+    const sql = `
+        INSERT INTO workout_plans (user_id, name, days_count)
+        VALUES (?, ?, ?)
+    `;
+    const [result] = await conn.execute(sql, [userId, name, daysCount]);
+    return result.insertId;
+}
+
+async function createWorkoutDay(conn, planId, dayNumber, name, restDay) {
+    const sql = `
+        INSERT INTO workout_days (plan_id, day_number, name, isRestDay)
+        VALUES (?, ?, ?,  ?)
+    `;
+    const [result] = await conn.execute(sql, [planId, dayNumber, name, restDay]);
+    return result.insertId;
+}
+
+async function createDayExercise(conn, dayId, exerciseId, exerciseOrder) {
+    const sql = `
+        INSERT INTO day_exercises (day_id, exercise_id, exercise_order)
+        VALUES (?, ?, ?)
+    `;
+    await conn.execute(sql, [dayId, exerciseId, exerciseOrder]);
+}
+
+async function allUserPlans(userId) {
+    const sql = 'SELECT id, name, days_count FROM workout_plans WHERE user_id = ? ORDER BY id DESC';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function allDefaultPlans() {
+    const sql = 'SELECT id, name, days_count, level, location, goal, description FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
+
+async function getWorkoutPlanDetails(userId, planId){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.id = ?
+        AND wp.user_id = ?
+
+        ORDER BY
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
+async function getDefaultWorkoutPlanDetails(planId){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.level,
+            wp.location,
+            wp.goal,
+            wp.description,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.id = ?
+        AND wp.user_id is NULL
+        AND wp.is_public = TRUE
+
+        ORDER BY
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [planId]);
+    return rows;
+}
+
+async function deletePlan(userId, planId) {
+    const sql = 'DELETE FROM workout_plans WHERE user_id = ? AND id = ?';
+    const [rows] = await pool.execute(sql, [userId, planId]);
+    return rows.affectedRows;
+}
+
+async function updateWorkoutPlanDays(conn, days) {
+    for (const day of days) {
+        // 1. workout_days update
+        const updateDaySql = `
+            UPDATE workout_days
+            SET name = ?, isRestDay = ?
+            WHERE id = ?
+        `;
+        await conn.execute(updateDaySql, [
+            day.name.trim(),
+            day.restDay,
+            day.dayId
+        ]);
+
+        // 2. régi gyakorlatok törlése
+        const deleteExercisesSql = `
+            DELETE FROM day_exercises
+            WHERE day_id = ?
+        `;
+        await conn.execute(deleteExercisesSql, [day.dayId]);
+
+        // 3. ha nem pihenőnap, új gyakorlatok insert
+        if (!day.restDay) {
+            for (const exercise of day.exercises) {
+                const insertExerciseSql = `
+                    INSERT INTO day_exercises
+                    (day_id, exercise_id, exercise_order)
+                    VALUES (?, ?, ?)
+                `;
+                await conn.execute(insertExerciseSql, [
+                    day.dayId,
+                    exercise.exerciseId,
+                    exercise.order
+                ]);
+            }
+        }
+    }
+}
+
+async function selectUpdatePlan(userId, planId) {
+    const sql ='SELECT id FROM workout_plans WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
+async function getActive(id) {
+    const sql = 'SELECT active_plan FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].active_plan;
+}
+async function updateActive(userId,plan) {
+    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
+    const [rows] = await pool.execute(sql, [plan, userId]);
+    return rows.affectedRows;
+}
 
 // ----
 // LOG
@@ -121,6 +317,7 @@ async function log(id, action, desc, ip) {
 
 //!Export
 module.exports = {
+    pool,
     selectall,
     registration_insert,
     username_exist,
@@ -133,5 +330,18 @@ module.exports = {
     insertPreferences,
     insertWeight,
     updateRegistered,
-    allExercises
+    allExercises,
+    exerciseExist,
+    createWorkoutPlan,
+    createWorkoutDay,
+    createDayExercise,
+    allUserPlans,
+    getWorkoutPlanDetails,
+    deletePlan,
+    updateWorkoutPlanDays,
+    selectUpdatePlan,
+    allDefaultPlans,
+    getDefaultWorkoutPlanDetails,
+    getActive,
+    updateActive
 };
