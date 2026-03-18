@@ -119,7 +119,6 @@ router.get('/default-plans', requireAuthApi, async(req, res)=>{
         });
     }
 })
-
 router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
     try {
         const wpId = req.params.id;
@@ -172,6 +171,12 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
         const plan = {
             name: wpDetail[0].plan_name,
             days_count: wpDetail[0].days_count,
+            level: wpDetail[0].level,
+            location: wpDetail[0].location,
+            goal: wpDetail[0].goal,
+            description: wpDetail[0].description,
+            image_url: wpDetail[0].image_url,
+            active: wpDetail[0].is_active,
             days: []
         };
         let currentDay = null;

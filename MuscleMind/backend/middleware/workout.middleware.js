@@ -24,7 +24,7 @@ async function validateNewPlan(req,res, next) {
             });
             }
         }
-        if (!workoutPlan.name || typeof workoutPlan.name !== 'string' || !workoutPlan.name.trim()) 
+        if (!workoutPlan.name || typeof workoutPlan.name !== 'string' || !workoutPlan.name.trim() || workoutPlan.name.length > 100) 
         {
             return res.status(400).json({
                 message: 'Adj nevet az edzéstervnek.'

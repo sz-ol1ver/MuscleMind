@@ -87,12 +87,15 @@ input:disabled{
     white-space: nowrap;
     padding: 5px;
 }
+.workout-title{
+    text-wrap: wrap !important;
+}
 
 .mainCard{
     border: 2px solid rgb(92, 92, 92);
     background-color: #2a2a2a;
     color: white;
-    width: auto !important;
+    width: 400px !important;
 }
 .mainCard:hover{
     border: 2px solid #b58bfd !important;

@@ -4,6 +4,8 @@ let workoutPlan = null; //? edzesterv obj
 let currentDay = 0; //? selected day
 let mode = "save" //! save / edit
 let planEditId = null;
+let recommendedPlans = [];
+let filteredPlans = [];
 const filters = {
     level: 'all',
     location: 'all',
@@ -21,6 +23,12 @@ let save;
 let cancel;
 let create;
 let info;
+let level;
+let goal;
+let wLocation;
+let days;
+let filter;
+let reset;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     //? id
@@ -34,12 +42,37 @@ document.addEventListener('DOMContentLoaded', ()=>{
     cancel = document.getElementById('cancel');
     create = document.getElementById('create');
     info = document.getElementById('info');
+    level = document.getElementById('filter-level');
+    wLocation = document.getElementById('filter-location');
+    goal = document.getElementById('filter-goal');
+    days = document.getElementById('filter-days');
+    filter = document.getElementById('filter-btn');
+    reset = document.getElementById('filter-reset-btn')
     //* id: day-1 ... day-7
 
     //! start
     loadWorkouts();
     loadRecWorkouts();
 
+    //! addeventlistener
+    level.addEventListener('change', ()=>{
+        filters.level = level.value;
+    });
+    wLocation.addEventListener('change', ()=>{
+        filters.location = wLocation.value;
+    });
+    goal.addEventListener('change', ()=>{
+        filters.goal = goal.value;
+    });
+    days.addEventListener('change', ()=>{
+        filters.days = days.value;
+    });
+    filter.addEventListener('click', ()=>{
+        filterPlans();
+    })
+    reset.addEventListener('click', ()=>{
+        resetFilters();
+    })
     cancel.addEventListener('click', ()=>{
         workoutPlan = null;
         location.reload();
@@ -195,7 +228,6 @@ async function postPlan(obj) {
 async function updatePlan(obj) {
     const alert = document.getElementById('alert-save');
     try {
-        console.log(obj)
         for(let i = 0; i<obj.days.length;i++){
             if(obj.days[i].name == ''){
                 obj.days[i].name = 'Nap '+(i+1);
@@ -205,7 +237,6 @@ async function updatePlan(obj) {
         alert.innerHTML = data.message;
         alert.classList.add('alert-success', 'w-100');
         alert.classList.remove('d-none');
-        console.log(obj);
         setTimeout(()=>{
             location.reload();
         }, 3000)
@@ -238,7 +269,6 @@ async function loadWorkouts() {
         const userPlans = document.getElementById('user-plan');
         const workoutDiv = document.getElementById('personal-items');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
-        console.log(data)
 
         workoutDiv.innerHTML = '';
 
@@ -260,7 +290,7 @@ async function loadWorkouts() {
             day.textContent = "Napok száma: "+data.plans[i].days_count;
 
             const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'd-flex gap-2';
+            buttonContainer.className = 'd-flex gap-2 mt-auto';
 
             const detailsBtn = document.createElement('button');
             detailsBtn.className = 'btn btn-primary';
@@ -301,69 +331,85 @@ async function loadWorkouts() {
         console.error(error.message + '\n' + error.error);
     }
 }
+function renderRecWorkouts(plans){
+    const userPlans = document.getElementById('recommended-plan');
+    const workoutDiv = document.getElementById('recommended-items');
+
+    workoutDiv.innerHTML = '';
+
+    if(plans.length === 0){
+        userPlans.classList.remove('d-none');
+        workoutDiv.innerHTML = '<p class="text-center w-100">Nincs találat.</p>';
+        return;
+    }
+
+    userPlans.classList.remove('d-none');
+
+    for (let i = 0; i < plans.length; i++) {
+        const card = document.createElement('div');
+        card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
+        card.style.minWidth = 'auto';
+
+        const title = document.createElement('h2');
+        title.className = 'mb-1 d-block fw-bold workout-title';
+        title.textContent = plans[i].name;
+
+        const day = document.createElement('p');
+        day.className = 'mb-4 d-block';
+        day.textContent = "Napok száma: " + plans[i].days_count;
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.className = 'd-flex gap-2 mt-auto';
+
+        const detailsBtn = document.createElement('button');
+        detailsBtn.className = 'btn btn-primary';
+        detailsBtn.type = 'button';
+        detailsBtn.value = plans[i].id;
+        detailsBtn.textContent = 'Részletek';
+        detailsBtn.setAttribute('data-bs-toggle', 'collapse');
+        detailsBtn.setAttribute('data-bs-target', `#workout-details-${plans[i].id}`);
+        detailsBtn.setAttribute('aria-expanded', 'false');
+        detailsBtn.setAttribute('aria-controls', `workout-details-${plans[i].id}`);
+        detailsBtn.addEventListener('click', ()=>{
+            loadRecWorkoutDetail(detailsBtn.value);
+        });
+
+        const selectBtn = document.createElement('button');
+        selectBtn.className = 'btn btn-outline-light';
+        selectBtn.type = 'button';
+        selectBtn.textContent = 'Kiválasztás';
+        selectBtn.value = plans[i].id;
+
+        const collapseDiv = document.createElement('div');
+        collapseDiv.className = 'detailCard collapse mt-3 card p-3';
+        collapseDiv.id = `workout-details-${plans[i].id}`;
+
+        buttonContainer.appendChild(detailsBtn);
+        buttonContainer.appendChild(selectBtn);
+
+        card.appendChild(title);
+        card.appendChild(day);
+        card.appendChild(buttonContainer);
+        card.appendChild(collapseDiv);
+
+        workoutDiv.appendChild(card);
+    }
+}
 async function loadRecWorkouts() {
     try {
         const userPlans = document.getElementById('recommended-plan');
-        const workoutDiv = document.getElementById('recommended-items');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plans');
 
-        workoutDiv.innerHTML = '';
+        recommendedPlans = data.plans;
 
-        if(data.plans.length == 0){
-            userPlans.classList.add('d-none')
-        }else{
-            userPlans.classList.remove('d-none');
-            for (let i = 0; i < data.plans.length; i++) {
-            const card = document.createElement('div');
-            card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
-            card.style.minWidth = 'auto';
+        if(recommendedPlans.length === 0){
+            userPlans.classList.add('d-none');
+            return;
+        }
 
-            const title = document.createElement('h2');
-            title.className = 'mb-1 d-block fw-bold';
-            title.textContent = data.plans[i].name;
+        userPlans.classList.remove('d-none');
+        renderRecWorkouts(recommendedPlans);
 
-            const day = document.createElement('p');
-            day.className = 'mb-4 d-block';
-            day.textContent = "Napok száma: "+data.plans[i].days_count;
-
-            const buttonContainer = document.createElement('div');
-            buttonContainer.className = 'd-flex gap-2';
-
-            const detailsBtn = document.createElement('button');
-            detailsBtn.className = 'btn btn-primary';
-            detailsBtn.type = 'button';
-            detailsBtn.value = data.plans[i].id;
-            detailsBtn.textContent = 'Részletek';
-            detailsBtn.setAttribute('data-bs-toggle', 'collapse');
-            detailsBtn.setAttribute('data-bs-target', `#workout-details-${data.plans[i].id}`);
-            detailsBtn.setAttribute('aria-expanded', 'false');
-            detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
-            //? load details
-            detailsBtn.addEventListener('click', ()=>{
-                loadRecWorkoutDetail(detailsBtn.value);
-            })
-
-            const selectBtn = document.createElement('button');
-            selectBtn.className = 'btn btn-outline-light';
-            selectBtn.type = 'button';
-            selectBtn.textContent = 'Kiválasztás';
-            selectBtn.value = data.plans[i].id;
-
-            const collapseDiv = document.createElement('div');
-            collapseDiv.className = 'detailCard collapse mt-3 card p-3';
-            collapseDiv.id = `workout-details-${data.plans[i].id}`;
-
-            buttonContainer.appendChild(detailsBtn);
-            buttonContainer.appendChild(selectBtn);
-
-            card.appendChild(title);
-            card.appendChild(day);
-            card.appendChild(buttonContainer);
-            card.appendChild(collapseDiv);
-
-            workoutDiv.appendChild(card);
-        }};
-        
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }
@@ -452,6 +498,22 @@ async function loadRecWorkoutDetail(id) {
 
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plan/' + id);
         const details = data.details.days;
+
+        const descDiv = document.createElement('div');
+        const descLabel = document.createElement('h4');
+        descLabel.className = 'fw-bold mb-3';
+        descLabel.innerHTML = 'Nap leírása'
+        descDiv.appendChild(descLabel);
+
+        if(data.details.description){
+            const descP = document.createElement('p');
+
+            descP.className = 'text-wrap card bg-secondary text-light p-3 text-justify';
+            descP.innerHTML = data.details.description;
+            
+            descDiv.appendChild(descP);
+        }
+        detailDiv.appendChild(descDiv);
 
         for (const day of details) {
             const dayDiv = document.createElement('div');
@@ -584,4 +646,41 @@ function renderTable(){
 
         tbody.appendChild(tr);
     }
+}
+function filterPlans(){
+    filteredPlans.length = 0;
+    for(let row of recommendedPlans){
+
+        if(filters.location !== 'all' && row.location != filters.location){
+            continue;
+        }
+
+        if(filters.goal !== 'all' && row.goal != filters.goal){
+            continue;
+        }
+
+        if(filters.level !== 'all' && row.level != filters.level){
+            continue;
+        }
+
+        if(filters.days !== 'all' && row.days_count != Number(filters.days)){
+            continue;
+        }
+
+        filteredPlans.push(row);
+    }
+    renderRecWorkouts(filteredPlans);
+}
+function resetFilters(){
+    filters.level = 'all';
+    filters.location = 'all';
+    filters.goal = 'all';
+    filters.days = 'all';
+
+    level.value = 'all';
+    wLocation.value = 'all';
+    goal.value = 'all';
+    days.value = 'all';
+
+    renderRecWorkouts(recommendedPlans);
 }

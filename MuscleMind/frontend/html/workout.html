@@ -222,8 +222,9 @@
 
                                         </div>
                                         <hr>
-                                        <div class="row mt-2">
-                                            <button type="button" class="btn btn-outline-primary w-50 d-block mx-auto">Szűrés</button>
+                                        <div class="row mt-2 justify-content-center">
+                                            <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
+                                            <button type="button" id="filter-btn" class="btn btn-outline-primary ms-2 w-auto">Szűrés</button>
                                         </div>
                                     </div>
                                 </div>
@@ -255,7 +256,7 @@
                                 <div class="row justify-content-center">
                                     <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-6 col-md-6 col-lg-5 col-xl-3">
                                         <label for="routine-name" class="form-label fw-bold">Edzésterv neve</label>
-                                        <input type="text" name="routine-name" id="routine-name" value="new_workout" class="form-control">
+                                        <input type="text" name="routine-name" id="routine-name" maxlength="100" value="new_workout" class="form-control">
                                         <label for="routine-day" class="form-label fw-bold mt-2">Napok száma</label>
                                         <input type="number" name="routine-day" id="routine-day" placeholder="Napok száma" class="form-control" min="1" max="7">
                                         <hr class="w-50 d-block mx-auto">

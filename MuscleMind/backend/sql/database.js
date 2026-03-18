@@ -137,7 +137,7 @@ async function allUserPlans(userId) {
 }
 
 async function allDefaultPlans() {
-    const sql = 'SELECT id, name, days_count FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const sql = 'SELECT id, name, days_count,is_active, level, location, goal, description, image_url FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
     const [rows] = await pool.execute(sql);
     return rows;
 }
@@ -192,6 +192,11 @@ async function getDefaultWorkoutPlanDetails(planId){
             wp.name AS plan_name,
             wp.days_count,
             wp.is_active,
+            wp.level,
+            wp.location,
+            wp.goal,
+            wp.description,
+            wp.image_url,
 
             wd.id AS day_id,
             wd.day_number,
