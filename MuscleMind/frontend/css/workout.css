@@ -82,7 +82,7 @@ input:disabled{
 .day-box{
     color: #616161;
 }
-#recommended-items{
+#personal-items,#recommended-items{
     overflow-x: scroll;
     white-space: nowrap;
     padding: 5px;
