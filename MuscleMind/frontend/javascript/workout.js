@@ -28,7 +28,6 @@ let level;
 let goal;
 let wLocation;
 let days;
-let filter;
 let reset;
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     wLocation = document.getElementById('filter-location');
     goal = document.getElementById('filter-goal');
     days = document.getElementById('filter-days');
-    filter = document.getElementById('filter-btn');
     reset = document.getElementById('filter-reset-btn')
     //* id: day-1 ... day-7
 
@@ -58,19 +56,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //! addeventlistener
     level.addEventListener('change', ()=>{
         filters.level = level.value;
+        filterPlans();
     });
     wLocation.addEventListener('change', ()=>{
         filters.location = wLocation.value;
+        filterPlans();
     });
     goal.addEventListener('change', ()=>{
         filters.goal = goal.value;
+        filterPlans();
     });
     days.addEventListener('change', ()=>{
         filters.days = days.value;
-    });
-    filter.addEventListener('click', ()=>{
         filterPlans();
-    })
+    });
     reset.addEventListener('click', ()=>{
         resetFilters();
     })

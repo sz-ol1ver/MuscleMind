@@ -153,6 +153,7 @@ async function getWorkoutPlanDetails(userId, planId){
             wd.day_number,
             wd.name AS day_name,
             wd.isRestDay,
+            wd.image_url,
 
             de.id AS day_exercise_id,
             de.exercise_order,
@@ -194,12 +195,12 @@ async function getDefaultWorkoutPlanDetails(planId){
             wp.location,
             wp.goal,
             wp.description,
-            wp.image_url,
 
             wd.id AS day_id,
             wd.day_number,
             wd.name AS day_name,
             wd.isRestDay,
+            wd.image_url,
 
             de.id AS day_exercise_id,
             de.exercise_order,

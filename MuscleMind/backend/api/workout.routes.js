@@ -138,6 +138,7 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
                     dayNumber: row.day_number,
                     name: row.day_name,
                     restDay: row.isRestDay,
+                    url: row.image_url,
                     exercises: []
                 };
 
@@ -187,7 +188,7 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
                     dayNumber: row.day_number,
                     name: row.day_name,
                     restDay: row.isRestDay,
-                    image_url: row.image_url,
+                    url: row.image_url,
                     exercises: []
                 };
 

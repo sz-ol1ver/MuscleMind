@@ -224,7 +224,6 @@
                                         <hr>
                                         <div class="row mt-2 justify-content-center">
                                             <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
-                                            <button type="button" id="filter-btn" class="btn btn-outline-primary ms-2 w-auto">Szűrés</button>
                                         </div>
                                     </div>
                                 </div>
@@ -293,6 +292,12 @@
                                             </div>
                                             <hr class="mt-4 d-lg-none d-xl-none d-md-none">
                                             <div class="routine-data mt-2 col-10 col-sm-10 col-md-4 col-lg-4 col-xl-3">
+                                                <select name="muscle-group" id="muscle-group" class="form-control bg-dark text-light border-1 d-block mb-2">
+                                                    <option value="0" selected disabled>
+                                                        Izomcsoport szűrés ▼
+                                                    </option>
+                                                    <option value="" disabled>-</option>
+                                                </select>
                                                 <select name="gyakorlat" id="gyakorlat" class="form-control bg-dark text-light border-1 d-block">
                                                     <option value="0" selected disabled>
                                                         Gyakorlat kiválasztása ▼

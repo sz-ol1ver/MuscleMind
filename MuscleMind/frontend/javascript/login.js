@@ -85,4 +85,51 @@ document.addEventListener('DOMContentLoaded', ()=>{
             }
         }
     })
+
+    password.addEventListener('keydown', async(e)=>{
+        if(e.key == 'Enter'){
+            try {
+                const postObj = {
+                    email: email.value,
+                    pass: password.value
+                }
+                const data = await login('http://127.0.0.1:3000/api/auth/login', postObj)
+                feedback.style.color = 'lightgreen';
+                feedback.innerHTML = data.message;
+                setTimeout(()=>{
+                    feedback.innerHTML = '';
+                    email.value = '';
+                    password.value = '';
+                    password.disabled = true;
+                    setTimeout(()=>{
+                        window.location.href = '/kerdoiv'
+                    }, 300)
+                }, 2000)
+            } catch (error) {
+                feedback.style.color = 'rgba(255, 30, 30, 1)';
+                feedback.style.fontWeight = 'bolder';
+                switch(error.id){
+                    case 1:
+                        feedback.innerHTML = error.message;
+                        break;
+                    case 2:
+                        switch(error.error){
+                            case 1:
+                                feedback.innerHTML = 'Helytelen email cim megadás!'
+                                break;
+                            case 2:
+                                feedback.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett"
+                                break;
+                        }
+                        break;
+                    case 3:
+                        feedback.innerHTML = error.message;
+                        break;
+                    case 4:
+                        feedback.innerHTML = error.message;
+                        break;
+                }
+            }
+        }
+    })
 })
