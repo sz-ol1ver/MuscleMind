@@ -137,7 +137,7 @@ async function allUserPlans(userId) {
 }
 
 async function allDefaultPlans() {
-    const sql = 'SELECT id, name, days_count,is_active, level, location, goal, description, image_url FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const sql = 'SELECT id, name, days_count, level, location, goal, description, image_url FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
     const [rows] = await pool.execute(sql);
     return rows;
 }
@@ -148,7 +148,6 @@ async function getWorkoutPlanDetails(userId, planId){
             wp.id AS plan_id,
             wp.name AS plan_name,
             wp.days_count,
-            wp.is_active,
 
             wd.id AS day_id,
             wd.day_number,
@@ -191,7 +190,6 @@ async function getDefaultWorkoutPlanDetails(planId){
             wp.id AS plan_id,
             wp.name AS plan_name,
             wp.days_count,
-            wp.is_active,
             wp.level,
             wp.location,
             wp.goal,
@@ -284,6 +282,12 @@ async function selectUpdatePlan(userId, planId) {
     const [rows] = await pool.execute(sql, [planId, userId]);
     return rows;
 }
+
+/*async function updateActive(status,id) {
+    const sql = 'UPDATE users SET active_plan = ?';
+    const [rows] = await pool.execute(sql, [status, id]);
+    return rows.affectedRows;
+}*/
 
 // ----
 // LOG
