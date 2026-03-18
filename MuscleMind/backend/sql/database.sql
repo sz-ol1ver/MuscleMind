@@ -136,6 +136,105 @@ CREATE TABLE IF NOT EXISTS exercises(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS workout_plans(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(100) NOT NULL,
+    level ENUM('kezdo', 'kozep', 'halado') DEFAULT NULL,
+    location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
+    goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    is_public BOOLEAN DEFAULT FALSE,
+    days_count TINYINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_workout_plans_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS workout_days(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_id INT NOT NULL,
+    day_number TINYINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    isRestDay BOOLEAN DEFAULT FALSE,
+    image_url VARCHAR(255) DEFAULT NULL,
+
+    CONSTRAINT fk_workout_days_workout_plans
+        FOREIGN KEY (plan_id)
+        REFERENCES workout_plans(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_days_plan_day
+        UNIQUE (plan_id, day_number)
+);
+
+CREATE TABLE IF NOT EXISTS day_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    exercise_order INT NOT NULL,
+
+    CONSTRAINT fk_day_exercises_workout_days
+        FOREIGN KEY (day_id)
+        REFERENCES workout_days(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_day_exercises_exercise
+        FOREIGN KEY (exercise_id)
+        REFERENCES exercises(id)
+        ON DELETE RESTRICT,
+    CONSTRAINT uq_day_exercises_unique_per_day
+        UNIQUE (day_id, exercise_id),
+    CONSTRAINT uq_day_exercises_order
+        UNIQUE (day_id, exercise_order)
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_logs(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workout_plan_id INT NOT NULL,
+    workout_day_id INT NOT NULL,
+    workout_date DATE NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_workout_calendar_logs_users
+        FOREIGN KEY(user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_logs_plans
+        FOREIGN KEY (workout_plan_id)
+        REFERENCES workout_plans(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_logs_days
+        FOREIGN KEY (workout_day_id)
+        REFERENCES workout_days(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_calendar_logs_user_date
+        UNIQUE (user_id, workout_date)
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_log_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    sets_done INT NOT NULL,
+    reps_done INT NOT NULL,
+    weight_done DECIMAL(6,2) NOT NULL,
+
+    CONSTRAINT fk_workout_calendar_exercises_log
+        FOREIGN KEY (workout_calendar_log_id)
+        REFERENCES workout_calendar_logs(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_workout_calendar_exercises_exercises
+        FOREIGN KEY (exercise_id)
+        REFERENCES exercises(id)
+        ON DELETE CASCADE,
+    CONSTRAINT uq_workout_calendar_exercise_unique
+        UNIQUE (workout_calendar_log_id, exercise_id)
+);
+
+-- INSERT exercises
 INSERT INTO exercises (name, muscle_group)
 VALUES
 -- mell
@@ -256,100 +355,316 @@ VALUES
 ('Szobakerékpár', 'cardio'),
 ('Evezőgép', 'cardio');
 
-CREATE TABLE IF NOT EXISTS workout_plans(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    name VARCHAR(100) NOT NULL,
-    level ENUM('kezdo', 'kozep', 'halado') DEFAULT NULL,
-    location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
-    goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
-    description VARCHAR(255) DEFAULT NULL,
-    is_public BOOLEAN DEFAULT FALSE,
-    days_count TINYINT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+-- INSERT recommended plans
+INSERT INTO workout_plans (user_id, name, level, location, goal, description, is_public, days_count)
+SELECT
+    NULL AS user_id,
+    CONCAT('N', d.days_count, '-', l.level_code, '-', x.loc_code) AS name,
+    l.level,
+    x.location,
+    CASE
+        WHEN d.days_count IN (1, 4, 7) THEN 'szintentartas'
+        WHEN d.days_count IN (2, 5) THEN 'tomeg'
+        WHEN d.days_count IN (3, 6) THEN 'szalkasitas'
+    END AS goal,
+    CASE
+        WHEN l.level = 'kezdo' THEN
+            CONCAT(
+                x.desc_prefix,
+                ' rövid, teljes testet lefedő ciklus. Cél: ',
+                CASE
+                    WHEN d.days_count IN (1, 4, 7) THEN 'szintentartás'
+                    WHEN d.days_count IN (2, 5) THEN 'tömegnövelés'
+                    WHEN d.days_count IN (3, 6) THEN 'szálkásítás'
+                END,
+                '. Ajánlás: alapgyakorlatból 2 szett 6-10 ism., izolációból 2 szett 10-12 ism., hasra/cardióra 2 szett 10-15 ism.'
+            )
+        WHEN l.level = 'kozep' THEN
+            CONCAT(
+                x.desc_prefix,
+                ' kiegyensúlyozott, teljes testet lefedő ciklus. Cél: ',
+                CASE
+                    WHEN d.days_count IN (1, 4, 7) THEN 'szintentartás'
+                    WHEN d.days_count IN (2, 5) THEN 'tömegnövelés'
+                    WHEN d.days_count IN (3, 6) THEN 'szálkásítás'
+                END,
+                '. Ajánlás: alapgyakorlatból 3 szett 6-10 ism., izolációból 2-3 szett 8-12 ism., hasra/cardióra 2-3 szett 10-15 ism.'
+            )
+        WHEN l.level = 'halado' THEN
+            CONCAT(
+                x.desc_prefix,
+                ' sűrűbb, teljes testet lefedő ciklus. Cél: ',
+                CASE
+                    WHEN d.days_count IN (1, 4, 7) THEN 'szintentartás'
+                    WHEN d.days_count IN (2, 5) THEN 'tömegnövelés'
+                    WHEN d.days_count IN (3, 6) THEN 'szálkásítás'
+                END,
+                '. Ajánlás: alapgyakorlatból 3-4 szett 5-8 ism., izolációból 2-3 szett 8-12 ism., testsúlyos/cardio elemekből 2-3 szett 10-15 ism.'
+            )
+    END AS description,
+    TRUE AS is_public,
+    d.days_count
+FROM
+    (
+        SELECT 1 AS days_count UNION ALL
+        SELECT 2 UNION ALL
+        SELECT 3 UNION ALL
+        SELECT 4 UNION ALL
+        SELECT 5 UNION ALL
+        SELECT 6 UNION ALL
+        SELECT 7
+    ) d
+CROSS JOIN
+    (
+        SELECT 'kezdo' AS level, 'K' AS level_code
+        UNION ALL
+        SELECT 'kozep', 'Z'
+        UNION ALL
+        SELECT 'halado', 'H'
+    ) l
+CROSS JOIN
+    (
+        SELECT 'gym' AS location, 'GYM' AS loc_code, 'Konditermi' AS desc_prefix
+        UNION ALL
+        SELECT 'home_weights', 'HWT', 'Otthoni súlyzós'
+        UNION ALL
+        SELECT 'home_bodyweight', 'HBW', 'Otthoni testsúlyos'
+    ) x;
 
-    CONSTRAINT fk_workout_plans_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
-);
+INSERT INTO workout_days (plan_id, day_number, name, isRestDay)
+SELECT
+    wp.id,
+    dd.day_number,
+    dd.day_name,
+    dd.is_rest
+FROM workout_plans wp
+JOIN (
+    SELECT 1 AS days_count, 1 AS day_number, 'Full Body' AS day_name, FALSE AS is_rest
 
-CREATE TABLE IF NOT EXISTS workout_days(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    plan_id INT NOT NULL,
-    day_number TINYINT NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    isRestDay BOOLEAN DEFAULT FALSE,
-    image_url VARCHAR(255) DEFAULT NULL,
+    UNION ALL
+    SELECT 2, 1, 'Upper', FALSE
+    UNION ALL
+    SELECT 2, 2, 'Lower', FALSE
 
-    CONSTRAINT fk_workout_days_workout_plans
-        FOREIGN KEY (plan_id)
-        REFERENCES workout_plans(id)
-        ON DELETE CASCADE,
-    CONSTRAINT uq_workout_days_plan_day
-        UNIQUE (plan_id, day_number)
-);
+    UNION ALL
+    SELECT 3, 1, 'Push', FALSE
+    UNION ALL
+    SELECT 3, 2, 'Pull', FALSE
+    UNION ALL
+    SELECT 3, 3, 'Legs', FALSE
 
-CREATE TABLE IF NOT EXISTS day_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    exercise_order INT NOT NULL,
+    UNION ALL
+    SELECT 4, 1, 'Push', FALSE
+    UNION ALL
+    SELECT 4, 2, 'Pull', FALSE
+    UNION ALL
+    SELECT 4, 3, 'Rest', TRUE
+    UNION ALL
+    SELECT 4, 4, 'Legs + Core', FALSE
 
-    CONSTRAINT fk_day_exercises_workout_days
-        FOREIGN KEY (day_id)
-        REFERENCES workout_days(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_day_exercises_exercise
-        FOREIGN KEY (exercise_id)
-        REFERENCES exercises(id)
-        ON DELETE RESTRICT,
-    CONSTRAINT uq_day_exercises_unique_per_day
-        UNIQUE (day_id, exercise_id),
-    CONSTRAINT uq_day_exercises_order
-        UNIQUE (day_id, exercise_order)
-);
+    UNION ALL
+    SELECT 5, 1, 'Push', FALSE
+    UNION ALL
+    SELECT 5, 2, 'Pull', FALSE
+    UNION ALL
+    SELECT 5, 3, 'Legs', FALSE
+    UNION ALL
+    SELECT 5, 4, 'Rest', TRUE
+    UNION ALL
+    SELECT 5, 5, 'Full Body', FALSE
 
-CREATE TABLE IF NOT EXISTS workout_calendar_logs(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    workout_plan_id INT NOT NULL,
-    workout_day_id INT NOT NULL,
-    workout_date DATE NOT NULL,
-    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_workout_calendar_logs_users
-        FOREIGN KEY(user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_workout_calendar_logs_plans
-        FOREIGN KEY (workout_plan_id)
-        REFERENCES workout_plans(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_workout_calendar_logs_days
-        FOREIGN KEY (workout_day_id)
-        REFERENCES workout_days(id)
-        ON DELETE CASCADE,
-    CONSTRAINT uq_workout_calendar_logs_user_date
-        UNIQUE (user_id, workout_date)
-);
+    UNION ALL
+    SELECT 6, 1, 'Push', FALSE
+    UNION ALL
+    SELECT 6, 2, 'Pull', FALSE
+    UNION ALL
+    SELECT 6, 3, 'Legs', FALSE
+    UNION ALL
+    SELECT 6, 4, 'Rest', TRUE
+    UNION ALL
+    SELECT 6, 5, 'Upper', FALSE
+    UNION ALL
+    SELECT 6, 6, 'Lower + Core', FALSE
 
-CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    workout_calendar_log_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    sets_done INT NOT NULL,
-    reps_done INT NOT NULL,
-    weight_done DECIMAL(6,2) NOT NULL,
+    UNION ALL
+    SELECT 7, 1, 'Push', FALSE
+    UNION ALL
+    SELECT 7, 2, 'Pull', FALSE
+    UNION ALL
+    SELECT 7, 3, 'Legs', FALSE
+    UNION ALL
+    SELECT 7, 4, 'Rest', TRUE
+    UNION ALL
+    SELECT 7, 5, 'Upper', FALSE
+    UNION ALL
+    SELECT 7, 6, 'Lower', FALSE
+    UNION ALL
+    SELECT 7, 7, 'Full Body', FALSE
+) dd
+    ON dd.days_count = wp.days_count;
 
-    CONSTRAINT fk_workout_calendar_exercises_log
-        FOREIGN KEY (workout_calendar_log_id)
-        REFERENCES workout_calendar_logs(id)
-        ON DELETE CASCADE,
-    CONSTRAINT fk_workout_calendar_exercises_exercises
-        FOREIGN KEY (exercise_id)
-        REFERENCES exercises(id)
-        ON DELETE CASCADE,
-    CONSTRAINT uq_workout_calendar_exercise_unique
-        UNIQUE (workout_calendar_log_id, exercise_id)
-);
+INSERT INTO day_exercises (day_id, exercise_id, exercise_order)
+SELECT
+    wd.id,
+    e.id,
+    m.exercise_order
+FROM workout_plans wp
+JOIN workout_days wd
+    ON wd.plan_id = wp.id
+JOIN (
+    /* =========================
+       GYM
+       ========================= */
+    SELECT 'gym' AS location, 'Full Body' AS day_name, 1 AS exercise_order, 'Rúddal guggolás' AS exercise_name
+    UNION ALL SELECT 'gym', 'Full Body', 2, 'Fekvenyomás kézisúlyzóval'
+    UNION ALL SELECT 'gym', 'Full Body', 3, 'Csiga lehúzás ferde fogással'
+    UNION ALL SELECT 'gym', 'Full Body', 4, 'Vállból nyomás rúddal'
+    UNION ALL SELECT 'gym', 'Full Body', 5, 'Hip thrust rúddal'
+    UNION ALL SELECT 'gym', 'Full Body', 6, 'Csiga hasprés'
+
+    UNION ALL SELECT 'gym', 'Upper', 1, 'Ferde padon rúddal fekvenyomás'
+    UNION ALL SELECT 'gym', 'Upper', 2, 'Ülő evezőgép ferde háttámasz'
+    UNION ALL SELECT 'gym', 'Upper', 3, 'Vállból nyomás rúddal'
+    UNION ALL SELECT 'gym', 'Upper', 4, 'Rúddal bicepsz hajlítás'
+    UNION ALL SELECT 'gym', 'Upper', 5, 'Csiga tricepsz letolás'
+
+    UNION ALL SELECT 'gym', 'Lower', 1, 'Rúddal guggolás'
+    UNION ALL SELECT 'gym', 'Lower', 2, 'Román felhúzás rúddal'
+    UNION ALL SELECT 'gym', 'Lower', 3, 'Hip thrust rúddal'
+    UNION ALL SELECT 'gym', 'Lower', 4, 'Álló rúddal vádli emelés'
+    UNION ALL SELECT 'gym', 'Lower', 5, 'Csiga hasprés'
+
+    UNION ALL SELECT 'gym', 'Push', 1, 'Ferde padon rúddal fekvenyomás'
+    UNION ALL SELECT 'gym', 'Push', 2, 'Vállból nyomás rúddal'
+    UNION ALL SELECT 'gym', 'Push', 3, 'Oldalemelés kézisúlyzóval'
+    UNION ALL SELECT 'gym', 'Push', 4, 'Fekvenyomás szűk fogással'
+
+    UNION ALL SELECT 'gym', 'Pull', 1, 'Csiga lehúzás ferde fogással'
+    UNION ALL SELECT 'gym', 'Pull', 2, 'Evezés padon rúddal'
+    UNION ALL SELECT 'gym', 'Pull', 3, 'Hátsó delt csiga ferde ülés'
+    UNION ALL SELECT 'gym', 'Pull', 4, 'Rúddal bicepsz hajlítás'
+    UNION ALL SELECT 'gym', 'Pull', 5, 'Csukló hajlítás csigán'
+
+    UNION ALL SELECT 'gym', 'Legs', 1, 'Rúddal guggolás'
+    UNION ALL SELECT 'gym', 'Legs', 2, 'Román felhúzás rúddal'
+    UNION ALL SELECT 'gym', 'Legs', 3, 'Lábhajlítás csigán fekve'
+    UNION ALL SELECT 'gym', 'Legs', 4, 'Hip thrust rúddal'
+    UNION ALL SELECT 'gym', 'Legs', 5, 'Álló rúddal vádli emelés'
+
+    UNION ALL SELECT 'gym', 'Legs + Core', 1, 'Lábtolás csigán'
+    UNION ALL SELECT 'gym', 'Legs + Core', 2, 'Lábhajlítás csigán ülve'
+    UNION ALL SELECT 'gym', 'Legs + Core', 3, 'Hip thrust rúddal'
+    UNION ALL SELECT 'gym', 'Legs + Core', 4, 'Álló rúddal vádli emelés'
+    UNION ALL SELECT 'gym', 'Legs + Core', 5, 'Pallof press'
+
+    UNION ALL SELECT 'gym', 'Lower + Core', 1, 'Rúddal guggolás'
+    UNION ALL SELECT 'gym', 'Lower + Core', 2, 'Román felhúzás rúddal'
+    UNION ALL SELECT 'gym', 'Lower + Core', 3, 'Hip thrust rúddal'
+    UNION ALL SELECT 'gym', 'Lower + Core', 4, 'Csiga hasprés'
+    UNION ALL SELECT 'gym', 'Lower + Core', 5, 'Pallof press'
+
+    /* =========================
+       HOME WEIGHTS
+       ========================= */
+    UNION ALL SELECT 'home_weights', 'Full Body', 1, 'Sétáló kitörés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Full Body', 2, 'Fekvenyomás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Full Body', 3, 'Egykezes evezés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Full Body', 4, 'Oldalemelés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Full Body', 5, 'Kalapács bicepsz kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Full Body', 6, 'Orosz csavar kézisúlyzóval'
+
+    UNION ALL SELECT 'home_weights', 'Upper', 1, 'Fekvenyomás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Upper', 2, 'Egykezes evezés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Upper', 3, 'Oldalemelés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Upper', 4, 'Kalapács bicepsz kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Upper', 5, 'Tricepsz kickback kézisúlyzóval'
+
+    UNION ALL SELECT 'home_weights', 'Lower', 1, 'Sétáló kitörés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Lower', 2, 'Egylábas román felhúzás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Lower', 3, 'Lépés padra kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Lower', 4, 'Kézisúlyzóval vádli emelés'
+    UNION ALL SELECT 'home_weights', 'Lower', 5, 'Plank'
+
+    UNION ALL SELECT 'home_weights', 'Push', 1, 'Fekvenyomás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Push', 2, 'Oldalemelés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Push', 3, 'Tricepsz kickback kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Push', 4, 'Pike push-up'
+
+    UNION ALL SELECT 'home_weights', 'Pull', 1, 'Egykezes evezés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Pull', 2, 'Kalapács bicepsz kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Pull', 3, 'Kézisúlyzó tartás'
+    UNION ALL SELECT 'home_weights', 'Pull', 4, 'Farmer walk kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Pull', 5, 'Bird-Dog'
+
+    UNION ALL SELECT 'home_weights', 'Legs', 1, 'Sétáló kitörés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs', 2, 'Egylábas román felhúzás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs', 3, 'Lépés padra kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs', 4, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_weights', 'Legs', 5, 'Kézisúlyzóval vádli emelés'
+
+    UNION ALL SELECT 'home_weights', 'Legs + Core', 1, 'Sétáló kitörés kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs + Core', 2, 'Lábhajlítás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs + Core', 3, 'Lépés padra kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Legs + Core', 4, 'Plank'
+    UNION ALL SELECT 'home_weights', 'Legs + Core', 5, 'Orosz csavar kézisúlyzóval'
+
+    UNION ALL SELECT 'home_weights', 'Lower + Core', 1, 'Egylábas román felhúzás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Lower + Core', 2, 'Lábhajlítás kézisúlyzóval'
+    UNION ALL SELECT 'home_weights', 'Lower + Core', 3, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_weights', 'Lower + Core', 4, 'Plank'
+    UNION ALL SELECT 'home_weights', 'Lower + Core', 5, 'Orosz csavar kézisúlyzóval'
+
+    /* =========================
+       HOME BODYWEIGHT
+       ========================= */
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 1, 'Fekvőtámasz'
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 2, 'Fordított evezés testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 3, 'Testtömeg guggolás'
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 4, 'Pike push-up'
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 5, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Full Body', 6, 'Plank'
+
+    UNION ALL SELECT 'home_bodyweight', 'Upper', 1, 'Fekvőtámasz'
+    UNION ALL SELECT 'home_bodyweight', 'Upper', 2, 'Húzódzkodás'
+    UNION ALL SELECT 'home_bodyweight', 'Upper', 3, 'Fordított evezés testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Upper', 4, 'Pike push-up'
+    UNION ALL SELECT 'home_bodyweight', 'Upper', 5, 'Szűk fekvőtámasz'
+
+    UNION ALL SELECT 'home_bodyweight', 'Lower', 1, 'Testtömeg guggolás'
+    UNION ALL SELECT 'home_bodyweight', 'Lower', 2, 'Nordic hamstring curl'
+    UNION ALL SELECT 'home_bodyweight', 'Lower', 3, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Lower', 4, 'Testtömeg vádli emelés'
+    UNION ALL SELECT 'home_bodyweight', 'Lower', 5, 'Oldalsó plank'
+
+    UNION ALL SELECT 'home_bodyweight', 'Push', 1, 'Fekvőtámasz'
+    UNION ALL SELECT 'home_bodyweight', 'Push', 2, 'Pike push-up'
+    UNION ALL SELECT 'home_bodyweight', 'Push', 3, 'Tolódzkodás'
+    UNION ALL SELECT 'home_bodyweight', 'Push', 4, 'Szűk fekvőtámasz'
+
+    UNION ALL SELECT 'home_bodyweight', 'Pull', 1, 'Húzódzkodás'
+    UNION ALL SELECT 'home_bodyweight', 'Pull', 2, 'Húzódzkodás szűk fogással'
+    UNION ALL SELECT 'home_bodyweight', 'Pull', 3, 'Fordított evezés testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Pull', 4, 'Rúdon függés'
+
+    UNION ALL SELECT 'home_bodyweight', 'Legs', 1, 'Testtömeg guggolás'
+    UNION ALL SELECT 'home_bodyweight', 'Legs', 2, 'Nordic hamstring curl'
+    UNION ALL SELECT 'home_bodyweight', 'Legs', 3, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Legs', 4, 'Testtömeg vádli emelés'
+
+    UNION ALL SELECT 'home_bodyweight', 'Legs + Core', 1, 'Testtömeg guggolás'
+    UNION ALL SELECT 'home_bodyweight', 'Legs + Core', 2, 'Nordic hamstring curl'
+    UNION ALL SELECT 'home_bodyweight', 'Legs + Core', 3, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Legs + Core', 4, 'Oldalsó plank'
+    UNION ALL SELECT 'home_bodyweight', 'Legs + Core', 5, 'Bird-Dog'
+
+    UNION ALL SELECT 'home_bodyweight', 'Lower + Core', 1, 'Testtömeg guggolás'
+    UNION ALL SELECT 'home_bodyweight', 'Lower + Core', 2, 'Glute bridge testsúllyal'
+    UNION ALL SELECT 'home_bodyweight', 'Lower + Core', 3, 'Testtömeg vádli emelés'
+    UNION ALL SELECT 'home_bodyweight', 'Lower + Core', 4, 'Plank'
+    UNION ALL SELECT 'home_bodyweight', 'Lower + Core', 5, 'Superman tartás'
+) m
+    ON m.location = wp.location
+   AND m.day_name = wd.name
+JOIN exercises e
+    ON e.name = m.exercise_name
+WHERE wd.isRestDay = FALSE;
