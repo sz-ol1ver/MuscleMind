@@ -174,25 +174,25 @@ async function validateUpdate(req,res,next) {
         const planId = req.params.id;
         const workoutPlan = req.body;
         const allowedPlan = ['name', 'days_count', 'days'];
-        const allowedDay = ['dayId','dayNumber', 'name', 'restDay', 'exercises'];
+        const allowedDay = ['dayId','dayNumber', 'name', 'restDay', 'exercises', 'url'];
         const allowedExercise = ['exerciseId', 'name', 'order'];
         console.log(workoutPlan);
         console.log(workoutPlan.days[1].exercises)
         if (!workoutPlan || typeof workoutPlan !== 'object' || Array.isArray(workoutPlan)) {
             return res.status(400).json({
-                message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                message: 'Nem sikerült feldolgozni az edzésterv adatait.1'
             });
         }
         const keysPlan = Object.keys(workoutPlan);
         if(keysPlan.length !== allowedPlan.length){
             return res.status(400).json({
-                message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                message: 'Nem sikerült feldolgozni az edzésterv adatait.2'
             });
         }
         for(let i = 0; i<keysPlan.length; i++){
             if(!allowedPlan.includes(keysPlan[i])){
                 return res.status(400).json({
-                message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                message: 'Nem sikerült feldolgozni az edzésterv adatait.3'
             });
             }
         }
@@ -227,13 +227,13 @@ async function validateUpdate(req,res,next) {
             const keysDay = Object.keys(day);
             if(keysDay.length !== allowedDay.length){
                 return res.status(400).json({
-                    message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                    message: 'Nem sikerült feldolgozni az edzésterv adatait.4'
                 });
             }
             for(let i = 0; i<keysDay.length; i++){
                 if(!allowedDay.includes(keysDay[i])){
                     return res.status(400).json({
-                    message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                    message: 'Nem sikerült feldolgozni az edzésterv adatait.5'
                 });
                 }
             }
@@ -281,13 +281,13 @@ async function validateUpdate(req,res,next) {
                 const keysExercise = Object.keys(exercise);
                 if(keysExercise.length !== allowedExercise.length){
                     return res.status(400).json({
-                        message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                        message: 'Nem sikerült feldolgozni az edzésterv adatait.6'
                     });
                 }
                 for(let i = 0; i<keysExercise.length; i++){
                     if(!allowedExercise.includes(keysExercise[i])){
                         return res.status(400).json({
-                        message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+                        message: 'Nem sikerült feldolgozni az edzésterv adatait.7'
                     });
                     }
                 }

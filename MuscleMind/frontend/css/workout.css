@@ -110,7 +110,7 @@ input:disabled{
     color: rgb(255, 251, 251);
     overflow-x: scroll;
     white-space: nowrap;
-    width: auto;
+    width: 100% !important;
     max-width: 400px !important;
 }
 #selectedPlan{

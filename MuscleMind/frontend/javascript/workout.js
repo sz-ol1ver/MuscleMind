@@ -426,6 +426,9 @@ async function loadWorkouts() {
                 selectBtn.textContent = 'Visszavonás';
                 card.id = 'selectedPlan';
                 selectedDivItems.appendChild(card);
+                if(data.plans.length == 1){
+                    userPlans.classList.add('d-none')
+                }
             }else{
                 workoutDiv.appendChild(card);
             }
@@ -509,6 +512,9 @@ function renderRecWorkouts(plans){
             selectBtn.textContent = 'Visszavonás';
             card.id = 'selectedPlan';
             selectedDivItems.appendChild(card);
+            if(plans.length == 1){
+                userPlans.classList.add('d-none')
+            }
         }else{
             workoutDiv.appendChild(card);
         }
