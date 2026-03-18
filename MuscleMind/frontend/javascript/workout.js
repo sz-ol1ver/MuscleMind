@@ -7,11 +7,17 @@ let mode = "save" //! save / edit
 let planEditId = null;
 let recommendedPlans = [];
 let filteredPlans = [];
+let exercisesList = [];
+let filteredExercisesList = [];
+let muscle_groups = [];
 const filters = {
     level: 'all',
     location: 'all',
     goal: 'all',
     days: 'all'
+};
+const exerciseFilter = {
+    muscle: 'all'
 };
 
 let plan_name;
@@ -19,6 +25,7 @@ let plan_days;
 let next;
 let day_name;
 let select;
+let muscleSelect;
 let rest;
 let save;
 let cancel;
@@ -37,6 +44,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     next = document.getElementById('next');
     day_name = document.getElementById('day_name');
     select = document.getElementById('gyakorlat');
+    muscleSelect = document.getElementById('muscle-group');
     rest = document.getElementById('rest');
     save = document.getElementById('save');
     cancel = document.getElementById('cancel');
@@ -72,6 +80,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
     reset.addEventListener('click', ()=>{
         resetFilters();
+    })
+    muscleSelect.addEventListener('change', ()=>{
+        exerciseFilter.muscle = muscleSelect.value;
+        filterMuscleGroups();
     })
     cancel.addEventListener('click', ()=>{
         workoutPlan = null;
@@ -138,7 +150,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             order: workoutPlan.days[currentDay].exercises.length + 1
         });
         renderTable();
-        select.value = 0;
+        renderExercises(filteredExercisesList);
     })
     rest.addEventListener('change', ()=>{
         if(rest.checked){
@@ -259,19 +271,52 @@ async function updatePlan(obj) {
     }
 }
 async function loadExercises() {
-    const select = document.getElementById('gyakorlat');
     try {
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/exercises');
-        const exercises = data.message;
-        for(let gyakorlat of exercises){
+        exercisesList = data.message;
+        renderExercises(exercisesList);
+        for(let row of data.message){
+            if(!muscle_groups.includes(row.muscle_group)){
+                muscle_groups.push(row.muscle_group)
+            }
+        }
+        for(let i = 0; i<muscle_groups.length;i++){
             let option = document.createElement('option');
-            option.value = gyakorlat.id;
-            option.innerHTML = '['+gyakorlat.muscle_group+'] - '+gyakorlat.name;
-            select.appendChild(option);
+            option.value = muscle_groups[i];
+            option.innerHTML = muscle_groups[i].replace("_", " ");
+            muscleSelect.appendChild(option);
         }
     } catch (error) {
         console.error(error.message + "\n"+error.error);
     }
+}
+function renderExercises(exercises){
+    select.innerHTML = '';
+
+    let optionSelect = document.createElement('option');
+    optionSelect.value = '';
+    optionSelect.innerHTML = 'Gyakorlat kiválasztása ▼';
+    optionSelect.selected = true;
+    optionSelect.disabled = true;
+    select.appendChild(optionSelect);
+
+    for(let gyakorlat of exercises){
+        let option = document.createElement('option');
+        option.value = gyakorlat.id;
+        option.innerHTML = '['+gyakorlat.muscle_group.replace("_", " ")+'] - '+gyakorlat.name;
+        select.appendChild(option);
+    }
+}
+function filterMuscleGroups(){
+    filteredExercisesList.length = 0;
+    for(let row of exercisesList){
+        if(exerciseFilter.muscle !== 'all' && row.muscle_group !== exerciseFilter.muscle){
+            continue;
+        }
+        filteredExercisesList.push(row);
+    }
+    console.log(filteredExercisesList)
+    renderExercises(filteredExercisesList);
 }
 async function loadWorkouts() {
     try {

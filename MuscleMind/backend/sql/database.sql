@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS exercises(
         'has',
         'ferde_has',
         'alsó_hát',
-        'comb_elso',
-        'comb_hatso',
+        'comb_első',
+        'comb_hátsó',
         'farizom',
         'vádli',
         'teljes_test',
@@ -211,20 +211,20 @@ VALUES
 ('Bird-Dog', 'alsó_hát'),
 
 -- comb elülső
-('Lábtolás csigán', 'comb_elso'),
-('Lábfeszítés csigán', 'comb_elso'),
-('Rúddal guggolás', 'comb_elso'),
-('Sétáló kitörés kézisúlyzóval', 'comb_elso'),
-('Testtömeg guggolás', 'comb_elso'),
-('Falnál ülés', 'comb_elso'),
+('Lábtolás csigán', 'comb_első'),
+('Lábfeszítés csigán', 'comb_első'),
+('Rúddal guggolás', 'comb_első'),
+('Sétáló kitörés kézisúlyzóval', 'comb_első'),
+('Testtömeg guggolás', 'comb_első'),
+('Falnál ülés', 'comb_első'),
 
 -- comb hátsó
-('Lábhajlítás csigán ülve', 'comb_hatso'),
-('Lábhajlítás csigán fekve', 'comb_hatso'),
-('Egylábas román felhúzás kézisúlyzóval', 'comb_hatso'),
-('Lábhajlítás kézisúlyzóval', 'comb_hatso'),
-('Nordic hamstring curl', 'comb_hatso'),
-('Egylábas farizom emelés testsúllyal', 'comb_hatso'),
+('Lábhajlítás csigán ülve', 'comb_hátsó'),
+('Lábhajlítás csigán fekve', 'comb_hátsó'),
+('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó'),
+('Lábhajlítás kézisúlyzóval', 'comb_hátsó'),
+('Nordic hamstring curl', 'comb_hátsó'),
+('Egylábas farizom emelés testsúllyal', 'comb_hátsó'),
 
 -- farizom
 ('Csípőnyomás csigán', 'farizom'),
