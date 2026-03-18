@@ -421,6 +421,9 @@ async function loadWorkouts() {
             card.appendChild(collapseDiv);
 
             if(activePlan == data.plans[i].id){
+                selectBtn.classList.remove('btn-outline-light');
+                selectBtn.classList.add('btn-outline-warning');
+                selectBtn.textContent = 'Visszavonás';
                 card.id = 'selectedPlan';
                 selectedDivItems.appendChild(card);
             }else{
@@ -501,6 +504,9 @@ function renderRecWorkouts(plans){
         card.appendChild(collapseDiv);
 
         if(activePlan == plans[i].id){
+            selectBtn.classList.remove('btn-outline-light');
+            selectBtn.classList.add('btn-outline-warning');
+            selectBtn.textContent = 'Visszavonás';
             card.id = 'selectedPlan';
             selectedDivItems.appendChild(card);
         }else{
