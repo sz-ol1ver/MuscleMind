@@ -137,7 +137,7 @@ async function allUserPlans(userId) {
 }
 
 async function allDefaultPlans() {
-    const sql = 'SELECT id, name, days_count, level, location, goal, description, image_url FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const sql = 'SELECT id, name, days_count, level, location, goal, description FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
     const [rows] = await pool.execute(sql);
     return rows;
 }

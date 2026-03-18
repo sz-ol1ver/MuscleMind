@@ -221,7 +221,7 @@ async function validateUpdate(req,res,next) {
             const day = workoutPlan.days[i];
             if (!day || typeof day !== 'object' || Array.isArray(day)){
                 return res.status(400).json({
-                    message: 'Napok adatainak feldolgozása sikertelen!'
+                    message: 'Napok adatainak feldolgozása sikertelen!1'
                 });
             }
             const keysDay = Object.keys(day);
@@ -239,7 +239,7 @@ async function validateUpdate(req,res,next) {
             }
             if(!Number.isInteger(day.dayNumber) || day.dayNumber < 1 || day.dayNumber > 7 || napokSzama.includes(day.dayNumber)){
                 return res.status(400).json({
-                    message: 'Napok adatainak feldolgozása sikertelen!'
+                    message: 'Napok adatainak feldolgozása sikertelen!2'
                 });
             }
             napokSzama.push(day.dayNumber);
@@ -248,9 +248,9 @@ async function validateUpdate(req,res,next) {
                     message: 'Adj nevet a napnak!'
                 });
             }
-            if(typeof day.restDay !== 'boolean'){
+            if(typeof day.restDay !== 'number'){
                 return res.status(400).json({
-                    message: 'Napok adatainak feldolgozása sikertelen!'
+                    message: 'Napok adatainak feldolgozása sikertelen!3'
                 });
             }
             if(!Array.isArray(day.exercises)){

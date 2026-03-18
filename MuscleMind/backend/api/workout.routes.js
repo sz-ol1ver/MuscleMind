@@ -175,7 +175,6 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
             location: wpDetail[0].location,
             goal: wpDetail[0].goal,
             description: wpDetail[0].description,
-            image_url: wpDetail[0].image_url,
             active: wpDetail[0].is_active,
             days: []
         };
@@ -188,6 +187,7 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
                     dayNumber: row.day_number,
                     name: row.day_name,
                     restDay: row.isRestDay,
+                    image_url: row.image_url,
                     exercises: []
                 };
 

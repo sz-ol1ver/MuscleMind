@@ -1,6 +1,7 @@
 import {getWorkout, postNewPlan, deleteWorkout, putPlan} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
+let originalWorkoutPlan = null;
 let currentDay = 0; //? selected day
 let mode = "save" //! save / edit
 let planEditId = null;
@@ -227,6 +228,15 @@ async function postPlan(obj) {
 }
 async function updatePlan(obj) {
     const alert = document.getElementById('alert-save');
+    if(JSON.stringify(workoutPlan) === JSON.stringify(originalWorkoutPlan)){
+        alert.innerHTML = 'Nem történt változás!';
+        alert.classList.add('alert-warning', 'w-100');
+        alert.classList.remove('d-none');
+        setTimeout(()=>{
+            location.reload();
+        }, 3000);
+        return;
+    }
     try {
         for(let i = 0; i<obj.days.length;i++){
             if(obj.days[i].name == ''){
@@ -554,6 +564,7 @@ async function editWorkout(id) {
     const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
     planEditId = id;
     workoutPlan = data.details;
+    originalWorkoutPlan = JSON.parse(JSON.stringify(data.details));
     for(let i = 0; i<workoutPlan.days.length; i++){
         if(workoutPlan.days[i].restDay == true){
             workoutPlan.days[i].exercises.push({
