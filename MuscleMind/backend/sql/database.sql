@@ -38,14 +38,6 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-ALTER TABLE users 
-    ADD CONSTRAINT fk_users_active_workout_plan
-    FOREIGN KEY (active_plan)
-    REFERENCES workout_plans(id)
-    ON DELETE SET NULL
-
-
-
 CREATE TABLE IF NOT EXISTS user_profiles (
     id INT PRIMARY KEY,
 
@@ -93,11 +85,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-ALTER TABLE user_profiles
-    ADD CONSTRAINT fk_user_profiles_users
-    FOREIGN KEY (id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
+
 
 
 CREATE TABLE IF NOT EXISTS user_weights (
@@ -108,12 +96,6 @@ CREATE TABLE IF NOT EXISTS user_weights (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE user_weights
-    ADD CONSTRAINT fk_user_weights_users
-    FOREIGN KEY (user_id)
-    REFERENCES user_profiles(id)
-    ON DELETE CASCADE
-
 
 -- WORKOUT --
 --? gyakorlatok
@@ -152,12 +134,6 @@ CREATE TABLE IF NOT EXISTS workout_plans(
     days_count TINYINT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE workout_plans
-    ADD CONSTRAINT fk_workout_plans_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-
 
 CREATE TABLE IF NOT EXISTS workout_days(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -167,6 +143,58 @@ CREATE TABLE IF NOT EXISTS workout_days(
     isRestDay BOOLEAN DEFAULT FALSE,
     image_url VARCHAR(255) DEFAULT NULL
 );
+
+CREATE TABLE IF NOT EXISTS day_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    exercise_order INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_logs(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workout_plan_id INT NOT NULL,
+    workout_day_id INT NOT NULL,
+    workout_date DATE NOT NULL,
+    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_log_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    sets_done INT NOT NULL,
+    reps_done INT NOT NULL,
+    weight_done DECIMAL(6,2) NOT NULL
+);
+
+-- ALTER TABLES (foreign key)
+ALTER TABLE users 
+    ADD CONSTRAINT fk_users_active_workout_plan
+    FOREIGN KEY (active_plan)
+    REFERENCES workout_plans(id)
+    ON DELETE SET NULL;
+
+ALTER TABLE user_profiles
+    ADD CONSTRAINT fk_user_profiles_users
+    FOREIGN KEY (id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_weights
+    ADD CONSTRAINT fk_user_weights_users
+    FOREIGN KEY (user_id)
+    REFERENCES user_profiles(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE workout_plans
+    ADD CONSTRAINT fk_workout_plans_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
 ALTER TABLE workout_days
 ADD CONSTRAINT fk_workout_days_workout_plans
     FOREIGN KEY (plan_id)
@@ -175,14 +203,6 @@ ADD CONSTRAINT fk_workout_days_workout_plans
 ALTER TABLE workout_days 
     ADD CONSTRAINT uq_workout_days_plan_day
     UNIQUE (plan_id, day_number);
-
-
-CREATE TABLE IF NOT EXISTS day_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    exercise_order INT NOT NULL
-);
 
 ALTER TABLE day_exercises
 ADD CONSTRAINT fk_day_exercises_workout_days
@@ -198,16 +218,6 @@ ADD CONSTRAINT uq_day_exercises_unique_per_day
 ADD CONSTRAINT uq_day_exercises_order
     UNIQUE (day_id, exercise_order);
 
-
-CREATE TABLE IF NOT EXISTS workout_calendar_logs(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    workout_plan_id INT NOT NULL,
-    workout_day_id INT NOT NULL,
-    workout_date DATE NOT NULL,
-    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 ALTER TABLE workout_calendar_logs
 ADD CONSTRAINT fk_workout_calendar_logs_users
     FOREIGN KEY(user_id)
@@ -224,15 +234,6 @@ CONSTRAINT fk_workout_calendar_logs_days
 CONSTRAINT uq_workout_calendar_logs_user_date
     UNIQUE (user_id, workout_date)
 
-CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    workout_calendar_log_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    sets_done INT NOT NULL,
-    reps_done INT NOT NULL,
-    weight_done DECIMAL(6,2) NOT NULL
-);
-
 ALTER TABLE workout_calendar_exercises
 ADD CONSTRAINT fk_workout_calendar_exercises_log
     FOREIGN KEY (workout_calendar_log_id)
@@ -245,7 +246,7 @@ CONSTRAINT fk_workout_calendar_exercises_exercises
 CONSTRAINT uq_workout_calendar_exercise_unique
     UNIQUE (workout_calendar_log_id, exercise_id);
 
--- INSERT exercises
+-- INSERTEK
 INSERT INTO exercises (name, muscle_group)
 VALUES
 -- mell
