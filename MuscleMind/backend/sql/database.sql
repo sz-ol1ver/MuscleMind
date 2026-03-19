@@ -232,7 +232,7 @@ CONSTRAINT fk_workout_calendar_logs_days
     REFERENCES workout_days(id)
     ON DELETE CASCADE,
 CONSTRAINT uq_workout_calendar_logs_user_date
-    UNIQUE (user_id, workout_date)
+    UNIQUE (user_id, workout_date);
 
 ALTER TABLE workout_calendar_exercises
 ADD CONSTRAINT fk_workout_calendar_exercises_log
