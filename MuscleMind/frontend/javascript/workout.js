@@ -329,11 +329,6 @@ async function getActive() {
     try {
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/plans/active');
         activePlan = data.active;
-        if(activePlan < 1){
-            selectedDiv.classList.add('d-none');
-        }else{
-            selectedDiv.classList.remove('d-none');
-        }
         selectedDivItems.innerHTML = '';
         await loadWorkouts();
         await loadRecWorkouts();
@@ -354,17 +349,13 @@ async function updateActive(id) {
 }
 async function loadWorkouts() {
     try {
-        const userPlans = document.getElementById('user-plan');
         const workoutDiv = document.getElementById('personal-items');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
 
         workoutDiv.innerHTML = '';
 
-        if(data.plans.length == 0){
-            userPlans.classList.add('d-none')
-        }else{
-            userPlans.classList.remove('d-none');
-            for (let i = 0; i < data.plans.length; i++) {
+        
+        for (let i = 0; i < data.plans.length; i++) {
             const card = document.createElement('div');
             card.className = 'mainCard card p-3 shadow-sm plan-card mx-2';
             card.style.minWidth = 'auto';
@@ -427,30 +418,28 @@ async function loadWorkouts() {
                 card.id = 'selectedPlan';
                 selectedDivItems.appendChild(card);
                 if(data.plans.length == 1){
-                    userPlans.classList.add('d-none')
+                    workoutDiv.innerHTML = '<p class="text-center w-100">Nincs további edzésterved.</p>';
+                    workoutDiv.style.overflowX = 'hidden';
                 }
             }else{
                 workoutDiv.appendChild(card);
             }
-        }};
+        }
         
     } catch (error) {
         console.error(error.message + '\n' + error.error);
     }
 }
 function renderRecWorkouts(plans){
-    const userPlans = document.getElementById('recommended-plan');
     const workoutDiv = document.getElementById('recommended-items');
 
     workoutDiv.innerHTML = '';
 
     if(plans.length === 0){
-        userPlans.classList.remove('d-none');
+        workoutDiv.style.overflowX = 'hidden';
         workoutDiv.innerHTML = '<p class="text-center w-100">Nincs találat.</p>';
         return;
     }
-
-    userPlans.classList.remove('d-none');
 
     for (let i = 0; i < plans.length; i++) {
         const card = document.createElement('div');
@@ -513,7 +502,8 @@ function renderRecWorkouts(plans){
             card.id = 'selectedPlan';
             selectedDivItems.appendChild(card);
             if(plans.length == 1){
-                userPlans.classList.add('d-none')
+                workoutDiv.innerHTML = '<p class="text-center w-100">Nincs további edzésterved.</p>';
+                workoutDiv.style.overflowX = 'hidden';
             }
         }else{
             workoutDiv.appendChild(card);
@@ -522,17 +512,14 @@ function renderRecWorkouts(plans){
 }
 async function loadRecWorkouts() {
     try {
-        const userPlans = document.getElementById('recommended-plan');
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plans');
 
         recommendedPlans = data.plans;
 
         if(recommendedPlans.length === 0){
-            userPlans.classList.add('d-none');
             return;
         }
 
-        userPlans.classList.remove('d-none');
         renderRecWorkouts(recommendedPlans);
 
     } catch (error) {

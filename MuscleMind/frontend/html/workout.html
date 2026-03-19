@@ -150,21 +150,25 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12 pe-0 ps-3">
-                            <div class="workout-plan" id="selected-plan">
-                                <div id="selected-title">
-                                    <h3>
-                                        Kiválasztott edzésterv
-                                    </h3> 
+                    <div class="row mb-4">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
+                            <div class="workout-plan" id="user-plan">
+                                <div class="text-center" id="personal-title">
+                                    <h3>Saját edzéstervek</h3>
                                 </div>
                                 <hr>
-                                <div class="container-fluid">
-                                    <div class="d-flex justify-content-center" id="selected-items">
+                                <div class="container-fluid plans-line">
+                                    Edzéstervek száma: 
+                                </div>
+                                <hr>
+                                <div class="container-fluid container-items">
+                                    <div id="personal-items" class="d-flex align-items-start align-middle">
 
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="recommended-plan">
                                 <div id="recommended-title">
                                     <h3>
@@ -172,7 +176,7 @@
                                     </h3> 
                                 </div>
                                 <hr>
-                                <div class="container-fluid">
+                                <div class="container-fluid plans-line">
                                     <!-- Mobil gomb -->
                                     <div class="mb-3 text-end">
                                         <button 
@@ -242,23 +246,31 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="container-fluid">
-                                    <div class="d-flex align-items-start" id="recommended-items">
-
+                                <div class="container-fluid container-items">
+                                    <div class="d-flex align-items-start align-middle" id="recommended-items">
+                                        
                                     </div>
                                 </div>
                             </div>
-                            <div class="workout-plan" id="user-plan">
-                                <div class="text-center" id="personal-title">
-                                    <h3>Saját edzéstervek</h3>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
+                            <div class="workout-plan" id="selected-plan">
+                                <div id="selected-title">
+                                    <h3>
+                                        Kiválasztott edzésterv
+                                    </h3> 
                                 </div>
                                 <hr>
                                 <div class="container-fluid">
-                                    <div id="personal-items" class="d-flex align-items-start">
+                                    <div class="d-flex justify-content-center" id="selected-items">
 
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="new-plan">
                                 <div id="new-title">
                                     <h3 id="newPlanTitle">
@@ -267,7 +279,7 @@
                                 </div>
                                 <hr>
                                 <div class="row justify-content-center">
-                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-6 col-md-6 col-lg-5 col-xl-3">
+                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-8 col-md-8 col-lg-6 col-xl-6">
                                         <label for="routine-name" class="form-label fw-bold">Edzésterv neve</label>
                                         <input type="text" name="routine-name" id="routine-name" maxlength="100" value="new_workout" class="form-control">
                                         <label for="routine-day" class="form-label fw-bold mt-2">Napok száma</label>

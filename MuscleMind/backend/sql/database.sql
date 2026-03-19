@@ -239,11 +239,11 @@ ADD CONSTRAINT fk_workout_calendar_exercises_log
     FOREIGN KEY (workout_calendar_log_id)
     REFERENCES workout_calendar_logs(id)
     ON DELETE CASCADE,
-CONSTRAINT fk_workout_calendar_exercises_exercises
+ADD CONSTRAINT fk_workout_calendar_exercises_exercises
     FOREIGN KEY (exercise_id)
     REFERENCES exercises(id)
     ON DELETE CASCADE,
-CONSTRAINT uq_workout_calendar_exercise_unique
+ADD CONSTRAINT uq_workout_calendar_exercise_unique
     UNIQUE (workout_calendar_log_id, exercise_id);
 
 -- INSERTEK

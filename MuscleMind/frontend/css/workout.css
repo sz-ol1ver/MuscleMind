@@ -1,3 +1,6 @@
+body{
+    margin-bottom: 150px;
+}
 .workout-plan{
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 20px;
@@ -5,8 +8,10 @@
     background-color: #6c6c862a;
     padding-left: 10px;
     padding-right: 10px;
-    height: auto;
+    min-height: 45vh;
     padding-bottom: 40px;
+    display: flex;
+    flex-direction: column;
 }
 
 #recommended-title, #selected-title{
@@ -86,6 +91,7 @@ input:disabled{
     overflow-x: scroll;
     white-space: nowrap;
     padding: 5px;
+    height: 100% !important;
 }
 .workout-title{
     text-wrap: wrap !important;
@@ -96,6 +102,7 @@ input:disabled{
     background-color: #2a2a2a;
     color: white;
     width: 400px !important;
+    height: 100% !important;
 }
 .mainCard:hover{
     border: 2px solid #b58bfd !important;
@@ -122,4 +129,7 @@ input:disabled{
 }
 #selectedPlan>.detailCard{
     max-width: none !important;
+}
+.container-items{
+    flex: 1;
 }
