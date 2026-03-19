@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS user_weights (
 );
 
 -- WORKOUT --
---? gyakorlatok
+-- gyakorlatok
 CREATE TABLE IF NOT EXISTS exercises(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL UNIQUE,
