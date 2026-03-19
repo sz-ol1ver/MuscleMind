@@ -223,15 +223,15 @@ ADD CONSTRAINT fk_workout_calendar_logs_users
     FOREIGN KEY(user_id)
     REFERENCES users(id)
     ON DELETE CASCADE,
-CONSTRAINT fk_workout_calendar_logs_plans
+ADD CONSTRAINT fk_workout_calendar_logs_plans
     FOREIGN KEY (workout_plan_id)
     REFERENCES workout_plans(id)
     ON DELETE CASCADE,
-CONSTRAINT fk_workout_calendar_logs_days
+ADD CONSTRAINT fk_workout_calendar_logs_days
     FOREIGN KEY (workout_day_id)
     REFERENCES workout_days(id)
     ON DELETE CASCADE,
-CONSTRAINT uq_workout_calendar_logs_user_date
+ADD CONSTRAINT uq_workout_calendar_logs_user_date
     UNIQUE (user_id, workout_date);
 
 ALTER TABLE workout_calendar_exercises
