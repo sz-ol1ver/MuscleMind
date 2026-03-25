@@ -150,19 +150,17 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row mb-4">
+                    <div class="row mb-lg-4 mb-xl-4">
                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="user-plan">
-                                <div class="text-center" id="personal-title">
-                                    <h3>Saját edzéstervek</h3>
+                                <div class="headline">
+                                    <div class="text-center" id="personal-title">
+                                        <h3>Saját edzéstervek</h3>
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
-                                <div class="container-fluid plans-line">
-                                    Edzéstervek száma: 
-                                </div>
-                                <hr>
                                 <div class="container-fluid container-items">
-                                    <div id="personal-items" class="d-flex align-items-start align-middle">
+                                    <div id="personal-items">
 
                                     </div>
                                 </div>
@@ -170,12 +168,14 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="recommended-plan">
-                                <div id="recommended-title">
-                                    <h3>
-                                        Ajánlott edzéstervek
-                                    </h3> 
+                                <div class="headline">
+                                    <div id="recommended-title">
+                                        <h3>
+                                            Ajánlott edzéstervek
+                                        </h3> 
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
                                 <div class="container-fluid plans-line">
                                     <!-- Mobil gomb -->
                                     <div class="mb-3 text-end">
@@ -194,7 +194,7 @@
                                         <hr class="d-lg-none d-md-none">
                                         <div class="row g-3">
 
-                                            <div class="col-6 col-md-6 col-lg-3">
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                                                 <label for="filter-level" class="form-label fw-bold">Szint</label>
                                                 <select id="filter-level" class="form-select">
                                                     <option value="all">Összes szint</option>
@@ -204,7 +204,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-6 col-md-6 col-lg-3">
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                                                 <label for="filter-location" class="form-label fw-bold">Helyszín</label>
                                                 <select id="filter-location" class="form-select">
                                                     <option value="all">Összes helyszín</option>
@@ -214,7 +214,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-6 col-md-6 col-lg-3">
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                                                 <label for="filter-goal" class="form-label fw-bold">Cél</label>
                                                 <select id="filter-goal" class="form-select">
                                                     <option value="all">Összes cél</option>
@@ -224,7 +224,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="col-6 col-md-6 col-lg-3">
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
                                                 <label for="filter-days" class="form-label fw-bold">Edzésnapok</label>
                                                 <select id="filter-days" class="form-select">
                                                     <option value="all">Összes</option>
@@ -247,22 +247,24 @@
                                 </div>
                                 <hr>
                                 <div class="container-fluid container-items">
-                                    <div class="d-flex align-items-start align-middle" id="recommended-items">
+                                    <div id="recommended-items">
                                         
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row mb-4">
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="selected-plan">
-                                <div id="selected-title">
-                                    <h3>
-                                        Kiválasztott edzésterv
-                                    </h3> 
+                                <div class="headline">
+                                    <div id="selected-title">
+                                        <h3>
+                                            Kiválasztott edzésterv
+                                        </h3> 
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
                                 <div class="container-fluid">
                                     <div class="d-flex justify-content-center" id="selected-items">
 
@@ -272,14 +274,16 @@
                         </div>
                         <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="new-plan">
-                                <div id="new-title">
-                                    <h3 id="newPlanTitle">
-                                        Új edzésterv
-                                    </h3>
+                                <div class="headline">
+                                    <div id="new-title">
+                                        <h3 id="newPlanTitle">
+                                            Új edzésterv
+                                        </h3>
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
                                 <div class="row justify-content-center">
-                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-8 col-md-8 col-lg-6 col-xl-6">
+                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-10 col-md-10 col-lg-8 col-xl-8">
                                         <label for="routine-name" class="form-label fw-bold">Edzésterv neve</label>
                                         <input type="text" name="routine-name" id="routine-name" maxlength="100" value="new_workout" class="form-control">
                                         <label for="routine-day" class="form-label fw-bold mt-2">Napok száma</label>

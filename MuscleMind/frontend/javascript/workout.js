@@ -329,7 +329,12 @@ async function getActive() {
     try {
         const data = await getWorkout('http://127.0.0.1:3000/api/workout/plans/active');
         activePlan = data.active;
-        selectedDivItems.innerHTML = '';
+        if(activePlan == null){
+            selectedDivItems.innerHTML = '<p class="text-center w-100">Nincs kiválasztva edzésterv!</p>';
+        }else{
+            selectedDivItems.innerHTML = '';
+        }
+        
         await loadWorkouts();
         await loadRecWorkouts();
     } catch (error) {
@@ -397,6 +402,7 @@ async function loadWorkouts() {
                 }else{
                     updateActive(Number(selectBtn.value));
                 }
+                resetFilters();
             })
 
             const collapseDiv = document.createElement('div');
@@ -481,6 +487,7 @@ function renderRecWorkouts(plans){
             }else{
                 updateActive(Number(selectBtn.value));
             }
+            resetFilters();
         })
 
         const collapseDiv = document.createElement('div');
