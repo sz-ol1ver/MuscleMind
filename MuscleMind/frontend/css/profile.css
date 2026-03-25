@@ -127,3 +127,33 @@ html, body {
     padding: 5px;
     width: 80%;
 }
+
+.profile-main-bubble input:disabled{
+    background-color: #8c8c8c;
+    color:white;
+    opacity: 1;
+}
+
+.edit{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 100% !important;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #16e49f;
+    color: white;
+    margin-right: 10px;
+    justify-content: center;
+}
+
+.edit:hover{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #16e49f15;
+    color: white;
+    
+}

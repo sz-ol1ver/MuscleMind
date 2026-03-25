@@ -98,9 +98,70 @@ router.get('/username', async (request, response) => {
         });
     } catch (error) {
         return response.status(500).json({
-            message: 'Sikertelen eleres!',
+            message: 'Sikertelen eleres',
             error: error.message
         });
+    }
+});
+
+router.get('/profile', async (request, response) => {
+    if (!request.session || !request.session.user) {
+        return response.status(401).json({
+            message: 'Authentication required.'
+        });
+    }
+    
+    try {
+        const id = request.session.user.id
+        const basic = await db.getUserBasicData(id)
+        const preferences = await db.getUserPreferencesData(id)
+        const weight = await db.getUserWeightData(id)
+        // console.log(basic, preferences, weight)
+        
+        return response.status(200).json({
+            basic: basic,
+            preferences: preferences,
+            weight: weight,
+        })
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Hiba a profil adatok eleresenel',
+            error: error.message
+        })
+    }
+});
+
+router.post('/profile/update', async (request, response) => {
+    if (!request.session || !request.session.user) {
+        return response.status(401).json({
+            message: 'Authentication required.'
+        });
+    }
+
+    try {
+        const id = request.session.user.id
+        const {
+            username, first_name, last_name, email,
+            age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day,
+            weight
+        } = request.body
+
+        await db.updateUserBasic(id, username, first_name, last_name, email);
+        await db.updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day)
+        
+        if (weight) {
+             await db.insertWeight(id, weight)
+        }
+
+        return response.status(200).json({
+            message: 'Profil sikeresen frissítve!'
+        })
+
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Hiba a profil frissítése közben',
+            error: error.message
+        })
     }
 });
 

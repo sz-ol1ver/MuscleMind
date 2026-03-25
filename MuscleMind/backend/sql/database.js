@@ -125,6 +125,20 @@ async function getUserWeightData(id) {
     return rows[0]; 
 }
 
+// user update basic
+async function updateUserBasic(id, username, firstName, lastName, email) {
+    const query = 'UPDATE users SET username = ?, first_name = ?, last_name = ?, email = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [username, firstName, lastName, email, id]);
+    return result;
+}
+
+// user update preferences
+async function updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const query = 'UPDATE user_profiles SET age = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day, id]);
+    return result;
+}
+
 
 
 // -------
@@ -168,5 +182,7 @@ module.exports = {
     getUserBasicData,
     getUserPreferencesData,
     getUserWeightData,
+    updateUserBasic,
+    updateUserPreferences,
     allExercises
 };
