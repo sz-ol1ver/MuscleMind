@@ -1,33 +1,3 @@
-html, body {
-    height: 100%;
-    overflow: hidden;
-}
-
-.container-fluid {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-#upper-row {
-    flex-shrink: 0;
-}
-
-#main-row {
-    flex: 1;
-    overflow: hidden;
-}
-
-#side-nav {
-    height: 100%;
-    overflow: hidden;
-}
-
-#middle-part {
-    height: 100%;
-    overflow-y: auto;
-}
-
 .profile-main-bubble {
     margin-left: auto;
     margin-right: auto;
@@ -41,12 +11,6 @@ html, body {
 }
 
 @media (max-width: 991px) {
-    html, body {
-        overflow-y: auto;
-    }
-    .container-fluid {
-        height: auto;
-    }
     .profile-picture-wrapper {
         margin-left: 0;
     }
