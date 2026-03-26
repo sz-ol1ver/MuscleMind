@@ -5,6 +5,7 @@
     background-color: #6c6c862a;
     padding-left: 10px;
     padding-right: 10px;
+    min-height: 400px;
     height: 50vh;
     overflow-y: scroll;
     padding-bottom: 40px;
@@ -14,6 +15,8 @@
 }
 #new-plan, #selected-plan{
     height: auto;
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 .headline{
     margin: 5px 0 5px 0;
@@ -99,7 +102,7 @@ input:disabled{
     color: #616161;
 }
 #personal-items,#recommended-items{
-    overflow-y: scroll;
+    overflow-y: visible;
     overflow-x: hidden;
     white-space: nowrap;
     padding: 5px;
@@ -129,12 +132,10 @@ input:disabled{
     border: 3px solid rgb(92, 92, 92) !important;
     background-color: #343434;
     color: rgb(255, 251, 251);
-    overflow-x: scroll;
-    white-space: nowrap;
     width: 100% !important;
-    max-width: 400px !important;
     max-height: 30vh !important;
     overflow-y: scroll;
+    overflow-x: hidden;
     white-space: normal !important;
     word-break: break-word;
 }

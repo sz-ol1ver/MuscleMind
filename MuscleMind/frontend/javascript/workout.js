@@ -422,6 +422,7 @@ async function loadWorkouts() {
                 selectBtn.classList.add('btn-outline-warning');
                 selectBtn.textContent = 'Visszavonás';
                 card.id = 'selectedPlan';
+                selectedDivItems.innerHTML = '';
                 selectedDivItems.appendChild(card);
                 if(data.plans.length == 1){
                     workoutDiv.innerHTML = '<p class="text-center w-100">Nincs további edzésterved.</p>';
@@ -507,6 +508,7 @@ function renderRecWorkouts(plans){
             selectBtn.classList.add('btn-outline-warning');
             selectBtn.textContent = 'Visszavonás';
             card.id = 'selectedPlan';
+            selectedDivItems.innerHTML = '';
             selectedDivItems.appendChild(card);
             if(plans.length == 1){
                 workoutDiv.innerHTML = '<p class="text-center w-100">Nincs további edzésterved.</p>';
