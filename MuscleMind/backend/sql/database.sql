@@ -86,8 +86,6 @@ CREATE TABLE IF NOT EXISTS user_profiles (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-
-
 CREATE TABLE IF NOT EXISTS user_weights (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -157,7 +155,9 @@ CREATE TABLE IF NOT EXISTS workout_calendar_logs(
     workout_plan_id INT NOT NULL,
     workout_day_id INT NOT NULL,
     workout_date DATE NOT NULL,
-    is_completed BOOLEAN NOT NULL DEFAULT FALSE,
+    started_at DATETIME NULL,
+    completed_at DATETIME NULL,
+    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -165,9 +165,180 @@ CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
     id INT AUTO_INCREMENT PRIMARY KEY,
     workout_calendar_log_id INT NOT NULL,
     exercise_id INT NOT NULL,
-    sets_done INT NOT NULL,
+    exercise_order INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_sets(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_exercise_id INT NOT NULL,
+    set_number INT NOT NULL,
     reps_done INT NOT NULL,
-    weight_done DECIMAL(6,2) NOT NULL
+    weight_done DECIMAL(6,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_exercise_prs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+
+    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
+    max_weight_reps INT DEFAULT NULL,
+
+    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+    achieved_at DATETIME DEFAULT NULL,
+    workout_calendar_set_id INT DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE (user_id, exercise_id)
+);
+
+CREATE TABLE IF NOT EXISTS user_stats (
+    user_id INT PRIMARY KEY,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    pr_count INT NOT NULL DEFAULT 0,
+    longest_streak INT NOT NULL DEFAULT 0,
+    current_streak INT NOT NULL DEFAULT 0,
+    last_workout_date DATE NULL,
+    total_weight_lifted DECIMAL(14,2) NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+    avg_workout_time_sec INT NOT NULL DEFAULT 0,
+    start_weight DECIMAL(5,1) NULL,
+    current_weight DECIMAL(5,1) NULL,
+    weight_change DECIMAL(5,1) NULL,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user_stats_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- FOODS
+CREATE TABLE IF NOT EXISTS foods (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    -- alap adatok
+    name VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(255) DEFAULT NULL,
+
+    category ENUM(
+        'reggeli',
+        'ebed',
+        'vacsora',
+        'snack',
+        'desszert',
+        'ital'
+    ) NOT NULL,
+
+    created_by INT DEFAULT NULL,
+    is_approved BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- tápértékek (100g / 100ml alap)
+    calories_kcal DECIMAL(8,2) NOT NULL,
+    protein_g DECIMAL(8,2) NOT NULL,
+    carbs_g DECIMAL(8,2) NOT NULL,
+    fat_g DECIMAL(8,2) NOT NULL,
+    fiber_g DECIMAL(8,2) DEFAULT 0,
+    sugar_g DECIMAL(8,2) DEFAULT 0,
+    salt_g DECIMAL(8,2) DEFAULT 0,
+
+    -- adagolás
+    serving_size DECIMAL(8,2) NOT NULL,
+    serving_unit ENUM(
+        'g',
+        'ml',
+        'db',
+        'szelet',
+        'tal',
+        'pohar',
+        'adag'
+    ) NOT NULL DEFAULT 'g',
+
+    -- ajánló címkék
+    goal_tag ENUM(
+        'tomegnoveles',
+        'szalkasitas',
+        'szintentartas',
+        'mind'
+    ) NOT NULL DEFAULT 'mind',
+
+    diet_tag ENUM(
+        'mindenevo',
+        'vegetarianus',
+        'vegan'
+    ) NOT NULL DEFAULT 'mindenevo',
+
+    difficulty ENUM(
+        'konnyu',
+        'kozepes',
+        'nehez'
+    ) NOT NULL DEFAULT 'konnyu',
+
+    prep_time_min INT DEFAULT NULL,
+
+    high_protein BOOLEAN NOT NULL DEFAULT FALSE,
+    low_carb BOOLEAN NOT NULL DEFAULT FALSE,
+    bulk_friendly BOOLEAN NOT NULL DEFAULT FALSE,
+    cut_friendly BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS allergens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS food_allergens (
+    food_id INT NOT NULL,
+    allergen_id INT NOT NULL,
+    PRIMARY KEY (food_id, allergen_id)
+);
+
+-- FRIENDS
+CREATE TABLE IF NOT EXISTS user_friendships (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user1_id INT NOT NULL,
+    user2_id INT NOT NULL,
+    requested_by INT NOT NULL,
+
+    status ENUM('pending', 'accepted', 'rejected', 'blocked') NOT NULL DEFAULT 'pending',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    responded_at TIMESTAMP NULL DEFAULT NULL,
+
+    CONSTRAINT chk_user_order CHECK (user1_id < user2_id),
+    CONSTRAINT chk_no_self_friendship CHECK (user1_id <> user2_id),
+
+    CONSTRAINT uq_user_friendship UNIQUE (user1_id, user2_id),
+
+    CONSTRAINT fk_user_friendships_user1
+        FOREIGN KEY (user1_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_user_friendships_user2
+        FOREIGN KEY (user2_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_user_friendships_requested_by
+        FOREIGN KEY (requested_by)
+        REFERENCES users(id)
+        ON DELETE CASCADE
 );
 
 -- ALTER TABLES (foreign key)
@@ -234,138 +405,189 @@ ADD CONSTRAINT fk_workout_calendar_logs_days
 ADD CONSTRAINT uq_workout_calendar_logs_user_date
     UNIQUE (user_id, workout_date);
 
+ALTER TABLE foods
+ADD CONSTRAINT fk_foods_users
+    FOREIGN KEY (created_by)
+    REFERENCES users(id)
+    ON DELETE SET NULL;
+
+ALTER TABLE food_allergens
+ADD CONSTRAINT fk_food_allergens_food
+    FOREIGN KEY (food_id)
+    REFERENCES foods(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT fk_food_allergens_allergen
+    FOREIGN KEY (allergen_id)
+    REFERENCES allergens(id)
+    ON DELETE CASCADE;
+
 ALTER TABLE workout_calendar_exercises
 ADD CONSTRAINT fk_workout_calendar_exercises_log
     FOREIGN KEY (workout_calendar_log_id)
     REFERENCES workout_calendar_logs(id)
     ON DELETE CASCADE,
-ADD CONSTRAINT fk_workout_calendar_exercises_exercises
+ADD CONSTRAINT fk_workout_calendar_exercises_exercise
     FOREIGN KEY (exercise_id)
     REFERENCES exercises(id)
     ON DELETE CASCADE,
 ADD CONSTRAINT uq_workout_calendar_exercise_unique
     UNIQUE (workout_calendar_log_id, exercise_id);
 
+ALTER TABLE workout_calendar_sets
+ADD CONSTRAINT fk_workout_calendar_sets_exercise
+    FOREIGN KEY (workout_calendar_exercise_id)
+    REFERENCES workout_calendar_exercises(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT uq_workout_calendar_sets_number
+    UNIQUE (workout_calendar_exercise_id, set_number);
+
+ALTER TABLE user_exercise_prs
+ADD CONSTRAINT fk_user_exercise_prs_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT fk_user_exercise_prs_exercise
+    FOREIGN KEY (exercise_id)
+    REFERENCES exercises(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT fk_user_exercise_prs_set
+    FOREIGN KEY (workout_calendar_set_id)
+    REFERENCES workout_calendar_sets(id)
+    ON DELETE SET NULL;
+
 -- INSERTEK
 INSERT INTO exercises (name, muscle_group)
 VALUES
--- mell
-('Ferde padon csiga tárogatás', 'mell'),
-('Lejtős padon csiga mellnyomás', 'mell'),
-('Ferde padon rúddal fekvenyomás', 'mell'),
-('Fekvenyomás kézisúlyzóval', 'mell'),
-('Fekvőtámasz', 'mell'),
-('Tolódzkodás mellre döntve', 'mell'),
+    -- mell
+    ('Ferde padon csiga tárogatás', 'mell'),
+    ('Lejtős padon csiga mellnyomás', 'mell'),
+    ('Ferde padon rúddal fekvenyomás', 'mell'),
+    ('Fekvenyomás kézisúlyzóval', 'mell'),
+    ('Fekvőtámasz', 'mell'),
+    ('Tolódzkodás mellre döntve', 'mell'),
 
--- hát
-('Csiga lehúzás ferde fogással', 'hát'),
-('Ülő evezőgép ferde háttámasz', 'hát'),
-('Evezés padon rúddal', 'hát'),
-('Egykezes evezés kézisúlyzóval', 'hát'),
-('Húzódzkodás', 'hát'),
-('Fordított evezés testsúllyal', 'hát'),
+    -- hát
+    ('Csiga lehúzás ferde fogással', 'hát'),
+    ('Ülő evezőgép ferde háttámasz', 'hát'),
+    ('Evezés padon rúddal', 'hát'),
+    ('Egykezes evezés kézisúlyzóval', 'hát'),
+    ('Húzódzkodás', 'hát'),
+    ('Fordított evezés testsúllyal', 'hát'),
 
--- váll
-('Ferde padon csiga vállnyomás', 'váll'),
-('Hátsó delt csiga ferde ülés', 'váll'),
-('Vállból nyomás rúddal', 'váll'),
-('Oldalemelés kézisúlyzóval', 'váll'),
-('Kézenállás tartás', 'váll'),
-('Pike push-up', 'váll'),
+    -- váll
+    ('Ferde padon csiga vállnyomás', 'váll'),
+    ('Hátsó delt csiga ferde ülés', 'váll'),
+    ('Vállból nyomás rúddal', 'váll'),
+    ('Oldalemelés kézisúlyzóval', 'váll'),
+    ('Kézenállás tartás', 'váll'),
+    ('Pike push-up', 'váll'),
 
--- bicepsz
-('Csiga bicepsz hajlítás', 'bicepsz'),
-('Gépi bicepsz hajlítás', 'bicepsz'),
-('Rúddal bicepsz hajlítás', 'bicepsz'),
-('Kalapács bicepsz kézisúlyzóval', 'bicepsz'),
-('Húzódzkodás szűk fogással', 'bicepsz'),
-('Bicepsz tartás testsúllyal', 'bicepsz'),
+    -- bicepsz
+    ('Csiga bicepsz hajlítás', 'bicepsz'),
+    ('Gépi bicepsz hajlítás', 'bicepsz'),
+    ('Rúddal bicepsz hajlítás', 'bicepsz'),
+    ('Kalapács bicepsz kézisúlyzóval', 'bicepsz'),
+    ('Húzódzkodás szűk fogással', 'bicepsz'),
+    ('Bicepsz tartás testsúllyal', 'bicepsz'),
 
--- tricepsz
-('Csiga tricepsz letolás', 'tricepsz'),
-('Csiga tricepsz nyújtás fej felett', 'tricepsz'),
-('Fekvenyomás szűk fogással', 'tricepsz'),
-('Tricepsz kickback kézisúlyzóval', 'tricepsz'),
-('Tolódzkodás', 'tricepsz'),
-('Szűk fekvőtámasz', 'tricepsz'),
+    -- tricepsz
+    ('Csiga tricepsz letolás', 'tricepsz'),
+    ('Csiga tricepsz nyújtás fej felett', 'tricepsz'),
+    ('Fekvenyomás szűk fogással', 'tricepsz'),
+    ('Tricepsz kickback kézisúlyzóval', 'tricepsz'),
+    ('Tolódzkodás', 'tricepsz'),
+    ('Szűk fekvőtámasz', 'tricepsz'),
 
--- alkar
-('Csukló hajlítás csigán', 'alkar'),
-('Fordított csukló hajlítás csigán', 'alkar'),
-('Rúddal csukló hajlítás', 'alkar'),
-('Kézisúlyzó tartás', 'alkar'),
-('Tárcsa csípés', 'alkar'),
-('Rúdon függés', 'alkar'),
+    -- alkar
+    ('Csukló hajlítás csigán', 'alkar'),
+    ('Fordított csukló hajlítás csigán', 'alkar'),
+    ('Rúddal csukló hajlítás', 'alkar'),
+    ('Kézisúlyzó tartás', 'alkar'),
+    ('Tárcsa csípés', 'alkar'),
+    ('Rúdon függés', 'alkar'),
 
--- has
-('Csiga hasprés', 'has'),
-('Csiga lábemelés', 'has'),
-('Súlyozott felülés', 'has'),
-('Oldalirányú csavarás kézisúlyzóval', 'has'),
-('Plank', 'has'),
-('Mountain climbers', 'has'),
+    -- has
+    ('Csiga hasprés', 'has'),
+    ('Csiga lábemelés', 'has'),
+    ('Súlyozott felülés', 'has'),
+    ('Oldalirányú csavarás kézisúlyzóval', 'has'),
+    ('Plank', 'has'),
+    ('Mountain climbers', 'has'),
 
--- ferde has
-('Csiga oldalsó csavarás', 'ferde_has'),
-('Pallof press', 'ferde_has'),
-('Orosz csavar kézisúlyzóval', 'ferde_has'),
-('Oldalsó plank súlyzóval', 'ferde_has'),
-('Oldalsó plank', 'ferde_has'),
-('Ferde has V-emelés', 'ferde_has'),
+    -- ferde has
+    ('Csiga oldalsó csavarás', 'ferde_has'),
+    ('Pallof press', 'ferde_has'),
+    ('Orosz csavar kézisúlyzóval', 'ferde_has'),
+    ('Oldalsó plank súlyzóval', 'ferde_has'),
+    ('Oldalsó plank', 'ferde_has'),
+    ('Ferde has V-emelés', 'ferde_has'),
 
--- alsó hát
-('Hátfeszítés csigán', 'alsó_hát'),
-('Ülő csiga hátfeszítés', 'alsó_hát'),
-('Román felhúzás rúddal', 'alsó_hát'),
-('Good morning kézisúlyzóval', 'alsó_hát'),
-('Superman tartás', 'alsó_hát'),
-('Bird-Dog', 'alsó_hát'),
+    -- alsó hát
+    ('Hátfeszítés csigán', 'alsó_hát'),
+    ('Ülő csiga hátfeszítés', 'alsó_hát'),
+    ('Román felhúzás rúddal', 'alsó_hát'),
+    ('Good morning kézisúlyzóval', 'alsó_hát'),
+    ('Superman tartás', 'alsó_hát'),
+    ('Bird-Dog', 'alsó_hát'),
 
--- comb elülső
-('Lábtolás csigán', 'comb_első'),
-('Lábfeszítés csigán', 'comb_első'),
-('Rúddal guggolás', 'comb_első'),
-('Sétáló kitörés kézisúlyzóval', 'comb_első'),
-('Testtömeg guggolás', 'comb_első'),
-('Falnál ülés', 'comb_első'),
+    -- comb elülső
+    ('Lábtolás csigán', 'comb_első'),
+    ('Lábfeszítés csigán', 'comb_első'),
+    ('Rúddal guggolás', 'comb_első'),
+    ('Sétáló kitörés kézisúlyzóval', 'comb_első'),
+    ('Testtömeg guggolás', 'comb_első'),
+    ('Falnál ülés', 'comb_első'),
 
--- comb hátsó
-('Lábhajlítás csigán ülve', 'comb_hátsó'),
-('Lábhajlítás csigán fekve', 'comb_hátsó'),
-('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó'),
-('Lábhajlítás kézisúlyzóval', 'comb_hátsó'),
-('Nordic hamstring curl', 'comb_hátsó'),
-('Egylábas farizom emelés testsúllyal', 'comb_hátsó'),
+    -- comb hátsó
+    ('Lábhajlítás csigán ülve', 'comb_hátsó'),
+    ('Lábhajlítás csigán fekve', 'comb_hátsó'),
+    ('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó'),
+    ('Lábhajlítás kézisúlyzóval', 'comb_hátsó'),
+    ('Nordic hamstring curl', 'comb_hátsó'),
+    ('Egylábas farizom emelés testsúllyal', 'comb_hátsó'),
 
--- farizom
-('Csípőnyomás csigán', 'farizom'),
-('Kickback csigán', 'farizom'),
-('Hip thrust rúddal', 'farizom'),
-('Lépés padra kézisúlyzóval', 'farizom'),
-('Glute bridge testsúllyal', 'farizom'),
-('Donkey kicks testsúllyal', 'farizom'),
+    -- farizom
+    ('Csípőnyomás csigán', 'farizom'),
+    ('Kickback csigán', 'farizom'),
+    ('Hip thrust rúddal', 'farizom'),
+    ('Lépés padra kézisúlyzóval', 'farizom'),
+    ('Glute bridge testsúllyal', 'farizom'),
+    ('Donkey kicks testsúllyal', 'farizom'),
 
--- vádli
-('Ülő vádli csigán', 'vádli'),
-('Álló vádli csigán', 'vádli'),
-('Álló rúddal vádli emelés', 'vádli'),
-('Kézisúlyzóval vádli emelés', 'vádli'),
-('Testtömeg vádli emelés', 'vádli'),
-('Ugrókötél vádli edzés', 'vádli'),
+    -- vádli
+    ('Ülő vádli csigán', 'vádli'),
+    ('Álló vádli csigán', 'vádli'),
+    ('Álló rúddal vádli emelés', 'vádli'),
+    ('Kézisúlyzóval vádli emelés', 'vádli'),
+    ('Testtömeg vádli emelés', 'vádli'),
+    ('Ugrókötél vádli edzés', 'vádli'),
 
--- teljes test
-('Felhúzás rúddal', 'teljes_test'),
-('Guggolás rúddal', 'teljes_test'),
-('Clean & Press rúddal', 'teljes_test'),
-('Burpee testsúllyal', 'teljes_test'),
-('Kettlebell swing', 'teljes_test'),
-('Farmer walk kézisúlyzóval', 'teljes_test'),
--- cardio
-('Futópad', 'cardio'),
-('Lépcsőző gép', 'cardio'),
-('Elliptikus tréner', 'cardio'),
-('Szobakerékpár', 'cardio'),
-('Evezőgép', 'cardio');
+    -- teljes test
+    ('Felhúzás rúddal', 'teljes_test'),
+    ('Guggolás rúddal', 'teljes_test'),
+    ('Clean & Press rúddal', 'teljes_test'),
+    ('Burpee testsúllyal', 'teljes_test'),
+    ('Kettlebell swing', 'teljes_test'),
+    ('Farmer walk kézisúlyzóval', 'teljes_test'),
+    -- cardio
+    ('Futópad', 'cardio'),
+    ('Lépcsőző gép', 'cardio'),
+    ('Elliptikus tréner', 'cardio'),
+    ('Szobakerékpár', 'cardio'),
+    ('Evezőgép', 'cardio');
+
+-- insert allergens
+INSERT INTO allergens (name) VALUES
+    ('tej'),
+    ('tojas'),
+    ('gluten'),
+    ('szoya'),
+    ('mogyoro'),
+    ('diofelek'),
+    ('hal'),
+    ('rakfelek'),
+    ('szezammag'),
+    ('mustar');
 
 -- INSERT recommended plans (for testing)
 INSERT INTO workout_plans (user_id, name, level, location, goal, description, is_public, days_count)
