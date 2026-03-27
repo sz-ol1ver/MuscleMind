@@ -215,12 +215,7 @@ CREATE TABLE IF NOT EXISTS user_stats (
     current_weight DECIMAL(5,1) NULL,
     weight_change DECIMAL(5,1) NULL,
 
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    CONSTRAINT fk_user_stats_user
-        FOREIGN KEY (user_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- FOODS
@@ -318,27 +313,7 @@ CREATE TABLE IF NOT EXISTS user_friendships (
     status ENUM('pending', 'accepted', 'rejected', 'blocked') NOT NULL DEFAULT 'pending',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    responded_at TIMESTAMP NULL DEFAULT NULL,
-
-    CONSTRAINT chk_user_order CHECK (user1_id < user2_id),
-    CONSTRAINT chk_no_self_friendship CHECK (user1_id <> user2_id),
-
-    CONSTRAINT uq_user_friendship UNIQUE (user1_id, user2_id),
-
-    CONSTRAINT fk_user_friendships_user1
-        FOREIGN KEY (user1_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_user_friendships_user2
-        FOREIGN KEY (user2_id)
-        REFERENCES users(id)
-        ON DELETE CASCADE,
-
-    CONSTRAINT fk_user_friendships_requested_by
-        FOREIGN KEY (requested_by)
-        REFERENCES users(id)
-        ON DELETE CASCADE
+    responded_at TIMESTAMP NULL DEFAULT NULL
 );
 
 -- ALTER TABLES (foreign key)
@@ -454,6 +429,29 @@ ADD CONSTRAINT fk_user_exercise_prs_set
     FOREIGN KEY (workout_calendar_set_id)
     REFERENCES workout_calendar_sets(id)
     ON DELETE SET NULL;
+
+ALTER TABLE user_friendships
+ADD CONSTRAINT chk_user_order CHECK (user1_id < user2_id),
+ADD CONSTRAINT chk_no_self_friendship CHECK (user1_id <> user2_id),
+ADD CONSTRAINT uq_user_friendship UNIQUE (user1_id, user2_id),
+ADD CONSTRAINT fk_user_friendships_user1
+    FOREIGN KEY (user1_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT fk_user_friendships_user2
+    FOREIGN KEY (user2_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+ADD CONSTRAINT fk_user_friendships_requested_by
+    FOREIGN KEY (requested_by)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_stats
+ADD CONSTRAINT fk_user_stats_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
 
 -- INSERTEK
 INSERT INTO exercises (name, muscle_group)
