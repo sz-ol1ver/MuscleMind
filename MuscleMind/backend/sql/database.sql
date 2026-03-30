@@ -120,6 +120,45 @@ CREATE TABLE IF NOT EXISTS exercises(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS user_muscle_xp (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    muscle_group ENUM(
+        'mell',
+        'hát',
+        'váll',
+        'bicepsz',
+        'tricepsz',
+        'alkar',
+        'has',
+        'ferde_has',
+        'alsó_hát',
+        'comb_első',
+        'comb_hátsó',
+        'farizom',
+        'vádli',
+        'teljes_test',
+        'cardio'
+    ) NOT NULL,
+
+    xp INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE (user_id, muscle_group)
+);
+
+CREATE TABLE user_global_xp (
+    user_id INT PRIMARY KEY,
+    xp INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
@@ -155,8 +194,7 @@ CREATE TABLE IF NOT EXISTS workout_calendar_logs(
     workout_plan_id INT NOT NULL,
     workout_day_id INT NOT NULL,
     workout_date DATE NOT NULL,
-    started_at DATETIME NULL,
-    completed_at DATETIME NULL,
+    workout_time_sec INT NOT NULL DEFAULT 0,
     status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -333,6 +371,18 @@ ALTER TABLE user_weights
     ADD CONSTRAINT fk_user_weights_users
     FOREIGN KEY (user_id)
     REFERENCES user_profiles(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_muscle_xp
+    ADD CONSTRAINT fk_user_muscle_xp_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_global_xp
+    ADD CONSTRAINT fk_user_global_xp_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
     ON DELETE CASCADE;
 
 ALTER TABLE workout_plans

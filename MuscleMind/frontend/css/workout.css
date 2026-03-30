@@ -152,3 +152,6 @@ input:disabled{
 .container-items{
     flex: 1;
 }
+.text-justify{
+    text-align: justify;
+}
