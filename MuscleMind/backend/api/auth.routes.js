@@ -139,12 +139,16 @@ router.post('/profile/update', async (request, response) => {
     }
 
     try {
+        const ip = requestIp.getClientIp(request);
         const id = request.session.user.id
         const {
-            username, first_name, last_name, email,
+            username, first_name, last_name, email, password, 
             age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day,
             weight
         } = request.body
+
+        const oldData = await db.getUserBasicData(id);
+        const oldPasswordData = await db.getUserPassword(id);
 
         await db.updateUserBasic(id, username, first_name, last_name, email);
         await db.updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day)
@@ -152,6 +156,25 @@ router.post('/profile/update', async (request, response) => {
         if (weight) {
              await db.insertWeight(id, weight)
         }
+
+        if (oldData.username !== username) {
+            await db.log(id, 'profile_update', `Felhasználónév módosítva (${oldData.username} -> ${username})`, ip);
+        }
+        
+        if (oldData.email !== email) {
+            await db.log(id, 'profile_update', `Email módosítva (${oldData.email} -> ${email})`, ip);
+        }
+
+        if (password) {
+            const isSamePassword = await bcrypt.compare(password, oldPasswordData.password_hash);
+            if (!isSamePassword) {
+                const hashedNewPassword = await bcrypt.hash(password, saltRounds);
+                await db.updateUserPassword(id, hashedNewPassword);
+                await db.log(id, 'profile_update', 'Jelszó módosítva', ip);
+            }
+        }
+
+        await db.log(id, 'profile', 'Sikeres profil frissítés', ip);
 
         return response.status(200).json({
             message: 'Profil sikeresen frissítve!'

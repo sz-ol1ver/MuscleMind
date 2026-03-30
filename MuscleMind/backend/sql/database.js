@@ -139,6 +139,20 @@ async function updateUserPreferences(id, age, height, goal, experience_level, tr
     return result;
 }
 
+// user jelszo lekeres
+async function getUserPassword(id) {
+    const query = 'SELECT password_hash FROM users WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// jelszo frissites
+async function updateUserPassword(id, hashedPassword) {
+    const query = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [hashedPassword, id]);
+    return result;
+}
+
 
 
 // -------
@@ -184,5 +198,7 @@ module.exports = {
     getUserWeightData,
     updateUserBasic,
     updateUserPreferences,
+    getUserPassword,
+    updateUserPassword,
     allExercises
 };

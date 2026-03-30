@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             editPersonalButton.style.backgroundColor = "red"
             
             for (let i = 0; i < inputs.length; i++) {
-                if (inputs[i].getAttribute('type') != 'button' && inputs[i].getAttribute('type') != 'checkbox') {
+                if (inputs[i].getAttribute('type') != 'button' && inputs[i].getAttribute('type') != 'file') {
                      inputs[i].disabled = false
 
                      if (inputs[i].type == "text" || inputs[i].type == "email" || inputs[i].type == "password") {
@@ -152,6 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         let firstNameVal = document.getElementById('Keresztnév').value
         let lastNameVal = document.getElementById('Vezetéknév').value
         let emailVal = document.getElementById('Email').value
+        let passwordVal = document.getElementById('Jelszo').value
         
         let ageVal = document.getElementById('Kor').value
         let heightVal = document.getElementById('Magassag').value
@@ -244,6 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             first_name: firstNameVal,
             last_name: lastNameVal,
             email: emailVal,
+            password: passwordVal,
             
             age: ageVal,
             height: heightVal,
