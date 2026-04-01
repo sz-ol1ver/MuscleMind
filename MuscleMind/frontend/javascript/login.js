@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //? loginBtn --> login-in
 
     // mezok lekérdezése
+    const form = document.getElementById('login-form'); //? .email && .pass
     const email = document.getElementById('email-login');
     const password = document.getElementById('password-login');
     const loginBtn = document.getElementById('login-in');
@@ -43,21 +44,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //! login button - click
     loginBtn.addEventListener('click', async()=>{
         try {
-            const postObj = {
-                email: email.value,
-                pass: password.value
-            }
-            const data = await login('http://127.0.0.1:3000/api/auth/login', postObj)
+            const formDataLogin = new FormData(form);
+            const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin)
             feedback.style.color = 'lightgreen';
             feedback.innerHTML = data.message;
             setTimeout(()=>{
                 feedback.innerHTML = '';
-                email.value = '';
-                password.value = '';
+                form.reset();
                 password.disabled = true;
                 setTimeout(()=>{
                     window.location.href = '/kerdoiv'
-                }, 300)
+                }, 400)
             }, 2000)
         } catch (error) {
             feedback.style.color = 'rgba(255, 30, 30, 1)';
@@ -89,21 +86,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
     password.addEventListener('keydown', async(e)=>{
         if(e.key == 'Enter'){
             try {
-                const postObj = {
-                    email: email.value,
-                    pass: password.value
-                }
-                const data = await login('http://127.0.0.1:3000/api/auth/login', postObj)
+                const formDataLogin = new FormData(form);
+                const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin);
                 feedback.style.color = 'lightgreen';
                 feedback.innerHTML = data.message;
                 setTimeout(()=>{
                     feedback.innerHTML = '';
-                    email.value = '';
-                    password.value = '';
+                    form.reset();
                     password.disabled = true;
                     setTimeout(()=>{
                         window.location.href = '/kerdoiv'
-                    }, 300)
+                    }, 400)
                 }, 2000)
             } catch (error) {
                 feedback.style.color = 'rgba(255, 30, 30, 1)';

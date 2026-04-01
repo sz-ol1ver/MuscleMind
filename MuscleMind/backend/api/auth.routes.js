@@ -6,10 +6,12 @@ const bcrypt = require('bcrypt'); // npm install bcrypt
 const requestIp = require('request-ip'); // npm install request-ip
 const loginMw = require('../middleware/login.middleware.js');
 const validateRegistration = require('../middleware/registration.middleware.js');
+const multer = require('multer');
+const upload = multer();
 
 const saltRounds = 12;
 
-router.post('/registration', validateRegistration, async(request, response) => {
+router.post('/registration',upload.none() , validateRegistration, async(request, response) => {
     try {
         const data = request.body;
         const ip = requestIp.getClientIp(request);
@@ -33,7 +35,7 @@ router.post('/registration', validateRegistration, async(request, response) => {
     }
 });
 
-router.post('/login', loginMw.validateLogin, async(request, response)=>{
+router.post('/login', upload.none(), loginMw.validateLogin, async(request, response)=>{
     try {
         const {email, pass} = request.body;
         const ip = requestIp.getClientIp(request);

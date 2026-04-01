@@ -2,8 +2,7 @@ export async function registration(url, value){
     try {
         const data = await fetch(url, {
             method:'POST',
-            headers: {'Content-type':'application/json'},
-            body: JSON.stringify(value)
+            body: value
         })
         if(!data.ok){
             const res = await data.json();
@@ -32,8 +31,7 @@ export async function login(url, value) {
     try {
         const data = await fetch(url, {
             method:'POST',
-            headers: {'Content-type':'application/json'},
-            body: JSON.stringify(value)
+            body: value
         })
         if(!data.ok){
             const res = await data.json();
