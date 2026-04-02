@@ -147,116 +147,88 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     //Mentes---------------------
     async function handleSave() {
-        //alapadatok hogy ne kelljen mindenhol lekerni a valuet + a kerdoives amiknel number az input
-        let usernameVal = document.getElementById('Nev').value
-        let firstNameVal = document.getElementById('Keresztnév').value
-        let lastNameVal = document.getElementById('Vezetéknév').value
-        let emailVal = document.getElementById('Email').value
-        let passwordVal = document.getElementById('Jelszo').value
-        
-        let ageVal = document.getElementById('Kor').value
-        let heightVal = document.getElementById('Magassag').value
-        let weightVal = document.getElementById('Súly').value
+        const form = document.getElementById('profileForm')
+        const formData = new FormData(form)
+
+        //kerdoiv gombok hozzaadasa
+        formData.append('goal', getSelectedValue('goal') || '')
+        formData.append('experience_level', getSelectedValue('level') || '')
+        formData.append('training_days', getSelectedValue('days') || '')
+        formData.append('training_location', getSelectedValue('location') || '')
+        formData.append('diet_type', getSelectedValue('diet') || '')
+        formData.append('meals_per_day', getSelectedValue('meals') || '')
+
+        //adatok atalakitasa
+        let newData = Object.fromEntries(formData.entries())
 
         //ha ures (nem volt valtozas) akkor vissza eredeti adatra
-        if (usernameVal == "") {
+        if (newData.username == "") {
             if (originalData.basic && originalData.basic.username) {
-                usernameVal = originalData.basic.username
+                newData.username = originalData.basic.username
             }
         }
-        if (firstNameVal == "") {
+        if (newData.first_name == "") {
             if (originalData.basic && originalData.basic.first_name) {
-                firstNameVal = originalData.basic.first_name
+                newData.first_name = originalData.basic.first_name
             }
         }
-        if (lastNameVal == "") {
+        if (newData.last_name == "") {
             if (originalData.basic && originalData.basic.last_name) {
-                lastNameVal = originalData.basic.last_name
+                newData.last_name = originalData.basic.last_name
             }
         }
-        if (emailVal == "") {
+        if (newData.email == "") {
             if (originalData.basic && originalData.basic.email) {
-                emailVal = originalData.basic.email
+                newData.email = originalData.basic.email
             }
-        }
-
-        if (ageVal == "") {
-            if (originalData.preferences && originalData.preferences.age) {
-                ageVal = originalData.preferences.age
-            }
-        }
-        if (heightVal == "") {
-            if (originalData.preferences && originalData.preferences.height) {
-                heightVal = originalData.preferences.height
-            }
-        }
-        if (weightVal == "") {
-            if (originalData.weight && originalData.weight.weight) {
-                weightVal = originalData.weight.weight
-            }
-        }
-
-        //kerdoives gombok
-        let goalVal = getSelectedValue('goal')
-        if (!goalVal) {
-             if (originalData.preferences && originalData.preferences.goal) {
-                 goalVal = originalData.preferences.goal
-             }
         }
         
-        let levelVal = getSelectedValue('level')
-        if (!levelVal) {
+        if (newData.age == "") {
+            if (originalData.preferences && originalData.preferences.age) {
+                newData.age = originalData.preferences.age
+            }
+        }
+        if (newData.height == "") {
+            if (originalData.preferences && originalData.preferences.height) {
+                newData.height = originalData.preferences.height
+            }
+        }
+        if (newData.weight == "") {
+            if (originalData.weight && originalData.weight.weight) {
+                newData.weight = originalData.weight.weight
+            }
+        }
+
+        //kerdoiv ures gombok ellenorzese
+        if (newData.goal == "") {
+             if (originalData.preferences && originalData.preferences.goal) {
+                 newData.goal = originalData.preferences.goal
+             }
+        }
+        if (newData.experience_level == "") {
             if (originalData.preferences && originalData.preferences.experience_level) {
-                levelVal = originalData.preferences.experience_level
+                newData.experience_level = originalData.preferences.experience_level
             }
         }
-
-        let daysVal = getSelectedValue('days')
-        if (!daysVal) {
+        if (newData.training_days == "") {
             if (originalData.preferences && originalData.preferences.training_days) {
-                daysVal = originalData.preferences.training_days
+                newData.training_days = originalData.preferences.training_days
             }
         }
-
-        let locationVal = getSelectedValue('location')
-        if (!locationVal) {
+        if (newData.training_location == "") {
             if (originalData.preferences && originalData.preferences.training_location) {
-                locationVal = originalData.preferences.training_location
+                newData.training_location = originalData.preferences.training_location
             }
         }
-
-        let dietVal = getSelectedValue('diet')
-        if (!dietVal) {
+        if (newData.diet_type == "") {
             if (originalData.preferences && originalData.preferences.diet_type) {
-                dietVal = originalData.preferences.diet_type
+                newData.diet_type = originalData.preferences.diet_type
             }
         }
-
-        let mealsVal = getSelectedValue('meals')
-        if (!mealsVal) {
+        if (newData.meals_per_day == "") {
             if (originalData.preferences && originalData.preferences.meals_per_day) {
-                mealsVal = originalData.preferences.meals_per_day
+                newData.meals_per_day = originalData.preferences.meals_per_day
             }
-        }
-
-
-        let newData = {
-            username: usernameVal,
-            first_name: firstNameVal,
-            last_name: lastNameVal,
-            email: emailVal,
-            password: passwordVal,
-            
-            age: ageVal,
-            height: heightVal,
-            weight: weightVal,
-
-            goal: goalVal,
-            experience_level: levelVal,
-            training_days: daysVal,
-            training_location: locationVal,
-            diet_type: dietVal,
-            meals_per_day: mealsVal,
         }
         
         const allInputs = document.querySelectorAll('input')
@@ -396,7 +368,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         }
     }
-// ----------------------------------------------------------------------
+// ----------------------------------༼ つ ◕_◕ ༽つ------------------------------------
     const purposeButtons = document.querySelectorAll(".purpose")
 
     for (let i = 0; i < purposeButtons.length; i++) {
