@@ -232,7 +232,7 @@ router.get('/plans/active', requireAuthApi, async(req,res)=>{
     }
 })
 
-router.put('/my-plan/update/:id', requireAuthApi,validateUpdate, async(req, res)=>{
+router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res)=>{
     const conn = await db.pool.getConnection();
     
     try {
@@ -277,7 +277,7 @@ router.put('/my-plan/update/:id', requireAuthApi,validateUpdate, async(req, res)
         conn.release();
     }
 })
-router.patch('/plans/active', requireAuthApi,validateActive, async(req, res)=>{
+router.patch('/plans/active', requireAuthApi, validateActive, async(req, res)=>{
     try {
         const userId = req.session.user.id;
         const plan = req.body.active;

@@ -66,12 +66,7 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
     }
 })
 
-router.post('/logout',(request, response)=>{
-    if(!request.session || !request.session.user){
-        return response.status(401).json({
-            message: "Authentication required."
-        });
-    }
+router.post('/logout',loginMw.requireAuthApi,(request, response)=>{
     request.session.destroy((err)=>{
         if (err) {
             return response.status(500).json({
@@ -86,13 +81,7 @@ router.post('/logout',(request, response)=>{
     });
 })
 
-router.get('/username', async (request, response) => {
-    if (!request.session || !request.session.user) {
-        return response.status(401).json({
-            message: 'Authentication required.'
-        });
-    }
-
+router.get('/username', loginMw.requireAuthApi,async (request, response) => {
     try {
         const user = await db.getUsernameById(request.session.user.id)
         return response.status(200).json({

@@ -303,6 +303,16 @@ async function updateActive(userId,plan) {
 }
 
 // ----
+// ADMIN
+// ----
+async function isAdminCheck(userId) {
+    const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+
+// ----
 // LOG
 // ----
 
@@ -343,5 +353,6 @@ module.exports = {
     allDefaultPlans,
     getDefaultWorkoutPlanDetails,
     getActive,
-    updateActive
+    updateActive,
+    isAdminCheck
 };

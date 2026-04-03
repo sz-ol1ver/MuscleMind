@@ -1,4 +1,5 @@
 const db = require('../sql/database.js');
+const path = require('path');
 
 //? email validation regex
 /*1️⃣ Local part (before @):
@@ -71,7 +72,7 @@ function redirectIfLoggedIn(req, res, next){
 }
 function requireAuthPage(req, res, next){
     if(!req.session?.user?.id){
-        return res.redirect('/bejelentkezes');
+        return res.sendFile(path.join(__dirname, '../views/401.html'));
     }
     next()
 }
