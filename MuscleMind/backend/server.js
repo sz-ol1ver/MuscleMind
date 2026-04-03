@@ -80,10 +80,10 @@ app.use((err, req, res, next) => {
         });
     }
     console.error(err.message); // log a szerveren
-    res.status(400).json({
-         message: err.message,
-         status: err.status
-        }); // vissza a kliensnek JSON-ban
+        res.status(err.status || 500).json({
+        message: err.message || 'Belső szerverhiba',
+        status: err.status || 500
+    }); // vissza a kliensnek JSON-ban
 });
 
 //!Szerver futtatása
