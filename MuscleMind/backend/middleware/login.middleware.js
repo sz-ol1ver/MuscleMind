@@ -66,7 +66,7 @@ async function validateLogin(req, res, next) {
 
 function redirectIfLoggedIn(req, res, next){
     if(req.session?.user?.id){
-        return res.redirect('/kerdoiv');
+        return res.redirect('/');
     }
     next()
 }

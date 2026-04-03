@@ -36,7 +36,7 @@ app.use(
 
 //!Routing
 //?Főoldal:
-router.get('/', loginMw.requireAuthPage,requireComplete, (request, response) => {
+router.get('/', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/index.html'));
 });
 router.get('/bejelentkezes', loginMw.redirectIfLoggedIn ,(request, response) => {
