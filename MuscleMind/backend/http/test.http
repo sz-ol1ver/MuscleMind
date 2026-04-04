@@ -85,3 +85,22 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+POST https://api.brevo.com/v3/smtp/email
+api-key: ###
+Content-Type: application/json
+
+{
+  "sender":{
+    "name": "MuscleMind - Support",
+    "email": "musclemind.web@gmail.com"
+  },
+  "to":[
+    {
+      "email": "szaloliver@gmail.com"
+    }
+  ],
+  "subject": "test",
+  "htmlContent": "<html><body><h1>Test</h1></body></html>"
+}
