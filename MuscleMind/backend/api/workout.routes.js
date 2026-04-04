@@ -59,7 +59,7 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
 
         await conn.commit();
 
-        await db.log(
+        await db.log_id(
             userId,
             'WORKOUT_PLAN_CREATE',
             `Új edzésterv létrehozva. planId: ${planId}`,
@@ -75,7 +75,7 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
         console.log(error.message);
         const userId = req.session.user.id;
         const ip = requestIp.getClientIp(req);
-        await db.log(
+        await db.log_id(
             userId,
             'ERR_WORKOUT_PLAN_CREATE',
             `Új edzésterv sikertelen létrehozása. `+error.message,
@@ -247,7 +247,7 @@ router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res
 
         await conn.commit();
 
-        await db.log(
+        await db.log_id(
             userId,
             'WORKOUT_PLAN_UPDATE',
             `Edzésterv frissítve. planId: ${planId}`,
@@ -263,7 +263,7 @@ router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res
         const userId = req.session.user.id;
         const planId = req.params.id;
         const ip = requestIp.getClientIp(req);
-        await db.log(
+        await db.log_id(
             userId,
             'ERR_WORKOUT_PLAN_UPDATE',
             `Edzésterv sikertelen frissítése. planId: ${planId}`,
@@ -303,7 +303,7 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(req, res)=>{
 
         const deleted = await db.deletePlan(userId, planId);
     
-        await db.log(
+        await db.log_id(
             userId,
             'WORKOUT_PLAN_DELETE',
             `Edzésterv törölve. planId: ${planId}`,

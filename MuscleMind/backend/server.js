@@ -16,6 +16,14 @@ const port = 3000;
 app.use(express.json()); //?Middleware JSON
 app.set('trust proxy', 1); //?Middleware Proxy
 
+//? https --> http
+app.use((req, res, next) => {
+    if (req.secure) {
+        return res.redirect('http://' + req.headers.host + req.url);
+    }
+    next();
+});
+
 app.use(express.static(path.join(__dirname, '../frontend'))); //?frontend mappa tartalmának betöltése az oldal működéséhez
 
 //!Session beállítása:

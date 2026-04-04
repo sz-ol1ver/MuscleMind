@@ -317,11 +317,18 @@ async function isAdminCheck(userId) {
 // ----
 
 // log data
-async function log(id, action, desc, ip) {
+async function log_id(id, action, desc, ip) {
     const userName = 'SELECT username FROM users WHERE id = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
     const [nameResult] = await pool.execute(userName, [id]);
     const [result] = await pool.execute(insert, [id, nameResult[0].username, action, desc, ip]);
+    return result.insertId;
+}
+async function log_email(email, action, desc, ip) {
+    const userName = 'SELECT id, username FROM users WHERE email = ?';
+    const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
+    const [nameResult] = await pool.execute(userName, [email]);
+    const [result] = await pool.execute(insert, [nameResult[0].id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
 
@@ -332,7 +339,8 @@ module.exports = {
     registration_insert,
     username_exist,
     email_exist,
-    log,
+    log_id,
+    log_email,
     findUser,
     getUsernameById,
     registComp,

@@ -53,7 +53,7 @@ async function validateLogin(req, res, next) {
         const emailExist = await db.email_exist(email);
         if(emailExist != 1){
             return res.status(409).json({
-                message: 'Nincs regisztrálva',
+                message: 'Érvénytelen e-mail cím vagy jelszó!',
                 id: 3,
             })
         }
@@ -86,9 +86,45 @@ function requireAuthApi(req, res, next){
     next()
 }
 
+async function requestPassword(req,res,next) {
+    try {
+        const allowedKeys = ['email'];
+        const {email} = req.body;
+
+        if(!email || typeof email !== 'string'){
+            return res.status(400).json({
+                message: 'Nincs megadva email cím!'
+            });
+        };
+        const objectKeys = Object.keys(req.body);
+        if(allowedKeys.length != objectKeys.length){
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        };
+        for(let i =0; i<objectKeys.length;i++){
+            if(!allowedKeys.includes(objectKeys[i])){
+                return res.status(400).json({
+                    message: 'Érvénytelen adatok!'
+                });
+            };
+        };
+        if(!patternEmail.test(email)){
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        };
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateLogin,
     redirectIfLoggedIn,
     requireAuthPage,
-    requireAuthApi
+    requireAuthApi,
+    requestPassword
 }

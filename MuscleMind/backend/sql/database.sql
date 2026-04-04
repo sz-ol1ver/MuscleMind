@@ -361,7 +361,7 @@ CREATE TABLE reset_tokens (
 
     token_hash VARCHAR(64) NOT NULL,
 
-    expires_at DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL DEFAULT (NOW() + INTERVAL 10 MINUTE),
 
     used BOOLEAN NOT NULL DEFAULT FALSE,
 
@@ -519,7 +519,7 @@ ADD CONSTRAINT fk_user_stats_user
     REFERENCES users(id)
     ON DELETE CASCADE;
 
-ALTER TABLE password_reset_tokens
+ALTER TABLE reset_tokens
     ADD CONSTRAINT fk_password_reset_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
