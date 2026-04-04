@@ -35,7 +35,9 @@ async function username_exist(username) {
     const [rows] = await pool.execute(userN, [username]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 // email validation
 async function email_exist(email) {
@@ -43,7 +45,9 @@ async function email_exist(email) {
     const [rows] = await pool.execute(userN, [email]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 // user adatai session / jelszo ellenorzeshez
@@ -71,7 +75,9 @@ async function registComp(id) {
     const [rows] = await pool.execute(userN, [id]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 //user kerdoiv adatok (insert) /without weight
