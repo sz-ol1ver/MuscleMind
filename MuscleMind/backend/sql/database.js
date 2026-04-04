@@ -301,6 +301,17 @@ async function updateActive(userId,plan) {
     const [rows] = await pool.execute(sql, [plan, userId]);
     return rows.affectedRows;
 }
+// ----
+// token
+// ----
+
+async function save_token(email, token) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const insert = 'INSERT INTO reset_tokens(user_id, token_hash) VALUES (?,?)';
+    const [user_id] = await pool.execute(id, [email]);
+    const [rows] = await pool.execute(insert, [user_id[0].id, token]);
+    return rows.insertId;
+}
 
 // ----
 // ADMIN
@@ -316,7 +327,7 @@ async function isAdminCheck(userId) {
 // LOG
 // ----
 
-// log data
+// log by id
 async function log_id(id, action, desc, ip) {
     const userName = 'SELECT username FROM users WHERE id = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
@@ -324,6 +335,7 @@ async function log_id(id, action, desc, ip) {
     const [result] = await pool.execute(insert, [id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
+// log by email
 async function log_email(email, action, desc, ip) {
     const userName = 'SELECT id, username FROM users WHERE email = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
@@ -362,5 +374,6 @@ module.exports = {
     getDefaultWorkoutPlanDetails,
     getActive,
     updateActive,
-    isAdminCheck
+    isAdminCheck,
+    save_token
 };

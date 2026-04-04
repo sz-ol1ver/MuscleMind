@@ -101,14 +101,22 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
         const ip = requestIp.getClientIp(req);
         const {email} = req.body;
         const emailCheck = await db.email_exist(email);
+        //? check if email is registered
         if(emailCheck != 1){
+            //? sending feedback (security reason)
             return res.status(200).json({
                 message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
             });
         }
+        //? creating token -> hash token -> save into db
         const token = crypto.randomBytes(32).toString('base64url');
-        
+        const token_hash = await bcrypt.hash(token, saltRounds);
+        await db.save_token(email, token_hash);
 
+        //? link for new password + token in url
+        const resetLink = `http://127.0.0.1:3000/uj-jelszo?token=${token}`;
+
+        //? brevo POST obj
         const sendObj = {
             "sender":{
                 "name": "MuscleMind - Support",
@@ -119,11 +127,99 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
                 "email": email
                 }
             ],
-            "subject": "test",
-            "htmlContent": "<html><body><h1>Test</h1></body></html>"
+            "subject": "Reset your MuscleMind password",
+            "htmlContent": `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="UTF-8">
+                <title>Password Reset</title>
+                </head>
+                <body style="margin:0; padding:0; background-color:#000000; font-family:Arial, sans-serif;">
+
+                <table width="100%" cellpadding="0" cellspacing="0" style="padding:20px;">
+                <tr>
+                <td align="center">
+
+                <table width="500" cellpadding="0" cellspacing="0" style="background:#0d0d0d; border-radius:12px; padding:30px; color:#e5e5e5; border:1px solid #1f1f1f;">
+
+                <!-- HEADER -->
+                <tr>
+                <td align="center" style="padding-bottom:20px;">
+                <h1 style="margin:0; color:#ef4444; letter-spacing:2px;">MUSCLEMIND</h1>
+                <p style="margin:5px 0 0 0; color:#888;">Gym Tracker</p>
+                </td>
+                </tr>
+
+                <!-- TITLE -->
+                <tr>
+                <td align="center" style="padding:20px 0;">
+                <h2 style="margin:0; color:#ffffff;">Password Reset</h2>
+                </td>
+                </tr>
+
+                <!-- TEXT -->
+                <tr>
+                <td align="center" style="padding-bottom:20px; color:#bbbbbb;">
+                <p style="margin:0;">
+                You requested a password reset.<br>
+                Click the button below to continue.
+                </p>
+                </td>
+                </tr>
+
+                <!-- BUTTON -->
+                <tr>
+                <td align="center" style="padding:25px 0;">
+                <a href="${resetLink}" 
+                style="background:#ef4444; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:8px; font-weight:bold; display:inline-block; box-shadow:0 0 10px rgba(239,68,68,0.6);">
+                    RESET PASSWORD
+                </a>
+                </td>
+                </tr>
+
+                <!-- FALLBACK -->
+                <tr>
+                <td style="padding-top:20px; font-size:12px; color:#777; text-align:center;">
+                <p style="margin:0;">
+                If the button doesn't work, use this link:
+                </p>
+                <p style="word-break:break-all; color:#ef4444;">
+                ${resetLink}
+                </p>
+                </td>
+                </tr>
+
+                <!-- FOOTER -->
+                <tr>
+                <td align="center" style="padding-top:30px; font-size:12px; color:#666;">
+                <p style="margin:0;">
+                This link expires in 10 minutes.
+                </p>
+                <p style="margin:5px 0 0 0;">
+                If you didn’t request this, ignore this email.
+                </p>
+                </td>
+                </tr>
+
+                </table>
+
+                </td>
+                </tr>
+                </table>
+
+                </body>
+                </html>
+                `
         }
+
+        //? POST {sendObj} -> sending email
         const resEmail = await postEmail(sendObj);
+
+        //? creating log about password request
         db.log_email(email, 'Forgotten password', 'Reset link sent, email_id: '+resEmail.messageId, ip);
+
+        //? sending feedback
         return res.status(200).json({
             message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
         });
@@ -136,7 +232,6 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
     }
 })
 
-
 //! FUNCTIONS
 async function postEmail(value) {
     try {
@@ -144,7 +239,7 @@ async function postEmail(value) {
             method: 'POST',
             headers: {
                 'Content-type':'application/json',
-                'api-key':'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'
+                'api-key':'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'
             },
             body: JSON.stringify(value)
         });
