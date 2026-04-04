@@ -42,8 +42,11 @@ router.get('/', loginMw.requireAuthPage, requireComplete, (request, response) =>
 router.get('/bejelentkezes', loginMw.redirectIfLoggedIn ,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
 });
-router.get('/uj-jelszo', loginMw.redirectIfLoggedIn ,(request, response) => {
+router.get('/jelszo-keres', loginMw.redirectIfLoggedIn ,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/forgot-password.html'));
+});
+router.get('/uj-jelszo', loginMw.redirectIfLoggedIn ,(request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/reset-password.html'));
 });
 router.get('/regisztracio', loginMw.redirectIfLoggedIn,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/registration.html'));
