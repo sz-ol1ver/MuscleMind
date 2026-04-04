@@ -5,6 +5,8 @@ const fs = require('fs/promises');
 const bcrypt = require('bcrypt'); //! npm install bcrypt
 const crypto = require('crypto'); //! npm install crypto
 const requestIp = require('request-ip'); //! npm install request-ip
+require('dotenv').config(); //! npm install dotenv
+const apiKey = process.env.BREVO_API_KEY;
 const loginMw = require('../middleware/login.middleware.js');
 const validateRegistration = require('../middleware/registration.middleware.js');
 const multer = require('multer');
@@ -239,7 +241,7 @@ async function postEmail(value) {
             method: 'POST',
             headers: {
                 'Content-type':'application/json',
-                'api-key':'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'
+                'api-key':apiKey
             },
             body: JSON.stringify(value)
         });
