@@ -325,6 +325,11 @@ async function delete_tokens(email) {
     const [rows] = await pool.execute(deleteTokens, [user_id[0].id]);
     return rows.affectedRows;
 }
+async function find_token(token) {
+    const select = 'SELECT expires_at, used FROM reset_tokens WHERE token_hash = ?';
+    const [rows] = await pool.execute(select, [token]);
+    return rows[0];
+}
 
 //? interval delete expired tokens
 async function token_expire_del() {
@@ -397,5 +402,6 @@ module.exports = {
     isAdminCheck,
     save_token,
     delete_tokens,
-    token_expire_del
+    token_expire_del,
+    find_token
 };

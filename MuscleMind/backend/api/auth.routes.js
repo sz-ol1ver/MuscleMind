@@ -235,6 +235,23 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
         });
     }
 })
+router.post('/check-token', async(req,res)=>{
+    try {
+        const {token} = req.body;
+        const token_hash = crypto.createHash('sha256').update(token).digest('hex');
+
+        const expire_date = await db.find_token(token_hash);
+        
+
+
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({
+            message: 'Sikertelen eleres!',
+            error: error.message
+        });
+    }
+})
 
 //! FUNCTIONS
 async function postEmail(value) {
