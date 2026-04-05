@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 async function requestSend(value) {
     try {
-        await postRequestPass('http://127.0.0.1:3000/api/auth/request-password', value);
+        const data = await postRequestPass('http://127.0.0.1:3000/api/auth/request-password', value);
         feedback.style.color = "lightgreen";
-        feedback.innerHTML = 'Sikeres kérés!';
+        feedback.innerHTML = data.message;
         setTimeout(() => {
             email.value = '';
             feedback.innerHTML = '';
