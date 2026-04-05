@@ -112,7 +112,7 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
         }
         //? creating token -> hash token -> save into db
         const token = crypto.randomBytes(32).toString('base64url');
-        const token_hash = await bcrypt.hash(token, saltRounds);
+        const token_hash = crypto.createHash('sha256').update(token).digest('hex');
         await db.save_token(email, token_hash);
 
         //? link for new password + token in url
