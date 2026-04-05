@@ -318,6 +318,20 @@ async function save_token(email, token) {
     const [rows] = await pool.execute(insert, [user_id[0].id, token]);
     return rows.insertId;
 }
+async function delete_tokens(email) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const [user_id] = await pool.execute(id, [email]);
+    const deleteTokens = 'DELETE FROM reset_tokens WHERE user_id = ?';
+    const [rows] = await pool.execute(deleteTokens, [user_id[0].id]);
+    return rows.affectedRows;
+}
+
+//? interval delete expired tokens
+async function token_expire_del() {
+    const del = 'DELETE FROM reset_tokens WHERE expires_at < NOW() OR used = TRUE';
+    const [rows] = await pool.execute(del);
+    return rows;
+}
 
 // ----
 // ADMIN
@@ -381,5 +395,7 @@ module.exports = {
     getActive,
     updateActive,
     isAdminCheck,
-    save_token
+    save_token,
+    delete_tokens,
+    token_expire_del
 };

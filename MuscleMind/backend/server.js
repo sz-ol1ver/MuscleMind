@@ -5,6 +5,7 @@ const path = require('path');
 const {registrationComplete, requireComplete} = require('./middleware/kerdoiv.middleware.js');
 const {requireAdmin} = require('./middleware/isAdmin.middleware.js')
 const loginMw = require('./middleware/login.middleware.js');
+const db = require('./sql/database');
 
 //!Beállítások
 const app = express();
@@ -127,6 +128,15 @@ app.use((err, req, res, next) => {
 app.listen(port, ip, () => {
     console.log(`Szerver elérhetősége: http://${ip}:${port}`);
 });
+
+// óránként lejárt tokenek törlése
+setInterval(async () => {
+    try {
+        await db.token_expire_del();
+    } catch (error) {
+        console.error('Cleanup error:', error.message);
+    }
+}, 60 * 60 * 1000);
 
 //?Szerver futtatása terminalból: npm run dev
 //?Szerver leállítása (MacBook és Windows): Control + C

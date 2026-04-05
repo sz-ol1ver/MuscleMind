@@ -110,6 +110,8 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
                 message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
             });
         }
+        const delUserTokens = await db.delete_tokens(email);
+        console.log(delUserTokens);
         //? creating token -> hash token -> save into db
         const token = crypto.randomBytes(32).toString('base64url');
         const token_hash = crypto.createHash('sha256').update(token).digest('hex');
