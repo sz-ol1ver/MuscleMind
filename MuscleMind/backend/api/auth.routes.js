@@ -238,12 +238,48 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
 router.post('/check-token', async(req,res)=>{
     try {
         const {token} = req.body;
+        if (!token || typeof token !== 'string') {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
         const token_hash = crypto.createHash('sha256').update(token).digest('hex');
 
-        const expire_date = await db.find_token(token_hash);
-        
+        const tokenData = await db.find_token(token_hash);
+        if (!tokenData) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        if (new Date(tokenData.expires_at) < new Date()) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        if (tokenData.used) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        return res.status(200).json({
+            message: 'Érvényes token.'
+        });
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json({
+            message: 'Sikertelen eleres!',
+            error: error.message
+        });
+    }
+})
+router.post('/new-password', loginMw.newPassword, async(req, res)=>{
+    try {
+        const { password, confirm, token} = req.body;
+        console.log(req.body);
 
-
+        return res.status(200).json({
+            message: 'Sikeres jelszó változtatás!'
+        });
     } catch (error) {
         console.log(error.message)
         return res.status(500).json({

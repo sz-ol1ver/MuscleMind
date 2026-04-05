@@ -121,10 +121,21 @@ async function requestPassword(req,res,next) {
     }
 }
 
+async function newPassword(req,res,next) {
+    try {
+        const {password, confirm, token} = req.body;
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateLogin,
     redirectIfLoggedIn,
     requireAuthPage,
     requireAuthApi,
-    requestPassword
+    requestPassword,
+    newPassword
 }

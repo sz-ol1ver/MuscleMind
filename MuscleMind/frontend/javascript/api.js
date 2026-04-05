@@ -167,7 +167,7 @@ export async function patchPlan(url, value) {
     }
 }
 
-export async function postRequestPass(url, value) {
+export async function postRequest(url, value) {
     try {
         const data = await fetch(url, {
             method: 'POST',

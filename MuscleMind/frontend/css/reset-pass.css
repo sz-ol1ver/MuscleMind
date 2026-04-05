@@ -94,3 +94,8 @@
 .back-btn:hover {
     color: #ffffff;
 }
+
+input:disabled{
+    border: 2px solid rgb(255, 81, 81);
+    background-color: #c7c7c7 !important;
+}
