@@ -7,11 +7,13 @@ USE musclemind;
 CREATE TABLE IF NOT EXISTS logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    user_id INT NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    user_id INT NULL,
+    username VARCHAR(50) NULL,
 
     action VARCHAR(100) NOT NULL,
     description TEXT,
+
+    type ENUM('info', 'warning', 'error') DEFAULT 'info',
 
     ip_address VARCHAR(45) NOT NULL,
 

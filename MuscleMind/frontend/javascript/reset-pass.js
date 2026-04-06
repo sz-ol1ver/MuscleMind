@@ -55,7 +55,11 @@ async function sendNewPassword(pass, passConf) {
             token: token
         };
         const data = await postRequest('http://127.0.0.1:3000/api/auth/new-password', postObj);
-        console.log(data);
+        feedback.style.color = 'lightgreen';
+        feedback.innerHTML = data.message;
+        setTimeout(() => {
+            window.location.href = '/bejelentkezes'
+        }, 3000);
     } catch (error) {
         feedback.style.color = 'red';
         feedback.innerHTML = error.message;

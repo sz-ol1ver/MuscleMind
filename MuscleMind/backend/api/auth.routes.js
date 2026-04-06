@@ -31,10 +31,11 @@ router.post('/registration',upload.none() , validateRegistration, async(request,
         })
     } catch (error) {
         console.log(error.message)
-        response.status(500).json({
-            response: 'Sikertelen eleres!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 });
 
@@ -62,10 +63,11 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
         })
     } catch (error) {
         console.log(error.message)
-        response.status(500).json({
-            response: 'Sikertelen eleres!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 
@@ -91,9 +93,11 @@ router.get('/username', loginMw.requireAuthApi,async (request, response) => {
             username: user.username
         });
     } catch (error) {
-        return response.status(500).json({
-            message: 'Sikertelen eleres!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 });
@@ -229,9 +233,10 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
         });
     } catch (error) {
         console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
         return res.status(500).json({
-            message: 'Sikertelen eleres!',
-            error: error.message
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -266,25 +271,50 @@ router.post('/check-token', async(req,res)=>{
         });
     } catch (error) {
         console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
         return res.status(500).json({
-            message: 'Sikertelen eleres!',
-            error: error.message
+            message: 'Sikertelen eleres!'
         });
     }
 })
 router.post('/new-password', loginMw.newPassword, async(req, res)=>{
     try {
-        const { password, confirm, token} = req.body;
-        console.log(req.body);
+        const ip = requestIp.getClientIp(req);
+        const { password, token} = req.body;
+
+        //? token check
+        const token_hash = crypto.createHash('sha256').update(token).digest('hex');
+        const tokenData = await db.find_token(token_hash);
+        if (!tokenData) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        if (new Date(tokenData.expires_at) < new Date()) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        if (tokenData.used) {
+            return res.status(400).json({
+                message: 'Érvénytelen vagy lejárt link.'
+            });
+        }
+        const newPass = await bcrypt.hash(password, saltRounds);
+        await db.update_password(tokenData.user_id, newPass);
+        await db.set_used(tokenData.id);
+        await db.log_id(tokenData.user_id, 'Password update', 'Successful update!', ip);
 
         return res.status(200).json({
             message: 'Sikeres jelszó változtatás!'
         });
     } catch (error) {
         console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
         return res.status(500).json({
-            message: 'Sikertelen eleres!',
-            error: error.message
+            message: 'Sikertelen eleres!'
         });
     }
 })

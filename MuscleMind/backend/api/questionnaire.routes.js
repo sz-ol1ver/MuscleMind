@@ -23,10 +23,11 @@ router.post('/', registrationComplete, validateInput, async(req, res)=>{
         })
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({
-            response: 'Sikertelen eleres!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - questionnaire', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 

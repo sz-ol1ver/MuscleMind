@@ -326,9 +326,19 @@ async function delete_tokens(email) {
     return rows.affectedRows;
 }
 async function find_token(token) {
-    const select = 'SELECT expires_at, used FROM reset_tokens WHERE token_hash = ?';
+    const select = 'SELECT id,user_id,expires_at, used FROM reset_tokens WHERE token_hash = ?';
     const [rows] = await pool.execute(select, [token]);
     return rows[0];
+}
+async function update_password(id, password) {
+    const update = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [password, id]);
+    return rows.affectedRows;
+}
+async function set_used(id) {
+    const update = 'UPDATE reset_tokens SET used = 1 WHERE id = ? AND used = FALSE';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
 }
 
 //? interval delete expired tokens
@@ -368,6 +378,13 @@ async function log_email(email, action, desc, ip) {
     const [result] = await pool.execute(insert, [nameResult[0].id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
+//log server failure
+async function log_error(action, desc, ip) {
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
+    const [result] = await pool.execute(insert, [action, desc, ip]);
+    return result.insertId;
+}
+
 
 //!Export
 module.exports = {
@@ -403,5 +420,8 @@ module.exports = {
     save_token,
     delete_tokens,
     token_expire_del,
-    find_token
+    find_token,
+    update_password,
+    set_used,
+    log_error
 };

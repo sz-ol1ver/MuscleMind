@@ -123,7 +123,52 @@ async function requestPassword(req,res,next) {
 
 async function newPassword(req,res,next) {
     try {
-        const {password, confirm, token} = req.body;
+        const { password, confirm, token } = req.body;
+
+        const allowedKeys = ['password', 'confirm', 'token'];
+        const objectKeys = Object.keys(req.body);
+
+        if (objectKeys.length !== allowedKeys.length) {
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        }
+
+        for (let key of objectKeys) {
+            if (!allowedKeys.includes(key)) {
+                return res.status(400).json({
+                    message: 'Érvénytelen adatok!'
+                });
+            }
+        }
+
+        if (!password || !confirm || !token) {
+            return res.status(400).json({
+                message: 'Hiányzó adatok!'
+            });
+        }
+
+        if (
+            typeof password !== 'string' ||
+            typeof confirm !== 'string' ||
+            typeof token !== 'string'
+        ) {
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        }
+
+        if (password !== confirm) {
+            return res.status(400).json({
+                message: 'A jelszavak nem egyeznek!'
+            });
+        }
+
+        if (!patternPass.test(password)) {
+            return res.status(400).json({
+                message: 'A jelszó nem megfelelő formátumú!'
+            });
+        }
 
         next();
     } catch (error) {

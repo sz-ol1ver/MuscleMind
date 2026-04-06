@@ -14,10 +14,11 @@ router.get('/exercises', requireAuthApi, async(req, res)=>{
         })
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
@@ -98,10 +99,11 @@ router.get('/my-plans', requireAuthApi, async(req, res)=>{
             plans: workouts
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -112,10 +114,11 @@ router.get('/default-plans', requireAuthApi, async(req, res)=>{
             plans: workouts
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -158,10 +161,11 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
             details: plan
         })
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -208,10 +212,11 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
             details: plan
         })
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -224,10 +229,11 @@ router.get('/plans/active', requireAuthApi, async(req,res)=>{
             active: activeP
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -287,10 +293,11 @@ router.patch('/plans/active', requireAuthApi, validateActive, async(req, res)=>{
             message: 'Aktív edzésterv frissítve.'
         })
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
@@ -314,10 +321,11 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(req, res)=>{
             row: deleted
         });
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({
-            message: 'Sikertelen elérés!',
-            error: error.message
+        console.log(error.message)
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - workout', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
         });
     }
 })
