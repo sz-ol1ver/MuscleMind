@@ -1,0 +1,104 @@
+/* Háttér */
+.forgot-container {
+    height: 100vh;
+    background: linear-gradient(135deg, #000000, #7c0087);
+}
+
+/* Card */
+.forgot-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background-color: #0f0f14;
+    color: #ffffff;
+}
+.forgot-card:hover{
+    .form-control{
+        animation: hover-card 2s infinite;
+    }
+}
+@keyframes hover-card {
+    0%   { border:1px solid #f47fff; }
+    50%  { border:1px solid #000000; }
+    100% { border:1px solid #f47fff; }
+}
+/* Header */
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 25px 20px 15px;
+}
+
+.card-header h2 {
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.card-header p {
+    color: #777777 !important;
+}
+
+/* Body */
+.card-body {
+    padding: 20px;
+}
+
+/* Input */
+.form-control {
+    height: 48px;
+    border-radius: 10px 0 0 10px;
+    background-color: #1a1a22;
+    border: 1px solid rgba(255,255,255,0.08);
+    color: #ffffff;
+}
+
+.form-control::placeholder {
+    color: #6b7280;
+}
+
+.form-control:focus {
+    background-color: #1a1a22;
+    color: #ffffff;
+    border-color: #f47fff;
+    box-shadow: none;
+    animation: none !important;
+}
+
+/* Button */
+.btn-primary {
+    border-radius: 0 10px 10px 0;
+    padding: 0 20px;
+    font-weight: 500;
+    background: linear-gradient(135deg, #390a4e, #9c2cb2);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #8a0099, #c200ff);
+}
+
+/* Feedback */
+#feedback {
+    min-height: 20px;
+    margin-top: 10px;
+    color: #a1a1aa;
+}
+
+/* Footer */
+.card-footer {
+    background: transparent;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 15px 20px;
+}
+
+/* Back button */
+.back-btn {
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #a1a1aa;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+}

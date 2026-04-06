@@ -7,11 +7,13 @@ USE musclemind;
 CREATE TABLE IF NOT EXISTS logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    user_id INT NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    user_id INT NULL,
+    username VARCHAR(50) NULL,
 
     action VARCHAR(100) NOT NULL,
     description TEXT,
+
+    type ENUM('info', 'warning', 'error') DEFAULT 'info',
 
     ip_address VARCHAR(45) NOT NULL,
 
@@ -353,6 +355,22 @@ CREATE TABLE IF NOT EXISTS user_friendships (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP NULL DEFAULT NULL
 );
+-- store reset-password token
+CREATE TABLE reset_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    token_hash VARCHAR(64) NOT NULL,
+
+    expires_at DATETIME NOT NULL DEFAULT (NOW() + INTERVAL 10 MINUTE),
+
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(token_hash)
+);
 
 -- ALTER TABLES (foreign key)
 ALTER TABLE users 
@@ -499,6 +517,12 @@ ADD CONSTRAINT fk_user_friendships_requested_by
 
 ALTER TABLE user_stats
 ADD CONSTRAINT fk_user_stats_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE reset_tokens
+    ADD CONSTRAINT fk_password_reset_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
     ON DELETE CASCADE;

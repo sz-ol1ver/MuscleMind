@@ -5,6 +5,7 @@ const path = require('path');
 const {registrationComplete, requireComplete} = require('./middleware/kerdoiv.middleware.js');
 const {requireAdmin} = require('./middleware/isAdmin.middleware.js')
 const loginMw = require('./middleware/login.middleware.js');
+const db = require('./sql/database');
 
 //!Beállítások
 const app = express();
@@ -15,6 +16,14 @@ const port = 3000;
 
 app.use(express.json()); //?Middleware JSON
 app.set('trust proxy', 1); //?Middleware Proxy
+
+//? https --> http
+app.use((req, res, next) => {
+    if (req.secure) {
+        return res.redirect('http://' + req.headers.host + req.url);
+    }
+    next();
+});
 
 app.use(express.static(path.join(__dirname, '../frontend'))); //?frontend mappa tartalmának betöltése az oldal működéséhez
 
@@ -41,6 +50,12 @@ router.get('/', loginMw.requireAuthPage, requireComplete, (request, response) =>
 });
 router.get('/bejelentkezes', loginMw.redirectIfLoggedIn ,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/login.html'));
+});
+router.get('/jelszo-keres', loginMw.redirectIfLoggedIn ,(request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/forgot-password.html'));
+});
+router.get('/uj-jelszo', loginMw.redirectIfLoggedIn ,(request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/reset-password.html'));
 });
 router.get('/regisztracio', loginMw.redirectIfLoggedIn,(request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/registration.html'));
@@ -113,6 +128,15 @@ app.use((err, req, res, next) => {
 app.listen(port, ip, () => {
     console.log(`Szerver elérhetősége: http://${ip}:${port}`);
 });
+
+// óránként lejárt tokenek törlése
+setInterval(async () => {
+    try {
+        await db.token_expire_del();
+    } catch (error) {
+        console.error('Cleanup error:', error.message);
+    }
+}, 60 * 60 * 1000);
 
 //?Szerver futtatása terminalból: npm run dev
 //?Szerver leállítása (MacBook és Windows): Control + C
