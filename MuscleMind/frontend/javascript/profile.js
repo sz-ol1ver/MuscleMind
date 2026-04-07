@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // lekeres
     try {
-        const response = await fetch('/api/auth/profile')
+        const response = await fetch('/api/profile')
         
         if (response.ok) {
             const data = await response.json()
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         //uj adatok kuldese
         try {
-            const data = await updateProfile('/api/auth/profile/update', newData)
+            const data = await updateProfile('/api/profile/update', newData)
             if(data) {
                 alert("Sikeres mentés!")
                 location.reload() //refreshelodik az oldal
