@@ -106,6 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
             //mégse szerkesztett
             editPersonalButton.textContent = "Szerkesztés"
+            editPersonalButton.style.backgroundColor = ""
             restorePersonalData()
         }
     })
@@ -140,6 +141,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
             //megse szerkesztett
             editPreferencesButton.textContent = "Szerkesztés"
+            editPreferencesButton.style.backgroundColor = ""
             restorePreferencesData()
         }
     })
