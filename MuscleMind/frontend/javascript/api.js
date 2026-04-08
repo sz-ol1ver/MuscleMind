@@ -66,6 +66,7 @@ export async function updateProfile(url, value) {
         
         if (!data.ok) {
             const res = await data.json();
+            console.error("Backend error details:", res);
             throw new Error(res.message);
         }
         

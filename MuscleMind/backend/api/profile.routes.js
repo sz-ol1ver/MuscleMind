@@ -3,16 +3,14 @@ const router = express.Router();
 const db = require('../sql/database.js');
 const requestIp = require('request-ip'); // npm install request-ip
 const bcrypt = require('bcrypt'); // npm install bcrypt
+const { requireAuthApi } = require('../middleware/login.middleware.js')
+const { validateProfileUpdate } = require('../middleware/profile.middleware.js')
 
 const saltRounds = 12;
 
+router.use(requireAuthApi)
+
 router.get('/', async (request, response) => {
-    if (!request.session || !request.session.user) {
-        return response.status(401).json({
-            message: 'Authentication required.'
-        });
-    }
-    
     try {
         const id = request.session.user.id
         const basic = await db.getUserBasicData(id)
@@ -31,83 +29,84 @@ router.get('/', async (request, response) => {
             error: error.message
         })
     }
-});
+})
 
-router.post('/update', async (request, response) => {
-    if (!request.session || !request.session.user) {
-        return response.status(401).json({
-            message: 'Authentication required.'
-        });
-    }
-
+router.post('/update', validateProfileUpdate, async (request, response) => {
     try {
-        const ip = requestIp.getClientIp(request);
+        const ip = requestIp.getClientIp(request)
         const id = request.session.user.id
-        const {
-            username, first_name, last_name, email, password, 
-            age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day,
-            weight
-        } = request.body
+        const mergedData = request.mergedProfileData
+        const oldBasic = request.oldProfileBasicData
+        const oldPasswordData = await db.getUserPassword(id)
 
-        const oldData = await db.getUserBasicData(id);
-        const oldPasswordData = await db.getUserPassword(id);
+        await db.updateUserBasic(
+            id, 
+            mergedData.username, 
+            mergedData.first_name, 
+            mergedData.last_name, 
+            mergedData.email
+        )
 
-        await db.updateUserBasic(id, username, first_name, last_name, email);
-        await db.updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day)
+        await db.updateUserPreferences(
+            id, 
+            mergedData.age, 
+            mergedData.height, 
+            mergedData.goal, 
+            mergedData.experience_level, 
+            mergedData.training_days, 
+            mergedData.training_location, 
+            mergedData.diet_type, 
+            mergedData.meals_per_day
+        )
         
-        if (weight) {
-             await db.insertWeight(id, weight)
+        if (mergedData.weight) {
+             await db.insertWeight(id, mergedData.weight)
         }
 
-        if (oldData.username !== username) {
-            await db.log(id, 'profile_update', `Felhasználónév módosítva (${oldData.username} -> ${username})`, ip);
+        if (oldBasic.username !== mergedData.username) {
+            await db.log_id(id, 'profile_update', `Felhasználónév módosítva (${oldBasic.username} -> ${mergedData.username})`, ip)
         }
         
-        if (oldData.email !== email) {
-            await db.log(id, 'profile_update', `Email módosítva (${oldData.email} -> ${email})`, ip);
+        if (oldBasic.email !== mergedData.email) {
+            await db.log_id(id, 'profile_update', `Email módosítva (${oldBasic.email} -> ${mergedData.email})`, ip)
         }
 
-        if (password) {
-            const isSamePassword = await bcrypt.compare(password, oldPasswordData.password_hash);
+        if (mergedData.password) {
+            const isSamePassword = await bcrypt.compare(mergedData.password, oldPasswordData.password_hash)
             if (!isSamePassword) {
-                const hashedNewPassword = await bcrypt.hash(password, saltRounds);
-                await db.updateUserPassword(id, hashedNewPassword);
-                await db.log(id, 'profile_update', 'Jelszó módosítva', ip);
+                const hashedNewPassword = await bcrypt.hash(mergedData.password, saltRounds)
+                await db.updateUserPassword(id, hashedNewPassword)
+                await db.log_id(id, 'profile_update', 'Jelszó módosítva', ip)
             }
         }
 
-        await db.log(id, 'profile', 'Sikeres profil frissítés', ip);
+        await db.log_id(id, 'profile', 'Sikeres profil frissítés', ip)
 
         return response.status(200).json({
             message: 'Profil sikeresen frissítve!'
         })
 
     } catch (error) {
+        console.error("Profile update error:", error)
         return response.status(500).json({
             message: 'Hiba a profil frissítése közben',
             error: error.message
         })
     }
-});
+})
 
 router.get('/username', async (request, response) => {
-    if (!request.session || !request.session.user) {
-        return response.status(401).json({
-            message: 'Authentication required.'
-        });
-    }
-
     try {
         const user = await db.getUsernameById(request.session.user.id)
         return response.status(200).json({
             username: user.username
-        });
+        })
     } catch (error) {
         return response.status(500).json({
             message: 'Sikertelen eleres',
             error: error.message
-        });
+        })
     }
-});
+})
 
-module.exports = router;
+module.exports = router

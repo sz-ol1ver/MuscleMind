@@ -1,4 +1,4 @@
-import { updateProfile } from './api.js';
+import { updateProfile } from './api.js'
 
 let originalData = {}
 document.addEventListener("DOMContentLoaded", async () => {
@@ -162,76 +162,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         //adatok atalakitasa
         let newData = Object.fromEntries(formData.entries())
-
-        //ha ures (nem volt valtozas) akkor vissza eredeti adatra
-        if (newData.username == "") {
-            if (originalData.basic && originalData.basic.username) {
-                newData.username = originalData.basic.username
-            }
-        }
-        if (newData.first_name == "") {
-            if (originalData.basic && originalData.basic.first_name) {
-                newData.first_name = originalData.basic.first_name
-            }
-        }
-        if (newData.last_name == "") {
-            if (originalData.basic && originalData.basic.last_name) {
-                newData.last_name = originalData.basic.last_name
-            }
-        }
-        if (newData.email == "") {
-            if (originalData.basic && originalData.basic.email) {
-                newData.email = originalData.basic.email
-            }
-        }
-        
-        if (newData.age == "") {
-            if (originalData.preferences && originalData.preferences.age) {
-                newData.age = originalData.preferences.age
-            }
-        }
-        if (newData.height == "") {
-            if (originalData.preferences && originalData.preferences.height) {
-                newData.height = originalData.preferences.height
-            }
-        }
-        if (newData.weight == "") {
-            if (originalData.weight && originalData.weight.weight) {
-                newData.weight = originalData.weight.weight
-            }
-        }
-
-        //kerdoiv ures gombok ellenorzese
-        if (newData.goal == "") {
-             if (originalData.preferences && originalData.preferences.goal) {
-                 newData.goal = originalData.preferences.goal
-             }
-        }
-        if (newData.experience_level == "") {
-            if (originalData.preferences && originalData.preferences.experience_level) {
-                newData.experience_level = originalData.preferences.experience_level
-            }
-        }
-        if (newData.training_days == "") {
-            if (originalData.preferences && originalData.preferences.training_days) {
-                newData.training_days = originalData.preferences.training_days
-            }
-        }
-        if (newData.training_location == "") {
-            if (originalData.preferences && originalData.preferences.training_location) {
-                newData.training_location = originalData.preferences.training_location
-            }
-        }
-        if (newData.diet_type == "") {
-            if (originalData.preferences && originalData.preferences.diet_type) {
-                newData.diet_type = originalData.preferences.diet_type
-            }
-        }
-        if (newData.meals_per_day == "") {
-            if (originalData.preferences && originalData.preferences.meals_per_day) {
-                newData.meals_per_day = originalData.preferences.meals_per_day
-            }
-        }
         
         const allInputs = document.querySelectorAll('input')
         let inEditMode = false
@@ -278,7 +208,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         } catch(error) {
             console.log(error)
-            alert("Hiba mentés közben.")
+            alert(error.message)
         }
     }
 
