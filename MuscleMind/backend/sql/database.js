@@ -19,6 +19,17 @@ async function selectall() {
 }
 
 // ----
+// MINDEN OLDALRA VONATKOZÓ
+// ----
+
+//username kiírás jobbfelül minden oldalon
+async function getUsernameById(id) {
+    const select = 'SELECT username FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0];
+}
+
+// ----
 // REGISTRATION / LOGIN / KERODIV
 // ----
 
@@ -54,13 +65,6 @@ async function email_exist(email) {
 async function findUser(email) {
     const select = 'SELECT id,username,password_hash,admin FROM users WHERE email = ?';
     const [rows] = await pool.execute(select, [email]);
-    return rows[0];
-}
-
-//username kiírás jobbfelül minden oldalon
-async function getUsernameById(id) {
-    const select = 'SELECT username FROM users WHERE id = ?';
-    const [rows] = await pool.execute(select, [id]);
     return rows[0];
 }
 
@@ -100,6 +104,62 @@ async function updateRegistered(id) {
     const [rows] = await pool.execute(update, [id]);
     return rows;
 }
+
+
+// -------
+// PROFILE
+// -------
+
+// user alapadatok
+async function getUserBasicData(id) {
+    const query = 'SELECT id, first_name, last_name, username, email FROM users WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// user profil adatok
+async function getUserPreferencesData(id) {
+    const query = 'SELECT age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// user suly
+async function getUserWeightData(id) {
+    const query = 'SELECT weight FROM user_weights WHERE user_id = ? ORDER BY created_at DESC LIMIT 1';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0]; 
+}
+
+// user update basic
+async function updateUserBasic(id, username, firstName, lastName, email) {
+    const query = 'UPDATE users SET username = ?, first_name = ?, last_name = ?, email = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [username, firstName, lastName, email, id]);
+    return result;
+}
+
+// user update preferences
+async function updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const query = 'UPDATE user_profiles SET age = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day, id]);
+    return result;
+}
+
+// user jelszo lekeres
+async function getUserPassword(id) {
+    const query = 'SELECT password_hash FROM users WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// jelszo frissites
+async function updateUserPassword(id, hashedPassword) {
+    const query = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [hashedPassword, id]);
+    return result;
+}
+
+
 
 // -------
 // WORKOUT
@@ -402,6 +462,14 @@ module.exports = {
     insertPreferences,
     insertWeight,
     updateRegistered,
+    getUserBasicData,
+    getUserPreferencesData,
+    getUserWeightData,
+    updateUserBasic,
+    updateUserPreferences,
+    getUserPassword,
+    updateUserPassword,
+    allExercises,
     allExercises,
     exerciseExist,
     createWorkoutPlan,

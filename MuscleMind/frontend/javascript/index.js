@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-
-
   //Világos/Sötét mód gomb------------------------------------
   document.getElementById("theme-switch").addEventListener("change", (a) => {
     if (a.target.checked){

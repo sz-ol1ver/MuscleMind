@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="../css/profile.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
-        <script src="../javascript/profile.js"></script>
+        <script type="module" src="../javascript/profile.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
     </head>
@@ -149,63 +149,74 @@
                     </ul>
                 </div>    
 
-                <!-- Középső blokk -->
-                <div class="col-12 col-lg-9 col-xl-10 p-3" id="middle-part">
+                <form class="col-12 col-lg-9 col-xl-10 p-3" id="profileForm">
 
                     <div class="row mb-3 justify-content-center">
-                        <div class="col-12 col-xl-10 profile-main-bubble">
+                        <div class="col-12 col-xl-10 profile-main-bubble" id="personal-section">
                             <div class="row g-4 flex-grow-1">
                                 <div class="col-12 col-lg-5 col-xl-4 text-center">
                                     <div class="profile-picture-wrapper mx-auto">
                                         <img id="profile-picture" src="../images/alap_profilkep.png" alt="Profilkép" class="img-fluid">
                                     </div>
-                                    <input type="file" class="form-control mt-3" id="fileInput">
+                                    <input type="file" class="form-control mt-3" id="fileInput" disabled>
+                                    <button type="button" class="btn edit mt-3 w-100" id="editPersonalButton">Szerkesztés</button>
                                 </div>
 
                                 <div class="col-12 col-lg-7 col-xl-8 first-block fw-bold">
-                                    <label for="Nev">Írja be az új felhasználónevét:</label>
-                                    <input class="form-control mb-2" type="text" id="Nev">
+                                    <label for="Nev">Felhasználónév:</label>
+                                    <input class="form-control mb-2" type="text" id="Nev" name="username" disabled>
                                     <hr class="line">
 
-                                    <label>Új név:</label>
-                                    <input class="form-control mb-2" type="text" placeholder="Vezetéknév" id="Vezetéknév">
-                                    <input class="form-control" type="text" placeholder="Keresztnév" id="Keresztnév">
+                                    <label>Név:</label>
+                                    <div class="row gx-2 mb-2">
+                                        <div class="col-6">
+                                            <input class="form-control" type="text" placeholder="Vezetéknév" id="Vezetéknév" name="last_name" disabled>
+                                        </div>
+                                        <div class="col-6">
+                                            <input class="form-control" type="text" placeholder="Keresztnév" id="Keresztnév" name="first_name" disabled>
+                                        </div>
+                                    </div>
                                     <hr class="line">
 
-                                    <label for="Kor">Új életkor:</label>
-                                    <input class="form-control" min="18" max="99" type="text" placeholder="Életkor" id="Kor">
+                                    <label for="Kor">Életkor:</label>
+                                    <input class="form-control" min="18" max="99" type="text" placeholder="Életkor" id="Kor" name="age" disabled>
                                     <hr class="line">
 
-                                    <label for="Email">Új email cím:</label>
-                                    <input class="form-control" type="email" placeholder="sajt32@gmail.com" id="Email">
+                                    <label for="Email">Email cím:</label>
+                                    <input class="form-control" type="email" placeholder="sajt32@gmail.com" id="Email" name="email" disabled>
                                     <hr class="line">
                                     
-                                    <label for="Jelszo">Új jelszó:</label>
-                                    <input class="form-control" type="password" placeholder="********" id="Jelszo">
+                                    <label for="Jelszo">Jelszó:</label>
+                                    <input class="form-control" type="password" placeholder="********" id="Jelszo" name="password" disabled>
                                 </div>
                             </div>
-                            <input type="button" class="btn button-sample save-personal-btn" value="Mentés">
+                            <input type="button" class="btn button-sample save-personal-btn" value="Mentés" id="savePersonalButton">
                         </div>
                     </div>
 
                     <div class="row justify-content-center">
-                        <div class="col-12 col-xl-10 profile-main-bubble">
+                        <div class="col-12 col-xl-10 profile-main-bubble" id="preferences-section">
                             <div class="row"> 
-                                <div class="text-center fw-bold fs-4 mb-1">Kérdőívben kérdezett kérdések</div>
-                                <hr>
+                                <div class="col-8">
+                                    <div class="text-center fw-bold fs-4 mb-1">Kérdőívben kérdezett kérdések</div>
+                                </div>
+                                <div class="col-4  text-end">
+                                    <button type="button" class="btn edit btn-sm" id="editPreferencesButton">Szerkesztés</button>
+                                </div>
+                                <p><hr></p>
                             </div>
 
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <div class="questions">
                                         <label for="Súly">Mennyi a testsúlyod? (kg)</label><br>
-                                        <input class="text-center" id="Súly" max="200" min="40" step="0.1" type="number">
+                                        <input class="text-center" id="Súly" name="weight" max="200" min="40" step="0.1" type="number" disabled>
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <div class="questions">
                                         <label>Mekkora a testmagasságod? (cm)</label><br>
-                                        <input class="text-center" min="140" max="220" type="number">
+                                        <input class="text-center" id="Magassag" name="height" min="140" max="220" type="number" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -214,27 +225,27 @@
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Mi a fő célod az edzéssel?</label><br>
-                                        <input class="btn purpose" type="button" value="tömegnövelés">
-                                        <input class="btn purpose" type="button" value="szálkásítás">
-                                        <input class="btn purpose" type="button" value="szintentartás">
+                                        <input class="btn purpose" type="button" name="goal" value="tömegnövelés" disabled>
+                                        <input class="btn purpose" type="button" name="goal" value="szálkásítás" disabled>
+                                        <input class="btn purpose" type="button" name="goal" value="szintentartás" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Hetente hány napot tudsz edzésre szánni?</label><br>
-                                        <input class="btn purpose" type="button" value="2–3 nap">
-                                        <input class="btn purpose" type="button" value="4 nap">
-                                        <input class="btn purpose" type="button" value="5–6 nap">
+                                        <input class="btn purpose" type="button" name="days" value="2–3 nap" disabled>
+                                        <input class="btn purpose" type="button" name="days" value="4 nap" disabled>
+                                        <input class="btn purpose" type="button" name="days" value="5–6 nap" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Milyen az edzettségi szinted?</label><br>
-                                        <input class="btn purpose" type="button" value="kezdő (0–6 hónap)">
-                                        <input class="btn purpose" type="button" value="középhaladó (6–24 hónap)">
-                                        <input class="btn purpose" type="button" value="haladó (2+ év)">
+                                        <input class="btn purpose" type="button" name="level" value="kezdő (0–6 hónap)" disabled>
+                                        <input class="btn purpose" type="button" name="level" value="középhaladó (6–24 hónap)" disabled>
+                                        <input class="btn purpose" type="button" name="level" value="haladó (2+ év)" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -243,34 +254,34 @@
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Hol edzel leggyakrabban?</label><br>
-                                        <input class="btn purpose" type="button" value="konditeremben">
-                                        <input class="btn purpose" type="button" value="otthon, súlyzókkal">
-                                        <input class="btn purpose" type="button" value="otthon, saját testsúllyal">
+                                        <input class="btn purpose" type="button" name="location" value="konditeremben" disabled>
+                                        <input class="btn purpose" type="button" name="location" value="otthon, súlyzókkal" disabled>
+                                        <input class="btn purpose" type="button" name="location" value="otthon, saját testsúllyal" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Milyen étrendet követsz?</label><br>
-                                        <input class="btn purpose" type="button" value="mindenevő">
-                                        <input class="btn purpose" type="button" value="vegetáriánus">
-                                        <input class="btn purpose" type="button" value="vegán">
+                                        <input class="btn purpose" type="button" name="diet" value="mindenevő" disabled>
+                                        <input class="btn purpose" type="button" name="diet" value="vegetáriánus" disabled>
+                                        <input class="btn purpose" type="button" name="diet" value="vegán" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-12 col-lg-4">
                                     <div class="questions">
                                         <label>Naponta hányszor étkezel?</label><br>
-                                        <input class="btn purpose" type="button" value="2–3 alkalom">
-                                        <input class="btn purpose" type="button" value="4–5 alkalom">
-                                        <input class="btn purpose" type="button" value="6 vagy több alkalom">
+                                        <input class="btn purpose" type="button" name="meals" value="2–3 alkalom" disabled>
+                                        <input class="btn purpose" type="button" name="meals" value="4–5 alkalom" disabled>
+                                        <input class="btn purpose" type="button" name="meals" value="6 vagy több alkalom" disabled>
                                     </div>
                                 </div>
                             </div>
-                            <input type="button" class="btn button-sample save-personal-btn" value="Mentés">
+                            <input type="button" class="btn button-sample save-personal-btn" value="Mentés" id="savePreferencesButton">
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </body>
