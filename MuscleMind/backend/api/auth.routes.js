@@ -71,7 +71,7 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
     }
 })
 
-router.post('/logout',loginMw.requireAuthApi,(request, response)=>{
+router.post('/logout',(request, response)=>{
     request.session.destroy((err)=>{
         if (err) {
             return response.status(500).json({
@@ -81,7 +81,7 @@ router.post('/logout',loginMw.requireAuthApi,(request, response)=>{
         response.clearCookie('connect.sid');
 
         return response.status(200).json({
-            message: "Logged out successfully!"
+            message: "Sikeres kijelentkezés!"
         });
     });
 })
