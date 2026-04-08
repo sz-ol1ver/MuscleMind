@@ -6,30 +6,30 @@ const requestIp = require('request-ip');
 const {requireAuthApi} = require('../middleware/login.middleware.js');
 const {validateNewPlan, validateUpdate, validateActive} = require('../middleware/workout.middleware.js');
 
-router.get('/exercises', requireAuthApi, async(req, res)=>{
+router.get('/exercises', requireAuthApi, async(request, response)=>{
     try {
         const data = await db.allExercises();
-        return res.status(200).json({
+        return response.status(200).json({
             message: data
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
+router.post('/newPlan', requireAuthApi, validateNewPlan, async(request, response)=>{
     const conn = await db.pool.getConnection();
 
     try {
         await conn.beginTransaction();
 
-        const workoutPlan = req.body;
-        const userId = req.session.user.id;
-        const ip = requestIp.getClientIp(req);
+        const workoutPlan = request.body;
+        const userId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
         const planId = await db.createWorkoutPlan(
             conn,
             userId,
@@ -67,22 +67,22 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
             ip
         );
 
-        return res.status(201).json({
+        return response.status(201).json({
             message: 'Edzésterv sikeresen létrehozva.'
         });
 
     } catch (error) {
         await conn.rollback();
         console.log(error.message);
-        const userId = req.session.user.id;
-        const ip = requestIp.getClientIp(req);
+        const userId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
         await db.log_id(
             userId,
             'ERR_WORKOUT_PLAN_CREATE',
             `Új edzésterv sikertelen létrehozása. `+error.message,
             ip
         );
-        return res.status(500).json({
+        return response.status(500).json({
             message: 'Sikertelen mentés.',
             error: error.message
         });
@@ -91,41 +91,41 @@ router.post('/newPlan', requireAuthApi, validateNewPlan, async(req, res)=>{
     }
 })
 
-router.get('/my-plans', requireAuthApi, async(req, res)=>{
+router.get('/my-plans', requireAuthApi, async(request, response)=>{
     try {
-        const userId = req.session.user.id;
+        const userId = request.session.user.id;
         const workouts = await db.allUserPlans(userId);
-        return res.status(200).json({
+        return response.status(200).json({
             plans: workouts
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.get('/default-plans', requireAuthApi, async(req, res)=>{
+router.get('/default-plans', requireAuthApi, async(request, response)=>{
     try {
         const workouts = await db.allDefaultPlans();
-        return res.status(200).json({
+        return response.status(200).json({
             plans: workouts
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
+router.get('/my-plan/:id', requireAuthApi, async(request, response)=>{
     try {
-        const wpId = req.params.id;
-        const userId = req.session.user.id;
+        const wpId = request.params.id;
+        const userId = request.session.user.id;
         const wpDetail = await db.getWorkoutPlanDetails(userId, wpId);
         const plan = {
             name: wpDetail[0].plan_name,
@@ -157,21 +157,21 @@ router.get('/my-plan/:id', requireAuthApi, async(req, res)=>{
             }
         }
 
-        return res.status(200).json({
+        return response.status(200).json({
             details: plan
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
+router.get('/default-plan/:id', requireAuthApi, async(request, response)=>{
     try {
-        const wpId = req.params.id;
+        const wpId = request.params.id;
         const wpDetail = await db.getDefaultWorkoutPlanDetails(wpId);
         const plan = {
             name: wpDetail[0].plan_name,
@@ -208,44 +208,44 @@ router.get('/default-plan/:id', requireAuthApi, async(req, res)=>{
             }
         }
 
-        return res.status(200).json({
+        return response.status(200).json({
             details: plan
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.get('/plans/active', requireAuthApi, async(req,res)=>{
+router.get('/plans/active', requireAuthApi, async(request,response)=>{
     try {
-        const userId = req.session.user.id;
+        const userId = request.session.user.id;
         const activeP = await db.getActive(userId);
 
-        return res.status(200).json({
+        return response.status(200).json({
             active: activeP
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
 
-router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res)=>{
+router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(request, response)=>{
     const conn = await db.pool.getConnection();
     
     try {
-        const planId = req.params.id;
-        const userId = req.session.user.id;
-        const ip = requestIp.getClientIp(req);
-        const days = req.body.days;
+        const planId = request.params.id;
+        const userId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
+        const days = request.body.days;
 
         await conn.beginTransaction();
 
@@ -259,23 +259,23 @@ router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res
             `Edzésterv frissítve. planId: ${planId}`,
             ip
         );
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Edzésterv sikeresen frissítve!'
         });
 
     } catch (error) {
         await conn.rollback();
         console.log(error.message);
-        const userId = req.session.user.id;
-        const planId = req.params.id;
-        const ip = requestIp.getClientIp(req);
+        const userId = request.session.user.id;
+        const planId = request.params.id;
+        const ip = requestIp.getClientIp(request);
         await db.log_id(
             userId,
             'ERR_WORKOUT_PLAN_UPDATE',
             `Edzésterv sikertelen frissítése. planId: ${planId}`,
             ip
         );
-        return res.status(500).json({
+        return response.status(500).json({
             message: 'Sikertelen frissítés!',
             error: error.message
         });
@@ -283,30 +283,30 @@ router.put('/my-plan/update/:id', requireAuthApi, validateUpdate, async(req, res
         conn.release();
     }
 })
-router.patch('/plans/active', requireAuthApi, validateActive, async(req, res)=>{
+router.patch('/plans/active', requireAuthApi, validateActive, async(request, response)=>{
     try {
-        const userId = req.session.user.id;
-        const plan = req.body.active;
+        const userId = request.session.user.id;
+        const plan = request.body.active;
         await db.updateActive(userId, plan);
 
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Aktív edzésterv frissítve.'
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
 
-router.delete('/my-plan/delete/:id', requireAuthApi, async(req, res)=>{
+router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
     try {
-        const planId = req.params.id;
-        const userId = req.session.user.id;
-        const ip = requestIp.getClientIp(req);
+        const planId = request.params.id;
+        const userId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
 
         const deleted = await db.deletePlan(userId, planId);
     
@@ -316,15 +316,15 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(req, res)=>{
             `Edzésterv törölve. planId: ${planId}`,
             ip
         );
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Sikeres törlés!',
             row: deleted
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - workout', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - workout', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }

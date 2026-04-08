@@ -31,9 +31,9 @@ router.post('/registration',upload.none() , validateRegistration, async(request,
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
@@ -63,9 +63,9 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
         })
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
@@ -94,23 +94,23 @@ router.get('/username', loginMw.requireAuthApi,async (request, response) => {
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 });
 
-router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
+router.post('/request-password', loginMw.requestPassword,async(request, response)=>{
     try {
-        const ip = requestIp.getClientIp(req);
-        const {email} = req.body;
+        const ip = requestIp.getClientIp(request);
+        const {email} = request.body;
         const emailCheck = await db.email_exist(email);
         //? check if email is registered
         if(emailCheck != 1){
             //? sending feedback (security reason)
-            return res.status(200).json({
+            return response.status(200).json({
                 message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
             });
         }
@@ -225,26 +225,26 @@ router.post('/request-password', loginMw.requestPassword,async(req, res)=>{
         const resEmail = await postEmail(sendObj);
 
         //? creating log about password request
-        db.log_email(email, 'Forgotten password', 'Reset link sent, email_id: '+resEmail.messageId, ip);
+        await db.log_email(email, 'Forgotten password', 'Reset link sent, email_id: '+resEmail.messageId, ip);
 
         //? sending feedback
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.post('/check-token', async(req,res)=>{
+router.post('/check-token', async(request,response)=>{
     try {
-        const {token} = req.body;
+        const {token} = request.body;
         if (!token || typeof token !== 'string') {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
@@ -252,52 +252,52 @@ router.post('/check-token', async(req,res)=>{
 
         const tokenData = await db.find_token(token_hash);
         if (!tokenData) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
         if (new Date(tokenData.expires_at) < new Date()) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
         if (tokenData.used) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Érvényes token.'
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
-router.post('/new-password', loginMw.newPassword, async(req, res)=>{
+router.post('/new-password', loginMw.newPassword, async(request, response)=>{
     try {
-        const ip = requestIp.getClientIp(req);
-        const { password, token} = req.body;
+        const ip = requestIp.getClientIp(request);
+        const { password, token} = request.body;
 
         //? token check
         const token_hash = crypto.createHash('sha256').update(token).digest('hex');
         const tokenData = await db.find_token(token_hash);
         if (!tokenData) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
         if (new Date(tokenData.expires_at) < new Date()) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
         if (tokenData.used) {
-            return res.status(400).json({
+            return response.status(400).json({
                 message: 'Érvénytelen vagy lejárt link.'
             });
         }
@@ -306,14 +306,14 @@ router.post('/new-password', loginMw.newPassword, async(req, res)=>{
         await db.set_used(tokenData.id);
         await db.log_id(tokenData.user_id, 'Password update', 'Successful update!', ip);
 
-        return res.status(200).json({
+        return response.status(200).json({
             message: 'Sikeres jelszó változtatás!'
         });
     } catch (error) {
         console.log(error.message)
-        const ip = requestIp.getClientIp(req);
-        db.log_error('Server error - auth', error.message,ip);
-        return res.status(500).json({
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
@@ -331,8 +331,8 @@ async function postEmail(value) {
             body: JSON.stringify(value)
         });
         if(!data.ok){
-            const res = await data.json();
-            const err = new Error(res.message);
+            const response = await data.json();
+            const err = new Error(response.message);
             throw err;
         }
         return await data.json();
