@@ -19,6 +19,17 @@ async function selectall() {
 }
 
 // ----
+// MINDEN OLDALRA VONATKOZÓ
+// ----
+
+//username kiírás jobbfelül minden oldalon
+async function getUsernameById(id) {
+    const select = 'SELECT username FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0];
+}
+
+// ----
 // REGISTRATION / LOGIN / KERODIV
 // ----
 
@@ -35,7 +46,9 @@ async function username_exist(username) {
     const [rows] = await pool.execute(userN, [username]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 // email validation
 async function email_exist(email) {
@@ -43,20 +56,15 @@ async function email_exist(email) {
     const [rows] = await pool.execute(userN, [email]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 // user adatai session / jelszo ellenorzeshez
 async function findUser(email) {
     const select = 'SELECT id,username,password_hash,admin FROM users WHERE email = ?';
     const [rows] = await pool.execute(select, [email]);
-    return rows[0];
-}
-
-//username kiírás jobbfelül minden oldalon
-async function getUsernameById(id) {
-    const select = 'SELECT username FROM users WHERE id = ?';
-    const [rows] = await pool.execute(select, [id]);
     return rows[0];
 }
 
@@ -71,7 +79,9 @@ async function registComp(id) {
     const [rows] = await pool.execute(userN, [id]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 //user kerdoiv adatok (insert) /without weight
@@ -94,6 +104,62 @@ async function updateRegistered(id) {
     const [rows] = await pool.execute(update, [id]);
     return rows;
 }
+
+
+// -------
+// PROFILE
+// -------
+
+// user alapadatok
+async function getUserBasicData(id) {
+    const query = 'SELECT id, first_name, last_name, username, email FROM users WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// user profil adatok
+async function getUserPreferencesData(id) {
+    const query = 'SELECT age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// user suly
+async function getUserWeightData(id) {
+    const query = 'SELECT weight FROM user_weights WHERE user_id = ? ORDER BY created_at DESC LIMIT 1';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0]; 
+}
+
+// user update basic
+async function updateUserBasic(id, username, firstName, lastName, email) {
+    const query = 'UPDATE users SET username = ?, first_name = ?, last_name = ?, email = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [username, firstName, lastName, email, id]);
+    return result;
+}
+
+// user update preferences
+async function updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const query = 'UPDATE user_profiles SET age = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day, id]);
+    return result;
+}
+
+// user jelszo lekeres
+async function getUserPassword(id) {
+    const query = 'SELECT password_hash FROM users WHERE id = ?';
+    const [rows] = await pool.execute(query, [id]);
+    return rows[0];
+}
+
+// jelszo frissites
+async function updateUserPassword(id, hashedPassword) {
+    const query = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [result] = await pool.execute(query, [hashedPassword, id]);
+    return result;
+}
+
+
 
 // -------
 // WORKOUT
@@ -301,19 +367,84 @@ async function updateActive(userId,plan) {
     const [rows] = await pool.execute(sql, [plan, userId]);
     return rows.affectedRows;
 }
+// ----
+// token
+// ----
+
+async function save_token(email, token) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const insert = 'INSERT INTO reset_tokens(user_id, token_hash) VALUES (?,?)';
+    const [user_id] = await pool.execute(id, [email]);
+    const [rows] = await pool.execute(insert, [user_id[0].id, token]);
+    return rows.insertId;
+}
+async function delete_tokens(email) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const [user_id] = await pool.execute(id, [email]);
+    const deleteTokens = 'DELETE FROM reset_tokens WHERE user_id = ?';
+    const [rows] = await pool.execute(deleteTokens, [user_id[0].id]);
+    return rows.affectedRows;
+}
+async function find_token(token) {
+    const select = 'SELECT id,user_id,expires_at, used FROM reset_tokens WHERE token_hash = ?';
+    const [rows] = await pool.execute(select, [token]);
+    return rows[0];
+}
+async function update_password(id, password) {
+    const update = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [password, id]);
+    return rows.affectedRows;
+}
+async function set_used(id) {
+    const update = 'UPDATE reset_tokens SET used = 1 WHERE id = ? AND used = FALSE';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+
+//? interval delete expired tokens
+async function token_expire_del() {
+    const del = 'DELETE FROM reset_tokens WHERE expires_at < NOW() OR used = TRUE';
+    const [rows] = await pool.execute(del);
+    return rows;
+}
+
+// ----
+// ADMIN
+// ----
+async function isAdminCheck(userId) {
+    const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
 
 // ----
 // LOG
 // ----
 
-// log data
-async function log(id, action, desc, ip) {
+// log by id
+async function log_id(id, action, desc, ip) {
     const userName = 'SELECT username FROM users WHERE id = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
     const [nameResult] = await pool.execute(userName, [id]);
     const [result] = await pool.execute(insert, [id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
+// log by email
+async function log_email(email, action, desc, ip) {
+    const userName = 'SELECT id, username FROM users WHERE email = ?';
+    const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
+    const [nameResult] = await pool.execute(userName, [email]);
+    const [result] = await pool.execute(insert, [nameResult[0].id, nameResult[0].username, action, desc, ip]);
+    return result.insertId;
+}
+//log server failure
+async function log_error(action, desc, ip) {
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
+    const [result] = await pool.execute(insert, [action, desc, ip]);
+    return result.insertId;
+}
+
 
 //!Export
 module.exports = {
@@ -322,7 +453,8 @@ module.exports = {
     registration_insert,
     username_exist,
     email_exist,
-    log,
+    log_id,
+    log_email,
     findUser,
     getUsernameById,
     registComp,
@@ -330,6 +462,14 @@ module.exports = {
     insertPreferences,
     insertWeight,
     updateRegistered,
+    getUserBasicData,
+    getUserPreferencesData,
+    getUserWeightData,
+    updateUserBasic,
+    updateUserPreferences,
+    getUserPassword,
+    updateUserPassword,
+    allExercises,
     allExercises,
     exerciseExist,
     createWorkoutPlan,
@@ -343,5 +483,13 @@ module.exports = {
     allDefaultPlans,
     getDefaultWorkoutPlanDetails,
     getActive,
-    updateActive
+    updateActive,
+    isAdminCheck,
+    save_token,
+    delete_tokens,
+    token_expire_del,
+    find_token,
+    update_password,
+    set_used,
+    log_error
 };

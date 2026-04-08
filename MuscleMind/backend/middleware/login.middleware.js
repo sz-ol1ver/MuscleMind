@@ -1,4 +1,5 @@
 const db = require('../sql/database.js');
+const path = require('path');
 
 //? email validation regex
 /*1️⃣ Local part (before @):
@@ -52,7 +53,7 @@ async function validateLogin(req, res, next) {
         const emailExist = await db.email_exist(email);
         if(emailExist != 1){
             return res.status(409).json({
-                message: 'Nincs regisztrálva',
+                message: 'Érvénytelen e-mail cím vagy jelszó!',
                 id: 3,
             })
         }
@@ -65,13 +66,13 @@ async function validateLogin(req, res, next) {
 
 function redirectIfLoggedIn(req, res, next){
     if(req.session?.user?.id){
-        return res.redirect('/kerdoiv');
+        return res.redirect('/');
     }
     next()
 }
 function requireAuthPage(req, res, next){
     if(!req.session?.user?.id){
-        return res.redirect('/bejelentkezes');
+        return res.sendFile(path.join(__dirname, '../views/401.html'));
     }
     next()
 }
@@ -85,9 +86,101 @@ function requireAuthApi(req, res, next){
     next()
 }
 
+async function requestPassword(req,res,next) {
+    try {
+        const allowedKeys = ['email'];
+        const {email} = req.body;
+
+        if(!email || typeof email !== 'string'){
+            return res.status(400).json({
+                message: 'Nincs megadva email cím!'
+            });
+        };
+        const objectKeys = Object.keys(req.body);
+        if(allowedKeys.length != objectKeys.length){
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        };
+        for(let i =0; i<objectKeys.length;i++){
+            if(!allowedKeys.includes(objectKeys[i])){
+                return res.status(400).json({
+                    message: 'Érvénytelen adatok!'
+                });
+            };
+        };
+        if(!patternEmail.test(email)){
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        };
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
+async function newPassword(req,res,next) {
+    try {
+        const { password, confirm, token } = req.body;
+
+        const allowedKeys = ['password', 'confirm', 'token'];
+        const objectKeys = Object.keys(req.body);
+
+        if (objectKeys.length !== allowedKeys.length) {
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        }
+
+        for (let key of objectKeys) {
+            if (!allowedKeys.includes(key)) {
+                return res.status(400).json({
+                    message: 'Érvénytelen adatok!'
+                });
+            }
+        }
+
+        if (!password || !confirm || !token) {
+            return res.status(400).json({
+                message: 'Hiányzó adatok!'
+            });
+        }
+
+        if (
+            typeof password !== 'string' ||
+            typeof confirm !== 'string' ||
+            typeof token !== 'string'
+        ) {
+            return res.status(400).json({
+                message: 'Érvénytelen adatok!'
+            });
+        }
+
+        if (password !== confirm) {
+            return res.status(400).json({
+                message: 'A jelszavak nem egyeznek!'
+            });
+        }
+
+        if (!patternPass.test(password)) {
+            return res.status(400).json({
+                message: 'A jelszó nem megfelelő formátumú!'
+            });
+        }
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateLogin,
     redirectIfLoggedIn,
     requireAuthPage,
-    requireAuthApi
+    requireAuthApi,
+    requestPassword,
+    newPassword
 }

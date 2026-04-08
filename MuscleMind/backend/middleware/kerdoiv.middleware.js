@@ -1,10 +1,8 @@
 const db = require('../sql/database.js');
+const path = require('path');
 
 async function requireComplete(req, res, next) {
     try {
-        if (!req.session || !req.session.user || !req.session.user.id) {
-            return res.redirect('/bejelentkezes');
-        }
         const id = req.session.user.id;
         const completed = await db.registComp(id);
         if (completed != 1) {
@@ -18,9 +16,6 @@ async function requireComplete(req, res, next) {
 
 async function registrationComplete(req, res, next) {
     try {
-        if(!req.session || !req.session.user || !req.session.user.id){
-            return res.redirect('/bejelentkezes')
-        }
         const id = req.session.user.id;
         const completed = await db.registComp(id);
         if(completed == 1){

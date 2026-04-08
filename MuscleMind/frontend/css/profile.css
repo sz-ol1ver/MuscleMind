@@ -1,3 +1,33 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.container-fluid {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#upper-row {
+    flex-shrink: 0;
+}
+
+#main-row {
+    flex: 1;
+    overflow: hidden;
+}
+
+#side-nav {
+    height: 100%;
+    overflow: hidden;
+}
+
+#profileForm {
+    height: 100%;
+    overflow-y: auto;
+}
+
 .profile-main-bubble {
     margin-left: auto;
     margin-right: auto;
@@ -18,7 +48,8 @@
 
 @media (min-width: 992px) {
     .profile-main-bubble {
-        margin-left: 100px; 
+        margin-left: auto; 
+        margin-right: auto;
     }
 }
 
@@ -90,4 +121,34 @@
     border-radius: 5px;
     padding: 5px;
     width: 80%;
+}
+
+.profile-main-bubble input:disabled{
+    background-color: #8c8c8c;
+    color:white;
+    opacity: 1;
+}
+
+.edit{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    width: 100% !important;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #16e49f;
+    color: white;
+    margin-right: 10px;
+    justify-content: center;
+}
+
+.edit:hover{
+    display: flex;
+    align-items: center;
+    height: 40px;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: #16e49f15;
+    color: white;
+    
 }

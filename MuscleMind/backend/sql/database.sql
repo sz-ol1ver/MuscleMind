@@ -7,11 +7,13 @@ USE musclemind;
 CREATE TABLE IF NOT EXISTS logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
-    user_id INT NOT NULL,
-    username VARCHAR(50) NOT NULL,
+    user_id INT NULL,
+    username VARCHAR(50) NULL,
 
     action VARCHAR(100) NOT NULL,
     description TEXT,
+
+    type ENUM('info', 'warning', 'error') DEFAULT 'info',
 
     ip_address VARCHAR(45) NOT NULL,
 
@@ -375,6 +377,21 @@ CREATE TABLE IF NOT EXISTS support_requests (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- store reset-password token
+CREATE TABLE reset_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+
+    token_hash VARCHAR(64) NOT NULL,
+
+    expires_at DATETIME NOT NULL DEFAULT (NOW() + INTERVAL 10 MINUTE),
+
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE(token_hash)
 );
 
 -- ALTER TABLES (foreign key)
@@ -539,6 +556,12 @@ ALTER TABLE support_requests
     FOREIGN KEY (replied_by_admin_id)
     REFERENCES users(id)
     ON DELETE SET NULL;
+
+ALTER TABLE reset_tokens
+    ADD CONSTRAINT fk_password_reset_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
 
 -- INSERTEK
 INSERT INTO exercises (name, muscle_group)

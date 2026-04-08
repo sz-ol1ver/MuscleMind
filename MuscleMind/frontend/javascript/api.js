@@ -56,6 +56,25 @@ export async function login(url, value) {
     }
 }
 
+export async function updateProfile(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(value)
+        });
+        
+        if (!data.ok) {
+            const res = await data.json();
+            throw new Error(res.message);
+        }
+        
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function userAns(url, value) {
     try {
         const data = await fetch(url, {
@@ -154,6 +173,43 @@ export async function patchPlan(url, value) {
             method: 'PATCH',
             headers: {'Content-type':'application/json'},
             body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postRequest(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postLogout(url) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'}
         })
         if(!data.ok){
             const res = await data.json();
