@@ -204,3 +204,21 @@ export async function postRequest(url, value) {
         throw error;
     }
 }
+
+export async function postLogout(url) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'}
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
