@@ -2,8 +2,7 @@ export async function registration(url, value){
     try {
         const data = await fetch(url, {
             method:'POST',
-            headers: {'Content-type':'application/json'},
-            body: JSON.stringify(value)
+            body: value
         })
         if(!data.ok){
             const res = await data.json();
@@ -32,8 +31,7 @@ export async function login(url, value) {
     try {
         const data = await fetch(url, {
             method:'POST',
-            headers: {'Content-type':'application/json'},
-            body: JSON.stringify(value)
+            body: value
         })
         if(!data.ok){
             const res = await data.json();
@@ -96,7 +94,7 @@ export async function userAns(url, value) {
     }
 }
 
-export async function getExercises(url) {
+export async function getWorkout(url) {
     try {
         const data = await fetch(url, {
             method: 'GET',
@@ -105,6 +103,100 @@ export async function getExercises(url) {
         if(!data.ok){
             const res = await data.json();
             const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function deleteWorkout(url) {
+    try {
+        const data = await fetch(url, {
+            method: 'DELETE',
+            headers: {'Content-type':'application/json'}
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postNewPlan(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function putPlan(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'PUT',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+export async function patchPlan(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'PATCH',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postRequest(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-type':'application/json'},
+            body: JSON.stringify(value)
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
             throw err;
         }
         return await data.json();

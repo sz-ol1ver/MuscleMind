@@ -29,43 +29,44 @@
                 </div>
 
                 <!-- űrlap mezők -->
-                <div class="card-body row">
+                <div class="card-body container-fluid">
+                    <form id="registration-form" class="row">
+                        <!-- vezetéknév -->
+                        <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
+                            <input type="text" class="form-control regist-inputs" id="last-name" name="lastN"  placeholder="xy" >
+                            <label for="last-name" class="text-light ms-2">Vezetéknév</label>
+                        </div>
 
-                    <!-- vezetéknév -->
-                    <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
-                        <input type="text" class="form-control regist-inputs" id="last-name" placeholder="xy" >
-                        <label for="last-name" class="text-light ms-2">Vezetéknév</label>
-                    </div>
+                        <!-- keresztnév -->
+                        <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
+                            <input type="text" class="form-control regist-inputs" id="first-name" name="firstN" placeholder="xy" >
+                            <label for="first-name" class="text-light ms-2">Keresztnév</label>
+                        </div>
 
-                    <!-- keresztnév -->
-                    <div class="form-floating mb-3 d-flex mx-auto col-lg-6 col-md-6 col-sm-6">
-                        <input type="text" class="form-control regist-inputs" id="first-name" placeholder="xy" >
-                        <label for="first-name" class="text-light ms-2">Keresztnév</label>
-                    </div>
+                        <!-- felhasználónév -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control regist-inputs" id="userName" name="userN" placeholder="xy" min="8" max="20">
+                            <label for="userName" class="text-light ms-2">Felhasználónév</label>
+                        </div>
 
-                    <!-- felhasználónév -->
-                    <div class="form-floating mb-3">
-                        <input type="text" class="form-control regist-inputs" id="userName" placeholder="xy" min="8" max="20">
-                        <label for="userName" class="text-light ms-2">Felhasználónév</label>
-                    </div>
+                        <!-- email address -->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control regist-inputs" name="email" id="email-regist">
+                            <label for="email-regist" class="text-light ms-2">E-mail cím</label>
+                        </div>
 
-                    <!-- email address -->
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control regist-inputs" id="email-regist">
-                        <label for="email-regist" class="text-light ms-2">E-mail cím</label>
-                    </div>
+                        <!-- jelszó -->
+                        <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
+                            <input type="password" class="form-control regist-inputs" id="password-regist" name="pass" placeholder="Jelszó" min="8" max="64">
+                            <label for="password-regist" class="text-light ms-2">Jelszó</label>
+                        </div>
 
-                    <!-- jelszó -->
-                    <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-regist" placeholder="Jelszó" min="8" max="64">
-                        <label for="password-regist" class="text-light ms-2">Jelszó</label>
-                    </div>
-
-                    <!-- jelszó megerősítés -->
-                    <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                        <input type="password" class="form-control regist-inputs" id="password-confirm-regist" placeholder="Jelszó" disabled>
-                        <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
-                    </div>
+                        <!-- jelszó megerősítés -->
+                        <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
+                            <input type="password" class="form-control regist-inputs" id="password-confirm-regist" name="pass-confirm" placeholder="Jelszó" disabled>
+                            <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
+                        </div>
+                    </form>
 
                     <!-- jelszó egyezés visszajelzés -->
                     <p id="password-feedback"></p>

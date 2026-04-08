@@ -1,6 +1,106 @@
 ###
 GET http://127.0.0.1:3000/api/testsql
 ###
-POST http://127.0.0.1:3000/api/auth/logout
+POST http://127.0.0.1:3000/api/auth/login
 Content-Type: application/json
 
+{
+    "email": "szaloliver@gmail.com",
+    "pass": "asdasdasd"
+}
+###
+POST http://127.0.0.1:3000/api/auth/logout
+###
+POST http://127.0.0.1:3000/api/workout/newPlan
+Content-Type: application/json
+
+{
+  "name": "Test Plan 8 Days",
+  "days": [
+    {
+      "dayNumber": 1,
+      "name": "Push",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 1, "name": "Bench Press", "order": 1 },
+        { "exerciseId": 2, "name": "Incline Press", "order": 2 }
+      ]
+    },
+    {
+      "dayNumber": 2,
+      "name": "Pull",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 3, "name": "Pull Up", "order": 1 },
+        { "exerciseId": 4, "name": "Barbell Row", "order": 2 }
+      ]
+    },
+    {
+      "dayNumber": 3,
+      "name": "Legs",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 5, "name": "Squat", "order": 1 },
+        { "exerciseId": 6, "name": "Leg Press", "order": 2 }
+      ]
+    },
+    {
+      "dayNumber": 4,
+      "name": "Rest",
+      "restDay": true,
+      "exercises": []
+    },
+    {
+      "dayNumber": 5,
+      "name": "Shoulders",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 7, "name": "Overhead Press", "order": 1 }
+      ]
+    },
+    {
+      "dayNumber": 6,
+      "name": "Arms",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 8, "name": "Biceps Curl", "order": 1 },
+        { "exerciseId": 9, "name": "Triceps Pushdown", "order": 2 }
+      ]
+    },
+    {
+      "dayNumber": 7,
+      "name": "Core",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 10, "name": "Plank", "order": 1 }
+      ]
+    },
+    {
+      "dayNumber": 8,
+      "name": "Extra Day",
+      "restDay": false,
+      "exercises": [
+        { "exerciseId": 11, "name": "Farmer Walk", "order": 1 }
+      ]
+    }
+  ]
+}
+
+###
+POST https://api.brevo.com/v3/smtp/email
+api-key: ###
+Content-Type: application/json
+
+{
+  "sender":{
+    "name": "MuscleMind - Support",
+    "email": "musclemind.web@gmail.com"
+  },
+  "to":[
+    {
+      "email": "szaloliver@gmail.com"
+    }
+  ],
+  "subject": "test",
+  "htmlContent": "<html><body><h1>Test</h1></body></html>"
+}

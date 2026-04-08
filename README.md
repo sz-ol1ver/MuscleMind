@@ -95,4 +95,5 @@ musclemind/
 ├─ .gitignore                          # ignorált fájlok
 ├─ readme.md                           # dokumentáció
 └─ README.md                           # fő readme
-email kuldes backend - brevo
+
+brevo api - https://api.brevo.com/v3/smtp/email

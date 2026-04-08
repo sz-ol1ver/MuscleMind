@@ -27,19 +27,24 @@
                 </div>
                 <!-- űrlap mezők -->
                 <div class="card-body">
-                    <!--email cim input-->
-                    <div class="form-floating mb-3">
-                        <input type="email" class="form-control login-inputs" id="email-login" placeholder="@" required>
-                        <label for="email-login" class="text-light">E-mail cím</label>
-                    </div>
-                    <!--jelszo input-->
-                    <div class="form-floating mb-2">
-                        <input type="password" class="form-control login-inputs" id="password-login" placeholder="xxx" required disabled>
-                        <label for="password-login" class="text-light">Jelszó</label>
-                    </div>
+                    <!-- LOGIN-INPUT FORM -->
+                    <form id="login-form">
+                            <!--email cim input-->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control login-inputs" id="email-login" name="email" placeholder="@" required>
+                            <label for="email-login" class="text-light">E-mail cím</label>
+                        </div>
+                        <!--jelszo input-->
+                        <div class="form-floating mb-2">
+                            <input type="password" class="form-control login-inputs" id="password-login" name="pass" placeholder="xxx" required disabled>
+                            <label for="password-login" class="text-light">Jelszó</label>
+                        </div>
+                    </form>
+
                     <p id="password-feedback"></p>
                     <!--link elfelejtett jelszo btn-->
-                    <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-login btn-link btn-sm d-block ms-auto">
+                    <a href="/jelszo-keres">
+                    <input type="button" value="Elfelejtett jelszó" id="password-recover" class="btn btn-link-login btn-link btn-sm d-block ms-auto"></a>
                     <!--elvalaszto vonal-->
                     <hr class="mt-2">
                     <!--link regisztacio btn-->

@@ -150,63 +150,160 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
+                    <div class="row mb-lg-4 mb-xl-4">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
+                            <div class="workout-plan" id="user-plan">
+                                <div class="headline">
+                                    <div class="text-center" id="personal-title">
+                                        <h3>Saját edzéstervek</h3>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="container-fluid container-items">
+                                    <div id="personal-items">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
                             <div class="workout-plan" id="recommended-plan">
-                                <div id="recommended-title">
-                                    <h3>
-                                        Ajánlott edzéstervek
-                                    </h3> 
+                                <div class="headline">
+                                    <div id="recommended-title">
+                                        <h3>
+                                            Ajánlott edzéstervek
+                                        </h3> 
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="container-fluid plans-line">
+                                    <!-- Mobil gomb -->
+                                    <div class="mb-3 text-end">
+                                        <button 
+                                            class="btn btn-outline-light w-25" 
+                                            type="button" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#mobileFilters" 
+                                            aria-expanded="false" 
+                                            aria-controls="mobileFilters">
+                                            ☰ Szűrők
+                                        </button>
+                                    </div>
+                                    <!-- Mobilon collapse -->
+                                    <div class="collapse" id="mobileFilters">
+                                        <hr class="d-lg-none d-md-none">
+                                        <div class="row g-3">
+
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                                <label for="filter-level" class="form-label fw-bold">Szint</label>
+                                                <select id="filter-level" class="form-select">
+                                                    <option value="all">Összes szint</option>
+                                                    <option value="kezdo">Kezdő</option>
+                                                    <option value="kozep">Középhaladó</option>
+                                                    <option value="halado">Haladó</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                                <label for="filter-location" class="form-label fw-bold">Helyszín</label>
+                                                <select id="filter-location" class="form-select">
+                                                    <option value="all">Összes helyszín</option>
+                                                    <option value="gym">Konditerem</option>
+                                                    <option value="home_weights">Otthon (súlyzókkal)</option>
+                                                    <option value="home_bodyweight">Otthon (testsúllyal)</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                                <label for="filter-goal" class="form-label fw-bold">Cél</label>
+                                                <select id="filter-goal" class="form-select">
+                                                    <option value="all">Összes cél</option>
+                                                    <option value="tomeg">Tömegnövelés</option>
+                                                    <option value="szalkasitas">Szálkásítás</option>
+                                                    <option value="szintentartas">Szintentartás</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                                <label for="filter-days" class="form-label fw-bold">Edzésnapok</label>
+                                                <select id="filter-days" class="form-select">
+                                                    <option value="all">Összes</option>
+                                                    <option value="1">1 nap</option>
+                                                    <option value="2">2 nap</option>
+                                                    <option value="3">3 nap</option>
+                                                    <option value="4">4 nap</option>
+                                                    <option value="5">5 nap</option>
+                                                    <option value="6">6 nap</option>
+                                                    <option value="7">7 nap</option>
+                                                </select>
+                                            </div>
+
+                                        </div>
+                                        <hr>
+                                        <div class="row mt-2 justify-content-center">
+                                            <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <hr>
-                                <div class="container" id="recommended-items">
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <br>
+                                <div class="container-fluid container-items">
+                                    <div id="recommended-items">
+                                        
+                                    </div>
                                 </div>
                             </div>
-                            <div class="workout-plan p-3" id="user-plan">
-                                <div class="position-relative text-center">
-                                    <h3 class="text-info m-0">Saját edzéstervek</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
+                            <div class="workout-plan" id="selected-plan">
+                                <div class="headline">
+                                    <div id="selected-title">
+                                        <h3>
+                                            Kiválasztott edzésterv
+                                        </h3> 
+                                    </div>
+                                    <hr>
                                 </div>
-                                <hr>
-                                <div class="container" id="personal-items">
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <br>
-                                </div>
-                            </div>
-                            <div class="workout-plan" id="new-plan">
-                                <div id="new-title">
-                                    <h3>
-                                        Új edzésterv
-                                    </h3>
-                                </div>
-                                <hr>
                                 <div class="row justify-content-center">
-                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-6 col-md-6 col-lg-5 col-xl-3">
-                                        <label for="routine-name" class="form-label">Edzésterv neve:</label>
-                                        <input type="text" name="routine-name" id="routine-name" value="new_workout" class="form-control">
-                                        <label for="routine-day" class="form-label mt-2">Napok száma:</label>
+                                    <div class="d-flex" id="selected-items">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 pe-0 ps-3">
+                            <div class="workout-plan" id="new-plan">
+                                <div class="headline">
+                                    <div id="new-title">
+                                        <h3 id="newPlanTitle">
+                                            Új edzésterv
+                                        </h3>
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div id="create" class="routine-main-data d-flex flex-column justify-content-center col-10 col-sm-10 col-md-10 col-lg-8 col-xl-8">
+                                        <label for="routine-name" class="form-label fw-bold">Edzésterv neve</label>
+                                        <input type="text" name="routine-name" id="routine-name" maxlength="100" value="new_workout" class="form-control">
+                                        <label for="routine-day" class="form-label fw-bold mt-2">Napok száma</label>
                                         <input type="number" name="routine-day" id="routine-day" placeholder="Napok száma" class="form-control" min="1" max="7">
                                         <hr class="w-50 d-block mx-auto">
                                         <input type="button" value="Tovább" id="next" class="btn btn-outline-success w-50 d-block mx-auto">
                                     </div>
                                     <div id="info" class="routine-second d-none col-10 col-sm-10 col-md-10 col-lg-10 col-xl-10">
                                         <div class="day-selector d-flex justify-content-around align-self-center flex-wrap">
-                                            <button type="button" value="1" id="day-1" class="day-box btn active">Day 1</button>
-                                            <button type="button" value="2" id="day-2" class="day-box btn">Day 2</button>
-                                            <button type="button" value="3" id="day-3" class="day-box btn">Day 3</button>
-                                            <button type="button" value="4" id="day-4" class="day-box btn">Day 4</button>
-                                            <button type="button" value="5" id="day-5" class="day-box btn">Day 5</button>
-                                            <button type="button" value="6" id="day-6" class="day-box btn">Day 6</button>
-                                            <button type="button" value="7" id="day-7" class="day-box btn">Day 7</button>
+                                            <button type="button" value="1" id="day-1" class="day-box btn active">Nap 1</button>
+                                            <button type="button" value="2" id="day-2" class="day-box btn">Nap 2</button>
+                                            <button type="button" value="3" id="day-3" class="day-box btn">Nap 3</button>
+                                            <button type="button" value="4" id="day-4" class="day-box btn">Nap 4</button>
+                                            <button type="button" value="5" id="day-5" class="day-box btn">Nap 5</button>
+                                            <button type="button" value="6" id="day-6" class="day-box btn">Nap 6</button>
+                                            <button type="button" value="7" id="day-7" class="day-box btn">Nap 7</button>
                                         </div>
                                         <hr>
                                         <div>
-                                            <label for="day_name" class="form-label d-md-none d-lg-none d-xl-none">Nap neve:</label>
+                                            <label for="day_name" class="form-label fw-bold">Nap neve</label>
                                             <input type="text" name="day_name" id="day_name" value="" placeholder="Nap neve:" class="form-control w-25">
                                         </div>
                                         <hr class="w-25">
@@ -225,6 +322,9 @@
                                             </div>
                                             <hr class="mt-4 d-lg-none d-xl-none d-md-none">
                                             <div class="routine-data mt-2 col-10 col-sm-10 col-md-4 col-lg-4 col-xl-3">
+                                                <select name="muscle-group" id="muscle-group" class="form-control bg-dark text-light border-1 d-block mb-2">
+                                                    <option value="all" selected>Összes</option>
+                                                </select>
                                                 <select name="gyakorlat" id="gyakorlat" class="form-control bg-dark text-light border-1 d-block">
                                                     <option value="0" selected disabled>
                                                         Gyakorlat kiválasztása ▼
@@ -233,7 +333,7 @@
                                                 </select>
                                                 <div class="form-check mt-2">
                                                     <input class="form-check-input" type="checkbox" value="1" id="rest">
-                                                    <label class="form-check-label" for="rest">
+                                                    <label class="form-check-label fw-bold" for="rest">
                                                         Pihenő nap
                                                     </label>
                                                 </div>
@@ -242,7 +342,10 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="row justify-content-center">
+                                <div class="alert d-block mx-auto col-8 col-sm-8 col-md-8 col-lg-8 col-xl-8 d-none" role="alert" id="alert-save">
+                                    
+                                </div>
+                                <div class="row justify-content-center" id="action">
                                     <input type="button" value="Mégse" id="cancel" class="btn btn-outline-danger w-25 d-none m-1">
                                     <input type="button" value="Mentés" id="save" class="btn btn-outline-success w-25 d-none m-1">
                                 </div>

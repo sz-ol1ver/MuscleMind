@@ -41,12 +41,6 @@ html, body {
 }
 
 @media (max-width: 991px) {
-    html, body {
-        overflow-y: auto;
-    }
-    .container-fluid {
-        height: auto;
-    }
     .profile-picture-wrapper {
         margin-left: 0;
     }

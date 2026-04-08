@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error</title>
+    <link rel="icon" type="image/png" href="/images/warning.png">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+    <!-- Popper + Bootstrap JS -->
+    <script src="/bootstrap/js/popper.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background:
+                radial-gradient(circle at top, rgba(255, 59, 59, 0.18), transparent 30%),
+                linear-gradient(135deg, #0f0f0f, #1a1a1a 45%, #111111);
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-card {
+            width: 100%;
+            max-width: 620px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 0 30px rgba(255, 59, 59, 0.15),
+                0 10px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .error-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background-color: rgba(255, 59, 59, 0.12);
+            border: 1px solid rgba(255, 59, 59, 0.25);
+            color: #ff6b6b;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .error-code {
+            font-size: clamp(72px, 12vw, 120px);
+            font-weight: 900;
+            line-height: 1;
+            color: #ff3b3b;
+            text-shadow: 0 0 18px rgba(255, 59, 59, 0.25);
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            font-size: clamp(24px, 4vw, 34px);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .error-message {
+            color: #c7c7c7;
+            font-size: 16px;
+            max-width: 480px;
+            margin: 0 auto 28px auto;
+            line-height: 1.6;
+        }
+
+        .divider {
+            width: 90px;
+            height: 4px;
+            background: linear-gradient(to right, #ff3b3b, #ff7b7b);
+            border-radius: 999px;
+            margin: 0 auto 28px auto;
+        }
+
+        .tip-box {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 16px 18px;
+            margin-bottom: 28px;
+        }
+
+        .tip-title {
+            color: #ff8a8a;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .tip-text {
+            margin: 0;
+            color: #d2d2d2;
+            font-size: 14px;
+        }
+
+        .btn-custom {
+            min-width: 180px;
+            border-radius: 999px;
+            padding: 12px 24px;
+            font-weight: 700;
+            transition: 0.2s ease;
+        }
+
+        .btn-home {
+            background: #ff3b3b;
+            border: none;
+            color: white;
+        }
+
+        .btn-home:hover {
+            background: #ff2020;
+            transform: translateY(-2px);
+        }
+
+        .btn-back {
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white;
+            background: transparent;
+        }
+
+        .btn-back:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .small-note {
+            margin-top: 22px;
+            font-size: 13px;
+            color: #9f9f9f;
+        }
+
+        @media (max-width: 576px) {
+            .error-card {
+                padding: 30px 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-custom {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-card">
+        <div class="error-badge">Gym Tracker Error</div>
+
+        <div id="error-code" class="error-code">403</div>
+        <h1 id="error-title" class="error-title">Hozzáférés megtagadva</h1>
+        <div class="divider"></div>
+
+        <p id="error-message" class="error-message">
+            Nincs jogosultságod az oldal megtekintéséhez.
+        </p>
+
+        <div class="tip-box">
+            <div class="tip-title">Státusz</div>
+            <p id="tip-text" class="tip-text">
+                Ez a szint még zárolva van számodra.
+            </p>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 action-buttons flex-wrap">
+            <a href="/" class="btn btn-home btn-custom">Főoldal</a>
+            <button onclick="history.back()" class="btn btn-back btn-custom">Előző oldal</button>
+        </div>
+
+        <div class="small-note">
+            Stay focused. Even broken routes cannot stop progress.
+        </div>
+    </div>
+</body>
+</html>

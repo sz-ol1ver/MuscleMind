@@ -2,20 +2,25 @@ const express = require('express');
 const router = express.Router();
 const db = require('../sql/database.js');
 const fs = require('fs/promises');
-const bcrypt = require('bcrypt'); // npm install bcrypt
-const requestIp = require('request-ip'); // npm install request-ip
+const bcrypt = require('bcrypt'); //! npm install bcrypt
+const crypto = require('crypto'); //! npm install crypto
+const requestIp = require('request-ip'); //! npm install request-ip
+require('dotenv').config(); //! npm install dotenv
+const apiKey = process.env.BREVO_API_KEY;
 const loginMw = require('../middleware/login.middleware.js');
 const validateRegistration = require('../middleware/registration.middleware.js');
+const multer = require('multer');
+const upload = multer();
 
 const saltRounds = 12;
 
-router.post('/registration', validateRegistration, async(request, response) => {
+router.post('/registration',upload.none() , validateRegistration, async(request, response) => {
     try {
         const data = request.body;
         const ip = requestIp.getClientIp(request);
         const hashed = await bcrypt.hash(data.pass, saltRounds);
         const insert = Number(await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed));
-        await db.log(insert, 'registration', 'registration 1/2',ip);
+        await db.log_id(insert, 'registration', 'registration 1/2',ip);
         const admin = await db.ifAdmin(insert);
         request.session.user = {
             id: insert,
@@ -26,14 +31,15 @@ router.post('/registration', validateRegistration, async(request, response) => {
         })
     } catch (error) {
         console.log(error.message)
-        response.status(500).json({
-            response: 'Sikertelen eleres!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 });
 
-router.post('/login', loginMw.validateLogin, async(request, response)=>{
+router.post('/login', upload.none(), loginMw.validateLogin, async(request, response)=>{
     try {
         const {email, pass} = request.body;
         const ip = requestIp.getClientIp(request);
@@ -41,7 +47,7 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
         const compare = await bcrypt.compare(pass, user.password_hash);
 
         if(compare == false){
-            await db.log(user.id,'login','Sikertelen bejelentkezés', ip);
+            await db.log_id(user.id,'login','Sikertelen bejelentkezés (Helytelen jelszó)', ip);
             return response.status(401).json({
                 message: 'Helytelen jelszó!',
                 id: 4
@@ -51,25 +57,21 @@ router.post('/login', loginMw.validateLogin, async(request, response)=>{
             id: user.id,
             admin: user.admin
         }
-        await db.log(user.id,'login','Sikeres bejelentkezés', ip);
+        await db.log_id(user.id,'login','Sikeres bejelentkezés', ip);
         response.status(200).json({
             message: 'Sikeres bejelentkezés!'
         })
     } catch (error) {
         console.log(error.message)
-        response.status(500).json({
-            response: 'Sikertelen eleres!',
-            error: error.message
-        })
+        const ip = requestIp.getClientIp(req);
+        db.log_error('Server error - auth', error.message,ip);
+        return res.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 
-router.post('/logout',(request, response)=>{
-    if(!request.session || !request.session.user){
-        return response.status(401).json({
-            message: "Authentication required."
-        });
-    }
+router.post('/logout',loginMw.requireAuthApi,(request, response)=>{
     request.session.destroy((err)=>{
         if (err) {
             return response.status(500).json({

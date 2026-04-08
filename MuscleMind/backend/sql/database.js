@@ -46,7 +46,9 @@ async function username_exist(username) {
     const [rows] = await pool.execute(userN, [username]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 // email validation
 async function email_exist(email) {
@@ -54,7 +56,9 @@ async function email_exist(email) {
     const [rows] = await pool.execute(userN, [email]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 // user adatai session / jelszo ellenorzeshez
@@ -75,7 +79,9 @@ async function registComp(id) {
     const [rows] = await pool.execute(userN, [id]);
     if(rows.length>0){
         return 1;
-    }
+    }else{
+        return 0;
+    };
 }
 
 //user kerdoiv adatok (insert) /without weight
@@ -165,27 +171,290 @@ async function allExercises() {
     return rows;
 }
 
+async function exerciseExist(exerciseId) {
+    const exercise = 'SELECT name FROM exercises WHERE id = ?';
+    const [rows] = await pool.execute(exercise, [exerciseId]);
+    return rows.length > 0;
+}
+
+async function createWorkoutPlan(conn, userId, name, daysCount) {
+    const sql = `
+        INSERT INTO workout_plans (user_id, name, days_count)
+        VALUES (?, ?, ?)
+    `;
+    const [result] = await conn.execute(sql, [userId, name, daysCount]);
+    return result.insertId;
+}
+
+async function createWorkoutDay(conn, planId, dayNumber, name, restDay) {
+    const sql = `
+        INSERT INTO workout_days (plan_id, day_number, name, isRestDay)
+        VALUES (?, ?, ?,  ?)
+    `;
+    const [result] = await conn.execute(sql, [planId, dayNumber, name, restDay]);
+    return result.insertId;
+}
+
+async function createDayExercise(conn, dayId, exerciseId, exerciseOrder) {
+    const sql = `
+        INSERT INTO day_exercises (day_id, exercise_id, exercise_order)
+        VALUES (?, ?, ?)
+    `;
+    await conn.execute(sql, [dayId, exerciseId, exerciseOrder]);
+}
+
+async function allUserPlans(userId) {
+    const sql = 'SELECT id, name, days_count FROM workout_plans WHERE user_id = ? ORDER BY id DESC';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function allDefaultPlans() {
+    const sql = 'SELECT id, name, days_count, level, location, goal, description FROM workout_plans WHERE user_id IS NULL AND is_public = TRUE ORDER BY id DESC';
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
+
+async function getWorkoutPlanDetails(userId, planId){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.id = ?
+        AND wp.user_id = ?
+
+        ORDER BY
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
+async function getDefaultWorkoutPlanDetails(planId){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.level,
+            wp.location,
+            wp.goal,
+            wp.description,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.id = ?
+        AND wp.user_id is NULL
+        AND wp.is_public = TRUE
+
+        ORDER BY
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [planId]);
+    return rows;
+}
+
+async function deletePlan(userId, planId) {
+    const sql = 'DELETE FROM workout_plans WHERE user_id = ? AND id = ?';
+    const [rows] = await pool.execute(sql, [userId, planId]);
+    return rows.affectedRows;
+}
+
+async function updateWorkoutPlanDays(conn, days) {
+    for (const day of days) {
+        // 1. workout_days update
+        const updateDaySql = `
+            UPDATE workout_days
+            SET name = ?, isRestDay = ?
+            WHERE id = ?
+        `;
+        await conn.execute(updateDaySql, [
+            day.name.trim(),
+            day.restDay,
+            day.dayId
+        ]);
+
+        // 2. régi gyakorlatok törlése
+        const deleteExercisesSql = `
+            DELETE FROM day_exercises
+            WHERE day_id = ?
+        `;
+        await conn.execute(deleteExercisesSql, [day.dayId]);
+
+        // 3. ha nem pihenőnap, új gyakorlatok insert
+        if (!day.restDay) {
+            for (const exercise of day.exercises) {
+                const insertExerciseSql = `
+                    INSERT INTO day_exercises
+                    (day_id, exercise_id, exercise_order)
+                    VALUES (?, ?, ?)
+                `;
+                await conn.execute(insertExerciseSql, [
+                    day.dayId,
+                    exercise.exerciseId,
+                    exercise.order
+                ]);
+            }
+        }
+    }
+}
+
+async function selectUpdatePlan(userId, planId) {
+    const sql ='SELECT id FROM workout_plans WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [planId, userId]);
+    return rows;
+}
+
+async function getActive(id) {
+    const sql = 'SELECT active_plan FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].active_plan;
+}
+async function updateActive(userId,plan) {
+    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
+    const [rows] = await pool.execute(sql, [plan, userId]);
+    return rows.affectedRows;
+}
+// ----
+// token
+// ----
+
+async function save_token(email, token) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const insert = 'INSERT INTO reset_tokens(user_id, token_hash) VALUES (?,?)';
+    const [user_id] = await pool.execute(id, [email]);
+    const [rows] = await pool.execute(insert, [user_id[0].id, token]);
+    return rows.insertId;
+}
+async function delete_tokens(email) {
+    const id = 'SELECT id FROM users WHERE email = ?';
+    const [user_id] = await pool.execute(id, [email]);
+    const deleteTokens = 'DELETE FROM reset_tokens WHERE user_id = ?';
+    const [rows] = await pool.execute(deleteTokens, [user_id[0].id]);
+    return rows.affectedRows;
+}
+async function find_token(token) {
+    const select = 'SELECT id,user_id,expires_at, used FROM reset_tokens WHERE token_hash = ?';
+    const [rows] = await pool.execute(select, [token]);
+    return rows[0];
+}
+async function update_password(id, password) {
+    const update = 'UPDATE users SET password_hash = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [password, id]);
+    return rows.affectedRows;
+}
+async function set_used(id) {
+    const update = 'UPDATE reset_tokens SET used = 1 WHERE id = ? AND used = FALSE';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+
+//? interval delete expired tokens
+async function token_expire_del() {
+    const del = 'DELETE FROM reset_tokens WHERE expires_at < NOW() OR used = TRUE';
+    const [rows] = await pool.execute(del);
+    return rows;
+}
+
+// ----
+// ADMIN
+// ----
+async function isAdminCheck(userId) {
+    const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
 
 // ----
 // LOG
 // ----
 
-// log data
-async function log(id, action, desc, ip) {
+// log by id
+async function log_id(id, action, desc, ip) {
     const userName = 'SELECT username FROM users WHERE id = ?';
     const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
     const [nameResult] = await pool.execute(userName, [id]);
     const [result] = await pool.execute(insert, [id, nameResult[0].username, action, desc, ip]);
     return result.insertId;
 }
+// log by email
+async function log_email(email, action, desc, ip) {
+    const userName = 'SELECT id, username FROM users WHERE email = ?';
+    const insert = 'INSERT INTO logs(user_id, username, action, description, ip_address) VALUES (?,?,?,?,?)';
+    const [nameResult] = await pool.execute(userName, [email]);
+    const [result] = await pool.execute(insert, [nameResult[0].id, nameResult[0].username, action, desc, ip]);
+    return result.insertId;
+}
+//log server failure
+async function log_error(action, desc, ip) {
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
+    const [result] = await pool.execute(insert, [action, desc, ip]);
+    return result.insertId;
+}
+
 
 //!Export
 module.exports = {
+    pool,
     selectall,
     registration_insert,
     username_exist,
     email_exist,
-    log,
+    log_id,
+    log_email,
     findUser,
     getUsernameById,
     registComp,
@@ -200,5 +469,27 @@ module.exports = {
     updateUserPreferences,
     getUserPassword,
     updateUserPassword,
-    allExercises
+    allExercises,
+    allExercises,
+    exerciseExist,
+    createWorkoutPlan,
+    createWorkoutDay,
+    createDayExercise,
+    allUserPlans,
+    getWorkoutPlanDetails,
+    deletePlan,
+    updateWorkoutPlanDays,
+    selectUpdatePlan,
+    allDefaultPlans,
+    getDefaultWorkoutPlanDetails,
+    getActive,
+    updateActive,
+    isAdminCheck,
+    save_token,
+    delete_tokens,
+    token_expire_del,
+    find_token,
+    update_password,
+    set_used,
+    log_error
 };
