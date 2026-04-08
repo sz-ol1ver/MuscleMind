@@ -90,4 +90,24 @@ router.post('/update', async (request, response) => {
     }
 });
 
+router.get('/username', async (request, response) => {
+    if (!request.session || !request.session.user) {
+        return response.status(401).json({
+            message: 'Authentication required.'
+        });
+    }
+
+    try {
+        const user = await db.getUsernameById(request.session.user.id)
+        return response.status(200).json({
+            username: user.username
+        });
+    } catch (error) {
+        return response.status(500).json({
+            message: 'Sikertelen eleres',
+            error: error.message
+        });
+    }
+});
+
 module.exports = router;
