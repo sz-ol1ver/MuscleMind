@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const usernameEl = document.getElementById('username')
     try {
-        const response = await fetch('/api/auth/username')
+        const response = await fetch('/api/profile/username')
         if (!response.ok) {
             return
         }

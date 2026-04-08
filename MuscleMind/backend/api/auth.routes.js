@@ -340,5 +340,4 @@ async function postEmail(value) {
         throw error;
     }
 }
-
 module.exports = router;

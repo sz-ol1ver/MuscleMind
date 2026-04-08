@@ -56,6 +56,25 @@ export async function login(url, value) {
     }
 }
 
+export async function updateProfile(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(value)
+        });
+        
+        if (!data.ok) {
+            const res = await data.json();
+            throw new Error(res.message);
+        }
+        
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
 export async function userAns(url, value) {
     try {
         const data = await fetch(url, {
