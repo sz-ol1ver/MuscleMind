@@ -69,6 +69,9 @@ router.get('/admin', loginMw.requireAuthPage ,requireAdmin, (request, response) 
 router.get('/profil', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/profile.html'));
 });
+router.get('/kapcsolat', loginMw.requireAuthPage, requireComplete, (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/contact.html'));
+});
 router.get('/ranglista', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });

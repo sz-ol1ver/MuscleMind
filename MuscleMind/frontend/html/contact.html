@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kapcsolat</title>
+        <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
+        <!--!Bootstrap-->
+        <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
+        <!--?Popper: dropdowns, popovers, tooltips-->
+        <script src="../bootstrap/js/popper.min.js"></script>
+        <script src="../bootstrap/js/bootstrap.min.js"></script>
+        <!--!CSS-->
+        <link rel="stylesheet" href="../css/index.css" type="text/css">
+        <link rel="stylesheet" href="../css/contact.css" type="text/css">
+        <!--!JavaScript-->
+        <script src="../javascript/index.js"></script>
+        <script src="../javascript/loading-overlay.js"></script>
+        <script src="../javascript/user-session.js"></script>
+        <script type="module" src="../javascript/global.js"></script>
+        <script type="module" src="../javascript/contact.js"></script>
+    </head>
+    <body>
+        <div class="container-fluid">
+
+            <!-- Loading overlay -->
+            <div id="loading-overlay" class="loading-overlay">
+                <div class="loader-content">
+                    <div class="spinner"></div>
+                    <p>Nyugibugi...</p>
+                </div>
+            </div>
+
+            <!-- Első sor -->
+            <div id="upper-row" class="row">
+                <div class="col-12  d-flex align-items-center justify-content-between px-3">
+
+                    <!-- Hamburger gomb -->
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="btn button-sample d-lg-none justify-content-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-label="Menü" id="hamburgerBtn">☰</button>
+
+                        <!-- Logo -->
+                        <h2  class="m-0 fw-bold d-none d-lg-block"><span id="shifting-text1">Muscle</span><span id="shifting-text2">Mind</span></h2>
+                    </div>
+                        
+                    <!-- Cím -->
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Kapcsolat</p>
+                    
+
+
+                    <div class="d-flex align-items-center gap-3">
+                        <input type="checkbox" id="theme-switch" class="switch">
+
+                        <!-- Profil buborék -->
+                        <a href="/profil" class="btn" id="profile-bubble">
+                            <div id="profile-pic">
+                                <img id="profile-pic-forced" src="../images/alap_profilkep.png" alt="">
+                            </div>
+                            <div id="username">...</div>
+                        </a>
+
+                        <div id="logout">
+                            <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offcanvas mobil cucc -->
+            <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+
+                <div class="offcanvas-header mobile-menu-header">
+                    <h5 class="offcanvas-title" id="mobileMenuLabel">MENÜ</h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Bezárás"></button>
+                </div>
+
+                <div class="offcanvas-body">
+                    <ul class="nav flex-column d-flex gap-3 pb-3">
+
+                        <li class="nav-item">
+                            <a class="nav-link"  href="/">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/statisztika">Statisztikák</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Naptár</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/etrend">Étrend</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edzesterv">Edzésterv</a>
+                        </li>
+
+                        <li class="nav-item selected-navoption">
+                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Második sor/Main sor -->
+            <div id="main-row" class="row me-2">
+                <!-- Navbar -->
+                <div class="col-lg-3 col-xl-2 d-none d-lg-block pb-3" id="side-nav">
+                    
+                    <div class="m-2">MENÜ</div>
+
+                    <ul class="nav flex-column d-flex gap-4 align-items-center">
+
+                        <!-- Opciók -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/statisztika">Statisztikák</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Naptár</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/etrend">Étrend</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edzesterv">Edzésterv</a>
+                        </li>
+
+                        <li class="nav-item selected-navoption">
+                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
+                        </li>
+                    </ul>
+                </div>    
+
+                <!-- Középső blokk -->
+                <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
+                    <div class="container-fluid d-flex align-items-center justify-content-center">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
