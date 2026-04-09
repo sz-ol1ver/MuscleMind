@@ -24,6 +24,8 @@ router.get('/', async (request, response) => {
             weight: weight,
         })
     } catch (error) {
+        const ip = requestIp.getClientIp(request)
+        await db.log_error('profile_read', error.message, ip)
         return response.status(500).json({
             message: 'Hiba a profil adatok eleresenel',
             error: error.message
@@ -87,6 +89,8 @@ router.post('/update', validateProfileUpdate, async (request, response) => {
         })
 
     } catch (error) {
+        const ip = requestIp.getClientIp(request)
+        await db.log_error('profile_update', error.message, ip)
         console.error("Profile update error:", error)
         return response.status(500).json({
             message: 'Hiba a profil frissítése közben',
@@ -102,6 +106,8 @@ router.get('/username', async (request, response) => {
             username: user.username
         })
     } catch (error) {
+        const ip = requestIp.getClientIp(request)
+        await db.log_error('username_read', error.message, ip)
         return response.status(500).json({
             message: 'Sikertelen eleres',
             error: error.message
