@@ -94,7 +94,7 @@ export async function userAns(url, value) {
     }
 }
 
-export async function getWorkout(url) {
+export async function getFetch(url) {
     try {
         const data = await fetch(url, {
             method: 'GET',

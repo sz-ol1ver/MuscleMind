@@ -407,6 +407,14 @@ async function token_expire_del() {
     const [rows] = await pool.execute(del);
     return rows;
 }
+// ----
+// TICKET
+// ----
+async function ticket_email(id) {
+    const sql = 'SELECT email FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].email;
+}
 
 // ----
 // ADMIN
@@ -491,5 +499,6 @@ module.exports = {
     find_token,
     update_password,
     set_used,
-    log_error
+    log_error,
+    ticket_email
 };
