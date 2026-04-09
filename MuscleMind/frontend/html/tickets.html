@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Statisztikák</title>
+        <title>Kapcsolat</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -11,12 +11,14 @@
         <script src="../bootstrap/js/popper.min.js"></script>
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
-        <link rel="stylesheet" href="../css/index.css" />
+        <link rel="stylesheet" href="../css/index.css" type="text/css">
+        <link rel="stylesheet" href="../css/tickets.css" type="text/css">
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script type="module" src="../javascript/global.js"></script>
+        <script type="module" src="../javascript/tickets.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -42,10 +44,8 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Statisztikák</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Support Tickets</p>
                     
-
-
                     <div class="d-flex align-items-center gap-3">
                         <input type="checkbox" id="theme-switch" class="switch">
 
@@ -58,7 +58,7 @@
                         </a>
 
                         <div id="logout">
-                            <input type="button" id="logout" class="btn button-sample d-block mx-auto" value="Kilépés">
+                            <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
                 </div>
@@ -74,62 +74,13 @@
                 </div>
 
                 <div class="offcanvas-body">
-                    <ul class="nav flex-column d-flex gap-3">
+                    <ul class="nav flex-column d-flex gap-3 pb-3">
 
                         <li class="nav-item">
                             <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
-                            <a class="nav-link" href="/statisztika">Statisztikák</a>
-                        </li>
-
                         <li class="nav-item">
-                            <a class="nav-link" href="/ranglista">Ranglista</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Naptár</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/etrend">Étrend</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Edzésterv</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/tickets">Ticketek</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Második sor/Main sor -->
-            <div id="main-row" class="row me-2">
-                <!-- Navbar -->
-                <div class="col-lg-3 col-xl-2 d-none d-lg-block" id="side-nav">
-                    
-                    <div class="m-2">MENÜ</div>
-
-                    <ul class="nav flex-column d-flex gap-4 align-items-center">
-
-                        <!-- Opciók -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Főoldal</a>
-                        </li>
-
-                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/statisztika">Statisztikák</a>
                         </li>
 
@@ -153,7 +104,56 @@
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
                         </li>
 
+                        <li class="nav-item selected-navoption">
+                            <a class="nav-link" href="/tickets">Ticketek</a>
+                        </li>
+
                         <li class="nav-item">
+                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Második sor/Main sor -->
+            <div id="main-row" class="row me-2">
+                <!-- Navbar -->
+                <div class="col-lg-3 col-xl-2 d-none d-lg-block pb-3" id="side-nav">
+                    
+                    <div class="m-2">MENÜ</div>
+
+                    <ul class="nav flex-column d-flex gap-4 align-items-center">
+
+                        <!-- Opciók -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Főoldal</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/statisztika">Statisztikák</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ranglista">Ranglista</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Naptár</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/etrend">Étrend</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/edzesterv">Edzésterv</a>
+                        </li>
+
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/tickets">Ticketek</a>
                         </li>
 
@@ -165,87 +165,8 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <!-- Statisztikák -->
-                    <div id="stats" class="row mx-0">
-                        <div class="col-12 px-0">
-                            <div id="stat-title" class="mt-2">Statisztikák
-                                <select name="Időtartam" id="timezone">
-                                    <option value="1">Napi</option>
-                                    <option value="2">Heti</option>
-                                    <option value="3">Havi</option>
-                                </select>
-                            </div>
-                            <hr>
-
-                            <div class="row g-4 mt-2 stats-grid">
-
-                                <!-- Letudott edzések -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card">
-                                        <div class="stat-icon">🏋️</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="completed-workouts">?</div>
-                                            <div class="stat-label">Letudott edzések</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Közelgő edzések -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card">
-                                        <div class="stat-icon">📅</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="upcoming-workouts">?</div>
-                                            <div class="stat-label">Közelgő edzések</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Pihenőnapok -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card">
-                                        <div class="stat-icon">😴</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="rest-days">?</div>
-                                            <div class="stat-label">Pihenőnapok</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Edzés streak -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card highlight-card">
-                                        <div class="stat-icon">🔥</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="streak">?</div>
-                                            <div class="stat-label">Aktív streak</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Megmozgatott súly -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card">
-                                        <div class="stat-icon">⚡</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="total-weight">?</div>
-                                            <div class="stat-label">Összes megmozgatott súly(kg)</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Kihagyott napok -->
-                                <div class="col-12 col-md-6 col-xl-4">
-                                    <div class="stat-card danger-card">
-                                        <div class="stat-icon">❌</div>
-                                        <div class="stat-info">
-                                            <div class="stat-value" id="missed-days">?</div>
-                                            <div class="stat-label">Kihagyott napok</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="container-fluid d-flex align-items-center">
+                        
                     </div>
                 </div>
             </div>

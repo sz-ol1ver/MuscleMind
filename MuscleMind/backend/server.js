@@ -72,6 +72,9 @@ router.get('/profil', loginMw.requireAuthPage, requireComplete, (request, respon
 router.get('/kapcsolat', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/contact.html'));
 });
+router.get('/tickets', loginMw.requireAuthPage, requireComplete, (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/tickets.html'));
+});
 router.get('/ranglista', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });
