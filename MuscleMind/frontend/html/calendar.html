@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Étrend</title>
+        <title>Naptár</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -12,11 +12,12 @@
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
-        <link rel="stylesheet" href="../css/workout.css" />
+        <link rel="stylesheet" href="../css/calendar.css" />
         <!--!JavaScript-->
         <script src="../javascript/index.js"></script>
-        <script src="../javascript/loading-overlay.js"></script>
         <script src="../javascript/user-session.js"></script>
+        <script src="../javascript/loading-overlay.js"></script>
+        <script type="module" src="../javascript/calendar.js"></script>
         <script type="module" src="../javascript/global.js"></script>
     </head>
     <body>
@@ -30,9 +31,10 @@
                 </div>
             </div>
 
+
             <!-- Első sor -->
             <div id="upper-row" class="row">
-                <div class="col-12  d-flex align-items-center justify-content-between px-3">
+                <div class="col-12 d-flex align-items-center justify-content-between px-3">
 
                     <!-- Hamburger gomb -->
                     <div class="d-flex align-items-center gap-3">
@@ -43,11 +45,13 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Étrend</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Naptár</p>
                     
 
 
                     <div class="d-flex align-items-center gap-3">
+
+                        <!-- Téma váltás (Világos/Sötét) -->
                         <input type="checkbox" id="theme-switch" class="switch">
 
                         <!-- Profil buborék -->
@@ -59,9 +63,11 @@
                         </a>
 
                         <div id="logout">
-                            <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
+                            <input type="button" id="logout" class="btn button-sample d-block mx-auto" value="Kilépés">
                         </div>
                     </div>
+
+
                 </div>
             </div>
 
@@ -78,7 +84,7 @@
                     <ul class="nav flex-column d-flex gap-3">
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Főoldal</a>
+                            <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
@@ -89,15 +95,15 @@
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="">Izom követés</a>
                         </li>
-
-                        <li class="nav-item selected-navoption">
+                        
+                        <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
                         </li>
 
@@ -130,7 +136,7 @@
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
 
@@ -138,7 +144,7 @@
                             <a class="nav-link" href="">Izom követés</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
                         </li>
 
@@ -149,17 +155,47 @@
                 </div>    
 
                 <!-- Középső blokk -->
-                <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="workout-plan">
-                                <div id="recommended-title">Ajánlott étrend <hr></div>
+                <div class="col-12 col-lg-9 col-xl-10 p-3 flex-column" id="middle-part">
+                    <!-- Naptár -->
+                    <div class="card bg-dark text-white p-4 flex-grow-1 d-flex flex-column calendar-main-card mb-0">
+                        <div class="calendar-header">
+                            <button id="prevMonthBtn" class="btn button-sample">Előző</button>
+                            <h3 id="currentMonthYear" class="m-0 text-center flex-grow-1">Év Hónap</h3>
+                            <button id="nextMonthBtn" class="btn button-sample">Következő</button>
+                        </div>
 
+                        <div class="calendar-grid mb-2">
+                            <div class="calendar-day-header">Hétfő</div>
+                            <div class="calendar-day-header">Kedd</div>
+                            <div class="calendar-day-header">Szerda</div>
+                            <div class="calendar-day-header">Csütörtök</div>
+                            <div class="calendar-day-header">Péntek</div>
+                            <div class="calendar-day-header">Szombat</div>
+                            <div class="calendar-day-header">Vasárnap</div>
+                        </div>
+                        
+                        <div id="calendar-days" class="calendar-grid flex-grow-1"></div>
+                    </div>
+                </div>
+
+                <!-- Modal a naptárhoz -->
+                <div class="modal fade" id="dayDetailsModal" tabindex="-1" aria-labelledby="dayDetailsModalLabel" aria-hidden="true" data-bs-theme="dark">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-white calendar-modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="dayDetailsModalLabel">Edzés Részletek</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-
-                            <div class="workout-plan">
-
-                                <div id="personal-title">Saját étrend <hr></div>
+                            <div class="modal-body">
+                                <div id="modal-date-display" class="mb-3 text-muted">Dátum: </div>
+                                <div id="workout-details-container">
+                                    <h6 class="text-success">asdasdasd</h6>
+                                    <ul id="workout-list" class="list-group list-group-flush mb-3"></ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+                                <button type="button" class="btn btn-primary button-sample" id="setReminderBtn">Emlékeztető beállítása</button>
                             </div>
                         </div>
                     </div>

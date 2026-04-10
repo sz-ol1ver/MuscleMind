@@ -72,6 +72,9 @@ router.get('/profil', loginMw.requireAuthPage, requireComplete, (request, respon
 router.get('/ranglista', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });
+router.get('/naptar', loginMw.requireAuthPage, requireComplete, (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/calendar.html'));
+});
 router.get('/etrend', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/meals.html'));
 });
