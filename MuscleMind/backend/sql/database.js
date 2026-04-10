@@ -543,7 +543,150 @@ async function updateActive(userId, planId) {
         connection.release();
     }
 }
+async function calendarUpToDate(userId) {
+    const connection = await pool.getConnection();
 
+    try {
+        await connection.beginTransaction();
+
+        // 1. active_plan lekérése
+        const [userRows] = await connection.query(
+            `SELECT active_plan
+             FROM users
+             WHERE id = ?`,
+            [userId]
+        );
+
+        const planId = userRows[0]?.active_plan;
+
+        if (!planId) {
+            await connection.commit();
+            return; // nincs aktív terv → nincs teendő
+        }
+
+        // 2. utolsó nap lekérése
+        const [lastDateRows] = await connection.query(
+            `SELECT MAX(workout_date) AS last_date
+             FROM workout_calendar_logs
+             WHERE user_id = ?`,
+            [userId]
+        );
+
+        const lastDate = lastDateRows[0]?.last_date;
+
+        const today = new Date();
+        let daysLeft = 0;
+
+        if (lastDate) {
+            const last = new Date(lastDate);
+            const diffTime = last - today;
+            daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // 3. ha van még legalább 7 nap → nincs teendő
+        if (daysLeft >= 7) {
+            await connection.commit();
+            return;
+        }
+
+        // 4. workout_days lekérése
+        const [workoutDays] = await connection.query(
+            `SELECT id, day_number, isRestDay
+             FROM workout_days
+             WHERE plan_id = ?
+             ORDER BY day_number ASC`,
+            [planId]
+        );
+
+        // 5. honnan kezdjük a generálást
+        let startDate;
+
+        if (!lastDate) {
+            // nincs még semmi → mától
+            startDate = new Date(today);
+        } else {
+            // van már → utolsó nap +1
+            startDate = new Date(lastDate);
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        // 6. végdátum = +2 hónap
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 2);
+
+        // 7. melyik nap jön következőnek?
+        let dayIndex = 0;
+
+        if (lastDate) {
+            const [lastLogRows] = await connection.query(
+                `SELECT workout_day_id
+                 FROM workout_calendar_logs
+                 WHERE user_id = ?
+                 ORDER BY workout_date DESC
+                 LIMIT 1`,
+                [userId]
+            );
+
+            const lastDayId = lastLogRows[0]?.workout_day_id;
+
+            const lastIndex = workoutDays.findIndex(day => day.id === lastDayId);
+            
+            dayIndex = (lastIndex + 1) % workoutDays.length;
+        }
+
+        // 8. generálás
+        const currentDate = new Date(startDate);
+
+        while (currentDate < endDate) {
+            const workoutDay = workoutDays[dayIndex % workoutDays.length];
+            const workoutDate = formatDate(currentDate);
+            const status = workoutDay.isRestDay ? 'rest' : 'pending';
+
+            const [logResult] = await connection.query(
+                `INSERT INTO workout_calendar_logs
+                (user_id, workout_plan_id, workout_day_id, workout_date, status)
+                VALUES (?, ?, ?, ?, ?)`,
+                [userId, planId, workoutDay.id, workoutDate, status]
+            );
+
+            const calendarLogId = logResult.insertId;
+
+            if (!workoutDay.isRestDay) {
+                const [dayExercises] = await connection.query(
+                    `SELECT exercise_id, exercise_order
+                     FROM day_exercises
+                     WHERE day_id = ?
+                     ORDER BY exercise_order ASC`,
+                    [workoutDay.id]
+                );
+
+                for (const exercise of dayExercises) {
+                    await connection.query(
+                        `INSERT INTO workout_calendar_exercises
+                        (workout_calendar_log_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)`,
+                        [
+                            calendarLogId,
+                            exercise.exercise_id,
+                            exercise.exercise_order
+                        ]
+                    );
+                }
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+            dayIndex++;
+        }
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+//format date for update active
 function formatDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -551,6 +694,7 @@ function formatDate(date) {
 
     return `${year}-${month}-${day}`;
 }
+
 // ----
 // token
 // ----
@@ -676,5 +820,6 @@ module.exports = {
     update_password,
     set_used,
     log_error,
-    updateActiveNull
+    updateActiveNull,
+    calendarUpToDate
 };
