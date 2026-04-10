@@ -98,30 +98,8 @@ CREATE TABLE IF NOT EXISTS user_weights (
 );
 
 -- WORKOUT --
--- gyakorlatok
-CREATE TABLE IF NOT EXISTS exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    muscle_group ENUM(
-        'mell',
-        'hát',
-        'váll',
-        'bicepsz',
-        'tricepsz',
-        'alkar',
-        'has',
-        'ferde_has',
-        'alsó_hát',
-        'comb_első',
-        'comb_hátsó',
-        'farizom',
-        'vádli',
-        'teljes_test',
-        'cardio'
-    ) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
+-- workout - stats
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
@@ -159,62 +137,6 @@ CREATE TABLE user_global_xp (
     FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS workout_plans(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    name VARCHAR(100) NOT NULL,
-    level ENUM('kezdo', 'kozep', 'halado') DEFAULT NULL,
-    location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
-    goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
-    description VARCHAR(255) DEFAULT NULL,
-    is_public BOOLEAN DEFAULT FALSE,
-    days_count TINYINT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS workout_days(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    plan_id INT NOT NULL,
-    day_number TINYINT NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    isRestDay BOOLEAN DEFAULT FALSE,
-    image_url VARCHAR(255) DEFAULT NULL
-);
-
-CREATE TABLE IF NOT EXISTS day_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    day_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    exercise_order INT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS workout_calendar_logs(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    workout_plan_id INT NOT NULL,
-    workout_day_id INT NOT NULL,
-    workout_date DATE NOT NULL,
-    workout_time_sec INT NOT NULL DEFAULT 0,
-    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    workout_calendar_log_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-    exercise_order INT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS workout_calendar_sets(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    workout_calendar_exercise_id INT NOT NULL,
-    set_number INT NOT NULL,
-    reps_done INT NOT NULL,
-    weight_done DECIMAL(6,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_exercise_prs (
@@ -256,6 +178,87 @@ CREATE TABLE IF NOT EXISTS user_stats (
     weight_change DECIMAL(5,1) NULL,
 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- workout - plans
+CREATE TABLE IF NOT EXISTS exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    muscle_group ENUM(
+        'mell',
+        'hát',
+        'váll',
+        'bicepsz',
+        'tricepsz',
+        'alkar',
+        'has',
+        'ferde_has',
+        'alsó_hát',
+        'comb_első',
+        'comb_hátsó',
+        'farizom',
+        'vádli',
+        'teljes_test',
+        'cardio'
+    ) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workout_plans(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    name VARCHAR(100) NOT NULL,
+    level ENUM('kezdo', 'kozep', 'halado') DEFAULT NULL,
+    location ENUM('gym', 'home_weights', 'home_bodyweight') DEFAULT NULL,
+    goal ENUM('tomeg', 'szalkasitas', 'szintentartas') DEFAULT NULL,
+    description VARCHAR(255) DEFAULT NULL,
+    is_public BOOLEAN DEFAULT FALSE,
+    days_count TINYINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workout_days(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    plan_id INT NOT NULL,
+    day_number TINYINT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    isRestDay BOOLEAN DEFAULT FALSE,
+    image_url VARCHAR(255) DEFAULT NULL
+);
+
+CREATE TABLE IF NOT EXISTS day_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    day_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    exercise_order INT NOT NULL
+);
+
+-- workout - calendar
+CREATE TABLE IF NOT EXISTS workout_calendar_logs(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workout_plan_id INT NOT NULL,
+    workout_day_id INT NOT NULL,
+    workout_date DATE NOT NULL,
+    workout_time_sec INT NOT NULL DEFAULT 0,
+    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_log_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+    exercise_order INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS workout_calendar_sets(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    workout_calendar_exercise_id INT NOT NULL,
+    set_number INT NOT NULL,
+    reps_done INT NOT NULL,
+    weight_done DECIMAL(6,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- FOODS

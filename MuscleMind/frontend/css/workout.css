@@ -155,3 +155,6 @@ input:disabled{
 .text-justify{
     text-align: justify;
 }
+#middle-part{
+    overflow-y: auto;
+}

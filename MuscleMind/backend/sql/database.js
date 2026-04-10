@@ -362,10 +362,194 @@ async function getActive(id) {
     const [rows] = await pool.execute(sql, [id]);
     return rows[0].active_plan;
 }
-async function updateActive(userId,plan) {
-    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
-    const [rows] = await pool.execute(sql, [plan, userId]);
-    return rows.affectedRows;
+
+async function updateActiveNull(userId) {
+    const connection = await pool.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        const today = new Date();
+        const todayString = formatDate(today);
+
+        const [todayRows] = await connection.query(
+            `SELECT status
+             FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date = ?
+             LIMIT 1`,
+            [userId, todayString]
+        );
+
+        let startDate = new Date(today);
+
+        if (todayRows.length && todayRows[0].status === 'completed') {
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const startDateString = formatDate(startDate);
+
+        await connection.query(
+            `UPDATE users
+             SET active_plan = NULL
+             WHERE id = ?`,
+            [userId]
+        );
+
+        await connection.query(
+            `DELETE wce
+             FROM workout_calendar_exercises wce
+             JOIN workout_calendar_logs wcl
+               ON wce.workout_calendar_log_id = wcl.id
+             WHERE wcl.user_id = ?
+               AND wcl.workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        await connection.query(
+            `DELETE FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+async function updateActive(userId, planId) {
+    const connection = await pool.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // 1. Mai dátum
+        const today = new Date();
+        const todayString = formatDate(today);
+
+        // 2. Megnézzük, hogy mára van-e completed edzés
+        const [todayRows] = await connection.query(
+            `SELECT status
+             FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date = ?
+             LIMIT 1`,
+            [userId, todayString]
+        );
+
+        let startDate = new Date(today);
+
+        if (todayRows.length && todayRows[0].status === 'completed') {
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const startDateString = formatDate(startDate);
+
+        // 3. Active plan frissítése
+        await connection.query(
+            `UPDATE users
+             SET active_plan = ?
+             WHERE id = ?`,
+            [planId, userId]
+        );
+
+        // 4. Az új terv napjainak lekérése
+        const [workoutDays] = await connection.query(
+            `SELECT id, day_number, name, isRestDay
+             FROM workout_days
+             WHERE plan_id = ?
+             ORDER BY day_number ASC`,
+            [planId]
+        );
+
+        // 5. Jövőbeli gyakorlatok törlése a kezdődátumtól
+        await connection.query(
+            `DELETE wce
+             FROM workout_calendar_exercises wce
+             JOIN workout_calendar_logs wcl
+               ON wce.workout_calendar_log_id = wcl.id
+             WHERE wcl.user_id = ?
+               AND wcl.workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        // 6. Jövőbeli logok törlése a kezdődátumtól
+        await connection.query(
+            `DELETE FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        // 7. Két hónapra előre generálás
+        const currentDate = new Date(startDate);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 2);
+
+        let dayIndex = 0;
+
+        while (currentDate < endDate) {
+            const workoutDay = workoutDays[dayIndex % workoutDays.length];
+            const workoutDate = formatDate(currentDate);
+            const status = workoutDay.isRestDay ? 'rest' : 'pending';
+
+            // napi log beszúrás
+            const [logResult] = await connection.query(
+                `INSERT INTO workout_calendar_logs
+                (user_id, workout_plan_id, workout_day_id, workout_date, status)
+                VALUES (?, ?, ?, ?, ?)`,
+                [userId, planId, workoutDay.id, workoutDate, status]
+            );
+
+            const calendarLogId = logResult.insertId;
+
+            // ha nem rest day, akkor a gyakorlatokat is másoljuk
+            if (!workoutDay.isRestDay) {
+                const [dayExercises] = await connection.query(
+                    `SELECT exercise_id, exercise_order
+                     FROM day_exercises
+                     WHERE day_id = ?
+                     ORDER BY exercise_order ASC`,
+                    [workoutDay.id]
+                );
+
+                for (const exercise of dayExercises) {
+                    await connection.query(
+                        `INSERT INTO workout_calendar_exercises
+                        (workout_calendar_log_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)`,
+                        [
+                            calendarLogId,
+                            exercise.exercise_id,
+                            exercise.exercise_order
+                        ]
+                    );
+                }
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+            dayIndex++;
+        }
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
 }
 // ----
 // token
@@ -491,5 +675,6 @@ module.exports = {
     find_token,
     update_password,
     set_used,
-    log_error
+    log_error,
+    updateActiveNull
 };
