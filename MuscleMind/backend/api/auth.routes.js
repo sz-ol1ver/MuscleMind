@@ -57,6 +57,9 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
             id: user.id,
             admin: user.admin
         }
+        // naptar frissites ha kevesebb mint 7 nap van hatra
+        await db.calendarUpToDate(user.id);
+
         await db.log_id(user.id,'login','Sikeres bejelentkezés', ip);
         response.status(200).json({
             message: 'Sikeres bejelentkezés!'

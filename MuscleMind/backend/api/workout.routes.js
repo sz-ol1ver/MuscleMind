@@ -287,7 +287,12 @@ router.patch('/plans/active', requireAuthApi, validateActive, async(request, res
     try {
         const userId = request.session.user.id;
         const plan = request.body.active;
-        await db.updateActive(userId, plan);
+
+        if(plan === null){
+            await db.updateActiveNull(userId);
+        }else{
+            await db.updateActive(userId, plan);
+        }
 
         return response.status(200).json({
             message: 'Aktív edzésterv frissítve.'
@@ -307,6 +312,11 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
         const planId = request.params.id;
         const userId = request.session.user.id;
         const ip = requestIp.getClientIp(request);
+
+        const activeP = await db.getActive(userId);
+        if(activeP == planId){
+            await db.updateActiveNull(userId);
+        }
 
         const deleted = await db.deletePlan(userId, planId);
     
