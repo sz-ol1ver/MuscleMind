@@ -60,12 +60,12 @@ async function validateRegistration(req, res, next) {
         }
 
         let exist =[];
-        const emailExist = await db.email_exist(email);
-        if(emailExist == 1){
-            exist.push(1);
-        }
         const usernameExist = await db.username_exist(userN);
         if(usernameExist == 1){
+            exist.push(1);
+        }
+        const emailExist = await db.email_exist(email);
+        if(emailExist == 1){
             exist.push(2);
         }
         if(exist.length >0){
