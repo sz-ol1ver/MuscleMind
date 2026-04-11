@@ -1,4 +1,4 @@
-import {getWorkout, postNewPlan, deleteWorkout, putPlan, patchPlan} from './api.js';
+import {getFetch, postNewPlan, deleteWorkout, putPlan, patchPlan} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
@@ -280,7 +280,7 @@ async function updatePlan(obj) {
 }
 async function loadExercises() {
     try {
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/exercises');
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
         exercisesList = data.message;
         renderExercises(exercisesList);
         for(let row of data.message){
@@ -327,7 +327,7 @@ function filterMuscleGroups(){
 }
 async function getActive() {
     try {
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/plans/active');
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/plans/active');
         activePlan = data.active;
         if(activePlan == null){
             selectedDivItems.innerHTML = '<p class="text-center w-100">Nincs kiválasztva edzésterv!</p>';
@@ -355,7 +355,7 @@ async function updateActive(id) {
 async function loadWorkouts() {
     try {
         const workoutDiv = document.getElementById('personal-items');
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plans');
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plans');
 
         workoutDiv.innerHTML = '';
 
@@ -521,7 +521,7 @@ function renderRecWorkouts(plans){
 }
 async function loadRecWorkouts() {
     try {
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plans');
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/default-plans');
 
         recommendedPlans = data.plans;
 
@@ -540,7 +540,7 @@ async function loadWorkoutDetail(id) {
         const detailDiv = document.getElementById(`workout-details-${id}`);
         detailDiv.innerHTML = '';
 
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
         const details = data.details.days;
 
         for (const day of details) {
@@ -617,7 +617,7 @@ async function loadRecWorkoutDetail(id) {
         const detailDiv = document.getElementById(`workout-details-${id}`);
         detailDiv.innerHTML = '';
 
-        const data = await getWorkout('http://127.0.0.1:3000/api/workout/default-plan/' + id);
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/default-plan/' + id);
         const details = data.details.days;
 
         const descDiv = document.createElement('div');
@@ -672,7 +672,7 @@ async function loadRecWorkoutDetail(id) {
     }
 }
 async function editWorkout(id) {
-    const data = await getWorkout('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+    const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
     planEditId = id;
     workoutPlan = data.details;
     originalWorkoutPlan = JSON.parse(JSON.stringify(data.details));

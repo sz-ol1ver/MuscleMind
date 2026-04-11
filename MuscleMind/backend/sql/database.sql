@@ -355,6 +355,29 @@ CREATE TABLE IF NOT EXISTS user_friendships (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP NULL DEFAULT NULL
 );
+-- ticket support
+CREATE TABLE IF NOT EXISTS support_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT NOT NULL,
+    email VARCHAR(150) NOT NULL,
+
+    category ENUM('contact', 'bug', 'idea') NOT NULL,
+    subject VARCHAR(150) NOT NULL,
+    message TEXT NOT NULL,
+
+    admin_reply TEXT DEFAULT NULL,
+
+    status ENUM('open', 'seen', 'closed', 'closed_no_reply') NOT NULL DEFAULT 'open',
+
+    related_request_id INT DEFAULT NULL,
+
+    replied_by_admin_id INT DEFAULT NULL,
+    replied_at TIMESTAMP NULL DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- store reset-password token
 CREATE TABLE reset_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -520,6 +543,20 @@ ADD CONSTRAINT fk_user_stats_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
     ON DELETE CASCADE;
+    
+ALTER TABLE support_requests
+    ADD CONSTRAINT fk_support_requests_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+    ADD CONSTRAINT fk_support_requests_related
+    FOREIGN KEY (related_request_id)
+    REFERENCES support_requests(id)
+    ON DELETE SET NULL,
+    ADD CONSTRAINT fk_support_requests_admin
+    FOREIGN KEY (replied_by_admin_id)
+    REFERENCES users(id)
+    ON DELETE SET NULL;
 
 ALTER TABLE reset_tokens
     ADD CONSTRAINT fk_password_reset_user

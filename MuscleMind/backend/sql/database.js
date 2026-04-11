@@ -407,15 +407,42 @@ async function token_expire_del() {
     const [rows] = await pool.execute(del);
     return rows;
 }
-
 // ----
-// ADMIN
+// TICKET
 // ----
-async function isAdminCheck(userId) {
-    const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+async function findTicketEmail(id) {
+    const sql = 'SELECT email FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].email;
+}
+async function findPreId(ticketId, userId) {
+    const sql = 'SELECT id FROM support_requests WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [ticketId, userId]);
+    return rows;
+}
+async function createTicket(userId, email, category, subject, message, preId) {
+    const insert = 'INSERT INTO support_requests(user_id, email, category, subject, message, related_request_id) VALUES (?,?,?,?,?,?)';
+    const [rows] = await pool.execute(insert, [userId, email, category, subject, message, preId]);
+    return rows.insertId;
+}
+async function limitTicketCreation(userId) {
+    const sql = 'SELECT COUNT(*) AS ticket_count FROM support_requests WHERE user_id = ? AND created_at >= NOW() - INTERVAL 1 HOUR;'
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows[0].ticket_count;
+}
+async function allUserTickets(userId) {
+    const sql = 'SELECT * FROM support_requests WHERE user_id = ? ORDER BY created_at DESC';
     const [rows] = await pool.execute(sql, [userId]);
     return rows;
 }
+// ----
+// ADMIN
+// ----
+/*async function isAdminCheck(userId) {
+    const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}*/
 
 
 // ----
@@ -440,8 +467,8 @@ async function log_email(email, action, desc, ip) {
 }
 //log server failure
 async function log_error(action, desc, ip) {
-    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
-    const [result] = await pool.execute(insert, [action, desc, ip]);
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,?,?)';
+    const [result] = await pool.execute(insert, [action, desc, 'error',ip]);
     return result.insertId;
 }
 
@@ -484,12 +511,17 @@ module.exports = {
     getDefaultWorkoutPlanDetails,
     getActive,
     updateActive,
-    isAdminCheck,
+    //isAdminCheck,
     save_token,
     delete_tokens,
     token_expire_del,
     find_token,
     update_password,
     set_used,
-    log_error
+    log_error,
+    findTicketEmail,
+    findPreId,
+    createTicket,
+    limitTicketCreation,
+    allUserTickets
 };

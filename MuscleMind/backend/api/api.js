@@ -6,6 +6,7 @@ const auth = require('./auth.routes.js');
 const qtn = require('./questionnaire.routes.js')
 const wOut = require('./workout.routes.js');
 const profile = require('./profile.routes.js');
+const supportTicket = require('./ticket.routes.js');
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -27,6 +28,7 @@ router.use('/auth', auth);
 router.use('/question', qtn);
 router.use('/workout', wOut);
 router.use('/profile', profile);
+router.use('/tickets', supportTicket);
 
 //?GET /api/testsql
 /*router.get('/testsql', async (request, response) => {
