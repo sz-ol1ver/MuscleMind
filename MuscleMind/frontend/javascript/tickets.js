@@ -1,15 +1,36 @@
 import { getFetch } from "./api.js";
 
-let container;
+let openT = [];
+let closedT = [];
+let containerOpen;
+let containerClosed;
 
 document.addEventListener('DOMContentLoaded', ()=>{
-    container = document.getElementById('list-tickets');
+    const refreshBtn = document.getElementById('reload-tickets');
+    containerOpen = document.getElementById('open-tickets');
+    containerClosed = document.getElementById('closed-tickets');
+
+    //? ticketek betoltese
     getTickets();
+
+    refreshBtn.addEventListener('click', ()=>{
+        getTickets(); //? ticketek ujboli betoltese oldal frissites nelkul
+    })
 });
 async function getTickets() {
     try {
+        openT.length = 0;
+        closedT.length = 0;
         const data = await getFetch('http://127.0.0.1:3000/api/tickets/my-tickets');
-        renderTickets(data.tickets, container);
+        for(let ticket of data.tickets){
+            if(ticket.status == 'open' || ticket.status == 'seen'){
+                openT.push(ticket)
+            }else{
+                closedT.push(ticket);
+            }
+        }
+        renderTickets(openT, containerOpen);
+        renderTickets(closedT, containerClosed);
     } catch (error) {
         console.error(error);
         setTimeout(() => {
@@ -17,7 +38,6 @@ async function getTickets() {
         }, 10000);
     }
 }
-
 function renderTickets(tickets, container) {
     // törlés
     container.innerHTML = '';
@@ -94,7 +114,7 @@ function renderTickets(tickets, container) {
         // alsó sor a headerben
         const createdDate = document.createElement('div');
         createdDate.className = 'ticket-created-date mt-2';
-        createdDate.textContent = `Létrehozva: ${ticket.created_at}`;
+        createdDate.textContent = `Létrehozva: ${ formatDate(ticket.created_at)}`;
 
         header.appendChild(headerTop);
         header.appendChild(createdDate);
@@ -138,13 +158,36 @@ function renderTickets(tickets, container) {
         datesWrap.className = 'ticket-dates';
 
         const createdInfo = document.createElement('div');
-        createdInfo.textContent = `Létrehozva: ${ticket.created_at}`;
+        createdInfo.textContent = `Létrehozva: ${ formatDate(ticket.created_at)}`;
 
         const updatedInfo = document.createElement('div');
-        updatedInfo.textContent = `Szerkesztve: ${ticket.updated_at}`;
+        updatedInfo.textContent = `Szerkesztve: ${ formatDate(ticket.updated_at)}`;
 
         datesWrap.appendChild(createdInfo);
         datesWrap.appendChild(updatedInfo);
+
+        // kategória badge
+        const categoryBadge = document.createElement('span');
+
+        switch (ticket.category) {
+            case 'contact': {
+                categoryBadge.className = 'badge ticket-category bg-primary';
+                categoryBadge.textContent = 'Kapcsolat';
+                break;
+            }
+            case 'bug': {
+                categoryBadge.className = 'badge ticket-category bg-danger';
+                categoryBadge.textContent = 'Hiba';
+                break;
+            }
+            case 'idea': {
+                categoryBadge.className = 'badge ticket-category bg-success';
+                categoryBadge.textContent = 'Ötlet';
+                break;
+            }
+        }
+
+        body.appendChild(categoryBadge);
 
         body.appendChild(userMessageTitle);
         body.appendChild(userMessageBox);

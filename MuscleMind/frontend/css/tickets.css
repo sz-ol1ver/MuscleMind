@@ -2,6 +2,9 @@
     rem = a <html> font-size-hoz viszonyított egység (általában 1rem = 16px) 
     reszponzivan valtozik a font-sizehoz kepest
 */
+body{
+    height: 100vh;
+}
 .ticket-card {
     min-height: auto;
     width: 100%;
@@ -13,7 +16,7 @@
 }
 
 .ticket-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
@@ -88,4 +91,17 @@
     gap: 0.35rem;
     font-size: 0.92rem;
     color: #b9aacd;
+}
+
+.ticket-category {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+#open-tickets, #closed-tickets{
+    height: 35vh;
+    overflow-y: auto;
 }
