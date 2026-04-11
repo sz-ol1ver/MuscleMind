@@ -222,3 +222,21 @@ export async function postLogout(url) {
         throw error;
     }
 }
+
+export async function postForm(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            body: value
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}

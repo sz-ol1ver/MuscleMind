@@ -410,20 +410,25 @@ async function token_expire_del() {
 // ----
 // TICKET
 // ----
-async function ticket_email(id) {
+async function findTicketEmail(id) {
     const sql = 'SELECT email FROM users WHERE id = ?';
     const [rows] = await pool.execute(sql, [id]);
     return rows[0].email;
+}
+async function findPreId(ticketId, userId) {
+    const sql = 'SELECT id FROM support_requests WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [ticketId, userId]);
+    return rows;
 }
 
 // ----
 // ADMIN
 // ----
-async function isAdminCheck(userId) {
+/*async function isAdminCheck(userId) {
     const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(sql, [userId]);
     return rows;
-}
+}*/
 
 
 // ----
@@ -492,7 +497,7 @@ module.exports = {
     getDefaultWorkoutPlanDetails,
     getActive,
     updateActive,
-    isAdminCheck,
+    //isAdminCheck,
     save_token,
     delete_tokens,
     token_expire_del,
@@ -500,5 +505,6 @@ module.exports = {
     update_password,
     set_used,
     log_error,
-    ticket_email
+    findTicketEmail,
+    findPreId
 };
