@@ -319,6 +319,21 @@ router.post('/new-password', loginMw.newPassword, async(request, response)=>{
     }
 })
 
+router.get('/is-admin', loginMw.requireAuthApi, async(request, response)=>{
+    try {
+        return response.status(200).json({
+            admin: request.session.user.admin
+        });
+    } catch (error) {
+        console.log(error.message)
+        const ip = requestIp.getClientIp(request);
+        await db.log_error('Server error - auth', error.message,ip);
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
+
 //! FUNCTIONS
 async function postEmail(value) {
     try {
