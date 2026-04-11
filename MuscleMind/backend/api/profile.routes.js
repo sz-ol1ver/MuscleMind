@@ -24,12 +24,16 @@ router.get('/', async (request, response) => {
             weight: weight,
         })
     } catch (error) {
-        const ip = requestIp.getClientIp(request)
-        await db.log_error('profile_read', error.message, ip)
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - profile', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
-            message: 'Hiba a profil adatok eleresenel',
-            error: error.message
-        })
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 
@@ -89,13 +93,16 @@ router.post('/update', validateProfileUpdate, async (request, response) => {
         })
 
     } catch (error) {
-        const ip = requestIp.getClientIp(request)
-        await db.log_error('profile_update', error.message, ip)
-        console.error("Profile update error:", error)
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - profile', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
-            message: 'Hiba a profil frissítése közben',
-            error: error.message
-        })
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 
@@ -106,12 +113,16 @@ router.get('/username', async (request, response) => {
             username: user.username
         })
     } catch (error) {
-        const ip = requestIp.getClientIp(request)
-        await db.log_error('username_read', error.message, ip)
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - profile', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
-            message: 'Sikertelen eleres',
-            error: error.message
-        })
+            message: 'Sikertelen eleres!'
+        });
     }
 })
 

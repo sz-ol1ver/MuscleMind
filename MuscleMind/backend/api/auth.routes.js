@@ -30,9 +30,13 @@ router.post('/registration',upload.none() , validateRegistration, async(request,
             message: 'Sikeres regisztráció'
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /registration', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -62,9 +66,13 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
             message: 'Sikeres bejelentkezés!'
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /login', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -93,9 +101,13 @@ router.get('/username', loginMw.requireAuthApi,async (request, response) => {
             username: user.username
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /username', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -232,9 +244,13 @@ router.post('/request-password', loginMw.requestPassword,async(request, response
             message: 'Ha létezik ilyen email cím, elküldtük a levelet.'
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /request-password', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -270,9 +286,13 @@ router.post('/check-token', async(request,response)=>{
             message: 'Érvényes token.'
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /check-token', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -310,9 +330,13 @@ router.post('/new-password', loginMw.newPassword, async(request, response)=>{
             message: 'Sikeres jelszó változtatás!'
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /new-password', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -325,9 +349,13 @@ router.get('/is-admin', loginMw.requireAuthApi, async(request, response)=>{
             admin: request.session.user.admin
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - auth', error.message,ip);
+        try {
+            await db.log_error('Server error - /is-admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
