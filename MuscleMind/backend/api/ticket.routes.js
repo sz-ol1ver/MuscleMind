@@ -15,10 +15,10 @@ router.get('/user-email', loginMw.requireAuthApi, async(request, response)=>{
             email: email
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
         try {
-            await db.log_error('Server error - ticket', error.message, ip);
+            await db.log_error('Server error - tickets', error.message, ip);
         } catch (error) {
             console.error('Logging failed:', error);
         }
@@ -49,10 +49,10 @@ router.post('/new-ticket',upload.none(),loginMw.requireAuthApi,ticketMw.validate
             message: 'Sikeres kapcsolatfelvétel!'
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
         try {
-            await db.log_error('Server error - ticket', error.message, ip);
+            await db.log_error('Server error - tickets', error.message, ip);
         } catch (error) {
             console.error('Logging failed:', error);
         }
@@ -70,10 +70,10 @@ router.get('/my-tickets', loginMw.requireAuthApi, async(request, response)=>{
             tickets
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
         try {
-            await db.log_error('Server error - ticket', error.message, ip);
+            await db.log_error('Server error - tickets', error.message, ip);
         } catch (error) {
             console.error('Logging failed:', error);
         }

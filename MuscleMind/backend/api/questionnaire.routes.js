@@ -22,9 +22,13 @@ router.post('/', registrationComplete, validateInput, async(request, response)=>
             message: 'Válaszok elmentve!'
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - questionnaire', error.message,ip);
+        try {
+            await db.log_error('Server error - questionnaire', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
