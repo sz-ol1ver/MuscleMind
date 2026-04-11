@@ -420,6 +420,11 @@ async function findPreId(ticketId, userId) {
     const [rows] = await pool.execute(sql, [ticketId, userId]);
     return rows;
 }
+async function createTicket(userId, email, category, subject, message, preId) {
+    const insert = 'INSERT INTO support_requests(user_id, email, category, subject, message, related_request_id) VALUES (?,?,?,?,?,?)';
+    const [rows] = await pool.execute(insert, [userId, email, category, subject, message, preId]);
+    return rows.insertId;
+}
 
 // ----
 // ADMIN
@@ -453,8 +458,8 @@ async function log_email(email, action, desc, ip) {
 }
 //log server failure
 async function log_error(action, desc, ip) {
-    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
-    const [result] = await pool.execute(insert, [action, desc, ip]);
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,?,?)';
+    const [result] = await pool.execute(insert, [action, desc, 'error',ip]);
     return result.insertId;
 }
 
@@ -506,5 +511,6 @@ module.exports = {
     set_used,
     log_error,
     findTicketEmail,
-    findPreId
+    findPreId,
+    createTicket
 };
