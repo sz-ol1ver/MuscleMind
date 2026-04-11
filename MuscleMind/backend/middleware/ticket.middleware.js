@@ -55,6 +55,11 @@ async function validateTicket(req,res,next) {
                 message: 'Hibás adatok!'
             });
         }
+        if (subject.trim().length > 50) {
+            return res.status(400).json({
+                message: 'A tárgy legfeljebb 50 karakter lehet!'
+            });
+        }
 
 
         next();

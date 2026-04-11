@@ -1,12 +1,15 @@
 import { getFetch } from "./api.js";
 
+let container;
+
 document.addEventListener('DOMContentLoaded', ()=>{
+    container = document.getElementById('list-tickets');
     getTickets();
 });
 async function getTickets() {
     try {
         const data = await getFetch('http://127.0.0.1:3000/api/tickets/my-tickets');
-        renderTickets(data.tickets)
+        renderTickets(data.tickets, container);
     } catch (error) {
         console.error(error);
         setTimeout(() => {
@@ -15,9 +18,7 @@ async function getTickets() {
     }
 }
 
-function renderTickets(tickets) {
-    const container = document.getElementById('list-tickets');
-
+function renderTickets(tickets, container) {
     // törlés
     container.innerHTML = '';
 
@@ -28,93 +29,136 @@ function renderTickets(tickets) {
         container.appendChild(empty);
         return;
     }
-
-    tickets.forEach(ticket => {
-
-        // 🔲 CARD
+    for (let ticket of tickets) {
         const card = document.createElement('div');
-        card.className = 'card mb-3 bg-dark text-white border';
+        card.className = 'card ticket-card mb-3 w-100';
 
-        // 🔹 HEADER (collapse trigger)
         const header = document.createElement('div');
-        header.className = 'card-header';
+        header.className = 'card-header ticket-card-header';
         header.style.cursor = 'pointer';
         header.setAttribute('data-bs-toggle', 'collapse');
         header.setAttribute('data-bs-target', `#ticket-${ticket.id}`);
+        header.setAttribute('aria-expanded', 'false');
+        header.setAttribute('aria-controls', `ticket-${ticket.id}`);
 
-        // header flex
-        const headerFlex = document.createElement('div');
-        headerFlex.className = 'd-flex justify-content-between align-items-center';
+        // felső sor
+        const headerTop = document.createElement('div');
+        headerTop.className = 'd-flex justify-content-between align-items-start gap-3 flex-wrap';
 
-        // bal oldal
-        const left = document.createElement('div');
+        const leftTop = document.createElement('div');
+        leftTop.className = 'd-flex align-items-center gap-2 flex-wrap ticket-title-wrap';
 
-        const title = document.createElement('div');
-        title.className = 'fw-bold';
-        title.textContent = ticket.subject;
+        const ticketId = document.createElement('span');
+        ticketId.className = 'ticket-id fw-bold';
+        ticketId.textContent = `#${ticket.id}`;
 
-        const meta = document.createElement('div');
-        meta.className = 'small text-secondary';
-        meta.textContent = `#${ticket.id} • ${ticket.category} • ${formatDate(ticket.created_at)}`;
+        const separator = document.createElement('span');
+        separator.className = 'ticket-separator';
+        separator.textContent = '|';
 
-        left.appendChild(title);
-        left.appendChild(meta);
+        const subject = document.createElement('span');
+        subject.className = 'ticket-subject fw-bold';
+        subject.textContent = ticket.subject;
 
-        // jobb oldal badge
         const badge = document.createElement('span');
-        badge.className = `badge ${getStatusBadgeClass(ticket.status)}`;
-        badge.textContent = ticket.status;
+        switch (ticket.status) {
+            case 'open': {
+                badge.className = 'badge bg-danger';
+                badge.innerHTML = 'Folyamatban';
+                break;
+            }
+            case 'seen': {
+                badge.className = 'badge bg-warning text-dark';
+                badge.innerHTML = 'Megtekintve';
+                break;
+            }
+            case 'closed': {
+                badge.className = 'badge bg-success';
+                badge.innerHTML = 'Lezárva';
+                break;
+            }
+            case 'closed_no_reply': {
+                badge.className = 'badge bg-info text-dark';
+                badge.innerHTML = 'Lezárva (válasz nélkül)';
+                break;
+            }
+        }
 
-        headerFlex.appendChild(left);
-        headerFlex.appendChild(badge);
-        header.appendChild(headerFlex);
+        leftTop.appendChild(ticketId);
+        leftTop.appendChild(separator);
+        leftTop.appendChild(subject);
 
-        // 🔽 COLLAPSE
+        headerTop.appendChild(leftTop);
+        headerTop.appendChild(badge);
+
+        // alsó sor a headerben
+        const createdDate = document.createElement('div');
+        createdDate.className = 'ticket-created-date mt-2';
+        createdDate.textContent = `Létrehozva: ${ticket.created_at}`;
+
+        header.appendChild(headerTop);
+        header.appendChild(createdDate);
+
         const collapse = document.createElement('div');
         collapse.className = 'collapse';
         collapse.id = `ticket-${ticket.id}`;
 
         const body = document.createElement('div');
-        body.className = 'card-body';
+        body.className = 'card-body ticket-card-body';
 
-        // message
-        const message = document.createElement('p');
-        message.innerHTML = `<strong>Üzenet:</strong> ${ticket.message}`;
+        // user üzenet rész
+        const userMessageTitle = document.createElement('h6');
+        userMessageTitle.className = 'ticket-section-title';
+        userMessageTitle.textContent = 'Üzenet';
 
-        body.appendChild(message);
+        const userMessageBox = document.createElement('div');
+        userMessageBox.className = 'ticket-message-box';
+        userMessageBox.textContent = ticket.message;
 
-        // admin reply (ha van)
-        if (ticket.admin_reply) {
-            const reply = document.createElement('p');
-            reply.innerHTML = `<strong>Admin válasz:</strong> ${ticket.admin_reply}`;
-            body.appendChild(reply);
+        // admin üzenet rész
+        const adminMessageTitle = document.createElement('h6');
+        adminMessageTitle.className = 'ticket-section-title mt-4';
+        adminMessageTitle.textContent = 'Admin üzenet';
+
+        const adminMessageBox = document.createElement('div');
+        adminMessageBox.className = 'ticket-message-box';
+
+        if (ticket.admin_reply && ticket.admin_reply.trim()) {
+            adminMessageBox.textContent = ticket.admin_reply;
+        } else {
+            adminMessageBox.textContent = 'Erre a ticketre még nem érkezett admin válasz.';
+            adminMessageBox.classList.add('ticket-empty-message');
         }
 
-        // dátumok
-        const dates = document.createElement('div');
-        dates.className = 'small text-secondary';
-        dates.innerHTML = `
-            Created: ${formatDate(ticket.created_at)}<br>
-            Updated: ${formatDate(ticket.updated_at)}
-        `;
+        // dátum elválasztás
+        const hr = document.createElement('hr');
+        hr.className = 'ticket-divider';
 
-        body.appendChild(dates);
+        const datesWrap = document.createElement('div');
+        datesWrap.className = 'ticket-dates';
+
+        const createdInfo = document.createElement('div');
+        createdInfo.textContent = `Létrehozva: ${ticket.created_at}`;
+
+        const updatedInfo = document.createElement('div');
+        updatedInfo.textContent = `Szerkesztve: ${ticket.updated_at}`;
+
+        datesWrap.appendChild(createdInfo);
+        datesWrap.appendChild(updatedInfo);
+
+        body.appendChild(userMessageTitle);
+        body.appendChild(userMessageBox);
+        body.appendChild(adminMessageTitle);
+        body.appendChild(adminMessageBox);
+        body.appendChild(hr);
+        body.appendChild(datesWrap);
 
         collapse.appendChild(body);
-
-        // összerakás
         card.appendChild(header);
         card.appendChild(collapse);
 
         container.appendChild(card);
-    });
-}
-function getStatusBadgeClass(status) {
-    if (status === 'open') return 'bg-warning text-dark';
-    if (status === 'seen') return 'bg-primary';
-    if (status === 'closed') return 'bg-success';
-    if (status === 'closed_no_reply') return 'bg-secondary';
-    return 'bg-light text-dark';
+    }
 }
 function formatDate(dateString) {
     const date = new Date(dateString);
