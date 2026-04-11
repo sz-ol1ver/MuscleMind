@@ -2,6 +2,15 @@ const db = require('../sql/database.js');
 
 async function validateTicket(req,res,next) {
     try {
+        const id = req.session.user.id;
+        const ticketCreationCount = await db.limitTicketCreation(id);
+        if(ticketCreationCount >= 5){
+            return res.status(429).json({
+                message: 'Túl sok ticketet hoztál létre rövid időn belül!'
+            })
+        }
+
+
         const allowedKeys = ['email', 'category', 'subject', 'preId', 'message'];
         const bodyKeys = Object.keys(req.body);
 
@@ -15,7 +24,6 @@ async function validateTicket(req,res,next) {
         }
 
         const {email, category, subject, preId, message} = req.body;
-        const id = req.session.user.id;
         const dbUserEmail = await db.findTicketEmail(id);
 
         if(email && email !== dbUserEmail){

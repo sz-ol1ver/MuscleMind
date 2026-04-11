@@ -425,7 +425,16 @@ async function createTicket(userId, email, category, subject, message, preId) {
     const [rows] = await pool.execute(insert, [userId, email, category, subject, message, preId]);
     return rows.insertId;
 }
-
+async function limitTicketCreation(userId) {
+    const sql = 'SELECT COUNT(*) AS ticket_count FROM support_requests WHERE user_id = ? AND created_at >= NOW() - INTERVAL 1 HOUR;'
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows[0].ticket_count;
+}
+async function allUserTickets(userId) {
+    const sql = 'SELECT * FROM support_requests WHERE user_id = ? ORDER BY created_at DESC';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
 // ----
 // ADMIN
 // ----
@@ -512,5 +521,7 @@ module.exports = {
     log_error,
     findTicketEmail,
     findPreId,
-    createTicket
+    createTicket,
+    limitTicketCreation,
+    allUserTickets
 };

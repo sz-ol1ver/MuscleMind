@@ -20,7 +20,7 @@ router.get('/user-email', loginMw.requireAuthApi, async(request, response)=>{
         try {
             await db.log_error('Server error - ticket', error.message, ip);
         } catch (error) {
-            console.error('Logging failed:', logError);
+            console.error('Logging failed:', error);
         }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
@@ -47,6 +47,27 @@ router.post('/new-ticket',upload.none(),loginMw.requireAuthApi,ticketMw.validate
 
         return response.status(201).json({
             message: 'Sikeres kapcsolatfelvétel!'
+        });
+    } catch (error) {
+        console.log(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - ticket', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
+router.get('/my-tickets', loginMw.requireAuthApi, async(request, response)=>{
+    try {
+        const id = request.session.user.id;
+        const tickets = await db.allUserTickets(id);
+
+        return response.status(200).json({
+            tickets
         });
     } catch (error) {
         console.log(error.message)
