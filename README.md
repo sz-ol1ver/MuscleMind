@@ -97,3 +97,4 @@ musclemind/
 └─ README.md                           # fő readme
 
 brevo api - https://api.brevo.com/v3/smtp/email
+chart - https://www.chartjs.org/docs/latest/getting-started/
