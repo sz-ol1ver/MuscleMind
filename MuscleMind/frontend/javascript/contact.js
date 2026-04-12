@@ -37,8 +37,7 @@ async function postTicket(formObj) {
         fb.style.color = 'red';
         fb.innerHTML = error.message;
         setTimeout(() => {
-            window.location.reload();
+            fb.innerHTML = '';
         }, 5000);
-        
     }
 }

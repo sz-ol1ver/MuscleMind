@@ -5,6 +5,22 @@
 body{
     height: 100vh;
 }
+#new-ticket{
+    background: linear-gradient(135deg, #390a4e, #9c2cb2);
+    color: white;
+    border: 1px solid rgb(198, 142, 255);
+}
+#reload-tickets{
+    background: linear-gradient(135deg, #9c2cb2, #390a4e);
+    color: white;
+    border: 1px solid rgb(198, 142, 255);
+}
+#reload-tickets:hover{
+    transform: translateY(-5px);
+}
+#new-ticket:hover{
+    transform: translateY(-5px);
+}
 .ticket-card {
     min-height: auto;
     width: 100%;
@@ -101,7 +117,9 @@ body{
     display: inline-block;
 }
 
-#open-tickets, #closed-tickets{
+#open-tickets, 
+#closed-tickets {
     height: 35vh;
     overflow-y: auto;
+    padding: 6px 8px 8px 8px;
 }
