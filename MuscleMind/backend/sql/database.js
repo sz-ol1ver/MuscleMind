@@ -686,6 +686,66 @@ async function calendarUpToDate(userId) {
         connection.release();
     }
 }
+async function getUserCalendar(userId) {
+    const sqlLogs =
+        `SELECT
+            wcl.id AS log_id,
+            wcl.workout_date,
+            wcl.status,
+            wd.name AS day_name,
+            wd.isRestDay
+        FROM workout_calendar_logs wcl
+        INNER JOIN workout_days wd ON wcl.workout_day_id = wd.id
+        WHERE wcl.user_id = ?
+        ORDER BY wcl.workout_date ASC`;
+    const [logs] = await pool.execute(sqlLogs, [userId]);
+
+    const sqlExercises = 
+        `SELECT
+            wcl.id AS log_id,
+            e.name AS exercise_name,
+            wce.exercise_order
+        FROM workout_calendar_logs wcl
+        INNER JOIN workout_calendar_exercises wce ON wcl.id = wce.workout_calendar_log_id
+        INNER JOIN exercises e ON wce.exercise_id = e.id
+        WHERE wcl.user_id = ?
+        ORDER BY wce.exercise_order ASC`;
+    const [exercises] = await pool.execute(sqlExercises, [userId]);
+
+    // logok es gyakorlatok osszekapcsolasa a pihenonapok miatt
+    const resultRows = [];
+
+    for (let i = 0; i < logs.length; i++) {
+        let hasExercise = false;
+
+        for (let j = 0; j < exercises.length; j++) {
+            if (logs[i].log_id === exercises[j].log_id) {
+                resultRows.push({
+                    workout_date: logs[i].workout_date,
+                    status: logs[i].status,
+                    day_name: logs[i].day_name,
+                    isRestDay: logs[i].isRestDay,
+                    exercise_name: exercises[j].exercise_name,
+                    exercise_order: exercises[j].exercise_order
+                });
+                hasExercise = true;
+            }
+        }
+
+        if (hasExercise === false) {
+            resultRows.push({
+                workout_date: logs[i].workout_date,
+                status: logs[i].status,
+                day_name: logs[i].day_name,
+                isRestDay: logs[i].isRestDay,
+                exercise_name: null,
+                exercise_order: null
+            });
+        }
+    }
+
+    return resultRows;
+}
 //format date for update active
 function formatDate(date) {
     const year = date.getFullYear();
@@ -821,5 +881,6 @@ module.exports = {
     set_used,
     log_error,
     updateActiveNull,
-    calendarUpToDate
+    calendarUpToDate,
+    getUserCalendar
 };

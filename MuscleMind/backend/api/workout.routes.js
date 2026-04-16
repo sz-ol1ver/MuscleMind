@@ -340,4 +340,59 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
     }
 })
 
+router.get('/calendar', requireAuthApi, async (request, response) => {
+    try {
+        const userId = request.session.user.id
+        // 2 honapra elore generalas
+        await db.calendarUpToDate(userId)
+        const rows = await db.getUserCalendar(userId)
+
+        // napok csoportositasa
+        const calendarMap = {}
+        for (const row of rows) {
+            // datum konvertalasa
+            const workoutDate = new Date(row.workout_date)
+            const yearStr = workoutDate.getFullYear()
+            let monthStr = workoutDate.getMonth() + 1
+            let dayStr = workoutDate.getDate()
+
+            if (monthStr < 10) {
+                monthStr = '0' + monthStr
+            }
+            if (dayStr < 10) {
+                dayStr = '0' + dayStr
+            }
+
+            const dateStr = yearStr + '-' + monthStr + '-' + dayStr
+
+            if (!calendarMap[dateStr]) {
+                calendarMap[dateStr] = {
+                    date: dateStr,
+                    dayName: row.day_name,
+                    isRestDay: row.isRestDay,
+                    status: row.status,
+                    exercises: []
+                }
+            }
+
+            if (row.exercise_name) {
+                calendarMap[dateStr].exercises.push({
+                    name: row.exercise_name,
+                    order: row.exercise_order
+                })
+            }
+        }
+
+        return response.status(200).json({
+            calendar: Object.values(calendarMap)
+        })
+    } catch (error) {
+        console.log(error.message)
+        const ip = requestIp.getClientIp(request)
+        await db.log_error('Server error - workout calendar', error.message, ip)
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        })
+    }
+});
 module.exports = router;
