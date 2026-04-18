@@ -444,6 +444,51 @@ async function allUserTickets(userId) {
     return rows;
 }*/
 
+async function todayRegistration() {
+    const regCount = `
+        SELECT COUNT(*) AS regCount 
+        FROM logs 
+        WHERE action = 'registration'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(regCount);
+    return rows[0].regCount;
+}
+async function totalUserCount() {
+    const select = 'SELECT COUNT(*) AS userCount FROM users WHERE admin = 0';
+    const [rows] = await pool.execute(select);
+    return rows[0].userCount;
+}
+async function todayLoginCount() {
+    const select = `
+        SELECT COUNT(*) AS loginCount 
+        FROM logs 
+        WHERE action = 'login'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].loginCount;
+}
+async function todayTicketCount(params) {
+    const select = `
+        SELECT COUNT(*) AS ticketCount 
+        FROM logs 
+        WHERE action = 'ticket_created'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].ticketCount;
+}
+async function todayErrorCount() {
+    const select = `
+        SELECT COUNT(*) AS errorCount 
+        FROM logs 
+        WHERE type = 'error'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].errorCount;
+};
 
 // ----
 // LOG
@@ -523,5 +568,10 @@ module.exports = {
     findPreId,
     createTicket,
     limitTicketCreation,
-    allUserTickets
+    allUserTickets,
+    todayRegistration,
+    totalUserCount,
+    todayLoginCount,
+    todayTicketCount,
+    todayErrorCount
 };
