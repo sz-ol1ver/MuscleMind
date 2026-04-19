@@ -7,12 +7,24 @@ let containerClosed;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
+    const allSeen = document.getElementById('ticket-seen');
     containerOpen = document.getElementById('open-tickets');
     containerClosed = document.getElementById('closed-tickets');
+
     loadDash();
     loadTickets();
+
     dashRefresh.addEventListener('click', ()=>{
         loadDash();
+    })
+    allSeen.addEventListener('click', async()=>{
+        try {
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/all-tickets/seen');
+            console.log(data.message);
+            loadTickets();
+        } catch (error) {
+            console.error(error.message);
+        }
     })
 });
 
@@ -75,10 +87,6 @@ function renderTickets(tickets, container) {
     for (let ticket of tickets) {
         const card = document.createElement('div');
         card.className = 'card ticket-card mb-3 w-100';
-
-        card.addEventListener('click', ()=>{
-            
-        })
 
         const header = document.createElement('div');
         header.className = 'card-header ticket-card-header';
@@ -229,6 +237,15 @@ function renderTickets(tickets, container) {
         closeBtn.className = 'btn btn-outline-success my-auto';
         closeBtn.innerHTML = 'Lezárás';
         closeBtn.id = 'closeBtn';
+        closeBtn.addEventListener('click', async()=>{
+            try {
+                const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-close/'+ticket.id);
+                alert(data.message);
+                loadTickets();
+            } catch (error) {
+                console.error(error.message);
+            }
+        })
 
         const datesWrap = document.createElement('div');
         datesWrap.className = 'ticket-dates';
@@ -246,15 +263,58 @@ function renderTickets(tickets, container) {
         if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
             cardFooter.appendChild(closeBtn);
 
+            let skipFocusoutSave = false;
             adminMessageBox.addEventListener('click', () => {
                 adminMessageBox.contentEditable = true;
                 adminMessageBox.focus();
             });
-            adminMessageBox.addEventListener('focusout', ()=>{
-
-            })
-            adminMessageBox.addEventListener('keydown', (e)=>{
-
+            adminMessageBox.addEventListener('focusout', async()=>{
+                if(skipFocusoutSave){
+                    skipFocusoutSave = false;
+                    return;
+                }
+                try {
+                    const patchObj = {
+                        admin_reply: adminMessageBox.innerHTML.trim()
+                    }
+                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
+                    alert(data.message);
+                    adminMessageBox.blur();
+                } catch (error) {
+                    console.error(error.message);
+                }
+            });
+            adminMessageBox.addEventListener('keydown', async(e)=>{
+                if(e.key == 'Enter'){
+                    e.preventDefault();
+                    skipFocusoutSave = true;
+                    try {
+                        const patchObj = {
+                            admin_reply: adminMessageBox.innerHTML.trim()
+                        }
+                        const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
+                        alert(data.message);
+                        adminMessageBox.blur();
+                        
+                    } catch (error) {
+                        console.error(error.message);
+                    }
+                }
+            });
+            //? status = 'seen'
+            card.addEventListener('click', async()=>{
+                if(ticket.status == 'seen'){
+                    return;
+                }
+                try {
+                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-seen/'+ticket.id);
+                    console.log(data.message);
+                    badge.className = 'badge bg-warning text-dark';
+                    badge.innerHTML = 'Megtekintve';
+                    ticket.status = 'seen';
+                } catch (error) {
+                    console.error(error.message);
+                }
             })
         }
 

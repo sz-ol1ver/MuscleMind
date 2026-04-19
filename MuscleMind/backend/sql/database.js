@@ -531,7 +531,7 @@ async function ticketClose(id, status) {
     return rows.affectedRows;
 }
 async function ticketAnswer(id, adminMessage, adminId) {
-    const update = 'UPDATE support_requests SET admin_reply = ?, replide_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
+    const update = 'UPDATE support_requests SET admin_reply = ?, replied_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
     const [rows] = await pool.execute(update, [adminMessage,adminId,id]);
     return rows.affectedRows;
 }

@@ -152,7 +152,7 @@ router.patch('/ticket-answer/:id', loginMw.requireAuthApi, requireAdmin, async(r
         const adminId = request.session.user.id;
         const ansTicket = await db.ticketAnswer(ticketId, admin_reply, adminId);
         return response.status(200).json({
-            message: 'Sikeres válasz mentés & státusz frissítés!',
+            message: 'Válasz sikeresen mentve!',
             affectedRows: ansTicket
         });
     } catch (error) {
