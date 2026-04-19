@@ -1,4 +1,4 @@
-import {getFetch, postNewPlan, deleteWorkout, putPlan, patchPlan} from './api.js';
+import {getFetch, postNewPlan, deleteWorkout, putPlan, patchFetch} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
@@ -346,7 +346,7 @@ async function updateActive(id) {
         const obj = {
             active: id
         }
-        const data = await patchPlan('http://127.0.0.1:3000/api/workout/plans/active', obj);
+        const data = await patchFetch('http://127.0.0.1:3000/api/workout/plans/active', obj);
         await getActive();
     } catch (error) {
         console.error(error.message);

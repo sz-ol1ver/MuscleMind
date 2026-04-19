@@ -110,7 +110,13 @@ router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(re
                 message: 'Ticket nem található!'
             });
         }
-        const closeTicket = await db.ticketClose(ticketId);
+        const admin_rep = await db.ticketAdminReplyCheck(ticketId);
+        let closeTicket;
+        if(!admin_rep){
+            closeTicket = await db.ticketClose(ticketId, 'closed_no_reply');
+        }else{
+            closeTicket = await db.ticketClose(ticketId, 'closed');
+        }
         return response.status(200).json({
             message: 'Sikeres státusz frissítés!',
             affectedRows: closeTicket
@@ -128,7 +134,7 @@ router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
-router.patch('/ticket-close-answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.patch('/ticket-answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
         const valid = await db.validateTicketId(ticketId);

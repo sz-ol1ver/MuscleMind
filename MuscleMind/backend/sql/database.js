@@ -525,15 +525,20 @@ async function ticketsSeen() {
     const [rows] = await pool.execute(update);
     return rows.affectedRows;
 }
-async function ticketClose(id) {
-    const update = 'UPDATE support_requests SET status = "closed_no_reply" WHERE id = ?';
-    const [rows] = await pool.execute(update, [id]);
+async function ticketClose(id, status) {
+    const update = 'UPDATE support_requests SET status = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [status, id]);
     return rows.affectedRows;
 }
 async function ticketAnswer(id, adminMessage, adminId) {
-    const update = 'UPDATE support_requests SET status = "closed", admin_reply = ?, replide_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
+    const update = 'UPDATE support_requests SET admin_reply = ?, replide_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
     const [rows] = await pool.execute(update, [adminMessage,adminId,id]);
     return rows.affectedRows;
+}
+async function ticketAdminReplyCheck(id) {
+    const select = 'SELECT admin_reply FROM support_requests WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0].admin_reply;
 }
 // ----
 // LOG
@@ -625,5 +630,6 @@ module.exports = {
     ticketSeen,
     ticketsSeen,
     ticketClose,
-    ticketAnswer
+    ticketAnswer,
+    ticketAdminReplyCheck
 };

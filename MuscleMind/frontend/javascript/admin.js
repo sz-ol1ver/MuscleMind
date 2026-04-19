@@ -1,4 +1,4 @@
-import {getFetch} from './api.js';
+import {getFetch, patchFetch} from './api.js';
 
 let openT = [];
 let closedT = [];
@@ -226,20 +226,9 @@ function renderTickets(tickets, container) {
         cardFooter.className = 'd-flex flex-row justify-content-between';
 
         const closeBtn = document.createElement('button');
-        closeBtn.className = 'btn btn-success my-auto';
+        closeBtn.className = 'btn btn-outline-success my-auto';
         closeBtn.innerHTML = 'Lezárás';
         closeBtn.id = 'closeBtn';
-
-        const ansBtn = document.createElement('button');
-        ansBtn.className = 'btn btn-dark my-auto ms-2';
-        ansBtn.innerHTML = 'Válasz';
-        ansBtn.id = 'ansBtn';
-
-        const buttonWrap = document.createElement('div');
-        buttonWrap.className = 'd-flex flex-row';
-
-        buttonWrap.appendChild(closeBtn);
-        buttonWrap.appendChild(ansBtn);
 
         const datesWrap = document.createElement('div');
         datesWrap.className = 'ticket-dates';
@@ -255,7 +244,18 @@ function renderTickets(tickets, container) {
 
         cardFooter.appendChild(datesWrap);
         if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
-            cardFooter.appendChild(buttonWrap);
+            cardFooter.appendChild(closeBtn);
+
+            adminMessageBox.addEventListener('click', () => {
+                adminMessageBox.contentEditable = true;
+                adminMessageBox.focus();
+            });
+            adminMessageBox.addEventListener('focusout', ()=>{
+
+            })
+            adminMessageBox.addEventListener('keydown', (e)=>{
+
+            })
         }
 
         body.appendChild(email);

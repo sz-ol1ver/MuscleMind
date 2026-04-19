@@ -168,7 +168,7 @@ export async function putPlan(url, value) {
         throw error;
     }
 }
-export async function patchPlan(url, value) {
+export async function patchFetch(url, value) {
     try {
         const data = await fetch(url, {
             method: 'PATCH',
