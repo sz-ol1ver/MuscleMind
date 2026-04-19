@@ -216,8 +216,14 @@ function renderTickets(tickets, container) {
         const hr = document.createElement('hr');
         hr.className = 'ticket-divider';
 
-        const hr2 = document.createElement('hr');
-        hr2.className = 'ticket-divider';
+        const hr3 = document.createElement('hr');
+        hr3.className = 'ticket-divider';
+
+        const email = document.createElement('h5');
+        email.innerHTML = ticket.email;
+
+        const cardFooter = document.createElement('div');
+        cardFooter.className = 'd-flex flex-row justify-content-between';
 
         const closeBtn = document.createElement('button');
         closeBtn.className = 'btn btn-success my-auto';
@@ -228,6 +234,12 @@ function renderTickets(tickets, container) {
         ansBtn.className = 'btn btn-dark my-auto ms-2';
         ansBtn.innerHTML = 'Válasz';
         ansBtn.id = 'ansBtn';
+
+        const buttonWrap = document.createElement('div');
+        buttonWrap.className = 'd-flex flex-row';
+
+        buttonWrap.appendChild(closeBtn);
+        buttonWrap.appendChild(ansBtn);
 
         const datesWrap = document.createElement('div');
         datesWrap.className = 'ticket-dates';
@@ -241,17 +253,20 @@ function renderTickets(tickets, container) {
         datesWrap.appendChild(createdInfo);
         datesWrap.appendChild(updatedInfo);
 
+        cardFooter.appendChild(datesWrap);
+        if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
+            cardFooter.appendChild(buttonWrap);
+        }
+
+        body.appendChild(email);
+        body.appendChild(hr3);
         body.appendChild(userMessageTitle);
         body.appendChild(userMessageBox);
         body.appendChild(adminMessageTitle);
         body.appendChild(adminMessageBox);
         body.appendChild(hr);
-        if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
-            body.appendChild(closeBtn);
-            body.appendChild(ansBtn);
-            body.appendChild(hr2);
-        }
-        body.appendChild(datesWrap);
+        body.appendChild(cardFooter);
+
         collapse.appendChild(body);
         card.appendChild(header);
         card.appendChild(collapse);

@@ -80,7 +80,7 @@ router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(req
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const seenTickets = await db.ticketsSeen();
@@ -100,7 +100,7 @@ router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(re
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
@@ -127,7 +127,7 @@ router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(re
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 router.patch('/ticket-close-answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
@@ -161,6 +161,6 @@ router.patch('/ticket-close-answer/:id', loginMw.requireAuthApi, requireAdmin, a
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 
 module.exports = router;
