@@ -1,7 +1,11 @@
 import {getFetch} from './api.js';
 
 document.addEventListener('DOMContentLoaded', ()=>{
+    const dashRefresh = document.getElementById('refresh-dash');
     loadDash();
+    dashRefresh.addEventListener('click', ()=>{
+        loadDash();
+    })
 });
 
 async function loadDash() {
