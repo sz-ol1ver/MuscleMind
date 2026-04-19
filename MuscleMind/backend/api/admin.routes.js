@@ -33,6 +33,26 @@ router.get('/dashboard', loginMw.requireAuthApi, requireAdmin, async(request,res
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
+
+router.get('/all-tickets', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const tickets = await db.allTickets();
+        return response.status(200).json({
+            tickets
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 
 module.exports = router;

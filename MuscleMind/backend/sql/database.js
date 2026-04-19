@@ -435,6 +435,11 @@ async function allUserTickets(userId) {
     const [rows] = await pool.execute(sql, [userId]);
     return rows;
 }
+async function allTickets() {
+    const sql = 'SELECT * FROM support_requests ORDER BY created_at DESC';
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
 // ----
 // ADMIN
 // ----
@@ -584,5 +589,6 @@ module.exports = {
     todayLoginCount,
     todayTicketCount,
     todayErrorCount,
-    todayWorkoutCount
+    todayWorkoutCount,
+    allTickets
 };
