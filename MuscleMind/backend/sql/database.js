@@ -431,7 +431,7 @@ async function limitTicketCreation(userId) {
     return rows[0].ticket_count;
 }
 async function allUserTickets(userId) {
-    const sql = 'SELECT * FROM support_requests WHERE user_id = ? ORDER BY created_at DESC';
+    const sql = 'SELECT support_requests.*, users.username AS admin_username FROM support_requests LEFT JOIN users ON(support_requests.replied_by_admin_id = users.id) WHERE user_id = ? ORDER BY created_at DESC';
     const [rows] = await pool.execute(sql, [userId]);
     return rows;
 }
@@ -531,7 +531,7 @@ async function ticketClose(id, status) {
     return rows.affectedRows;
 }
 async function ticketAnswer(id, adminMessage, adminId) {
-    const update = 'UPDATE support_requests SET admin_reply = ?, replied_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
+    const update = 'UPDATE support_requests SET admin_reply = ?, replied_by_admin_id = ?, replied_at = CURRENT_TIMESTAMP WHERE id = ?';
     const [rows] = await pool.execute(update, [adminMessage,adminId,id]);
     return rows.affectedRows;
 }
