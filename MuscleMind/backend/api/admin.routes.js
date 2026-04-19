@@ -54,5 +54,113 @@ router.get('/all-tickets', loginMw.requireAuthApi, requireAdmin, async(request, 
         });
     }
 });
+router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const ticketId = request.params.id;
+        const valid = await db.validateTicketId(ticketId);
+        if(valid != 1){
+            return response.status(404).json({
+                message: 'Ticket nem található!'
+            });
+        }
+        const seenTicket = await db.ticketSeen(ticketId);
+        return response.status(200).json({
+            message: 'Sikeres státusz frissítés!',
+            affectedRows: seenTicket
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
+router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const seenTickets = await db.ticketsSeen();
+        return response.status(200).json({
+            message: 'Sikeres státusz frissítés!',
+            affectedRows: seenTickets
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
+router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const ticketId = request.params.id;
+        const valid = await db.validateTicketId(ticketId);
+        if(valid != 1){
+            return response.status(404).json({
+                message: 'Ticket nem található!'
+            });
+        }
+        const closeTicket = await db.ticketClose(ticketId);
+        return response.status(200).json({
+            message: 'Sikeres státusz frissítés!',
+            affectedRows: closeTicket
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
+router.patch('/ticket-close-answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const ticketId = request.params.id;
+        const valid = await db.validateTicketId(ticketId);
+        if(valid != 1){
+            return response.status(404).json({
+                message: 'Ticket nem található!'
+            });
+        }
+        const {admin_reply} = request.body;
+        if (!admin_reply || admin_reply.trim() === '') {
+            return response.status(400).json({
+                message: 'Admin válasz üres!'
+            });
+        }
+        const adminId = request.session.user.id;
+        const ansTicket = await db.ticketAnswer(ticketId, admin_reply, adminId);
+        return response.status(200).json({
+            message: 'Sikeres válasz mentés & státusz frissítés!',
+            affectedRows: ansTicket
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
 
 module.exports = router;

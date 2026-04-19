@@ -139,15 +139,30 @@ function renderTickets(tickets, container) {
             }
         }
 
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'btn btn-success mt-3';
-        closeBtn.innerHTML = 'Lezárás';
-        closeBtn.id = 'closeBtn';
+        // kategória badge
+        const categoryBadge = document.createElement('span');
+        switch (ticket.category) {
+            case 'contact': {
+                categoryBadge.className = 'badge bg-primary';
+                categoryBadge.textContent = 'Kapcsolat';
+                break;
+            }
+            case 'bug': {
+                categoryBadge.className = 'badge bg-danger';
+                categoryBadge.textContent = 'Hiba';
+                break;
+            }
+            case 'idea': {
+                categoryBadge.className = 'badge bg-success';
+                categoryBadge.textContent = 'Ötlet';
+                break;
+            }
+        }
 
-        const ansBtn = document.createElement('button');
-        ansBtn.className = 'btn btn-dark mt-3 ms-2';
-        ansBtn.innerHTML = 'Válasz';
-        ansBtn.id = 'ansBtn';
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = 'd-flex gap-3'
+        badgeDiv.appendChild(categoryBadge);
+        badgeDiv.appendChild(badge);
 
         leftTop.appendChild(ticketId);
         leftTop.appendChild(separator);
@@ -156,7 +171,7 @@ function renderTickets(tickets, container) {
         leftTop.appendChild(userId);
 
         headerTop.appendChild(leftTop);
-        headerTop.appendChild(badge);
+        headerTop.appendChild(badgeDiv);
 
         // alsó sor a headerben
         const createdDate = document.createElement('div');
@@ -193,7 +208,7 @@ function renderTickets(tickets, container) {
         if (ticket.admin_reply && ticket.admin_reply.trim()) {
             adminMessageBox.textContent = ticket.admin_reply;
         } else {
-            adminMessageBox.textContent = 'Erre a ticketre még nem válaszoltál.';
+            adminMessageBox.textContent = 'Erre a ticketre nem válaszoltál.';
             adminMessageBox.classList.add('ticket-empty-message');
         }
 
@@ -203,6 +218,16 @@ function renderTickets(tickets, container) {
 
         const hr2 = document.createElement('hr');
         hr2.className = 'ticket-divider';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'btn btn-success my-auto';
+        closeBtn.innerHTML = 'Lezárás';
+        closeBtn.id = 'closeBtn';
+
+        const ansBtn = document.createElement('button');
+        ansBtn.className = 'btn btn-dark my-auto ms-2';
+        ansBtn.innerHTML = 'Válasz';
+        ansBtn.id = 'ansBtn';
 
         const datesWrap = document.createElement('div');
         datesWrap.className = 'ticket-dates';
@@ -216,39 +241,17 @@ function renderTickets(tickets, container) {
         datesWrap.appendChild(createdInfo);
         datesWrap.appendChild(updatedInfo);
 
-        // kategória badge
-        const categoryBadge = document.createElement('span');
-
-        switch (ticket.category) {
-            case 'contact': {
-                categoryBadge.className = 'badge ticket-category bg-primary';
-                categoryBadge.textContent = 'Kapcsolat';
-                break;
-            }
-            case 'bug': {
-                categoryBadge.className = 'badge ticket-category bg-danger';
-                categoryBadge.textContent = 'Hiba';
-                break;
-            }
-            case 'idea': {
-                categoryBadge.className = 'badge ticket-category bg-success';
-                categoryBadge.textContent = 'Ötlet';
-                break;
-            }
-        }
-
-        body.appendChild(categoryBadge);
-
         body.appendChild(userMessageTitle);
         body.appendChild(userMessageBox);
         body.appendChild(adminMessageTitle);
         body.appendChild(adminMessageBox);
         body.appendChild(hr);
-        body.appendChild(closeBtn);
-        body.appendChild(ansBtn);
-        body.appendChild(hr2);
+        if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
+            body.appendChild(closeBtn);
+            body.appendChild(ansBtn);
+            body.appendChild(hr2);
+        }
         body.appendChild(datesWrap);
-
         collapse.appendChild(body);
         card.appendChild(header);
         card.appendChild(collapse);

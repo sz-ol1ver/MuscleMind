@@ -440,6 +440,7 @@ async function allTickets() {
     const [rows] = await pool.execute(sql);
     return rows;
 }
+
 // ----
 // ADMIN
 // ----
@@ -467,9 +468,10 @@ async function totalUserCount() {
 async function todayLoginCount() {
     const select = `
         SELECT COUNT(DISTINCT user_id) AS loginCount 
-        FROM logs 
-        WHERE action = 'login' OR action = 'registration'
-        AND created_at >= CURDATE()
+        FROM logs INNER JOIN users ON(logs.user_id = users.id)
+        WHERE (action = 'login' OR action = 'registration')
+        AND users.admin = 0
+        AND logs.created_at >= CURDATE()
     `;
     const [rows] = await pool.execute(select);
     return rows[0].loginCount;
@@ -504,7 +506,35 @@ async function todayWorkoutCount() {
     const [rows] = await pool.execute(select);
     return rows[0].workoutCount;
 }
-
+async function validateTicketId(id) {
+    const select = 'SELECT id FROM support_requests WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    if(rows.length >= 1){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+async function ticketSeen(id) {
+    const update = 'UPDATE support_requests SET status = "seen" WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function ticketsSeen() {
+    const update = 'UPDATE support_requests SET status = "seen" WHERE status = "open"';
+    const [rows] = await pool.execute(update);
+    return rows.affectedRows;
+}
+async function ticketClose(id) {
+    const update = 'UPDATE support_requests SET status = "closed_no_reply" WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function ticketAnswer(id, adminMessage, adminId) {
+    const update = 'UPDATE support_requests SET status = "closed", admin_reply = ?, replide_by_admin_id = ?, replied_at = CURDATE() WHERE id = ?';
+    const [rows] = await pool.execute(update, [adminMessage,adminId,id]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -590,5 +620,10 @@ module.exports = {
     todayTicketCount,
     todayErrorCount,
     todayWorkoutCount,
-    allTickets
+    allTickets,
+    validateTicketId,
+    ticketSeen,
+    ticketsSeen,
+    ticketClose,
+    ticketAnswer
 };
