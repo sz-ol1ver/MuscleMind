@@ -436,7 +436,7 @@ async function allUserTickets(userId) {
     return rows;
 }
 async function allTickets() {
-    const sql = 'SELECT * FROM support_requests ORDER BY created_at DESC';
+    const sql = 'SELECT support_requests.*, users.username AS admin_username FROM support_requests LEFT JOIN users ON(support_requests.replied_by_admin_id = users.id)ORDER BY created_at DESC';
     const [rows] = await pool.execute(sql);
     return rows;
 }

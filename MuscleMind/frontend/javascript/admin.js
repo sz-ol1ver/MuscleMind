@@ -59,7 +59,7 @@ async function loadTickets() {
     try {
         openT.length = 0;
         closedT.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/tickets/my-tickets');
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/all-tickets');
         for(let ticket of data.tickets){
             if(ticket.status == 'open' || ticket.status == 'seen'){
                 openT.push(ticket)
@@ -224,6 +224,12 @@ function renderTickets(tickets, container) {
         const hr = document.createElement('hr');
         hr.className = 'ticket-divider';
 
+        const hr2 = document.createElement('hr');
+        hr2.className = 'ticket-divider';
+
+        const adminUsername = document.createElement('p');
+        adminUsername.innerHTML = 'Válaszadó: '+ticket.admin_username + ' (#'+ticket.replied_by_admin_id+')';
+
         const hr3 = document.createElement('hr');
         hr3.className = 'ticket-divider';
 
@@ -256,8 +262,14 @@ function renderTickets(tickets, container) {
         const updatedInfo = document.createElement('div');
         updatedInfo.textContent = `Szerkesztve: ${ formatDate(ticket.updated_at)}`;
 
+        const repliedInfo = document.createElement('div');
+        repliedInfo.textContent = `Válasz: ${ formatDate(ticket.replied_at)}`;
+
         datesWrap.appendChild(createdInfo);
         datesWrap.appendChild(updatedInfo);
+        if(ticket.status == 'closed'){
+            datesWrap.appendChild(repliedInfo);
+        }
 
         cardFooter.appendChild(datesWrap);
         if(ticket.status != 'closed' && ticket.status != 'closed_no_reply'){
@@ -325,6 +337,10 @@ function renderTickets(tickets, container) {
         body.appendChild(adminMessageTitle);
         body.appendChild(adminMessageBox);
         body.appendChild(hr);
+        if(ticket.status == 'closed'){
+            body.appendChild(adminUsername);
+            body.appendChild(hr2);
+        }
         body.appendChild(cardFooter);
 
         collapse.appendChild(body);
