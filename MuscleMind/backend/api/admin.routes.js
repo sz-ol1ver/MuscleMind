@@ -64,6 +64,9 @@ router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(req
             });
         }
         const seenTicket = await db.ticketSeen(ticketId);
+        const id = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(id, 'admin - ticket status', 'new ticket status: seen, ticket id: '+ticketId, ip);
         return response.status(200).json({
             message: 'Sikeres státusz frissítés!',
             affectedRows: seenTicket
@@ -84,6 +87,9 @@ router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(req
 router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const seenTickets = await db.ticketsSeen();
+        const id = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(id, 'admin - ticket status', 'new ticket status: seen, all ticket', ip);
         return response.status(200).json({
             message: 'Sikeres státusz frissítés!',
             affectedRows: seenTickets
@@ -112,11 +118,16 @@ router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(re
         }
         const admin_rep = await db.ticketAdminReplyCheck(ticketId);
         let closeTicket;
+        const id = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
         if(!admin_rep){
             closeTicket = await db.ticketClose(ticketId, 'closed_no_reply');
+            await db.log_id(id, 'admin - ticket status', 'new ticket status: closed_no_reply, ticket id: '+ticketId, ip);
         }else{
             closeTicket = await db.ticketClose(ticketId, 'closed');
+            await db.log_id(id, 'admin - ticket status', 'new ticket status: closed, ticket id: '+ticketId, ip);
         }
+        
         return response.status(200).json({
             message: 'Sikeres státusz frissítés!',
             affectedRows: closeTicket
@@ -151,6 +162,8 @@ router.patch('/ticket-answer/:id', loginMw.requireAuthApi, requireAdmin, async(r
         }
         const adminId = request.session.user.id;
         const ansTicket = await db.ticketAnswer(ticketId, admin_reply, adminId);
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(adminId, 'admin - ticket admin reply', 'ticket id: '+ticketId+', admin id: '+adminId, ip);
         return response.status(200).json({
             message: 'Válasz sikeresen mentve!',
             affectedRows: ansTicket

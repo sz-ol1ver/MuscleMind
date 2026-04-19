@@ -287,10 +287,11 @@ function renderTickets(tickets, container) {
                 }
                 try {
                     const patchObj = {
-                        admin_reply: adminMessageBox.innerHTML.trim()
+                        admin_reply: adminMessageBox.innerText.trim()
                     }
                     const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
                     alert(data.message);
+                    adminMessageBox.contentEditable = false;
                     adminMessageBox.blur();
                 } catch (error) {
                     console.error(error.message);
@@ -302,12 +303,12 @@ function renderTickets(tickets, container) {
                     skipFocusoutSave = true;
                     try {
                         const patchObj = {
-                            admin_reply: adminMessageBox.innerHTML.trim()
+                            admin_reply: adminMessageBox.innerText.trim()
                         }
                         const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
                         alert(data.message);
+                        adminMessageBox.contentEditable = false;
                         adminMessageBox.blur();
-                        
                     } catch (error) {
                         console.error(error.message);
                     }
