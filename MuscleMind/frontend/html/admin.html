@@ -15,6 +15,7 @@
     <!-- Admin CSS -->
     <link rel="stylesheet" href="../css/admin.css">
     <!-- Admin js-->
+     <script type="module" src="../javascript/admin.js"></script>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#adminSidebar" data-bs-offset="140" tabindex="0">
     <!-- Mobile topbar -->
@@ -78,11 +79,10 @@
             <div class="topbar-card mb-4">
                 <h2 class="h4 mb-3">Quick Actions</h2>
                 <div class="quick-links">
-                    <a href="#dashboard">Dashboard</a>
-                    <a href="#support-requests">Support Requests</a>
-                    <a href="#users">Users</a>
-                    <a href="#foods">Foods</a>
-                    <a href="#workouts">Workouts</a>
+                    <a id="refresh-datas">Összes frissít</a>
+                    <a id="refresh-dash">Dashboard frissít</a>
+                    <a id="user-admin">Admin jogok</a>
+                    <a id="ticket-seen">Ticketek olvasva</a>
                 </div>
             </div>
         </div>
@@ -90,7 +90,50 @@
         <section id="dashboard" class="admin-section">
             <div class="section-card">
                 <div class="section-title">Dashboard</div>
-                <div class="placeholder-box">Dashboard tartalom helye</div>
+
+                <div class="row g-3" id="dashboard-cards">
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Felhasználók</div>
+                            <div id="stat-allUser" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Új felhasználók</div>
+                            <div id="stat-todayReg" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai aktívak</div>
+                            <div id="stat-todayLog" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai ticketek</div>
+                            <div id="stat-todayTicket" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai edzéstervek</div>
+                            <div id="stat-todayWorkout" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai hibák</div>
+                            <div id="stat-todayError" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 

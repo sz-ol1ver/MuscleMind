@@ -66,7 +66,7 @@ body {
 /* Topbar */
 .topbar {
     position: sticky;
-    top: 80px;
+    top: 40px;
     z-index: 1000;
     backdrop-filter: blur(3px);
     padding: 1.5rem 0 1.5rem 0;
@@ -105,7 +105,7 @@ body {
 
 /* Section */
 .admin-section {
-    scroll-margin-top: 260px;
+    scroll-margin-top: 300px;
     min-height: auto;
     margin-bottom: 2rem;
 }
@@ -206,4 +206,30 @@ body {
         margin-left: 0;
         padding-top: 1rem;
     }
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    min-height: 160px;
+    height: 100%;
+
+    background: linear-gradient(145deg, #1a1026, #161537);
+    border: 1px solid #3a2457;
+    border-radius: 16px;
+    color: #f3ecff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.dashboard-card-title {
+    min-height: 48px;
+    color: #d7c3ff;
+    font-size: 1.3rem;
+    padding-top: 10%;
+}
+
+.dashboard-card-value {
+    margin-top: auto;
+    font-size: 2rem !important;
+    font-weight: 700;
+    color: #ffffff;
 }

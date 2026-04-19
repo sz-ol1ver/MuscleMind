@@ -446,7 +446,7 @@ async function allUserTickets(userId) {
 
 async function todayRegistration() {
     const regCount = `
-        SELECT COUNT(*) AS regCount 
+        SELECT COUNT(DISTINCT user_id) AS regCount 
         FROM logs 
         WHERE action = 'registration'
         AND created_at >= CURDATE()
@@ -461,9 +461,9 @@ async function totalUserCount() {
 }
 async function todayLoginCount() {
     const select = `
-        SELECT COUNT(*) AS loginCount 
+        SELECT COUNT(DISTINCT user_id) AS loginCount 
         FROM logs 
-        WHERE action = 'login'
+        WHERE action = 'login' OR action = 'registration'
         AND created_at >= CURDATE()
     `;
     const [rows] = await pool.execute(select);
@@ -489,6 +489,16 @@ async function todayErrorCount() {
     const [rows] = await pool.execute(select);
     return rows[0].errorCount;
 };
+async function todayWorkoutCount() {
+    const select = `
+        SELECT COUNT(*) AS workoutCount 
+        FROM workout_plans 
+        WHERE is_public = 0
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].workoutCount;
+}
 
 // ----
 // LOG
@@ -573,5 +583,6 @@ module.exports = {
     totalUserCount,
     todayLoginCount,
     todayTicketCount,
-    todayErrorCount
+    todayErrorCount,
+    todayWorkoutCount
 };
