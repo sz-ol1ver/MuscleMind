@@ -540,6 +540,76 @@ async function ticketAdminReplyCheck(id) {
     const [rows] = await pool.execute(select, [id]);
     return rows[0].admin_reply;
 }
+async function allUserBasicData() {
+    const select = 'SELECT id, username, email, active FROM users ORDER BY created_at DESC';
+    const [rows] = await pool.execute(select);
+    return rows;
+}
+async function userAllData(id) {
+    const select = `
+        SELECT 
+            u.id,
+            u.first_name,
+            u.last_name,
+            u.username,
+            u.email,
+            u.registered,
+            u.admin,
+            u.active,
+            u.created_at AS profil_date,
+
+            up.age,
+            up.height,
+            up.gender,
+            up.goal,
+            up.experience_level,
+            up.training_days,
+            up.training_location,
+            up.diet_type,
+            up.meals_per_day,
+            up.created_at AS registration_date,
+
+            uw.weight,
+            uw.created_at AS weight_date
+
+        FROM users u
+
+        LEFT JOIN user_profiles up 
+            ON up.id = u.id
+
+        LEFT JOIN user_weights uw 
+            ON uw.id = (
+                SELECT id 
+                FROM user_weights 
+                WHERE user_id = u.id 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            )
+        WHERE u.id = ?;
+    `
+    const [rows] = await pool.execute(select, [id]);
+    return rows;
+}
+async function userAdmin(id) {
+    const update = 'UPDATE users SET admin = NOT admin WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function userBlock(id) {
+    const update = 'UPDATE users SET active = 0 WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function userUnblock(id) {
+    const update = 'UPDATE users SET active = 1 WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function userDelete(id) {
+    const deleteU = 'DELETE FROM users WHERE id = ?';
+    const [rows] = await pool.execute(deleteU, [id]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -631,5 +701,11 @@ module.exports = {
     ticketsSeen,
     ticketClose,
     ticketAnswer,
-    ticketAdminReplyCheck
+    ticketAdminReplyCheck,
+    allUserBasicData,
+    userAllData,
+    userAdmin,
+    userBlock,
+    userUnblock,
+    userDelete
 };
