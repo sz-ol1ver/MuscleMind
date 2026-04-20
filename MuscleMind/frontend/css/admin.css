@@ -234,7 +234,7 @@ body {
     color: #ffffff;
 }
 
-.ticket-card {
+.admin-card {
     min-height: auto;
     width: 100%;
     background: linear-gradient(135deg, #140a1f 0%, #0b0b0f 100%);
@@ -244,19 +244,19 @@ body {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ticket-card:hover {
+.admin-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
-.ticket-card-header {
+.admin-card-header {
     background: linear-gradient(135deg, #241133 0%, #111116 100%);
     border-bottom: 1px solid #3a1f52;
     color: #f8f4ff;
     padding: 1rem 1.25rem;
 }
 
-.ticket-card-body {
+.admin-card-body {
     background: transparent;
     color: #ece6f7;
     padding: 1.25rem;

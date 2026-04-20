@@ -86,10 +86,10 @@ function renderTickets(tickets, container) {
     }
     for (let ticket of tickets) {
         const card = document.createElement('div');
-        card.className = 'card ticket-card mb-3 w-100';
+        card.className = 'card admin-card mb-3 w-100';
 
         const header = document.createElement('div');
-        header.className = 'card-header ticket-card-header';
+        header.className = 'card-header admin-card-header';
         header.style.cursor = 'pointer';
         header.setAttribute('data-bs-toggle', 'collapse');
         header.setAttribute('data-bs-target', `#ticket-${ticket.id}`);
@@ -194,7 +194,7 @@ function renderTickets(tickets, container) {
         collapse.id = `ticket-${ticket.id}`;
 
         const body = document.createElement('div');
-        body.className = 'card-body ticket-card-body';
+        body.className = 'card-body admin-card-body';
 
         // user üzenet rész
         const userMessageTitle = document.createElement('h6');
