@@ -368,6 +368,7 @@ router.get('/calendar', requireAuthApi, async (request, response) => {
             if (!calendarMap[dateStr]) {
                 calendarMap[dateStr] = {
                     date: dateStr,
+                    log_id: row.log_id,
                     dayName: row.day_name,
                     isRestDay: row.isRestDay,
                     status: row.status,
@@ -377,6 +378,7 @@ router.get('/calendar', requireAuthApi, async (request, response) => {
 
             if (row.exercise_name) {
                 calendarMap[dateStr].exercises.push({
+                    calendar_exercise_id: row.calendar_exercise_id,
                     name: row.exercise_name,
                     order: row.exercise_order
                 })
@@ -395,4 +397,44 @@ router.get('/calendar', requireAuthApi, async (request, response) => {
         })
     }
 });
+
+router.get('/calendar/sets/:exerciseId', requireAuthApi, async (request, response) => {
+    try {
+        const exerciseId = request.params.exerciseId
+        const sets = await db.getCalendarSets(exerciseId)
+        return response.status(200).json({ sets })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen lekérés!' })
+    }
+})
+
+router.post('/calendar/sets', requireAuthApi, async (request, response) => {
+    try {
+        const { calendarExerciseId, sets } = request.body
+        if (!calendarExerciseId || !sets) {
+            return response.status(400).json({ message: 'Hiányzó adatok!' })
+        }
+        await db.saveCalendarSets(calendarExerciseId, sets)
+        return response.status(200).json({ message: 'Sikeres mentés!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen mentés!' })
+    }
+})
+
+router.patch('/calendar/finish/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.updateWorkoutCalendarLogStatus(userId, logId, 'completed')
+        
+        return response.status(200).json({ message: 'Edzés lezárva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen lezárás!' })
+    }
+})
+
 module.exports = router;

@@ -1,4 +1,4 @@
-import { getWorkout } from './api.js'
+import { getWorkout, postRequest, patchPlan } from './api.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
     let calendarDataMap = {} // naptar adatok letarolasa
@@ -200,11 +200,258 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const nameSpan = document.createElement('span')
                     nameSpan.textContent = ex.name
 
-                    li.appendChild(badgeSpan)
-                    li.appendChild(nameSpan)
+                    const spacer = document.createElement('div')
+                    spacer.classList.add('flex-grow-1')
+
+                    const toggleBtn = document.createElement('button')
+                    toggleBtn.classList.add('btn', 'btn-sm', 'btn-outline-light')
+                    toggleBtn.textContent = 'Részletek'
+
+                    const topWrapper = document.createElement('div')
+                    topWrapper.classList.add('d-flex', 'align-items-center', 'gap-2', 'w-100')
+                    topWrapper.appendChild(badgeSpan)
+                    topWrapper.appendChild(nameSpan)
+                    topWrapper.appendChild(spacer)
+                    topWrapper.appendChild(toggleBtn)
+
+                    const detailsDiv = document.createElement('div')
+                    detailsDiv.classList.add('w-100', 'mt-3', 'd-none')
+                    detailsDiv.style.backgroundColor = '#2c3034'
+                    detailsDiv.style.padding = '10px'
+                    detailsDiv.style.borderRadius = '5px'
+
+                    const setsContainer = document.createElement('div')
+                    setsContainer.classList.add('d-flex', 'flex-column', 'gap-2')
+
+                    const bottomControls = document.createElement('div')
+                    bottomControls.classList.add('d-flex', 'align-items-center', 'justify-content-between', 'mt-2')
+
+                    const addSetBtn = document.createElement('button')
+                    addSetBtn.classList.add('btn', 'btn-sm', 'btn-success')
+                    addSetBtn.textContent = '+ Sorozat hozzáadása'
+
+                    bottomControls.appendChild(addSetBtn)
+
+                    detailsDiv.appendChild(setsContainer)
+                    detailsDiv.appendChild(bottomControls)
+
+                    li.classList.add('flex-column', 'align-items-start')
+                    li.appendChild(topWrapper)
+                    li.appendChild(detailsDiv)
+
+                    let isLoaded = false
+                    let setCounter = 1
+
+                    // ha mar lezart az edzes, letiltunk mindent
+                    const isCompleted = currentDayPlan.status === 'completed'
+
+                    if (isCompleted) {
+                        addSetBtn.classList.add('d-none')
+                    }
+
+                    const saveSetsForExercise = async () => {
+                        if (!ex.calendar_exercise_id) {
+                            alert('Nem lehet menteni, hiányzik a gyakorlat azonosítója.')
+                            return
+                        }
+                        const rows = setsContainer.querySelectorAll('.set-row')
+                        const setsData = []
+                        for (let i = 0; i < rows.length; i++) {
+                            let row = rows[i]
+                            const checkbox = row.querySelector('.row-save-checkbox')
+                            if (checkbox && checkbox.checked) {
+                                const repVal = row.querySelectorAll('input[type="number"]')[0].value
+                                const weightVal = row.querySelectorAll('input[type="number"]')[1].value
+                                
+                                let parsedRep = 0
+                                if (repVal) {
+                                    parsedRep = parseInt(repVal)
+                                }
+
+                                let parsedWeight = 0
+                                if (weightVal) {
+                                    parsedWeight = parseFloat(weightVal)
+                                }
+
+                                setsData.push({
+                                    set_number: parseInt(row.dataset.setNum),
+                                    reps_done: parsedRep,
+                                    weight_done: parsedWeight
+                                })
+                            }
+                        }
+
+                        try {
+                            const data = await postRequest('/api/workout/calendar/sets', {
+                                calendarExerciseId: ex.calendar_exercise_id,
+                                sets: setsData
+                            })
+                        } catch (error) {
+                            console.error(error)
+                            alert(error.message || 'Sikertelen mentés!')
+                        }
+                    }
+
+                    const createSetRow = (reps = '', weight = '', setNum = setCounter, isSaved = false) => {
+                        const row = document.createElement('div')
+                        row.classList.add('d-flex', 'gap-2', 'align-items-center', 'set-row')
+                        row.dataset.setNum = setNum
+
+                        const rowCheckbox = document.createElement('input')
+                        rowCheckbox.type = 'checkbox'
+                        rowCheckbox.classList.add('form-check-input', 'row-save-checkbox', 'mt-0')
+                        if (isSaved) {
+                            rowCheckbox.checked = true
+                        }
+
+                        const labelSpan = document.createElement('span')
+                        labelSpan.textContent = setNum + '.'
+
+                        const repInput = document.createElement('input')
+                        repInput.type = 'number'
+                        repInput.classList.add('form-control', 'form-control-sm')
+                        repInput.placeholder = 'Ismétlés'
+                        repInput.value = reps
+
+                        const weightInput = document.createElement('input')
+                        weightInput.type = 'number'
+                        weightInput.classList.add('form-control', 'form-control-sm')
+                        weightInput.placeholder = 'Súly (kg)'
+                        weightInput.value = weight
+
+                        const delBtn = document.createElement('button')
+                        delBtn.classList.add('btn', 'btn-sm', 'btn-danger')
+                        delBtn.textContent = 'X'
+                        
+                        if (isCompleted) {
+                            repInput.disabled = true
+                            weightInput.disabled = true
+                            rowCheckbox.disabled = true
+                            delBtn.classList.add('d-none')
+                        }
+
+                        rowCheckbox.addEventListener('change', () => {
+                            saveSetsForExercise()
+                        })
+
+                        delBtn.addEventListener('click', () => {
+                            row.remove()
+                            // ujraindexeles
+                            const rows = setsContainer.querySelectorAll('.set-row')
+                            setCounter = 1
+                            for (let i = 0; i < rows.length; i++) {
+                                let r = rows[i]
+                                r.dataset.setNum = setCounter
+                                r.querySelector('span').textContent = setCounter + '.'
+                                setCounter++
+                            }
+                            
+                            if (!isCompleted) {
+                                saveSetsForExercise()
+                            }
+                        })
+                        
+                        repInput.addEventListener('input', () => {
+                            if (rowCheckbox.checked && !isCompleted) {
+                                rowCheckbox.checked = false
+                                saveSetsForExercise()
+                            }
+                        })
+                        weightInput.addEventListener('input', () => {
+                            if (rowCheckbox.checked && !isCompleted) {
+                                rowCheckbox.checked = false
+                                saveSetsForExercise()
+                            }
+                        })
+
+                        row.appendChild(rowCheckbox)
+                        row.appendChild(labelSpan)
+                        row.appendChild(repInput)
+                        row.appendChild(weightInput)
+                        row.appendChild(delBtn)
+
+                        setsContainer.appendChild(row)
+                        setCounter++
+                    }
+
+                    toggleBtn.addEventListener('click', async () => {
+                        if (detailsDiv.classList.contains('d-none')) {
+                            detailsDiv.classList.remove('d-none')
+                            toggleBtn.textContent = 'Összecsukás'
+                            
+                            if (!isLoaded && ex.calendar_exercise_id) {
+                                try {
+                                    const res = await getWorkout(`/api/workout/calendar/sets/${ex.calendar_exercise_id}`)
+                                    if (res.sets && res.sets.length > 0) {
+                                        for (let i = 0; i < res.sets.length; i++) {
+                                            const s = res.sets[i]
+                                            createSetRow(s.reps_done, s.weight_done, s.set_number, true)
+                                        }
+                                    } else {
+                                        if (!isCompleted) {
+                                            createSetRow()
+                                        }
+                                    }
+                                } catch (e) {
+                                    console.error(e)
+                                    if (!isCompleted) {
+                                        createSetRow()
+                                    }
+                                }
+                                isLoaded = true
+                            } else if (!isLoaded) {
+                                if (!isCompleted) {
+                                    createSetRow()
+                                }
+                                isLoaded = true
+                            }
+                        } else {
+                            detailsDiv.classList.add('d-none')
+                            toggleBtn.textContent = 'Részletek'
+                        }
+                    })
+
+                    addSetBtn.addEventListener('click', () => {
+                        createSetRow()
+                    })
 
                     workoutList.appendChild(li)
                 }
+
+                // edzes befejezese ha meg pending
+                if (currentDayPlan.status === 'pending') {
+                    const finishDiv = document.createElement('div')
+                    finishDiv.classList.add('d-flex', 'justify-content-end', 'mt-3')
+
+                    const finishBtn = document.createElement('button')
+                    finishBtn.classList.add('btn', 'btn-info', 'w-100', 'fw-bold')
+                    finishBtn.textContent = 'Edzés befejezése és lezárása'
+
+                    finishBtn.addEventListener('click', async () => {
+                        if(!currentDayPlan.log_id) {
+                            alert('Érvénytelen edzésnap!')
+                            return
+                        }
+
+                        if(confirm('Biztosan le akarod zárni az edzést? Utána nem tudsz módosítani az eredményeken!')){
+                            try {
+                                const data = await patchPlan(`/api/workout/calendar/finish/${currentDayPlan.log_id}`, {})
+                                alert('Edzés sikeresen lezárva!')
+                                dayDetailsModal.hide()
+                                
+                                currentDayPlan.status = 'completed'
+                                location.reload() 
+                            } catch (err) {
+                                console.error(err)
+                                alert(err.message || 'Sikertelen lezárás!')
+                            }
+                        }
+                    })
+
+                    finishDiv.appendChild(finishBtn)
+                    workoutList.appendChild(finishDiv)
+                }
+
             } else {
                 const li = document.createElement('li')
                 li.classList.add('list-group-item', 'bg-dark', 'text-white', 'border-secondary')

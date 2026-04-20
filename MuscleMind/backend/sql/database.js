@@ -703,6 +703,7 @@ async function getUserCalendar(userId) {
     const sqlExercises = 
         `SELECT
             wcl.id AS log_id,
+            wce.id AS calendar_exercise_id,
             e.name AS exercise_name,
             wce.exercise_order
         FROM workout_calendar_logs wcl
@@ -721,10 +722,12 @@ async function getUserCalendar(userId) {
         for (let j = 0; j < exercises.length; j++) {
             if (logs[i].log_id === exercises[j].log_id) {
                 resultRows.push({
+                    log_id: logs[i].log_id,
                     workout_date: logs[i].workout_date,
                     status: logs[i].status,
                     day_name: logs[i].day_name,
                     isRestDay: logs[i].isRestDay,
+                    calendar_exercise_id: exercises[j].calendar_exercise_id,
                     exercise_name: exercises[j].exercise_name,
                     exercise_order: exercises[j].exercise_order
                 });
@@ -734,10 +737,12 @@ async function getUserCalendar(userId) {
 
         if (hasExercise === false) {
             resultRows.push({
+                log_id: logs[i].log_id,
                 workout_date: logs[i].workout_date,
                 status: logs[i].status,
                 day_name: logs[i].day_name,
                 isRestDay: logs[i].isRestDay,
+                calendar_exercise_id: null,
                 exercise_name: null,
                 exercise_order: null
             });
@@ -746,6 +751,47 @@ async function getUserCalendar(userId) {
 
     return resultRows;
 }
+
+async function getCalendarSets(calendarExerciseId) {
+    const sql = `SELECT id, set_number, reps_done, weight_done FROM workout_calendar_sets WHERE workout_calendar_exercise_id = ? ORDER BY set_number ASC`;
+    const [rows] = await pool.execute(sql, [calendarExerciseId]);
+    return rows;
+}
+
+async function saveCalendarSets(calendarExerciseId, sets) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Előző settek törlése, hogy egyszerűbb legyen az updatelés
+        await connection.execute(
+            `DELETE FROM workout_calendar_sets WHERE workout_calendar_exercise_id = ?`,
+            [calendarExerciseId]
+        );
+
+        for (const set of sets) {
+            await connection.execute(
+                `INSERT INTO workout_calendar_sets (workout_calendar_exercise_id, set_number, reps_done, weight_done) VALUES (?, ?, ?, ?)`,
+                [calendarExerciseId, set.set_number, set.reps_done, set.weight_done]
+            );
+        }
+
+        await connection.commit();
+        return true;
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+async function updateWorkoutCalendarLogStatus(userId, logId, status) {
+    const sql = `UPDATE workout_calendar_logs SET status = ? WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [status, logId, userId]);
+    return result;
+}
+
 //format date for update active
 function formatDate(date) {
     const year = date.getFullYear();
@@ -882,5 +928,8 @@ module.exports = {
     log_error,
     updateActiveNull,
     calendarUpToDate,
-    getUserCalendar
+    getUserCalendar,
+    getCalendarSets,
+    saveCalendarSets,
+    updateWorkoutCalendarLogStatus
 };
