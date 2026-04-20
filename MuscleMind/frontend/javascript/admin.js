@@ -278,6 +278,7 @@ function renderTickets(tickets, container) {
             let skipFocusoutSave = false;
             adminMessageBox.addEventListener('click', () => {
                 adminMessageBox.contentEditable = true;
+                adminMessageBox.innerText = '';
                 adminMessageBox.focus();
             });
             adminMessageBox.addEventListener('focusout', async()=>{
@@ -288,6 +289,9 @@ function renderTickets(tickets, container) {
                 try {
                     const patchObj = {
                         admin_reply: adminMessageBox.innerText.trim()
+                    }
+                    if(!patchObj.admin_reply){
+                        return;
                     }
                     const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
                     alert(data.message);
@@ -304,6 +308,9 @@ function renderTickets(tickets, container) {
                     try {
                         const patchObj = {
                             admin_reply: adminMessageBox.innerText.trim()
+                        }
+                        if(!patchObj.admin_reply){
+                            return;
                         }
                         const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
                         alert(data.message);
