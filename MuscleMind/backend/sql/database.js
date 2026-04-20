@@ -711,7 +711,6 @@ module.exports = {
     userAllData,
     userAdmin,
     userBlock,
-    userUnblock,
     userDelete,
     userChangeEmail,
     userChangeUsername

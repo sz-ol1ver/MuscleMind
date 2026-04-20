@@ -514,14 +514,49 @@ function renderUserBody(user, container) {
     usernameValue.textContent = user.username;
     usernameValue.contentEditable = false;
 
+    let skipFocusoutSave = false;
     usernameValue.addEventListener('click', () => {
         usernameValue.contentEditable = true;
         usernameValue.focus();
     });
+    usernameValue.addEventListener('focusout', async()=>{
+        if(skipFocusoutSave){
+            skipFocusoutSave = false;
+            return;
+        }
+        skipFocusoutSave = true;
+        try {
+            let patchObj = {
+                new_username: usernameValue.innerText.trim()
+            }
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/username/'+user.id, patchObj);
+            alert(data.message);
+            usernameValue.blur();
+            usernameValue.contentEditable = false;
+            loadUsers();
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
 
-    usernameValue.addEventListener('keydown', (e) => {
+    });
+    usernameValue.addEventListener('keydown', async(e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            skipFocusoutSave = true;
+            try {
+                let patchObj = {
+                    new_username: usernameValue.innerText.trim()
+                }
+                const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/username/'+user.id, patchObj);
+                alert(data.message);
+                usernameValue.blur();
+                usernameValue.contentEditable = false;
+                loadUsers();
+            } catch (error) {
+                console.error(error.message);
+                alert(error.message);
+            }
         }
     });
 
@@ -542,10 +577,44 @@ function renderUserBody(user, container) {
         emailValue.contentEditable = true;
         emailValue.focus();
     });
+    emailValue.addEventListener('focusout', async()=>{
+        if(skipFocusoutSave){
+            skipFocusoutSave = false;
+            return;
+        }
+        skipFocusoutSave = true;
+        try {
+            let patchObj = {
+                new_email: emailValue.innerText.trim()
+            }
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/email/'+user.id, patchObj);
+            alert(data.message);
+            emailValue.blur();
+            emailValue.contentEditable = false;
+            loadUsers();
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
 
-    emailValue.addEventListener('keydown', (e) => {
+    });
+    emailValue.addEventListener('keydown', async(e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            skipFocusoutSave = true;
+            try {
+                let patchObj = {
+                    new_email: emailValue.innerText.trim()
+                }
+                const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/email/'+user.id, patchObj);
+                alert(data.message);
+                emailValue.blur();
+                emailValue.contentEditable = false;
+                loadUsers();
+            } catch (error) {
+                console.error(error.message);
+                alert(error.message);
+            }
         }
     });
 
@@ -585,7 +654,7 @@ function renderUserBody(user, container) {
     const profileTitle = document.createElement('h6');
     profileTitle.className = 'ticket-section-title';
     profileTitle.textContent = 'Profil adatok';
-    
+
     const profileBox = document.createElement('div');
     profileBox.className = 'ticket-message-box';
 

@@ -278,10 +278,21 @@ router.patch('/user/toggle-block/:id', loginMw.requireAuthApi, requireAdmin, asy
         });
     }
 });
-router.patch('user/email/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+router.patch('/user/email/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const id = request.params.id;
         const {new_email} = request.body;
+        const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
+        if (!new_email) {
+            return response.status(400).json({
+                message: 'E-mail cím kötelező.'
+            });
+        }
+        if (!patternEmail.test(new_email)) {
+            return response.status(400).json({
+                message: 'Érvénytelen email formátum.'
+            });
+        }
         const email = await db.userChangeEmail(id, new_email);
         return response.status(200).json({
             message: 'Sikeres email változtatás!',
@@ -300,13 +311,24 @@ router.patch('user/email/:id', loginMw.requireAuthApi, requireAdmin, async(reque
         });
     }
 });
-router.patch('user/username/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+router.patch('/user/username/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const id = request.params.id;
         const {new_username} = request.body;
-        const username = await db.userChangeEmail(id, new_username);
+        const patternUser = /^[a-z0-9]{3,20}$/;
+        if (!new_username) {
+            return response.status(400).json({
+                message: 'Felhasználónév kötelező.'
+            });
+        }
+        if (!patternUser.test(new_username)) {
+            return response.status(400).json({
+                message: 'A felhasználónév csak kisbetűket és számokat tartalmazhat (3-20 karakter).'
+            });
+        }
+        const username = await db.userChangeUsername(id, new_username);
         return response.status(200).json({
-            message: 'Sikeres email változtatás!',
+            message: 'Sikeres felhasználónév változtatás!',
             username
         });
     } catch (error) {
@@ -322,7 +344,7 @@ router.patch('user/username/:id', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
-router.delete('user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const id = request.params.id;
         const adminId = request.session.user.id;
