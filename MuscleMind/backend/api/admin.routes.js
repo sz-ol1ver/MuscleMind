@@ -236,7 +236,7 @@ router.patch('/user/toggle-admin/:id', loginMw.requireAuthApi, requireAdmin, asy
         }
         if(id == adminId){
             return response.status(403).json({
-                message: 'Sikeertelen admin jogosultság frissítés!'
+                message: 'Sikertelen admin jogosultság frissítés!'
             });
         }
         const admin = await db.userAdmin(id);
