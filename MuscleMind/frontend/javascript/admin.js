@@ -13,6 +13,7 @@ let containerUsers;
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
     const allSeen = document.getElementById('ticket-seen');
+    const adminBtn = document.getElementById('user-admin');
     containerOpen = document.getElementById('open-tickets');
     containerClosed = document.getElementById('closed-tickets');
     containerUsers = document.getElementById('users-container');
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
     dashRefresh.addEventListener('click', ()=>{
         loadDash();
-    })
+    });
     allSeen.addEventListener('click', async()=>{
         try {
             const data = await patchFetch('http://127.0.0.1:3000/api/admin/all-tickets/seen');
@@ -30,14 +31,20 @@ document.addEventListener('DOMContentLoaded', ()=>{
         } catch (error) {
             console.error(error.message);
         }
+    });
+    adminBtn.addEventListener('click', ()=>{
+        
     })
 });
+
+//? refresh section data
 function refreshSections(){
     loadDash();
     loadTickets();
     loadUsers();
 }
 
+//? dashboard
 async function loadDash() {
     try {
         const allUser = document.getElementById('stat-allUser');
@@ -66,6 +73,7 @@ async function loadDash() {
     }
 }
 
+//? tickets
 async function loadTickets() {
     try {
         openT.length = 0;
@@ -370,6 +378,7 @@ function renderTickets(tickets, container) {
     }
 }
 
+//? users
 async function loadUsers(){
     try {
         users.length = 0;
