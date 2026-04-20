@@ -610,6 +610,16 @@ async function userDelete(id) {
     const [rows] = await pool.execute(deleteU, [id]);
     return rows.affectedRows;
 }
+async function userChangeEmail(id, email) {
+    const update = 'UPDATE users SET email = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [email,id]);
+    return rows.affectedRows;
+}
+async function userChangeUsername(id, username) {
+    const update = 'UPDATE users SET username = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [username,id]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -707,5 +717,7 @@ module.exports = {
     userAdmin,
     userBlock,
     userUnblock,
-    userDelete
+    userDelete,
+    userChangeEmail,
+    userChangeUsername
 };

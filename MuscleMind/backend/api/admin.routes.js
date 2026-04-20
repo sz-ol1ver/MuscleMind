@@ -299,6 +299,50 @@ router.patch('/user/unblock/:id', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
+router.patch('user/email/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+    try {
+        const id = request.params.id;
+        const {new_email} = request.body;
+        const email = await db.userChangeEmail(id, new_email);
+        return response.status(200).json({
+            message: 'Sikeres email változtatás!',
+            email
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
+router.patch('user/username/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+    try {
+        const id = request.params.id;
+        const {new_username} = request.body;
+        const username = await db.userChangeEmail(id, new_username);
+        return response.status(200).json({
+            message: 'Sikeres email változtatás!',
+            username
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 router.delete('user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const id = request.params.id;
@@ -325,7 +369,7 @@ router.delete('user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(req
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 
 
 module.exports = router;
