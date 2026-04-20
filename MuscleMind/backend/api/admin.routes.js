@@ -228,16 +228,29 @@ router.patch('/user/toggle-admin/:id', loginMw.requireAuthApi, requireAdmin, asy
     try {
         const id = request.params.id;
         const adminId = request.session.user.id;
+        const {adminStatus} = request.body;
+        if (adminStatus !== 0 && adminStatus !== 1) {
+            return response.status(400).json({
+                message: 'Sikertelen fiók állapot frissítés!'
+            });
+        }
         if(id == adminId){
             return response.status(403).json({
                 message: 'Sikeertelen admin jogosultság frissítés!'
             });
         }
         const admin = await db.userAdmin(id);
-        return response.status(200).json({
-            message: 'Sikeres admin jogosultság frissítés!',
-            admin
-        });
+        if(adminStatus == 0){
+            return response.status(200).json({
+                message: 'Felhasználó adminná téve.',
+                admin
+            });
+        }else if(adminStatus == 1){
+            return response.status(200).json({
+                message: 'Admin jog elvéve.',
+                admin
+            });
+        }
     } catch (error) {
         console.error(error.message)
         const ip = requestIp.getClientIp(request);
@@ -255,16 +268,29 @@ router.patch('/user/toggle-block/:id', loginMw.requireAuthApi, requireAdmin, asy
     try {
         const id = request.params.id;
         const adminId = request.session.user.id;
+        const {active} = request.body;
+        if (active !== 0 && active !== 1) {
+            return response.status(400).json({
+                message: 'Sikertelen fiók állapot frissítés!'
+            });
+        }
         if(id == adminId){
             return response.status(403).json({
                 message: 'Sikertelen fiók állapot frissítés!'
             });
         }
         const block = await db.userBlock(id);
-        return response.status(200).json({
-            message: 'Sikeres fiók állapot frissítés!',
-            block
-        });
+        if(active == 0){
+            return response.status(200).json({
+                message: 'Sikeres fiók feloldás!',
+                block
+            });
+        }else if(active == 1){
+            return response.status(200).json({
+                message: 'Sikeres fiók tiltás!',
+                block
+            });
+        }
     } catch (error) {
         console.error(error.message)
         const ip = requestIp.getClientIp(request);

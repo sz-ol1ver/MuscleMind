@@ -113,7 +113,7 @@ export async function getFetch(url) {
     }
 }
 
-export async function deleteWorkout(url) {
+export async function deleteFetch(url) {
     try {
         const data = await fetch(url, {
             method: 'DELETE',

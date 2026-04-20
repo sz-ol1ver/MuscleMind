@@ -1,4 +1,4 @@
-import {getFetch, postNewPlan, deleteWorkout, putPlan, patchFetch} from './api.js';
+import {getFetch, postNewPlan, deleteFetch, putPlan, patchFetch} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 async function deletePlan(id) {
     const alertDelete = document.getElementById('alert-delete-'+id);
     try {
-        const data = await deleteWorkout('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
+        const data = await deleteFetch('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
         alertDelete.innerHTML = data.message;
         alertDelete.classList.add('alert-success');
         alertDelete.classList.remove('d-none');

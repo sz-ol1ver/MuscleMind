@@ -1,4 +1,4 @@
-import {getFetch, patchFetch} from './api.js';
+import {deleteFetch, getFetch, patchFetch, postRequest} from './api.js';
 
 let openT = [];
 let closedT = [];
@@ -749,13 +749,57 @@ function renderUserBody(user, container) {
     deleteBtn.className = 'btn btn-outline-danger';
     deleteBtn.textContent = 'Törlés';
 
-    resetPassBtn.addEventListener('click', () => {});
+    resetPassBtn.addEventListener('click', async() => {
+        try {
+            let postObj = {
+                email: user.email
+            }
+            const data = await postRequest('http://127.0.0.1:3000/api/auth/request-password', postObj);
+            alert(data.message);
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
+    });
 
-    adminBtn.addEventListener('click', () => {});
+    adminBtn.addEventListener('click', async() => {
+        try {
+            let postObj = {
+                adminStatus: user.admin
+            }
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/'+user.id, postObj);
+            alert(data.message);
+            loadUsers();
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
+    });
 
-    disableBtn.addEventListener('click', () => {});
+    disableBtn.addEventListener('click', async() => {
+        try {
+            let postObj = {
+                active: user.active
+            }
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-block/'+user.id, postObj);
+            alert(data.message);
+            loadUsers();
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
+    });
 
-    deleteBtn.addEventListener('click', () => {});
+    deleteBtn.addEventListener('click', async() => {
+        try {
+            const data = await deleteFetch('http://127.0.0.1:3000/api/admin/user/delete/'+user.id);
+            alert(data.message);
+            loadUsers();
+        } catch (error) {
+            console.error(error.message);
+            alert(error.message);
+        }
+    });
 
     actionWrap.appendChild(resetPassBtn);
     actionWrap.appendChild(adminBtn);
