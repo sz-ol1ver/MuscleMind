@@ -266,21 +266,21 @@ body {
     min-width: 0;
 }
 
-.ticket-id {
+.card-content-id {
     color: #c084fc;
     white-space: nowrap;
 }
 
-.ticket-separator {
+.card-separator {
     color: #8d78a8;
 }
 
-.ticket-subject {
+.card-subject {
     color: #ffffff;
     word-break: break-word;
 }
 
-.ticket-created-date {
+.card-content-date {
     font-size: 0.9rem;
     color: #b9aacd;
 }

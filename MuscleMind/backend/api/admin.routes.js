@@ -251,40 +251,19 @@ router.patch('/user/toggle-admin/:id', loginMw.requireAuthApi, requireAdmin, asy
         });
     }
 });
-router.patch('/user/block/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+router.patch('/user/toggle-block/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const id = request.params.id;
         const adminId = request.session.user.id;
         if(id == adminId){
             return response.status(403).json({
-                message: 'Sikertelen fiók tiltás!'
+                message: 'Sikertelen fiók állapot frissítés!'
             });
         }
         const block = await db.userBlock(id);
         return response.status(200).json({
-            message: 'Sikeres fiók tiltás!',
+            message: 'Sikeres fiók állapot frissítés!',
             block
-        });
-    } catch (error) {
-        console.error(error.message)
-        const ip = requestIp.getClientIp(request);
-        try {
-            await db.log_error('Server error - admin', error.message, ip);
-        } catch (error) {
-            console.error('Logging failed:', error);
-        }
-        return response.status(500).json({
-            message: 'Sikertelen eleres!'
-        });
-    }
-});
-router.patch('/user/unblock/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
-    try {
-        const id = request.params.id;
-        const unblock = await db.userUnblock(id);
-        return response.status(200).json({
-            message: 'Sikeres fiók feloldás!',
-            unblock
         });
     } catch (error) {
         console.error(error.message)

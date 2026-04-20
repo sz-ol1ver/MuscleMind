@@ -541,7 +541,7 @@ async function ticketAdminReplyCheck(id) {
     return rows[0].admin_reply;
 }
 async function allUserBasicData() {
-    const select = 'SELECT id, username, email, active FROM users ORDER BY created_at DESC';
+    const select = 'SELECT id, username, active, created_at FROM users ORDER BY created_at DESC';
     const [rows] = await pool.execute(select);
     return rows;
 }
@@ -588,7 +588,7 @@ async function userAllData(id) {
         WHERE u.id = ?;
     `
     const [rows] = await pool.execute(select, [id]);
-    return rows;
+    return rows[0];
 }
 async function userAdmin(id) {
     const update = 'UPDATE users SET admin = NOT admin WHERE id = ?';
@@ -596,12 +596,7 @@ async function userAdmin(id) {
     return rows.affectedRows;
 }
 async function userBlock(id) {
-    const update = 'UPDATE users SET active = 0 WHERE id = ?';
-    const [rows] = await pool.execute(update, [id]);
-    return rows.affectedRows;
-}
-async function userUnblock(id) {
-    const update = 'UPDATE users SET active = 1 WHERE id = ?';
+    const update = 'UPDATE users SET active = NOT active WHERE id = ?';
     const [rows] = await pool.execute(update, [id]);
     return rows.affectedRows;
 }
