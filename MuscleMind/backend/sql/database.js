@@ -68,6 +68,12 @@ async function findUser(email) {
     return rows[0];
 }
 
+async function checkIfActive(id) {
+    const select = 'SELECT active FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0].active;
+}
+
 async function ifAdmin(id) {
     const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(userN, [id]);
@@ -713,5 +719,6 @@ module.exports = {
     userBlock,
     userDelete,
     userChangeEmail,
-    userChangeUsername
+    userChangeUsername,
+    checkIfActive
 };

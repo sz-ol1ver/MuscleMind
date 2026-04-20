@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     containerClosed = document.getElementById('closed-tickets');
     containerUsers = document.getElementById('users-container');
 
-    loadDash();
-    loadTickets();
-    loadUsers()
+    refreshSections();
 
     dashRefresh.addEventListener('click', ()=>{
         loadDash();
@@ -34,6 +32,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
         }
     })
 });
+function refreshSections(){
+    loadDash();
+    loadTickets();
+    loadUsers();
+}
 
 async function loadDash() {
     try {
@@ -255,7 +258,7 @@ function renderTickets(tickets, container) {
             try {
                 const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-close/'+ticket.id);
                 alert(data.message);
-                loadTickets();
+                refreshSections();
             } catch (error) {
                 console.error(error.message);
             }
@@ -533,7 +536,7 @@ function renderUserBody(user, container) {
             alert(data.message);
             usernameValue.blur();
             usernameValue.contentEditable = false;
-            loadUsers();
+            refreshSections();
         } catch (error) {
             console.error(error.message);
             alert(error.message);
@@ -552,7 +555,7 @@ function renderUserBody(user, container) {
                 alert(data.message);
                 usernameValue.blur();
                 usernameValue.contentEditable = false;
-                loadUsers();
+                refreshSections();
             } catch (error) {
                 console.error(error.message);
                 alert(error.message);
@@ -591,7 +594,7 @@ function renderUserBody(user, container) {
             alert(data.message);
             emailValue.blur();
             emailValue.contentEditable = false;
-            loadUsers();
+            refreshSections();
         } catch (error) {
             console.error(error.message);
             alert(error.message);
@@ -610,7 +613,7 @@ function renderUserBody(user, container) {
                 alert(data.message);
                 emailValue.blur();
                 emailValue.contentEditable = false;
-                loadUsers();
+                refreshSections();
             } catch (error) {
                 console.error(error.message);
                 alert(error.message);
@@ -769,7 +772,7 @@ function renderUserBody(user, container) {
             }
             const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/'+user.id, postObj);
             alert(data.message);
-            loadUsers();
+            refreshSections();
         } catch (error) {
             console.error(error.message);
             alert(error.message);
@@ -783,7 +786,7 @@ function renderUserBody(user, container) {
             }
             const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-block/'+user.id, postObj);
             alert(data.message);
-            loadUsers();
+            refreshSections();
         } catch (error) {
             console.error(error.message);
             alert(error.message);
@@ -794,7 +797,7 @@ function renderUserBody(user, container) {
         try {
             const data = await deleteFetch('http://127.0.0.1:3000/api/admin/user/delete/'+user.id);
             alert(data.message);
-            loadUsers();
+            refreshSections();
         } catch (error) {
             console.error(error.message);
             alert(error.message);

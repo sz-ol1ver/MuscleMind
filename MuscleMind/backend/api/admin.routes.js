@@ -91,7 +91,7 @@ router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(re
         const seenTickets = await db.ticketsSeen();
         const id = request.session.user.id;
         const ip = requestIp.getClientIp(request);
-        await db.log_id(id, 'admin - ticket status', 'new ticket status: seen, all ticket', ip);
+        await db.log_id(id, 'admin - ticket status', 'all tickets marked as seen, affected rows: ' + seenTickets, ip);
         return response.status(200).json({
             message: 'Sikeres státusz frissítés!',
             affectedRows: seenTickets
@@ -240,12 +240,19 @@ router.patch('/user/toggle-admin/:id', loginMw.requireAuthApi, requireAdmin, asy
             });
         }
         const admin = await db.userAdmin(id);
+        const ip = requestIp.getClientIp(request);
         if(adminStatus == 0){
+            await db.log_id(
+                adminId, 'admin - user role change', 'target user id: ' + id + ', old admin: 0, new admin: 1', ip
+            );
             return response.status(200).json({
                 message: 'Felhasználó adminná téve.',
                 admin
             });
         }else if(adminStatus == 1){
+            await db.log_id(
+                adminId, 'admin - user role change', 'target user id: ' + id + ', old admin: 1, new admin: 0', ip
+            );
             return response.status(200).json({
                 message: 'Admin jog elvéve.',
                 admin
@@ -280,12 +287,25 @@ router.patch('/user/toggle-block/:id', loginMw.requireAuthApi, requireAdmin, asy
             });
         }
         const block = await db.userBlock(id);
+        const ip = requestIp.getClientIp(request);
         if(active == 0){
+            await db.log_id(
+                adminId,
+                'admin - user active change',
+                'target user id: ' + id + ', old active: 0, new active: 1',
+                ip
+            );
             return response.status(200).json({
                 message: 'Sikeres fiók feloldás!',
                 block
             });
         }else if(active == 1){
+            await db.log_id(
+                adminId,
+                'admin - user active change',
+                'target user id: ' + id + ', old active: 1, new active: 0',
+                ip
+            );
             return response.status(200).json({
                 message: 'Sikeres fiók tiltás!',
                 block
@@ -320,6 +340,14 @@ router.patch('/user/email/:id', loginMw.requireAuthApi, requireAdmin, async(requ
             });
         }
         const email = await db.userChangeEmail(id, new_email);
+        const adminId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(
+            adminId,
+            'admin - user email change',
+            'target user id: ' + id + ', new email: ' + new_email.trim(),
+            ip
+        );
         return response.status(200).json({
             message: 'Sikeres email változtatás!',
             email
@@ -353,6 +381,14 @@ router.patch('/user/username/:id', loginMw.requireAuthApi, requireAdmin, async(r
             });
         }
         const username = await db.userChangeUsername(id, new_username);
+        const adminId = request.session.user.id;
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(
+            adminId,
+            'admin - user username change',
+            'target user id: ' + id + ', new username: ' + new_username.trim(),
+            ip
+        );
         return response.status(200).json({
             message: 'Sikeres felhasználónév változtatás!',
             username
@@ -380,6 +416,13 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
             });
         }
         const deleteUser = await db.userDelete(id);
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(
+            adminId,
+            'admin - user delete',
+            'deleted user id: ' + id,
+            ip
+        );
         return response.status(200).json({
             message: 'Sikeres fiók törlés!',
             deleteUser

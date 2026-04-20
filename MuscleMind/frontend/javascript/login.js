@@ -79,6 +79,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 case 4:
                     feedback.innerHTML = error.message;
                     break;
+                case 5:
+                    feedback.innerHTML = error.message;
+                    break;
             }
         }
     })
@@ -119,6 +122,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
                         feedback.innerHTML = error.message;
                         break;
                     case 4:
+                        feedback.innerHTML = error.message;
+                        break;
+                    case 5:
                         feedback.innerHTML = error.message;
                         break;
                 }

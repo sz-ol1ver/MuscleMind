@@ -48,6 +48,15 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
         const {email, pass} = request.body;
         const ip = requestIp.getClientIp(request);
         const user = await db.findUser(email);
+
+        const active = await db.checkIfActive(user.id);
+        if(active == 0){
+            return response.status(403).json({
+                message: 'A felhasználói fiók le van tiltva.',
+                id: 5
+            });
+        }
+
         const compare = await bcrypt.compare(pass, user.password_hash);
 
         if(compare == false){
