@@ -252,8 +252,26 @@ function renderTickets(tickets, container) {
         const hr3 = document.createElement('hr');
         hr3.className = 'ticket-divider';
 
+        const separator3 = document.createElement('span');
+        separator3.className = 'card-separator';
+        separator3.textContent = '|';
+
+        const bodyWrap = document.createElement('div');
+        bodyWrap.className = 'd-flex align-items-start gap-3';
+
         const email = document.createElement('h5');
         email.innerHTML = ticket.email;
+        email.className = 'mb-0';
+
+        const preId = document.createElement('p');
+        preId.innerHTML = 'Kapcsolódó ticket id: '+ticket.related_request_id;
+        preId.className = 'mb-0';
+
+        bodyWrap.appendChild(email);
+        if(ticket.related_request_id){
+            bodyWrap.appendChild(separator3)
+            bodyWrap.appendChild(preId);
+        }
 
         const cardFooter = document.createElement('div');
         cardFooter.className = 'd-flex flex-row justify-content-between';
@@ -357,7 +375,7 @@ function renderTickets(tickets, container) {
             })
         }
 
-        body.appendChild(email);
+        body.appendChild(bodyWrap);
         body.appendChild(hr3);
         body.appendChild(userMessageTitle);
         body.appendChild(userMessageBox);
