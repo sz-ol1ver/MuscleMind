@@ -691,13 +691,9 @@ INSERT INTO allergens (name) VALUES
     ('tej'),
     ('tojas'),
     ('gluten'),
-    ('szoya'),
     ('mogyoro'),
     ('diofelek'),
-    ('hal'),
-    ('rakfelek'),
-    ('szezammag'),
-    ('mustar');
+    ('hal');
 
 -- INSERT recommended plans (for testing)
 INSERT INTO workout_plans (user_id, name, level, location, goal, description, is_public, days_count)
