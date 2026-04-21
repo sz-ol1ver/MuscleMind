@@ -331,6 +331,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         }
 
                         rowCheckbox.addEventListener('change', () => {
+                            if (rowCheckbox.checked) {
+                                const repVal = repInput.value
+                                const weightVal = weightInput.value
+                                if (repVal === '' || weightVal === '') {
+                                    alert('Üresen próbáltál menteni. Amatőr hiba.')
+                                    rowCheckbox.checked = false
+                                    return
+                                }
+                            }
                             saveSetsForExercise()
                         })
 
