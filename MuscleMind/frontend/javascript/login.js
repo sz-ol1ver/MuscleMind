@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                             feedback.innerHTML = 'Helytelen email cim megadás!'
                             break;
                         case 2:
-                            feedback.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett"
+                            feedback.innerHTML = "A jelszónak legalább 8, de legfeljebb 64 karakter hosszúnak kell lennie, és tartalmazhat betűket, számokat és speciális karaktereket (pl. ! @ # $ % ^ & * _ -)."
                             break;
                     }
                     break;
