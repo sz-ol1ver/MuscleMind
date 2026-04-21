@@ -693,6 +693,7 @@ INSERT INTO allergens (name) VALUES
     ('gluten'),
     ('mogyoro'),
     ('diofelek'),
+    ('magvak'),
     ('hal');
 
 -- INSERT recommended plans (for testing)
