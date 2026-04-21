@@ -262,6 +262,7 @@ CREATE TABLE IF NOT EXISTS user_stats (
 -- FOODS
 CREATE TABLE IF NOT EXISTS foods (
     id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT DEFAULT NULL,
 
     -- alap adatok
     name VARCHAR(150) NOT NULL,
@@ -477,6 +478,10 @@ ADD CONSTRAINT fk_foods_users
     FOREIGN KEY (created_by)
     REFERENCES users(id)
     ON DELETE SET NULL;
+ALTER TABLE foods
+ADD CONSTRAINT fk_user_id
+FOREIGN KEY (user_id) REFERENCES users(id)
+ON DELETE SET NULL;
 
 ALTER TABLE food_allergens
 ADD CONSTRAINT fk_food_allergens_food
