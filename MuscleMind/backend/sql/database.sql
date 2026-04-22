@@ -101,8 +101,6 @@ CREATE TABLE IF NOT EXISTS user_weights (
 
 -- workout - stats
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
     user_id INT NOT NULL,
 
     muscle_group ENUM(
@@ -125,14 +123,14 @@ CREATE TABLE IF NOT EXISTS user_muscle_xp (
 
     xp INT NOT NULL DEFAULT 0,
 
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-    UNIQUE (user_id, muscle_group)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE user_global_xp (
+CREATE TABLE IF NOT EXISTS user_global_xp (
     user_id INT PRIMARY KEY,
     xp INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     FOREIGN KEY (user_id)
         REFERENCES users(id)
@@ -140,23 +138,33 @@ CREATE TABLE user_global_xp (
 );
 
 CREATE TABLE IF NOT EXISTS user_exercise_prs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
     user_id INT NOT NULL,
     exercise_id INT NOT NULL,
 
     max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
     max_weight_reps INT DEFAULT NULL,
-
     best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
 
     achieved_at DATETIME DEFAULT NULL,
-    workout_calendar_set_id INT DEFAULT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 
-    UNIQUE (user_id, exercise_id)
+CREATE TABLE IF NOT EXISTS user_daily_stats (
+    user_id INT NOT NULL,
+    stat_date DATE NOT NULL,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+
+    xp_gained INT NOT NULL DEFAULT 0,
+    prs_achieved INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_stats (
@@ -167,15 +175,7 @@ CREATE TABLE IF NOT EXISTS user_stats (
     total_sets INT NOT NULL DEFAULT 0,
     total_reps INT NOT NULL DEFAULT 0,
     pr_count INT NOT NULL DEFAULT 0,
-    longest_streak INT NOT NULL DEFAULT 0,
-    current_streak INT NOT NULL DEFAULT 0,
-    last_workout_date DATE NULL,
-    total_weight_lifted DECIMAL(14,2) NOT NULL DEFAULT 0,
     total_workout_time_sec INT NOT NULL DEFAULT 0,
-    avg_workout_time_sec INT NOT NULL DEFAULT 0,
-    start_weight DECIMAL(5,1) NULL,
-    current_weight DECIMAL(5,1) NULL,
-    weight_change DECIMAL(5,1) NULL,
 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -359,7 +359,7 @@ CREATE TABLE IF NOT EXISTS user_friendships (
     responded_at TIMESTAMP NULL DEFAULT NULL
 );
 -- store reset-password token
-CREATE TABLE reset_tokens (
+CREATE TABLE IF NOT EXISTS reset_tokens (
     id INT AUTO_INCREMENT PRIMARY KEY,
 
     user_id INT NOT NULL,
@@ -395,6 +395,9 @@ ALTER TABLE user_weights
     ON DELETE CASCADE;
 
 ALTER TABLE user_muscle_xp
+    ADD PRIMARY KEY (user_id, muscle_group);
+
+ALTER TABLE user_muscle_xp
     ADD CONSTRAINT fk_user_muscle_xp_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
@@ -402,6 +405,15 @@ ALTER TABLE user_muscle_xp
 
 ALTER TABLE user_global_xp
     ADD CONSTRAINT fk_user_global_xp_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_daily_stats
+    ADD PRIMARY KEY (user_id, stat_date);
+
+ALTER TABLE user_daily_stats
+    ADD CONSTRAINT fk_user_daily_stats_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
     ON DELETE CASCADE;
@@ -488,18 +500,19 @@ ADD CONSTRAINT uq_workout_calendar_sets_number
     UNIQUE (workout_calendar_exercise_id, set_number);
 
 ALTER TABLE user_exercise_prs
-ADD CONSTRAINT fk_user_exercise_prs_user
+    ADD PRIMARY KEY (user_id, exercise_id);
+
+ALTER TABLE user_exercise_prs
+    ADD CONSTRAINT fk_user_exercise_prs_user
     FOREIGN KEY (user_id)
     REFERENCES users(id)
-    ON DELETE CASCADE,
-ADD CONSTRAINT fk_user_exercise_prs_exercise
+    ON DELETE CASCADE;
+
+ALTER TABLE user_exercise_prs
+    ADD CONSTRAINT fk_user_exercise_prs_exercise
     FOREIGN KEY (exercise_id)
     REFERENCES exercises(id)
-    ON DELETE CASCADE,
-ADD CONSTRAINT fk_user_exercise_prs_set
-    FOREIGN KEY (workout_calendar_set_id)
-    REFERENCES workout_calendar_sets(id)
-    ON DELETE SET NULL;
+    ON DELETE CASCADE;
 
 ALTER TABLE user_friendships
 ADD CONSTRAINT chk_user_order CHECK (user1_id < user2_id),
