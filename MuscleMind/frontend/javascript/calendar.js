@@ -12,15 +12,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             hasActivePlan = false
         }
 
-        if (hasActivePlan) {
-            const calRes = await getWorkout('/api/workout/calendar')
-            // naptar adatok lekerese
-            if (calRes.calendar) {
-                // adatok feldolgozasa
-                calRes.calendar.forEach((item) => {
-                    calendarDataMap[item.date] = item
-                })
-            }
+        // naptar adatok lekerese, completed edzesek miatt mindig kell
+        const calRes = await getWorkout('/api/workout/calendar')
+        if (calRes.calendar) {
+            calRes.calendar.forEach((item) => {
+                calendarDataMap[item.date] = item
+            })
         }
     } catch (err) {
         console.error('Nem sikerült lekérni a naptár adatokat:', err)
@@ -95,7 +92,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             dateNumberDiv.textContent = day
             dayDiv.appendChild(dateNumberDiv)
 
-            if (hasActivePlan && calendarDataMap[dateKey]) {
+            // adat megjelenites ha nincs is aktiv terv (mentett logok)
+            if (calendarDataMap[dateKey]) {
                 currentDayPlan = calendarDataMap[dateKey]
 
                 let displayName = currentDayPlan.dayName
@@ -470,12 +468,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             const exerciseHeader = workoutDetailsContainer.querySelector('h6')
             if (exerciseHeader) {
-                exerciseHeader.textContent = 'Nincs aktív edzésterv'
+                if (hasActivePlan) {
+                    exerciseHeader.textContent = 'Nincs betervezett edzés'
+                } else {
+                    exerciseHeader.textContent = 'Nincs aktív edzésterv'
+                }
             }
 
             const li = document.createElement('li')
             li.classList.add('list-group-item', 'bg-dark', 'text-white', 'border-secondary')
-            li.textContent = 'Válassz ki vagy hozz létre egy edzéstervet az Edzésterv menüpontban.'
+            
+            if (hasActivePlan) {
+                 li.textContent = 'Erre a napra nincs betervezett aktivitás.'
+            } else {
+                 li.textContent = 'Válassz ki vagy hozz létre egy edzéstervet az Edzésterv menüpontban.'
+            }
             workoutList.appendChild(li)
         }
 
