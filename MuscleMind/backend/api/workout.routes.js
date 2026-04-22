@@ -415,6 +415,25 @@ router.post('/calendar/sets', requireAuthApi, async (request, response) => {
         if (!calendarExerciseId || !sets) {
             return response.status(400).json({ message: 'Hiányzó adatok!' })
         }
+
+        if (!Array.isArray(sets)) {
+            return response.status(400).json({ message: 'Érvénytelen sorozat adatok!' })
+        }
+
+        for (let i = 0; i < sets.length; i++) {
+            const s = sets[i];
+            // ures ertekek szurese
+            if (s.reps_done === '' || s.reps_done === null || s.reps_done === undefined ||
+                s.weight_done === '' || s.weight_done === null || s.weight_done === undefined) {
+                return response.status(400).json({ message: 'Minden sorozatnál kötelező megadni az ismétlést és a súlyt!' })
+            }
+            
+            // negativ szamok es betuk szurese
+            if (!(s.reps_done >= 0 && s.weight_done >= 0)) {
+                return response.status(400).json({ message: 'Az ismétlés és a súly csak nulla vagy pozitív szám lehet!' })
+            }
+        }
+
         await db.saveCalendarSets(calendarExerciseId, sets)
         return response.status(200).json({ message: 'Sikeres mentés!' })
     } catch (error) {
