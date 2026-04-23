@@ -11,6 +11,11 @@ let containerClosed;
 let containerUsers;
 
 let containerFoods;
+let adminFoods = [];
+let userFoods = [];
+// szűrt tömbök
+let filteredAdminFoods = [];
+let filteredUserFoods = [];
 
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
@@ -38,6 +43,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
     adminBtn.addEventListener('click', ()=>{
         
     })
+    // filter reset btn
+    document.getElementById("filter-reset-btn").addEventListener("click", () => {
+        resetFilters();
+        applyFilters();
+    });
+    // filter addeventlisteners
+    document.querySelectorAll(
+    "#filter-level, #filter-location, #filter-goal, #filter-difficulty, #highProtein, #lowCarb, #bulking, #cutting"
+    ).forEach(filter => {
+        filter.addEventListener("change", applyFilters);
+    });
 });
 
 //? refresh section data
@@ -45,6 +61,7 @@ function refreshSections(){
     loadDash();
     loadTickets();
     loadUsers();
+    resetFilters();
     loadFoods();
 }
 
@@ -862,12 +879,8 @@ async function loadFoods(){
         console.error(error.message);
     }
 }
-
 function renderFoods(foods, container){
     container.innerHTML = '';
-
-    const adminFoods = [];
-    const userFoods = [];
 
     for(const food of foods){
         if(food.user_id === null || food.user_id === undefined){
@@ -909,7 +922,41 @@ function renderFoods(foods, container){
     renderFoodCards(adminFoods, adminList, 'admin');
     renderFoodCards(userFoods, userList, 'user');
 }
+function renderFilteredFoods(container){
+    container.innerHTML = '';
 
+    const adminSection = document.createElement('div');
+    adminSection.className = 'foods-split-section';
+
+    const userSection = document.createElement('div');
+    userSection.className = 'foods-split-section';
+
+    const adminTitle = document.createElement('h6');
+    adminTitle.className = 'ticket-section-title';
+    adminTitle.textContent = 'Admin receptek';
+
+    const userTitle = document.createElement('h6');
+    userTitle.className = 'ticket-section-title';
+    userTitle.textContent = 'Felhasználói receptek';
+
+    const adminList = document.createElement('div');
+    adminList.className = 'foods-scroll';
+
+    const userList = document.createElement('div');
+    userList.className = 'foods-scroll';
+
+    adminSection.appendChild(adminTitle);
+    adminSection.appendChild(adminList);
+
+    userSection.appendChild(userTitle);
+    userSection.appendChild(userList);
+
+    container.appendChild(adminSection);
+    container.appendChild(userSection);
+
+    renderFoodCards(filteredAdminFoods, adminList, 'admin');
+    renderFoodCards(filteredUserFoods, userList, 'user');
+}
 function renderFoodCards(foods, container, prefix){
     container.innerHTML = '';
 
@@ -1191,7 +1238,6 @@ function renderFoodCards(foods, container, prefix){
         container.appendChild(card);
     }
 }
-
 function createFoodInfoItem(label, value){
     const item = document.createElement('div');
     item.className = 'd-flex flex-column px-2 py-1';
@@ -1209,6 +1255,78 @@ function createFoodInfoItem(label, value){
     item.appendChild(span2);
 
     return item;
+}
+function applyFilters() {
+    // SELECT értékek
+    const category = document.getElementById("filter-level").value;
+    const diet = document.getElementById("filter-location").value;
+    const goal = document.getElementById("filter-goal").value;
+    const difficulty = document.getElementById("filter-difficulty").value;
+
+    // CHECKBOX értékek
+    const highProtein = document.getElementById("highProtein").checked;
+    const lowCarb = document.getElementById("lowCarb").checked;
+    const bulking = document.getElementById("bulking").checked;
+    const cutting = document.getElementById("cutting").checked;
+
+    // reset
+    filteredAdminFoods = [];
+    filteredUserFoods = [];
+
+    adminFoods.forEach(food => {
+        let match = true;
+
+        // SELECT SZŰRŐK
+        if (category !== "all" && food.category !== category) match = false;
+        if (diet !== "all" && food.diet_tag !== diet) match = false;
+        if (goal !== "all" && food.goal_tag !== goal) match = false;
+        if (difficulty !== "all" && food.difficulty !== difficulty) match = false;
+
+        // CHECKBOX SZŰRŐK
+        if (highProtein && !food.high_protein) match = false;
+        if (lowCarb && !food.low_carb) match = false;
+        if (bulking && !food.bulk_friendly) match = false;
+        if (cutting && !food.cut_friendly) match = false;
+
+        // HA MEGFELEL
+        if (match) {
+            filteredAdminFoods.push(food);
+        }
+    });
+    userFoods.forEach(food => {
+        let match = true;
+
+        // SELECT SZŰRŐK
+        if (category !== "all" && food.category !== category) match = false;
+        if (diet !== "all" && food.diet_tag !== diet) match = false;
+        if (goal !== "all" && food.goal_tag !== goal) match = false;
+        if (difficulty !== "all" && food.difficulty !== difficulty) match = false;
+
+        // CHECKBOX SZŰRŐK
+        if (highProtein && !food.high_protein) match = false;
+        if (lowCarb && !food.low_carb) match = false;
+        if (bulking && !food.bulk_friendly) match = false;
+        if (cutting && !food.cut_friendly) match = false;
+
+        // HA MEGFELEL
+        if (match) {
+            filteredUserFoods.push(food);
+        }
+    });
+    renderFilteredFoods(containerFoods);
+}
+function resetFilters(){
+    // selectek reset
+    document.getElementById("filter-level").value = "all";
+    document.getElementById("filter-location").value = "all";
+    document.getElementById("filter-goal").value = "all";
+    document.getElementById("filter-difficulty").value = "all";
+
+    // checkboxok reset
+    document.getElementById("highProtein").checked = false;
+    document.getElementById("lowCarb").checked = false;
+    document.getElementById("bulking").checked = false;
+    document.getElementById("cutting").checked = false;
 }
 
 function formatDate(dateString) {

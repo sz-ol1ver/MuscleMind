@@ -7,6 +7,10 @@ body {
     background: #120f2a;
     color: #e2e8f0;
 }
+option{
+    background-color: #2c0049;
+    color: #d3d3d3;
+}
 
 /* Sidebar */
 .admin-sidebar {
@@ -384,17 +388,17 @@ body {
 }
 
 .food-checkbox-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
 }
 
 .food-check-item {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid #4b2c63;
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    color: #f3edff;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto; /* kulcs */
+    padding: 0.6rem 0.9rem;
 }
 
 .food-check-item .form-check-input {
