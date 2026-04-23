@@ -291,13 +291,52 @@
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="food-allergens" class="form-label food-form-label">Allergének</label>
-                                        <input type="text" id="food-allergens" name="allergens" class="form-control food-form-control" placeholder="Pl.: glutén, tej, tojás">
-                                        <div class="card-content-date mt-2">Vesszővel elválasztva add meg.</div>
+                                        <label class="form-label food-form-label">Allergének</label>
+
+                                        <div class="food-checkbox-grid ps-4">
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tej" name="allergens" value="tej">
+                                                <label class="form-check-label" for="food-allergen-tej">Tej</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tojas" name="allergens" value="tojas">
+                                                <label class="form-check-label" for="food-allergen-tojas">Tojás</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-gluten" name="allergens" value="gluten">
+                                                <label class="form-check-label" for="food-allergen-gluten">Glutén</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-mogyoro" name="allergens" value="mogyoro">
+                                                <label class="form-check-label" for="food-allergen-mogyoro">Mogyoró</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-diofelek" name="allergens" value="diofelek">
+                                                <label class="form-check-label" for="food-allergen-diofelek">Diófélék</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-magvak" name="allergens" value="magvak">
+                                                <label class="form-check-label" for="food-allergen-magvak">Magvak</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-hal" name="allergens" value="hal">
+                                                <label class="form-check-label" for="food-allergen-hal">Hal</label>
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                     <div class="col-12">
-                                        <div class="food-checkbox-grid">
+                                        <label class="form-label food-form-label">További szűrési lehetőségek</label>
+
+                                        <div class="food-checkbox-grid ps-4">
                                             <div class="form-check food-check-item">
                                                 <input class="form-check-input" type="checkbox" id="food-high-protein" name="high_protein">
                                                 <label class="form-check-label" for="food-high-protein">Magas fehérje</label>
@@ -378,7 +417,7 @@
                                 <label for="filter-goal" class="form-label fw-bold">Cél</label>
                                 <select id="filter-goal" class="form-select">
                                     <option value="all">Összes cél</option>
-                                    <option value="tomeg">Tömegnövelés</option>
+                                    <option value="tomegnoveles">Tömegnövelés</option>
                                     <option value="szalkasitas">Szálkásítás</option>
                                     <option value="szintentartas">Szintentartás</option>
                                 </select>

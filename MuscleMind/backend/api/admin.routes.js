@@ -339,6 +339,12 @@ router.patch('/user/email/:id', loginMw.requireAuthApi, requireAdmin, async(requ
                 message: 'Érvénytelen email formátum.'
             });
         }
+        const emailExist = await db.email_exist(new_email);
+        if(emailExist == 1){
+            return response.status(403).json({
+                message: 'Már regisztrált e-mail cím!'
+            });
+        }
         const email = await db.userChangeEmail(id, new_email);
         const adminId = request.session.user.id;
         const ip = requestIp.getClientIp(request);
@@ -378,6 +384,12 @@ router.patch('/user/username/:id', loginMw.requireAuthApi, requireAdmin, async(r
         if (!patternUser.test(new_username)) {
             return response.status(400).json({
                 message: 'A felhasználónév csak kisbetűket és számokat tartalmazhat (3-20 karakter).'
+            });
+        }
+        const usernameExist = await db.username_exist(new_username);
+        if(usernameExist == 1){
+            return response.status(403).json({
+                message: 'Már regisztrált felhasználónév!'
             });
         }
         const username = await db.userChangeUsername(id, new_username);
@@ -441,6 +453,25 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
     }
 });
 //? Foods
+router.post('foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmin,async(request, response) =>{
+    try {
+        console.log(request.body);
+        return response.status(200).json({
+            message: 'Sikeres hozzáadás'
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
 router.get('/foods/all-foods', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const foods = await db.allFoods();

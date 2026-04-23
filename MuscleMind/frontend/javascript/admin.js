@@ -1,4 +1,4 @@
-import {deleteFetch, getFetch, patchFetch, postRequest} from './api.js';
+import {deleteFetch, getFetch, patchFetch, postRequest, postForm} from './api.js';
 
 let openT = [];
 let closedT = [];
@@ -566,11 +566,20 @@ function renderUserBody(user, container) {
     usernameValue.contentEditable = false;
 
     let skipFocusoutSave = false;
+    let usernameDef = '';
     usernameValue.addEventListener('click', () => {
         usernameValue.contentEditable = true;
+        usernameDef = usernameValue.innerText.trim();
         usernameValue.focus();
     });
     usernameValue.addEventListener('focusout', async()=>{
+        const newValue = usernameValue.innerText.trim();
+
+        if (newValue === usernameDef) {
+            usernameValue.innerText = usernameDef;
+            usernameValue.contentEditable = false;
+            return;
+        }
         if(skipFocusoutSave){
             skipFocusoutSave = false;
             return;
@@ -594,6 +603,13 @@ function renderUserBody(user, container) {
     usernameValue.addEventListener('keydown', async(e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            const newValue = usernameValue.innerText.trim();
+
+            if (newValue === usernameDef) {
+                usernameValue.innerText = usernameDef;
+                usernameValue.contentEditable = false;
+                return;
+            }
             skipFocusoutSave = true;
             try {
                 let patchObj = {
@@ -624,11 +640,20 @@ function renderUserBody(user, container) {
     emailValue.textContent = user.email;
     emailValue.contentEditable = false;
 
+    let emailDef = '';
     emailValue.addEventListener('click', () => {
         emailValue.contentEditable = true;
+        emailDef = emailValue.innerText.trim();
         emailValue.focus();
     });
     emailValue.addEventListener('focusout', async()=>{
+        const newValue = emailValue.innerText.trim();
+
+        if (newValue === emailDef) {
+            emailValue.innerText = emailDef;
+            emailValue.contentEditable = false;
+            return;
+        }
         if(skipFocusoutSave){
             skipFocusoutSave = false;
             return;
@@ -652,6 +677,13 @@ function renderUserBody(user, container) {
     emailValue.addEventListener('keydown', async(e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            const newValue = emailValue.innerText.trim();
+
+            if (newValue === emailDef) {
+                emailValue.innerText = emailDef;
+                emailValue.contentEditable = false;
+                return;
+            }
             skipFocusoutSave = true;
             try {
                 let patchObj = {
@@ -871,6 +903,16 @@ function renderUserBody(user, container) {
 }
 
 //? foods
+async function postNewFood() {
+    try {
+        let form = document.getElementById('food-create-form');
+
+        const newFood = new FormData(form)
+        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new-food', )
+    } catch (error) {
+        console.error(error.message);
+    }
+}
 async function loadFoods(){
     try {
         const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all-foods');
@@ -881,6 +923,9 @@ async function loadFoods(){
 }
 function renderFoods(foods, container){
     container.innerHTML = '';
+
+    adminFoods = [];
+    userFoods = [];
 
     for(const food of foods){
         if(food.user_id === null || food.user_id === undefined){
