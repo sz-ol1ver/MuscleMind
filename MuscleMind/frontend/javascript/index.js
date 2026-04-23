@@ -1,3 +1,5 @@
+import { getWorkout } from './api.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   //Világos/Sötét mód gomb------------------------------------
   document.getElementById("theme-switch").addEventListener("change", (a) => {
@@ -140,5 +142,110 @@ document.addEventListener("DOMContentLoaded", () => {
   // select.addEventListener('change', ()=>{
   //   if(select.value)
   // })
+
+  // Edzés Emlékeztető logika
+  let myModal = new bootstrap.Modal(document.getElementById('workoutReminderModal'))
+  
+  async function loadWorkoutReminder() {
+      try {
+          const data = await getWorkout('http://127.0.0.1:3000/api/workout/calendar')
+
+          const dDate = new Date()
+          let monthStr = dDate.getMonth() + 1
+          let dayStr = dDate.getDate()
+
+          if (monthStr < 10) {
+              monthStr = '0' + monthStr
+          }
+          if (dayStr < 10) {
+              dayStr = '0' + dayStr
+          }
+
+          const todayStr = dDate.getFullYear() + '-' + monthStr + '-' + dayStr
+          
+          let todayWorkout = null
+          if (data.calendar) {
+              for (let i = 0; i < data.calendar.length; i++) {
+                  if (data.calendar[i].date === todayStr) {
+                      todayWorkout = data.calendar[i]
+                      break
+                  }
+              }
+          }
+
+          const modalBody = document.getElementById("workoutReminderBody")
+          modalBody.innerHTML = ''
+
+          if (todayWorkout === null) {
+              let p = document.createElement('p')
+              p.className = 'text-center mt-3 fs-5'
+              p.innerText = 'Nincs betervezett edzésed mára.'
+              modalBody.appendChild(p)
+          } else if (todayWorkout.isRestDay === 1 || todayWorkout.isRestDay === true) {
+              let p = document.createElement('p')
+              p.className = 'text-center mt-3 fs-5 text-info'
+              
+              let elotteSzoveg = document.createElement('span')
+              elotteSzoveg.innerText = 'Ma pihenőnap van: '
+              
+              let b = document.createElement('b')
+              b.innerText = todayWorkout.dayName
+              
+              let utanaSzoveg = document.createElement('span')
+              utanaSzoveg.innerText = ' 🤫'
+              
+              p.appendChild(elotteSzoveg)
+              p.appendChild(b)
+              p.appendChild(utanaSzoveg)
+              
+              modalBody.appendChild(p)
+          } else {
+              let h5 = document.createElement('h5')
+              h5.className = 'text-center text-warning fw-bold mb-3'
+              h5.innerText = todayWorkout.dayName
+              modalBody.appendChild(h5)
+              
+              if (todayWorkout.exercises && todayWorkout.exercises.length > 0) {
+                  let ul = document.createElement('ul')
+                  ul.className = 'list-group bg-transparent'
+                  
+                  for (let i = 0; i < todayWorkout.exercises.length; i++) {
+                      const ex = todayWorkout.exercises[i]
+                      
+                      let li = document.createElement('li')
+                      li.className = 'list-group-item bg-transparent text-light border-secondary d-flex justify-content-between'
+                      
+                      let spanName = document.createElement('span')
+                      spanName.innerText = ex.name
+                      
+                      let spanBadge = document.createElement('span')
+                      spanBadge.className = 'badge bg-secondary'
+                      spanBadge.innerText = '#' + ex.order
+                      
+                      li.appendChild(spanName)
+                      li.appendChild(spanBadge)
+                      
+                      ul.appendChild(li)
+                  }
+                  
+                  modalBody.appendChild(ul)
+              } else {
+                  let p = document.createElement('p')
+                  p.className = 'text-center'
+                  p.innerText = 'Nincsenek gyakorlatok.'
+                  modalBody.appendChild(p)
+              }
+          }
+          myModal.show()
+
+      } catch (error) {
+          console.error("Hiba az edzes lekeresekor:", error)
+      }
+  }
+
+  if (sessionStorage.getItem('showWorkoutReminder') === 'true') {
+      sessionStorage.removeItem('showWorkoutReminder')
+      loadWorkoutReminder()
+  }
 
 });

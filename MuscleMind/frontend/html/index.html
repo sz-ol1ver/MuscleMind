@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="../css/index.css" />
         <link rel="stylesheet" href="../css/calendar.css" />
         <!--!JavaScript-->
-        <script src="../javascript/index.js"></script>
+        <script type="module" src="../javascript/index.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
         <script type="module" src="../javascript/calendar.js"></script>
@@ -376,7 +376,27 @@
             </div>
         </div>
 
-        
+        <!-- edzes emlekezteto -->
+        <div class="modal fade" id="workoutReminderModal" tabindex="-1" aria-labelledby="workoutReminderModalLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header custom-modal-header">
+                        <h5 class="modal-title" id="workoutReminderModalLabel">🏋️ Napi Edzésterv Emlékeztető</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                    </div>
+                    <div class="modal-body custom-modal-body" id="workoutReminderBody">
+                        <div class="text-center my-3">
+                            <div class="spinner-border text-primary" role="status" style="color: #7c3aed !important;">
+                                <span class="visually-hidden">Betöltés...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn button-sample" data-bs-dismiss="modal">Oksa moksa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </body>
 </html>

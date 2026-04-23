@@ -511,10 +511,4 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // alap generalas
     renderCalendar(currentMonth, currentYear)
-
-    // majd emlekezteto 
-    const setReminderBtn = document.getElementById('setReminderBtn')
-    setReminderBtn.addEventListener('click', () => {
-        alert("asd")
-    })
 })

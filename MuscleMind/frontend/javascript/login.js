@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin)
             feedback.style.color = 'lightgreen';
             feedback.innerHTML = data.message;
+            sessionStorage.setItem('showWorkoutReminder', 'true') //login utan dobja csak az emlekeztetot
             setTimeout(()=>{
                 feedback.innerHTML = '';
                 form.reset();
@@ -90,6 +91,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin);
                 feedback.style.color = 'lightgreen';
                 feedback.innerHTML = data.message;
+                sessionStorage.setItem('showWorkoutReminder', 'true') //login utan dobja csak az emlekeztetot
                 setTimeout(()=>{
                     feedback.innerHTML = '';
                     form.reset();
