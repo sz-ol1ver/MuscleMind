@@ -146,20 +146,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
         workoutPlan.days[currentDay].name = day_name.value;
     })
     select.addEventListener('change', ()=>{
-        for(let i = 0; i<workoutPlan.days[currentDay].exercises.length;i++){
-            if(select.value == workoutPlan.days[currentDay].exercises[i].exerciseId){
-                select.value = 0;
+        for(let i = 0; i < workoutPlan.days[currentDay].exercises.length; i++){
+            if(Number(select.value) === workoutPlan.days[currentDay].exercises[i].exerciseId){
+                select.value = '';
                 return alert('Ez a gyakorlat már hozzá van adva ehhez a naphoz.');
             }
         }
+
         workoutPlan.days[currentDay].exercises.push({
             exerciseId: Number(select.value),
             name: select.options[select.selectedIndex].text,
             order: workoutPlan.days[currentDay].exercises.length + 1
         });
+
         renderTable();
-        renderExercises(filteredExercisesList);
-    })
+        filterMuscleGroups();
+        select.value = '';
+    });
     rest.addEventListener('change', ()=>{
         if(rest.checked){
             workoutPlan.days[currentDay].restDay = true;
@@ -282,12 +285,17 @@ async function loadExercises() {
     try {
         const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
         exercisesList = data.message;
-        renderExercises(exercisesList);
+        filteredExercisesList = [...exercisesList];
+        renderExercises(filteredExercisesList);
+
         for(let row of data.message){
             if(!muscle_groups.includes(row.muscle_group)){
                 muscle_groups.push(row.muscle_group)
             }
         }
+
+        muscleSelect.innerHTML = '<option value="all">Összes izomcsoport</option>';
+
         for(let i = 0; i<muscle_groups.length;i++){
             let option = document.createElement('option');
             option.value = muscle_groups[i];
