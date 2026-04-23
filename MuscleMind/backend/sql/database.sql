@@ -714,6 +714,193 @@ INSERT INTO allergens (name) VALUES
     ('magvak'),
     ('hal');
 
+-- FOODS tesztadatok
+INSERT INTO foods (
+    name, description, image_url, category,
+    created_by, is_approved,
+    calories_kcal, protein_g, carbs_g, fat_g, fiber_g, sugar_g, salt_g,
+    serving_size, serving_unit,
+    goal_tag, diet_tag, difficulty, prep_time_min,
+    high_protein, low_carb, bulk_friendly, cut_friendly
+) VALUES
+('Zabkása gyümölccsel', 'Egyszerű zabkása friss gyümölcsökkel', NULL, 'reggeli',
+NULL, TRUE,
+350, 12, 55, 8, 6, 10, 0.5,
+100, 'g',
+'mind', 'vegetarianus', 'konnyu', 10,
+FALSE, FALSE, TRUE, TRUE),
+
+('Rántotta tojásból', 'Klasszikus rántotta', NULL, 'reggeli',
+NULL, TRUE,
+250, 18, 2, 20, 0, 1, 0.8,
+2, 'db',
+'tomegnoveles', 'mindenevo', 'konnyu', 5,
+TRUE, TRUE, TRUE, FALSE),
+
+('Csirkemell rizzsel', 'Grillezett csirkemell főtt rizzsel', NULL, 'ebed',
+NULL, TRUE,
+600, 45, 70, 10, 2, 1, 1.2,
+1, 'adag',
+'tomegnoveles', 'mindenevo', 'kozepes', 30,
+TRUE, FALSE, TRUE, FALSE),
+
+('Tonhalsaláta', 'Friss saláta tonhallal', NULL, 'ebed',
+NULL, TRUE,
+300, 30, 10, 15, 4, 3, 1.0,
+1, 'tal',
+'szalkasitas', 'mindenevo', 'konnyu', 15,
+TRUE, TRUE, FALSE, TRUE),
+
+('Marhapörkölt', 'Hagyományos magyar marhapörkölt', NULL, 'vacsora',
+NULL, TRUE,
+700, 50, 20, 40, 2, 2, 1.5,
+1, 'adag',
+'tomegnoveles', 'mindenevo', 'nehez', 90,
+TRUE, TRUE, TRUE, FALSE),
+
+('Grillezett lazac', 'Egészséges lazac zöldségekkel', NULL, 'vacsora',
+NULL, TRUE,
+500, 40, 5, 35, 3, 1, 1.0,
+1, 'adag',
+'szalkasitas', 'mindenevo', 'kozepes', 25,
+TRUE, TRUE, FALSE, TRUE),
+
+('Protein shake', 'Fehérjeturmix tejjel', NULL, 'ital',
+NULL, TRUE,
+200, 25, 10, 5, 1, 5, 0.3,
+300, 'ml',
+'tomegnoveles', 'mindenevo', 'konnyu', 5,
+TRUE, FALSE, TRUE, FALSE),
+
+('Banán', 'Friss banán', NULL, 'snack',
+NULL, TRUE,
+90, 1, 23, 0, 2, 12, 0,
+1, 'db',
+'mind', 'vegan', 'konnyu', 0,
+FALSE, FALSE, FALSE, TRUE),
+
+('Mandula', 'Pörkölt mandula', NULL, 'snack',
+NULL, TRUE,
+600, 20, 20, 50, 10, 5, 0,
+50, 'g',
+'tomegnoveles', 'vegan', 'konnyu', 0,
+TRUE, TRUE, TRUE, FALSE),
+
+('Palacsinta', 'Házi palacsinta', NULL, 'desszert',
+NULL, TRUE,
+400, 10, 60, 15, 2, 20, 0.5,
+2, 'db',
+'mind', 'vegetarianus', 'kozepes', 20,
+FALSE, FALSE, TRUE, FALSE),
+
+('Túrós desszert', 'Fehérjedús túrós édesség', NULL, 'desszert',
+NULL, TRUE,
+300, 25, 20, 10, 1, 10, 0.5,
+1, 'adag',
+'tomegnoveles', 'vegetarianus', 'konnyu', 10,
+TRUE, FALSE, TRUE, FALSE),
+
+('Zöldségleves', 'Könnyű zöldségleves', NULL, 'ebed',
+NULL, TRUE,
+150, 5, 20, 3, 5, 5, 1.0,
+1, 'tal',
+'szalkasitas', 'vegan', 'konnyu', 30,
+FALSE, TRUE, FALSE, TRUE),
+
+('Avokádó toast', 'Pirítós avokádóval', NULL, 'reggeli',
+NULL, TRUE,
+350, 8, 30, 20, 5, 2, 0.8,
+1, 'szelet',
+'mind', 'vegan', 'konnyu', 10,
+FALSE, FALSE, TRUE, TRUE),
+
+('Tofu stir fry', 'Tofus zöldséges étel', NULL, 'vacsora',
+NULL, TRUE,
+400, 20, 30, 20, 4, 5, 1.2,
+1, 'adag',
+'mind', 'vegan', 'kozepes', 25,
+TRUE, FALSE, TRUE, TRUE),
+
+('Narancslé', 'Frissen facsart narancslé', NULL, 'ital',
+NULL, TRUE,
+120, 2, 25, 0, 1, 20, 0,
+250, 'ml',
+'mind', 'vegan', 'konnyu', 5,
+FALSE, FALSE, FALSE, TRUE);
+
+INSERT INTO food_allergens (food_id, allergen_id) VALUES
+(1, 3),
+(2, 2),
+(4, 7),
+(6, 7),
+(7, 1),
+(9, 5),
+(10, 3),
+(10, 2),
+(10, 1),
+(11, 1),
+(13, 3);
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 50g zabpehely\n\t- 200ml tej\n\t- 1db banán\n\t- 50g bogyós gyümölcs'
+WHERE name = 'Zabkása gyümölccsel';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 2db tojás\n\t- 5g olaj\n\t- só ízlés szerint'
+WHERE name = 'Rántotta tojásból';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 150g csirkemell\n\t- 100g rizs\n\t- 5g olaj\n\t- fűszerek'
+WHERE name = 'Csirkemell rizzsel';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 100g tonhal\n\t- 50g saláta mix\n\t- 30g paradicsom\n\t- 10g olívaolaj'
+WHERE name = 'Tonhalsaláta';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 200g marhahús\n\t- 100g hagyma\n\t- 10g paprika\n\t- 5g olaj'
+WHERE name = 'Marhapörkölt';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 150g lazac\n\t- 100g zöldség mix\n\t- 10g olívaolaj'
+WHERE name = 'Grillezett lazac';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 30g protein por\n\t- 300ml tej\n\t- 1db banán'
+WHERE name = 'Protein shake';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 1db banán'
+WHERE name = 'Banán';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 50g mandula'
+WHERE name = 'Mandula';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 100g liszt\n\t- 2db tojás\n\t- 200ml tej\n\t- 10g cukor'
+WHERE name = 'Palacsinta';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 150g túró\n\t- 50g joghurt\n\t- 10g méz'
+WHERE name = 'Túrós desszert';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 50g sárgarépa\n\t- 50g krumpli\n\t- 30g zeller\n\t- 1L víz'
+WHERE name = 'Zöldségleves';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 1 szelet kenyér\n\t- 50g avokádó\n\t- só, bors'
+WHERE name = 'Avokádó toast';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 100g tofu\n\t- 100g zöldség mix\n\t- 10g szójaszósz'
+WHERE name = 'Tofu stir fry';
+
+UPDATE foods SET description =
+'Összetevők:\n\t- 3db narancs (kb. 250ml lé)'
+WHERE name = 'Narancslé';
+
 -- INSERT recommended plans (for testing)
 INSERT INTO workout_plans (user_id, name, level, location, goal, description, is_public, days_count)
 SELECT

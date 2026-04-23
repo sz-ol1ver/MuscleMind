@@ -10,6 +10,8 @@ let containerClosed;
 
 let containerUsers;
 
+let containerFoods;
+
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
     const allSeen = document.getElementById('ticket-seen');
@@ -17,6 +19,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     containerOpen = document.getElementById('open-tickets');
     containerClosed = document.getElementById('closed-tickets');
     containerUsers = document.getElementById('users-container');
+    containerFoods = document.getElementById('foods-container');
 
     refreshSections();
 
@@ -42,6 +45,7 @@ function refreshSections(){
     loadDash();
     loadTickets();
     loadUsers();
+    loadFoods();
 }
 
 //? dashboard
@@ -847,6 +851,341 @@ function renderUserBody(user, container) {
     container.appendChild(datesWrap);
     container.appendChild(hr4);
     container.appendChild(actionWrap);
+}
+
+//? foods
+async function loadFoods(){
+    try {
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all-foods');
+        renderFoods(data.foods, containerFoods);
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+function renderFoods(foods, container){
+    container.innerHTML = '';
+
+    const adminFoods = [];
+    const userFoods = [];
+
+    for(const food of foods){
+        if(food.user_id === null || food.user_id === undefined){
+            adminFoods.push(food);
+        }else{
+            userFoods.push(food);
+        }
+    }
+
+    const adminSection = document.createElement('div');
+    adminSection.className = 'foods-split-section';
+
+    const userSection = document.createElement('div');
+    userSection.className = 'foods-split-section';
+
+    const adminTitle = document.createElement('h6');
+    adminTitle.className = 'ticket-section-title';
+    adminTitle.textContent = 'Admin receptek';
+
+    const userTitle = document.createElement('h6');
+    userTitle.className = 'ticket-section-title';
+    userTitle.textContent = 'Felhasználói receptek';
+
+    const adminList = document.createElement('div');
+    adminList.className = 'foods-scroll';
+
+    const userList = document.createElement('div');
+    userList.className = 'foods-scroll';
+
+    adminSection.appendChild(adminTitle);
+    adminSection.appendChild(adminList);
+
+    userSection.appendChild(userTitle);
+    userSection.appendChild(userList);
+
+    container.appendChild(adminSection);
+    container.appendChild(userSection);
+
+    renderFoodCards(adminFoods, adminList, 'admin');
+    renderFoodCards(userFoods, userList, 'user');
+}
+
+function renderFoodCards(foods, container, prefix){
+    container.innerHTML = '';
+
+    if(!foods || foods.length === 0){
+        const empty = document.createElement('p');
+        empty.className = 'text-center text-secondary';
+        empty.textContent = 'Nincs megjeleníthető recept.';
+        container.appendChild(empty);
+        return;
+    }
+
+    for(const food of foods){
+        const card = document.createElement('div');
+        card.className = 'card admin-card mb-3 w-100';
+
+        const header = document.createElement('div');
+        header.className = 'card-header admin-card-header';
+        header.style.cursor = 'pointer';
+        header.setAttribute('data-bs-toggle', 'collapse');
+        header.setAttribute('data-bs-target', `#food-${prefix}-${food.id}`);
+        header.setAttribute('aria-expanded', 'false');
+        header.setAttribute('aria-controls', `food-${prefix}-${food.id}`);
+
+        const headerTop = document.createElement('div');
+        headerTop.className = 'd-flex justify-content-between align-items-start gap-3 flex-wrap';
+
+        const leftTop = document.createElement('div');
+        leftTop.className = 'd-flex align-items-center gap-2 flex-wrap ticket-title-wrap';
+
+        const foodId = document.createElement('span');
+        foodId.className = 'card-content-id fw-bold';
+        foodId.textContent = `#${food.id}`;
+
+        const separator = document.createElement('span');
+        separator.className = 'card-separator';
+        separator.textContent = '|';
+
+        const name = document.createElement('span');
+        name.className = 'card-subject fw-bold';
+        name.textContent = food.name;
+
+        leftTop.appendChild(foodId);
+        leftTop.appendChild(separator);
+        leftTop.appendChild(name);
+
+        const badgeWrap = document.createElement('div');
+        badgeWrap.className = 'd-flex align-items-center gap-2 flex-wrap';
+
+        const approvedBadge = document.createElement('span');
+        approvedBadge.className = food.is_approved ? 'badge bg-success' : 'badge bg-danger';
+        approvedBadge.textContent = food.is_approved ? 'Jóváhagyva' : 'Nincs jóváhagyva';
+        badgeWrap.appendChild(approvedBadge);
+
+        headerTop.appendChild(leftTop);
+        headerTop.appendChild(badgeWrap);
+
+        const createdDate = document.createElement('div');
+        createdDate.className = 'card-content-date mt-2';
+        createdDate.textContent = `Létrehozva: ${formatDate(food.created_at)}`;
+
+        header.appendChild(headerTop);
+        header.appendChild(createdDate);
+
+        const collapse = document.createElement('div');
+        collapse.className = 'collapse';
+        collapse.id = `food-${prefix}-${food.id}`;
+
+        const body = document.createElement('div');
+        body.className = 'card-body admin-card-body';
+
+        const topInfoWrap = document.createElement('div');
+        topInfoWrap.className = 'd-flex flex-wrap gap-3';
+
+        topInfoWrap.appendChild(createFoodInfoItem('Kategória', food.category));
+        topInfoWrap.appendChild(createFoodInfoItem('Diéta', food.diet_tag));
+        topInfoWrap.appendChild(createFoodInfoItem('Cél', food.goal_tag));
+        topInfoWrap.appendChild(createFoodInfoItem('Nehézség', food.difficulty));
+        topInfoWrap.appendChild(createFoodInfoItem('Elkészítési idő', food.prep_time_min ? `${food.prep_time_min} perc` : '-'));
+        topInfoWrap.appendChild(createFoodInfoItem('Adag', `${food.serving_size} ${food.serving_unit}`));
+
+        if(food.user_id !== null && food.user_id !== undefined){
+            topInfoWrap.appendChild(createFoodInfoItem('Beküldő user id', `#${food.user_id}`));
+        }
+
+        const hr1 = document.createElement('hr');
+        hr1.className = 'ticket-divider';
+
+        const tagTitle = document.createElement('h6');
+        tagTitle.className = 'ticket-section-title';
+        tagTitle.textContent = 'Címkék';
+
+        const tagWrap = document.createElement('div');
+        tagWrap.className = 'd-flex flex-wrap gap-2';
+
+        let hasTags = false;
+
+        if(food.high_protein){
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-primary';
+            badge.textContent = 'Magas fehérje';
+            tagWrap.appendChild(badge);
+            hasTags = true;
+        }
+
+        if(food.low_carb){
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-warning text-dark';
+            badge.textContent = 'Low carb';
+            tagWrap.appendChild(badge);
+            hasTags = true;
+        }
+
+        if(food.bulk_friendly){
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-info text-dark';
+            badge.textContent = 'Tömegeléshez';
+            tagWrap.appendChild(badge);
+            hasTags = true;
+        }
+
+        if(food.cut_friendly){
+            const badge = document.createElement('span');
+            badge.className = 'badge bg-secondary';
+            badge.textContent = 'Szálkásításhoz';
+            tagWrap.appendChild(badge);
+            hasTags = true;
+        }
+
+        if(!hasTags){
+            const emptyTags = document.createElement('div');
+            emptyTags.className = 'ticket-empty-message';
+            emptyTags.textContent = 'Nincs megadott címke.';
+            tagWrap.appendChild(emptyTags);
+        }
+
+        const hr2 = document.createElement('hr');
+        hr2.className = 'ticket-divider';
+
+        const allergenTitle = document.createElement('h6');
+        allergenTitle.className = 'ticket-section-title';
+        allergenTitle.textContent = 'Allergének';
+
+        const allergenWrap = document.createElement('div');
+        allergenWrap.className = 'd-flex flex-wrap gap-2';
+
+        if(food.allergens && food.allergens.length > 0){
+            for(const allergen of food.allergens){
+                const badge = document.createElement('span');
+                badge.className = 'badge food-allergen-badge';
+                badge.textContent = typeof allergen === 'string' ? allergen : allergen.name;
+                allergenWrap.appendChild(badge);
+            }
+        }else{
+            const emptyAllergen = document.createElement('div');
+            emptyAllergen.className = 'ticket-empty-message';
+            emptyAllergen.textContent = 'Nincs megadott allergén.';
+            allergenWrap.appendChild(emptyAllergen);
+        }
+
+        const hr3 = document.createElement('hr');
+        hr3.className = 'ticket-divider';
+
+        const descTitle = document.createElement('h6');
+        descTitle.className = 'ticket-section-title';
+        descTitle.textContent = 'Leírás';
+
+        const descBox = document.createElement('div');
+        descBox.className = 'ticket-message-box';
+        descBox.textContent = food.description;
+
+        const hr4 = document.createElement('hr');
+        hr4.className = 'ticket-divider';
+
+        const nutritionTitle = document.createElement('h6');
+        nutritionTitle.className = 'ticket-section-title';
+        nutritionTitle.textContent = 'Tápértékek';
+
+        const nutritionBox = document.createElement('div');
+        nutritionBox.className = 'ticket-message-box';
+
+        const nutritionGrid = document.createElement('div');
+        nutritionGrid.className = 'd-flex flex-wrap gap-3';
+
+        nutritionGrid.appendChild(createFoodInfoItem('Kalória', `${food.calories_kcal} kcal`));
+        nutritionGrid.appendChild(createFoodInfoItem('Fehérje', `${food.protein_g} g`));
+        nutritionGrid.appendChild(createFoodInfoItem('Szénhidrát', `${food.carbs_g} g`));
+        nutritionGrid.appendChild(createFoodInfoItem('Zsír', `${food.fat_g} g`));
+        nutritionGrid.appendChild(createFoodInfoItem('Rost', `${food.fiber_g} g`));
+        nutritionGrid.appendChild(createFoodInfoItem('Cukor', `${food.sugar_g} g`));
+        nutritionGrid.appendChild(createFoodInfoItem('Só', `${food.salt_g} g`));
+
+        nutritionBox.appendChild(nutritionGrid);
+
+        const hr5 = document.createElement('hr');
+        hr5.className = 'ticket-divider';
+
+        const footerWrap = document.createElement('div');
+        footerWrap.className = 'd-flex flex-wrap justify-content-between align-items-end gap-3';
+
+        const datesWrap = document.createElement('div');
+        datesWrap.className = 'ticket-dates';
+
+        const createdInfo = document.createElement('div');
+        createdInfo.textContent = `Létrehozva: ${formatDate(food.created_at)}`;
+
+        const updatedInfo = document.createElement('div');
+        updatedInfo.textContent = `Szerkesztve: ${formatDate(food.updated_at)}`;
+
+        datesWrap.appendChild(createdInfo);
+        datesWrap.appendChild(updatedInfo);
+
+        footerWrap.appendChild(datesWrap);
+
+        if(food.user_id !== null && food.user_id !== undefined){
+            const approveBtn = document.createElement('button');
+            approveBtn.className = food.is_approved ? 'btn btn-outline-warning' : 'btn btn-outline-success';
+            approveBtn.textContent = food.is_approved ? 'Jóváhagyás visszavonása' : 'Jóváhagyás';
+
+            approveBtn.addEventListener('click', async()=>{
+                try {
+                    const patchObj = {
+                        is_approved: food.is_approved
+                    };
+                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/foods/toggle-approved/' + food.id, patchObj);
+                    alert(data.message);
+                    loadFoods();
+                } catch (error) {
+                    console.error(error.message);
+                    alert(error.message);
+                }
+            });
+
+            footerWrap.appendChild(approveBtn);
+        }
+
+        body.appendChild(topInfoWrap);
+        body.appendChild(hr1);
+        body.appendChild(tagTitle);
+        body.appendChild(tagWrap);
+        body.appendChild(hr2);
+        body.appendChild(allergenTitle);
+        body.appendChild(allergenWrap);
+        body.appendChild(hr3);
+        body.appendChild(descTitle);
+        body.appendChild(descBox);
+        body.appendChild(hr4);
+        body.appendChild(nutritionTitle);
+        body.appendChild(nutritionBox);
+        body.appendChild(hr5);
+        body.appendChild(footerWrap);
+
+        collapse.appendChild(body);
+        card.appendChild(header);
+        card.appendChild(collapse);
+
+        container.appendChild(card);
+    }
+}
+
+function createFoodInfoItem(label, value){
+    const item = document.createElement('div');
+    item.className = 'd-flex flex-column px-2 py-1';
+    item.style.minWidth = '140px';
+
+    const span1 = document.createElement('span');
+    span1.className = 'card-content-date';
+    span1.textContent = label;
+
+    const span2 = document.createElement('span');
+    span2.className = 'fw-semibold';
+    span2.textContent = value ?? '-';
+
+    item.appendChild(span1);
+    item.appendChild(span2);
+
+    return item;
 }
 
 function formatDate(dateString) {

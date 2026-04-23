@@ -621,6 +621,39 @@ async function userChangeUsername(id, username) {
     const [rows] = await pool.execute(update, [username,id]);
     return rows.affectedRows;
 }
+async function allFoods() {
+    const selectFoods = 'SELECT * FROM foods ORDER BY created_at DESC';
+    const [foods] = await pool.execute(selectFoods);
+
+    const selectAllergens = `
+        SELECT 
+            fa.food_id,
+            a.id,
+            a.name
+        FROM food_allergens fa
+        INNER JOIN allergens a ON fa.allergen_id = a.id
+    `;
+    const [allergens] = await pool.execute(selectAllergens);
+
+    for (let food of foods) {
+        food.allergens = [];
+        for (let allergen of allergens) {
+            if (allergen.food_id == food.id) {
+                food.allergens.push({
+                    id: allergen.id,
+                    name: allergen.name
+                });
+            }
+        }
+    }
+
+    return foods;
+}
+async function foodApproved(id) {
+    const update = 'UPDATE foods SET is_approved = NOT is_approved WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -720,5 +753,7 @@ module.exports = {
     userDelete,
     userChangeEmail,
     userChangeUsername,
-    checkIfActive
+    checkIfActive,
+    allFoods,
+    foodApproved
 };

@@ -440,6 +440,76 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
+//? Foods
+router.get('/foods/all-foods', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const foods = await db.allFoods();
+        return response.status(200).json({
+            foods
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
+router.patch('/foods/toggle-approved/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+    try {
+        const id = request.params.id;
+        const adminId = request.session.user.id;
+        const {is_approved} = request.body;
 
+        if (is_approved !== true && is_approved !== false && is_approved !== 1 && is_approved !== 0) {
+            return response.status(400).json({
+                message: 'Sikertelen jóváhagyás frissítés!'
+            });
+        }
+
+        const approved = await db.foodApproved(id);
+        const ip = requestIp.getClientIp(request);
+
+        if(is_approved == 0 || is_approved === false){
+            await db.log_id(
+                adminId,
+                'admin - food approval change',
+                'food id: ' + id + ', old approved: 0, new approved: 1',
+                ip
+            );
+            return response.status(200).json({
+                message: 'Étel sikeresen jóváhagyva!',
+                approved
+            });
+        }else if(is_approved == 1 || is_approved === true){
+            await db.log_id(
+                adminId,
+                'admin - food approval change',
+                'food id: ' + id + ', old approved: 1, new approved: 0',
+                ip
+            );
+            return response.status(200).json({
+                message: 'Étel jóváhagyása visszavonva!',
+                approved
+            });
+        }
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 
 module.exports = router;
