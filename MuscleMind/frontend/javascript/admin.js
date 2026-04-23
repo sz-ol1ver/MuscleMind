@@ -16,6 +16,7 @@ let userFoods = [];
 // szűrt tömbök
 let filteredAdminFoods = [];
 let filteredUserFoods = [];
+let newFoodForm;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     containerClosed = document.getElementById('closed-tickets');
     containerUsers = document.getElementById('users-container');
     containerFoods = document.getElementById('foods-container');
+    newFoodForm = document.getElementById('food-create-form');
 
     refreshSections();
 
@@ -54,6 +56,10 @@ document.addEventListener('DOMContentLoaded', ()=>{
     ).forEach(filter => {
         filter.addEventListener("change", applyFilters);
     });
+    newFoodForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        postNewFood();
+    })
 });
 
 //? refresh section data
@@ -905,10 +911,12 @@ function renderUserBody(user, container) {
 //? foods
 async function postNewFood() {
     try {
-        let form = document.getElementById('food-create-form');
-
-        const newFood = new FormData(form)
-        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new-food', )
+        const newFood = new FormData(newFoodForm)
+        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new-food', newFood);
+        console.log(data);
+        setTimeout(() => {
+            newFoodForm.reset();
+        }, 5000);
     } catch (error) {
         console.error(error.message);
     }

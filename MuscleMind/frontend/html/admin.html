@@ -187,6 +187,11 @@
                                     </div>
 
                                     <div class="col-12 col-md-6">
+                                        <label for="food-url" class="form-label food-form-label">Kép url</label>
+                                        <input type="text" id="food-url" name="url" class="form-control food-form-control" placeholder="xy.jpeg/.png" maxlength="150">
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
                                         <label for="food-category" class="form-label food-form-label">Kategória</label>
                                         <select id="food-category" name="category" class="form-select food-form-control" required>
                                             <option value="">Válassz kategóriát</option>
@@ -206,42 +211,42 @@
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-calories" class="form-label food-form-label">Kalória (kcal)</label>
-                                        <input type="number" step="0.01" min="0" id="food-calories" name="calories_kcal" class="form-control food-form-control" required>
+                                        <input type="number" step="0.01" min="0" id="food-calories" name="calories_kcal" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-protein" class="form-label food-form-label">Fehérje (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-protein" name="protein_g" class="form-control food-form-control" required>
+                                        <input type="number" step="0.01" min="0" id="food-protein" name="protein_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-carbs" class="form-label food-form-label">Szénhidrát (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-carbs" name="carbs_g" class="form-control food-form-control" required>
+                                        <input type="number" step="0.01" min="0" id="food-carbs" name="carbs_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-fat" class="form-label food-form-label">Zsír (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-fat" name="fat_g" class="form-control food-form-control" required>
+                                        <input type="number" step="0.01" min="0" id="food-fat" name="fat_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-fiber" class="form-label food-form-label">Rost (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-fiber" name="fiber_g" class="form-control food-form-control" value="0">
+                                        <input type="number" step="0.01" min="0" id="food-fiber" name="fiber_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-sugar" class="form-label food-form-label">Cukor (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-sugar" name="sugar_g" class="form-control food-form-control" value="0">
+                                        <input type="number" step="0.01" min="0" id="food-sugar" name="sugar_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-salt" class="form-label food-form-label">Só (g)</label>
-                                        <input type="number" step="0.01" min="0" id="food-salt" name="salt_g" class="form-control food-form-control" value="0">
+                                        <input type="number" step="0.01" min="0" id="food-salt" name="salt_g" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-serving-size" class="form-label food-form-label">Adag méret</label>
-                                        <input type="number" step="0.01" min="0" id="food-serving-size" name="serving_size" class="form-control food-form-control" required>
+                                        <input type="number" step="0.01" min="0" id="food-serving-size" name="serving_size" class="form-control food-form-control" value="0" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -259,7 +264,7 @@
 
                                     <div class="col-12 col-md-4">
                                         <label for="food-prep-time" class="form-label food-form-label">Elkészítési idő (perc)</label>
-                                        <input type="number" min="0" id="food-prep-time" name="prep_time_min" class="form-control food-form-control">
+                                        <input type="number" min="0" id="food-prep-time" name="prep_time_min" class="form-control food-form-control" required>
                                     </div>
 
                                     <div class="col-12 col-md-4">
@@ -296,37 +301,37 @@
                                         <div class="food-checkbox-grid ps-4">
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-tej" name="allergens" value="tej">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tej" name="allergens" value="1">
                                                 <label class="form-check-label" for="food-allergen-tej">Tej</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-tojas" name="allergens" value="tojas">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tojas" name="allergens" value="2">
                                                 <label class="form-check-label" for="food-allergen-tojas">Tojás</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-gluten" name="allergens" value="gluten">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-gluten" name="allergens" value="3">
                                                 <label class="form-check-label" for="food-allergen-gluten">Glutén</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-mogyoro" name="allergens" value="mogyoro">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-mogyoro" name="allergens" value="4">
                                                 <label class="form-check-label" for="food-allergen-mogyoro">Mogyoró</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-diofelek" name="allergens" value="diofelek">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-diofelek" name="allergens" value="5">
                                                 <label class="form-check-label" for="food-allergen-diofelek">Diófélék</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-magvak" name="allergens" value="magvak">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-magvak" name="allergens" value="6">
                                                 <label class="form-check-label" for="food-allergen-magvak">Magvak</label>
                                             </div>
 
                                             <div class="form-check food-check-item">
-                                                <input class="form-check-input" type="checkbox" id="food-allergen-hal" name="allergens" value="hal">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-hal" name="allergens" value="7">
                                                 <label class="form-check-label" for="food-allergen-hal">Hal</label>
                                             </div>
 

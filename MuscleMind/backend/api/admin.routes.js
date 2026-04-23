@@ -4,6 +4,7 @@ const db = require('../sql/database.js');
 const fs = require('fs/promises');
 const requestIp = require('request-ip'); //! npm install request-ip
 const loginMw = require('../middleware/login.middleware.js');
+const foodsMw = require('../middleware/foods.middleware.js');
 const {requireAdmin} = require('../middleware/isAdmin.middleware.js')
 const multer = require('multer');
 const upload = multer();
@@ -453,8 +454,9 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
     }
 });
 //? Foods
-router.post('foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmin,async(request, response) =>{
+router.post('/foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmin,foodsMw.validateNewFood,async(request, response) =>{
     try {
+        console.log('asdasd')
         console.log(request.body);
         return response.status(200).json({
             message: 'Sikeres hozzáadás'
