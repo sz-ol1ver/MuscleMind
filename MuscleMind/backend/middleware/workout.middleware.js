@@ -177,7 +177,6 @@ async function validateUpdate(req,res,next) {
         const allowedDay = ['dayId','dayNumber', 'name', 'restDay', 'exercises', 'url'];
         const allowedExercise = ['exerciseId', 'name', 'order'];
         console.log(workoutPlan);
-        console.log(workoutPlan.days[1].exercises)
         if (!workoutPlan || typeof workoutPlan !== 'object' || Array.isArray(workoutPlan)) {
             return res.status(400).json({
                 message: 'Nem sikerült feldolgozni az edzésterv adatait.1'

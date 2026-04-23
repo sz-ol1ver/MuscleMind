@@ -3,113 +3,54 @@
     border-radius: 20px;
     margin: 10px;
     background-color: #6c6c862a;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 10px 20px 10px;
     min-height: 400px;
     height: 50vh;
-    overflow-y: scroll;
-    padding-bottom: 40px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     position: relative;
 }
-#new-plan, #selected-plan{
+
+#new-plan,
+#selected-plan{
     height: auto;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: hidden;
 }
+
 .headline{
-    margin: 5px 0 5px 0;
-    border-radius: 3px;
+    margin: 5px 0;
     width: 100%;
-    position:sticky;
+    position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 2;
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
 }
-#recommended-title, #selected-title{
-    text-align: center;
-    font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
-}
 
-#personal-title{
-    text-align: center;
-    font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
-}
-
-#new-title{
-    text-align: center;
-    font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
-}
-.routine{
-    overflow-x: scroll;
-    white-space: nowrap;
-    padding: 5px;
-}
-.routine table{
-    width:100%;
-    padding: 10px;
-}
-.routine th,td{
-    vertical-align: middle;
-    padding: 20px;
-}
-table,tr,th,td{
-    background-color: #0f0f17 !important;
-    color: white !important;
-    text-align: center;
-}
-tr{
-    border: 2px solid #612eb9 !important;
-}
-th{
-    background-color: #29154c !important;
-}
-#btn-hr{
-    width: 50%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-select{
-    text-align: center;
-    font-weight: bold;
-    border: 1px solid #612eb9 !important;
-}
-.day-selector button:hover{
-    color: #612eb9;
-}
-.active{
-    border: 2px solid #612eb9 !important;
-    color: #a276ef !important;
-    font-weight: bolder;
-    font-style: italic;
-}
-input:disabled{
-    background-color: #6b6b6b !important;
-}
-.day-box{
-    color: #616161;
-}
-#personal-items,#recommended-items{
-    overflow-y: visible;
-    overflow-x: hidden;
-    white-space: nowrap;
-    padding: 5px;
+.plans-line{
+    flex: 0 0 auto;
     height: auto;
+    min-height: 0;
+    padding: 0;
 }
-.workout-title{
-    text-wrap: wrap !important;
+
+#recommended-plan > hr{
+    flex: 0 0 auto;
+    margin: 0.75rem 0;
+}
+
+.container-items{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 5px;
+}
+
+#personal-items,
+#recommended-items{
+    width: 100%;
 }
 
 .mainCard{
@@ -117,41 +58,94 @@ input:disabled{
     border: 2px solid rgb(92, 92, 92);
     background-color: #2a2a2a;
     color: white;
-    width: 95% !important;
-    height: auto !important;
-    display: block !important;
+    width: 95%;
 }
+
 .mainCard:hover{
     border: 2px solid #b58bfd !important;
     box-shadow:
-        0 0 6px #8c65d0 ,
+        0 0 6px #8c65d0,
         0 0 12px #603f9b,
-        0 0 20px #4d2198 !important;
+        0 0 20px #4d2198;
 }
+
 .detailCard{
     border: 3px solid rgb(92, 92, 92) !important;
     background-color: #343434;
     color: rgb(255, 251, 251);
-    width: 100% !important;
-    max-height: 30vh !important;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    white-space: normal !important;
+    width: 100%;
+    overflow: visible;
+    white-space: normal;
     word-break: break-word;
 }
+
 #selectedPlan{
-    display: block;
-    width: 100% !important;
-    align-items: center;
-    overflow-x: scroll;
-    white-space: nowrap;
+    width: 100%;
 }
-#selectedPlan>.detailCard{
-    max-width: none !important;
+
+.routine{
+    overflow-x: auto;
+    padding: 5px;
 }
-.container-items{
-    flex: 1;
+
+.routine table{
+    width: 100%;
 }
+
+.routine th, td{
+    vertical-align: middle;
+    padding: 20px;
+}
+
+table, tr, th, td{
+    background-color: #0f0f17 !important;
+    color: white !important;
+    text-align: center;
+}
+
+tr{
+    border: 2px solid #612eb9 !important;
+}
+
+th{
+    background-color: #29154c !important;
+}
+
+select{
+    text-align: center;
+    font-weight: bold;
+    border: 1px solid #612eb9 !important;
+}
+
+.day-selector button:hover{
+    color: #612eb9;
+}
+
+.active{
+    border: 2px solid #612eb9 !important;
+    color: #a276ef !important;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.day-box{
+    color: #616161;
+}
+
+input:disabled{
+    background-color: #6b6b6b !important;
+}
+
+#recommended-title,
+#selected-title,
+#personal-title,
+#new-title{
+    text-align: center;
+    font-weight: 600;
+    margin-top: 10px;
+    color: #b58bfd;
+}
+
 .text-justify{
     text-align: justify;
 }

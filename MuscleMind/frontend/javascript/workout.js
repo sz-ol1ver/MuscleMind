@@ -395,9 +395,18 @@ async function loadWorkouts() {
             detailsBtn.setAttribute('aria-expanded', 'false');
             detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
             //? load details
-            detailsBtn.addEventListener('click', ()=>{
-                loadWorkoutDetail(detailsBtn.value);
-            })
+            detailsBtn.addEventListener('click', async () => {
+                const detailDiv = document.getElementById(`workout-details-${data.plans[i].id}`);
+
+                if (!detailDiv.dataset.loaded) {
+                    detailDiv.innerHTML = '<div class="text-center py-3">Betöltés...</div>';
+                    
+                    setTimeout(async () => {
+                        await loadWorkoutDetail(data.plans[i].id);
+                        detailDiv.dataset.loaded = 'true';
+                    }, 150);
+                }
+            });
 
             const selectBtn = document.createElement('button');
             selectBtn.className = 'btn btn-outline-light';
@@ -481,8 +490,17 @@ function renderRecWorkouts(plans){
         detailsBtn.setAttribute('data-bs-target', `#workout-details-${plans[i].id}`);
         detailsBtn.setAttribute('aria-expanded', 'false');
         detailsBtn.setAttribute('aria-controls', `workout-details-${plans[i].id}`);
-        detailsBtn.addEventListener('click', ()=>{
-            loadRecWorkoutDetail(detailsBtn.value);
+        detailsBtn.addEventListener('click', async () => {
+            const detailDiv = document.getElementById(`workout-details-${plans[i].id}`);
+
+            if (!detailDiv.dataset.loaded) {
+                detailDiv.innerHTML = '<div class="text-center py-3">Betöltés...</div>';
+
+                setTimeout(async () => {
+                    await loadRecWorkoutDetail(plans[i].id);
+                    detailDiv.dataset.loaded = 'true';
+                }, 150);
+            }
         });
 
         const selectBtn = document.createElement('button');
