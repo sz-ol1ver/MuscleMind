@@ -511,5 +511,37 @@ router.patch('/foods/toggle-approved/:id', loginMw.requireAuthApi, requireAdmin,
         });
     }
 });
+router.delete('/foods/delete-food/:id', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+    try {
+        const id = request.params.id;
+        const adminId = request.session.user.id;
+
+        const deletedFood = await db.deleteFood(id);
+        const ip = requestIp.getClientIp(request);
+
+        await db.log_id(
+            adminId,
+            'admin - food delete',
+            'deleted food id: ' + id,
+            ip
+        );
+
+        return response.status(200).json({
+            message: 'Étel sikeresen törölve!',
+            deletedFood
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 
 module.exports = router;

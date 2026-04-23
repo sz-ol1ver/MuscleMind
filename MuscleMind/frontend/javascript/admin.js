@@ -1123,12 +1123,16 @@ function renderFoodCards(foods, container, prefix){
 
         footerWrap.appendChild(datesWrap);
 
+        const actionWrap = document.createElement('div');
+        actionWrap.className = 'd-flex flex-wrap gap-2';
+
         if(food.user_id !== null && food.user_id !== undefined){
             const approveBtn = document.createElement('button');
             approveBtn.className = food.is_approved ? 'btn btn-outline-warning' : 'btn btn-outline-success';
             approveBtn.textContent = food.is_approved ? 'Jóváhagyás visszavonása' : 'Jóváhagyás';
 
-            approveBtn.addEventListener('click', async()=>{
+            approveBtn.addEventListener('click', async(e)=>{
+                e.stopPropagation();
                 try {
                     const patchObj = {
                         is_approved: food.is_approved
@@ -1142,8 +1146,27 @@ function renderFoodCards(foods, container, prefix){
                 }
             });
 
-            footerWrap.appendChild(approveBtn);
+            actionWrap.appendChild(approveBtn);
         }
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-outline-danger';
+        deleteBtn.textContent = 'Törlés';
+
+        deleteBtn.addEventListener('click', async(e)=>{
+            e.stopPropagation();
+            try {
+                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/foods/delete-food/' + food.id);
+                alert(data.message);
+                loadFoods();
+            } catch (error) {
+                console.error(error.message);
+                alert(error.message);
+            }
+        });
+
+        actionWrap.appendChild(deleteBtn);
+        footerWrap.appendChild(actionWrap);
 
         body.appendChild(topInfoWrap);
         body.appendChild(hr1);

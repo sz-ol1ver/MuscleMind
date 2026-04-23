@@ -654,6 +654,11 @@ async function foodApproved(id) {
     const [rows] = await pool.execute(update, [id]);
     return rows.affectedRows;
 }
+async function deleteFood(id) {
+    const del = 'DELETE FROM foods WHERE id = ?';
+    const [rows] = await pool.execute(del, [id]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -755,5 +760,6 @@ module.exports = {
     userChangeUsername,
     checkIfActive,
     allFoods,
-    foodApproved
+    foodApproved,
+    deleteFood
 };
