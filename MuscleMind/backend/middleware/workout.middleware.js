@@ -247,7 +247,7 @@ async function validateUpdate(req,res,next) {
                     message: 'Adj nevet a napnak!'
                 });
             }
-            if(typeof day.restDay !== 'number'){
+            if(typeof day.restDay !== 'boolean'){
                 return res.status(400).json({
                     message: 'Napok adatainak feldolgozása sikertelen!3'
                 });

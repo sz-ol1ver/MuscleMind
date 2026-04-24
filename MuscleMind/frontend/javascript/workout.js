@@ -701,55 +701,67 @@ async function editWorkout(id) {
     const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
     planEditId = id;
     workoutPlan = data.details;
-    originalWorkoutPlan = JSON.parse(JSON.stringify(data.details));
-    for(let i = 0; i<workoutPlan.days.length; i++){
-        if(workoutPlan.days[i].restDay == true){
-            workoutPlan.days[i].exercises.push({
+
+    for(let i = 0; i < workoutPlan.days.length; i++){
+        workoutPlan.days[i].restDay = Boolean(workoutPlan.days[i].restDay);
+
+        if(workoutPlan.days[i].restDay === true){
+            workoutPlan.days[i].exercises = [{
                 exerciseId: 0,
                 name: 'REST DAY',
                 order: null
-            })
+            }];
         }
     }
+
+    originalWorkoutPlan = JSON.parse(JSON.stringify(workoutPlan));
+
     const editTitle = document.getElementById('newPlanTitle');
     editTitle.innerHTML = workoutPlan.name + " - szerkesztés";
-    //? display
+
     create.classList.add('d-none');
     info.classList.remove('d-none');
     save.classList.remove('d-none');
     cancel.classList.remove('d-none');
     location.href = '#action';
 
-
     loadExercises();
     currentDay = 0;
     renderTable();
-    if(workoutPlan.days[currentDay].restDay == false){
+
+    if(workoutPlan.days[currentDay].restDay === false){
         rest.checked = false;
         select.disabled = false;
     }else{
         rest.checked = true;
         select.disabled = true;
     }
+
     day_name.value = workoutPlan.days[currentDay].name;
+
     document.querySelectorAll(".day-box").forEach(button => {
         if(button.value > workoutPlan.days_count){
             button.classList.add("d-none");
         }
+
         button.addEventListener("click", () => {
             currentDay = Number(button.value) - 1;
             renderTable();
-            if(workoutPlan.days[currentDay].restDay == false){
+
+            if(workoutPlan.days[currentDay].restDay === false){
                 rest.checked = false;
                 select.disabled = false;
             }else{
                 rest.checked = true;
                 select.disabled = true;
             }
+
             day_name.value = workoutPlan.days[currentDay].name;
+
             document.querySelectorAll(".day-box").forEach(button => {
                 button.classList.remove('active');
             });
+
             button.classList.add('active');
         });
     });
