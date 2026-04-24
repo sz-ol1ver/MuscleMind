@@ -622,7 +622,7 @@ async function userChangeUsername(id, username) {
     return rows.affectedRows;
 }
 async function allFoods() {
-    const selectFoods = 'SELECT * FROM foods ORDER BY created_at DESC';
+    const selectFoods = 'SELECT * FROM foods ORDER BY id DESC';
     const [foods] = await pool.execute(selectFoods);
 
     const selectAllergens = `
@@ -658,6 +658,67 @@ async function deleteFood(id) {
     const del = 'DELETE FROM foods WHERE id = ?';
     const [rows] = await pool.execute(del, [id]);
     return rows.affectedRows;
+}
+
+async function createFood(adminId,food) {
+    const insert = `
+        INSERT INTO foods (
+            created_by,
+            name,
+            description,
+            image_url,
+            category,
+            calories_kcal,
+            protein_g,
+            carbs_g,
+            fat_g,
+            fiber_g,
+            sugar_g,
+            salt_g,
+            serving_size,
+            serving_unit,
+            goal_tag,
+            diet_tag,
+            difficulty,
+            prep_time_min,
+            high_protein,
+            low_carb,
+            bulk_friendly,
+            cut_friendly,
+            is_approved
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `;
+    const [rows] = await pool.execute(insert, [
+        adminId,
+        food.name,
+        food.description,
+        food.url || null,
+        food.category,
+        food.calories_kcal,
+        food.protein_g,
+        food.carbs_g,
+        food.fat_g,
+        food.fiber_g,
+        food.sugar_g,
+        food.salt_g,
+        food.serving_size,
+        food.serving_unit,
+        food.goal_tag,
+        food.diet_tag,
+        food.difficulty,
+        food.prep_time_min,
+        food.high_protein,
+        food.low_carb,
+        food.bulk_friendly,
+        food.cut_friendly,
+        1
+    ]);
+    return rows.insertId;
+}
+async function insertFoodAllergen(foodId, allergenId) {
+    const insert = 'INSERT INTO food_allergens(food_id, allergen_id)VALUES(?,?)';
+    const [rows] = await pool.execute(insert, [foodId, allergenId]);
+    return rows.insertId;
 }
 // ----
 // LOG
@@ -761,5 +822,7 @@ module.exports = {
     checkIfActive,
     allFoods,
     foodApproved,
-    deleteFood
+    deleteFood,
+    createFood,
+    insertFoodAllergen
 };

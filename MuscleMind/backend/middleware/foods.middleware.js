@@ -68,6 +68,12 @@ async function validateNewFood(req, res, next) {
                 message: 'Érvénytelen url.'
             });
         }
+        let urlReg = /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
+        if(!urlReg.test(food.url)){
+            return res.status(400).json({
+                message: 'Érvénytelen url.'
+            });
+        }
         //? leiras ellenorzes
         if (typeof food.description !== 'string' || !food.description.trim()) {
             return res.status(400).json({
@@ -115,7 +121,11 @@ async function validateNewFood(req, res, next) {
         ];
 
         for (let field of boolFields) {
-            food[field] = food[field] === 'on' || food[field] === true || food[field] === 'true' ? 1 : 0;
+            if (food[field] === 'on' ||food[field] === true ||food[field] === 'true') {
+                food[field] = 1;
+            } else {
+                food[field] = 0;
+            }
         }
 
         if (food.allergens !== undefined) {
@@ -149,7 +159,6 @@ async function validateNewFood(req, res, next) {
         }
 
         next();
-
     } catch (error) {
         next(error);
     }

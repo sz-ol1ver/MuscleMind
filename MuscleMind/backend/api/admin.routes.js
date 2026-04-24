@@ -436,6 +436,7 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
             'deleted user id: ' + id,
             ip
         );
+        
         return response.status(200).json({
             message: 'Sikeres fiók törlés!',
             deleteUser
@@ -456,8 +457,19 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
 //? Foods
 router.post('/foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmin,foodsMw.validateNewFood,async(request, response) =>{
     try {
-        console.log('asdasd')
-        console.log(request.body);
+        const adminId = request.session.user.id;
+        const food = request.body;
+        const foodId = await db.createFood(adminId,food)
+        for(let allergen of food.allergens){
+            await db.insertFoodAllergen(foodId,allergen);
+        }
+        const ip = requestIp.getClientIp(request);
+        await db.log_id(
+            adminId,
+            'admin - food create',
+            'created food id: ' + foodId + ' | name: ' + food.name,
+            ip
+        );
         return response.status(200).json({
             message: 'Sikeres hozzáadás'
         });
@@ -473,7 +485,7 @@ router.post('/foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmi
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 router.get('/foods/all-foods', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const foods = await db.allFoods();

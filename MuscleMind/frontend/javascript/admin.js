@@ -914,15 +914,19 @@ async function postNewFood() {
         const newFood = new FormData(newFoodForm)
         const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new-food', newFood);
         console.log(data);
+        alert(data.message);
         setTimeout(() => {
             newFoodForm.reset();
-        }, 5000);
+            loadFoods()
+        }, 2000);
     } catch (error) {
+        alert(error.message);
         console.error(error.message);
     }
 }
 async function loadFoods(){
     try {
+        resetFilters();
         const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all-foods');
         renderFoods(data.foods, containerFoods);
     } catch (error) {
