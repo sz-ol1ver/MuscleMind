@@ -588,5 +588,27 @@ router.delete('/foods/delete-food/:id', loginMw.requireAuthApi, requireAdmin, as
         });
     }
 });
+//? workouts
+router.get('/workouts/all', async(request, response) =>{
+    try {
+        const defWorkouts = await db.getAllDefaultPlans();
+        const userWorkouts = await db.getAllUsersPlans();
+        return response.status(200).json({
+            default: defWorkouts,
+            users: userWorkouts
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 
 module.exports = router;

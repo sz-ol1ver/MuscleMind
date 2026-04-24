@@ -99,30 +99,6 @@ CREATE TABLE IF NOT EXISTS user_weights (
 );
 
 -- WORKOUT --
--- gyakorlatok
-CREATE TABLE IF NOT EXISTS exercises(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    muscle_group ENUM(
-        'mell',
-        'hát',
-        'váll',
-        'bicepsz',
-        'tricepsz',
-        'alkar',
-        'has',
-        'ferde_has',
-        'alsó_hát',
-        'comb_első',
-        'comb_hátsó',
-        'farizom',
-        'vádli',
-        'teljes_test',
-        'cardio'
-    ) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     user_id INT NOT NULL,
 
@@ -159,6 +135,31 @@ CREATE TABLE IF NOT EXISTS user_global_xp (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
+-- gyakorlatok
+CREATE TABLE IF NOT EXISTS exercises(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE,
+    muscle_group ENUM(
+        'mell',
+        'hát',
+        'váll',
+        'bicepsz',
+        'tricepsz',
+        'alkar',
+        'has',
+        'ferde_has',
+        'alsó_hát',
+        'comb_első',
+        'comb_hátsó',
+        'farizom',
+        'vádli',
+        'teljes_test',
+        'cardio'
+    ) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -720,6 +720,169 @@ async function insertFoodAllergen(foodId, allergenId) {
     const [rows] = await pool.execute(insert, [foodId, allergenId]);
     return rows.insertId;
 }
+//? workouts
+async function getAllUsersPlans(){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.user_id IS NOT NULL
+
+        ORDER BY
+            wp.id ASC,
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql);
+    return formatWorkoutPlans(rows);
+}
+async function getAllDefaultPlans(){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.level,
+            wp.location,
+            wp.goal,
+            wp.description,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.user_id is NULL
+        AND wp.is_public = TRUE
+
+        ORDER BY
+            wp.id ASC,
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql);
+    return formatWorkoutPlans(rows);
+}
+//? workout helper function
+function formatWorkoutPlans(rows) {
+    const plans = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+
+        // 1. PLAN keresése
+        let plan = null;
+
+        for (let j = 0; j < plans.length; j++) {
+            if (plans[j].planId === row.plan_id) {
+                plan = plans[j];
+                break;
+            }
+        }
+
+        // 2. Ha nincs még plan → létrehozás
+        if (!plan) {
+            plan = {
+                planId: row.plan_id,
+                name: row.plan_name,
+                daysCount: row.days_count,
+
+                level: row.level ?? null,
+                location: row.location ?? null,
+                goal: row.goal ?? null,
+                description: row.description ?? null,
+
+                days: []
+            };
+
+            plans.push(plan);
+        }
+
+        // 3. DAY keresése
+        let day = null;
+
+        for (let k = 0; k < plan.days.length; k++) {
+            if (plan.days[k].dayId === row.day_id) {
+                day = plan.days[k];
+                break;
+            }
+        }
+
+        // 4. Ha nincs még day → létrehozás
+        if (!day) {
+            day = {
+                dayId: row.day_id,
+                dayNumber: row.day_number,
+                name: row.day_name,
+                isRestDay: Boolean(row.isRestDay),
+                imageUrl: row.image_url,
+                exercises: []
+            };
+
+            plan.days.push(day);
+        }
+
+        // 5. Exercise hozzáadás (ha van)
+        if (row.exercise_id !== null) {
+            day.exercises.push({
+                dayExerciseId: row.day_exercise_id,
+                exerciseId: row.exercise_id,
+                name: row.exercise_name,
+                muscleGroup: row.muscle_group,
+                order: row.exercise_order
+            });
+        }
+    }
+
+    return plans;
+}
 // ----
 // LOG
 // ----
@@ -824,5 +987,7 @@ module.exports = {
     foodApproved,
     deleteFood,
     createFood,
-    insertFoodAllergen
+    insertFoodAllergen,
+    getAllDefaultPlans,
+    getAllUsersPlans
 };

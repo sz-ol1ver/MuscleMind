@@ -2,12 +2,10 @@ import {deleteFetch, getFetch, patchFetch, postRequest, postForm} from './api.js
 
 let openT = [];
 let closedT = [];
-
-let users = [];
-
 let containerOpen;
 let containerClosed;
 
+let users = [];
 let containerUsers;
 
 let containerFoods;
@@ -18,6 +16,14 @@ let filteredAdminFoods = [];
 let filteredUserFoods = [];
 let newFoodForm;
 
+let workoutContainer;
+let adminWorkouts = [];
+let usersWorkouts = [];
+let workoutForm;
+let workoutDaysCountInput;
+let workoutDaysBuilder;
+let allExercises = [];
+
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
     const allSeen = document.getElementById('ticket-seen');
@@ -27,6 +33,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
     containerUsers = document.getElementById('users-container');
     containerFoods = document.getElementById('foods-container');
     newFoodForm = document.getElementById('food-create-form');
+    workoutContainer = document.getElementById('workout-container');
+    workoutForm = document.getElementById('workout-create-form');
+    workoutDaysCountInput = document.getElementById('workout-days-count');
+    workoutDaysBuilder = document.getElementById('workout-days-builder');
+
+    workoutDaysCountInput.addEventListener('change', () => {
+        generateWorkoutDays();
+    });
 
     refreshSections();
 
@@ -69,6 +83,8 @@ function refreshSections(){
     loadUsers();
     resetFilters();
     loadFoods();
+    loadWorkouts();
+    loadExercises();
 }
 
 //? dashboard
@@ -1121,7 +1137,7 @@ function renderFoodCards(foods, container, prefix){
         if(food.low_carb){
             const badge = document.createElement('span');
             badge.className = 'badge bg-warning text-dark';
-            badge.textContent = 'Low carb';
+            badge.textContent = 'Alacsony szénhidrát';
             tagWrap.appendChild(badge);
             hasTags = true;
         }
@@ -1384,6 +1400,570 @@ function resetFilters(){
     document.getElementById("lowCarb").checked = false;
     document.getElementById("bulking").checked = false;
     document.getElementById("cutting").checked = false;
+}
+
+//? workouts
+//? workouts
+async function loadWorkouts(){
+    try {
+        adminWorkouts.length = 0;
+        usersWorkouts.length = 0;
+
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/workouts/all');
+
+        for(const workout of data.default){
+            adminWorkouts.push(workout);
+        }
+
+        for(const workout of data.users){
+            usersWorkouts.push(workout);
+        }
+
+        renderWorkouts(workoutContainer);
+
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+function renderWorkouts(container){
+    container.innerHTML = '';
+
+    const adminSection = document.createElement('div');
+    adminSection.className = 'foods-split-section pt-3 px-3';
+
+    const userSection = document.createElement('div');
+    userSection.className = 'foods-split-section pt-3 px-3';
+
+    const adminTitle = document.createElement('h6');
+    adminTitle.className = 'ticket-section-title';
+    adminTitle.textContent = 'Alap edzéstervek';
+
+    const userTitle = document.createElement('h6');
+    userTitle.className = 'ticket-section-title mt-4';
+    userTitle.textContent = 'Felhasználói edzéstervek';
+
+    const adminList = document.createElement('div');
+    adminList.className = 'foods-scroll';
+
+    const userList = document.createElement('div');
+    userList.className = 'foods-scroll';
+
+    adminSection.appendChild(adminTitle);
+    adminSection.appendChild(adminList);
+
+    userSection.appendChild(userTitle);
+    userSection.appendChild(userList);
+
+    container.appendChild(adminSection);
+    container.appendChild(userSection);
+
+    renderWorkoutCards(adminWorkouts, adminList, 'admin');
+    renderWorkoutCards(usersWorkouts, userList, 'user');
+}
+function renderWorkoutCards(workouts, container, prefix){
+    container.innerHTML = '';
+
+    if(!workouts || workouts.length === 0){
+        const empty = document.createElement('p');
+        empty.className = 'text-center text-secondary';
+        empty.textContent = 'Nincs megjeleníthető edzésterv.';
+        container.appendChild(empty);
+        return;
+    }
+
+    for(const workout of workouts){
+        const card = document.createElement('div');
+        card.className = 'card admin-card mb-3 w-100';
+
+        const header = document.createElement('div');
+        header.className = 'card-header admin-card-header';
+        header.style.cursor = 'pointer';
+        header.setAttribute('data-bs-toggle', 'collapse');
+        header.setAttribute('data-bs-target', `#workout-${prefix}-${workout.planId}`);
+        header.setAttribute('aria-expanded', 'false');
+        header.setAttribute('aria-controls', `workout-${prefix}-${workout.planId}`);
+
+        const headerTop = document.createElement('div');
+        headerTop.className = 'd-flex justify-content-between align-items-start gap-3 flex-wrap';
+
+        const leftTop = document.createElement('div');
+        leftTop.className = 'd-flex align-items-center gap-2 flex-wrap ticket-title-wrap';
+
+        const workoutId = document.createElement('span');
+        workoutId.className = 'card-content-id fw-bold';
+        workoutId.textContent = `#${workout.planId}`;
+
+        const separator = document.createElement('span');
+        separator.className = 'card-separator';
+        separator.textContent = '|';
+
+        const name = document.createElement('span');
+        name.className = 'card-subject fw-bold';
+        name.textContent = workout.name;
+
+        leftTop.appendChild(workoutId);
+        leftTop.appendChild(separator);
+        leftTop.appendChild(name);
+
+        const badgeWrap = document.createElement('div');
+        badgeWrap.className = 'd-flex align-items-center gap-2 flex-wrap';
+
+        const typeBadge = document.createElement('span');
+        typeBadge.className = prefix === 'admin' ? 'badge bg-primary' : 'badge bg-secondary';
+        typeBadge.textContent = prefix === 'admin' ? 'Alap terv' : 'Felhasználói terv';
+
+        const daysBadge = document.createElement('span');
+        daysBadge.className = 'badge bg-info text-dark';
+        daysBadge.textContent = `${workout.daysCount} nap`;
+
+        badgeWrap.appendChild(typeBadge);
+        badgeWrap.appendChild(daysBadge);
+
+        headerTop.appendChild(leftTop);
+        headerTop.appendChild(badgeWrap);
+
+        header.appendChild(headerTop);
+
+        const collapse = document.createElement('div');
+        collapse.className = 'collapse';
+        collapse.id = `workout-${prefix}-${workout.planId}`;
+
+        const body = document.createElement('div');
+        body.className = 'card-body admin-card-body';
+
+        const topInfoWrap = document.createElement('div');
+        topInfoWrap.className = 'd-flex flex-wrap gap-3';
+
+        topInfoWrap.appendChild(createWorkoutInfoItem('Szint', workout.level));
+        topInfoWrap.appendChild(createWorkoutInfoItem('Hely', workout.location));
+        topInfoWrap.appendChild(createWorkoutInfoItem('Cél', workout.goal));
+        topInfoWrap.appendChild(createWorkoutInfoItem('Napok száma', workout.daysCount));
+
+        const hr1 = document.createElement('hr');
+        hr1.className = 'ticket-divider';
+
+        const descTitle = document.createElement('h6');
+        descTitle.className = 'ticket-section-title';
+        descTitle.textContent = 'Leírás';
+
+        const descBox = document.createElement('div');
+        descBox.className = 'ticket-message-box';
+        descBox.textContent = workout.description || 'Nincs megadott leírás.';
+
+        const hr2 = document.createElement('hr');
+        hr2.className = 'ticket-divider';
+
+        const daysTitle = document.createElement('h6');
+        daysTitle.className = 'ticket-section-title';
+        daysTitle.textContent = 'Edzésnapok';
+
+        const daysWrap = document.createElement('div');
+        daysWrap.className = 'd-flex flex-column gap-3';
+
+        if(workout.days && workout.days.length > 0){
+            for(const day of workout.days){
+                const dayBox = document.createElement('div');
+                dayBox.className = 'ticket-message-box';
+
+                const dayHeader = document.createElement('div');
+                dayHeader.className = 'd-flex justify-content-between align-items-center gap-2 flex-wrap mb-2';
+
+                const dayName = document.createElement('h6');
+                dayName.className = 'mb-0 fw-bold';
+                dayName.textContent = `${day.dayNumber}. nap - ${day.name}`;
+
+                const restBadge = document.createElement('span');
+                restBadge.className = day.isRestDay ? 'badge bg-warning text-dark' : 'badge bg-success';
+                restBadge.textContent = day.isRestDay ? 'Pihenőnap' : 'Edzésnap';
+
+                const hr6 = document.createElement('hr');
+
+                dayHeader.appendChild(dayName);
+                dayHeader.appendChild(restBadge);
+
+                dayBox.appendChild(dayHeader);
+                dayBox.appendChild(hr6);
+
+                if(day.imageUrl){
+                    const imageInfo = document.createElement('div');
+                    imageInfo.className = 'card-content-date mb-2';
+                    imageInfo.textContent = `Kép: ${day.imageUrl}`;
+                    dayBox.appendChild(imageInfo);
+                }
+
+                if(day.exercises && day.exercises.length > 0){
+                    const exerciseList = document.createElement('div');
+                    exerciseList.className = 'd-flex flex-column gap-2';
+
+                    for(const exercise of day.exercises){
+                        const exerciseRow = document.createElement('div');
+                        exerciseRow.className = 'd-flex justify-content-between align-items-center gap-2 flex-wrap';
+
+                        const exerciseName = document.createElement('span');
+                        exerciseName.className = 'fw-semibold';
+                        exerciseName.textContent = `${exercise.order}. ${exercise.name}`;
+
+                        const muscleBadge = document.createElement('span');
+                        muscleBadge.className = 'badge bg-dark';
+                        muscleBadge.textContent = formatMuscleGroup(exercise.muscleGroup);
+
+                        exerciseRow.appendChild(exerciseName);
+                        exerciseRow.appendChild(muscleBadge);
+
+                        exerciseList.appendChild(exerciseRow);
+                    }
+
+                    dayBox.appendChild(exerciseList);
+                }else{
+                    const emptyExercise = document.createElement('div');
+                    emptyExercise.className = 'ticket-empty-message';
+                    emptyExercise.textContent = day.isRestDay ? 'Pihenőnap, nincs gyakorlat.' : 'Nincs megadott gyakorlat.';
+                    dayBox.appendChild(emptyExercise);
+                }
+
+                daysWrap.appendChild(dayBox);
+            }
+        }else{
+            const emptyDays = document.createElement('p');
+            emptyDays.className = 'text-center text-secondary';
+            emptyDays.textContent = 'Nincs megadott edzésnap.';
+            daysWrap.appendChild(emptyDays);
+        }
+
+        const hr3 = document.createElement('hr');
+        hr3.className = 'ticket-divider';
+
+        const footerWrap = document.createElement('div');
+        footerWrap.className = 'd-flex flex-wrap justify-content-end gap-2';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-outline-danger';
+        deleteBtn.textContent = 'Törlés';
+
+        deleteBtn.addEventListener('click', async(e)=>{
+            e.stopPropagation();
+
+            const confirmDelete = confirm('Biztosan törölni szeretnéd ezt az edzéstervet?');
+
+            if(!confirmDelete){
+                return;
+            }
+
+            try {
+                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/workouts/delete/' + workout.planId);
+                alert(data.message);
+                loadWorkouts();
+            } catch (error) {
+                console.error(error.message);
+                alert(error.message);
+            }
+        });
+
+        footerWrap.appendChild(deleteBtn);
+
+        body.appendChild(topInfoWrap);
+        body.appendChild(hr1);
+        body.appendChild(descTitle);
+        body.appendChild(descBox);
+        body.appendChild(hr2);
+        body.appendChild(daysTitle);
+        body.appendChild(daysWrap);
+        body.appendChild(hr3);
+        body.appendChild(footerWrap);
+
+        collapse.appendChild(body);
+
+        card.appendChild(header);
+        card.appendChild(collapse);
+
+        container.appendChild(card);
+    }
+}
+function createWorkoutInfoItem(label, value){
+    const item = document.createElement('div');
+    item.className = 'd-flex flex-column px-2 py-1';
+    item.style.minWidth = '140px';
+
+    const span1 = document.createElement('span');
+    span1.className = 'card-content-date';
+    span1.textContent = label;
+
+    const span2 = document.createElement('span');
+    span2.className = 'fw-semibold';
+    span2.textContent = value ?? '-';
+
+    item.appendChild(span1);
+    item.appendChild(span2);
+
+    return item;
+}
+function formatMuscleGroup(group){
+    if(!group) return '-';
+
+    const muscles = {
+        mell: 'Mell',
+        hát: 'Hát',
+        váll: 'Váll',
+        bicepsz: 'Bicepsz',
+        tricepsz: 'Tricepsz',
+        alkar: 'Alkar',
+        has: 'Has',
+        ferde_has: 'Ferde has',
+        alsó_hát: 'Alsó hát',
+        comb_első: 'Combfeszítő',
+        comb_hátsó: 'Combhajlító',
+        farizom: 'Farizom',
+        vádli: 'Vádli',
+        teljes_test: 'Teljes test',
+        cardio: 'Cardio'
+    };
+
+    return muscles[group] || group;
+}
+async function loadExercises(){
+    try {
+        allExercises.length = 0;
+
+        const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
+
+        for(const exercise of data.message){
+            allExercises.push(exercise);
+        }
+
+    } catch (error) {
+        console.error(error.message);
+        alert('Gyakorlatok betöltése sikertelen!');
+    }
+}
+function generateWorkoutDays(){
+    workoutDaysBuilder.innerHTML = '';
+
+    let daysCount = Number(workoutDaysCountInput.value);
+
+    if(daysCount < 1){
+        return;
+    }
+
+    if(daysCount > 7){
+        daysCount = 7;
+        workoutDaysCountInput.value = 7;
+    }
+
+    for(let i = 1; i <= daysCount; i++){
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'card admin-card';
+
+        // HEADER
+        const header = document.createElement('div');
+        header.className = 'card-header admin-card-header';
+        header.style.cursor = 'pointer';
+        header.setAttribute('data-bs-toggle', 'collapse');
+        header.setAttribute('data-bs-target', `#new-workout-day-${i}`);
+        header.setAttribute('aria-expanded', 'false');
+        header.setAttribute('aria-controls', `new-workout-day-${i}`);
+
+        const headerWrap = document.createElement('div');
+        headerWrap.className = 'd-flex justify-content-between align-items-center';
+
+        const title = document.createElement('span');
+        title.className = 'fw-bold';
+        title.textContent = `${i}. nap`;
+
+        const badge = document.createElement('span');
+        badge.className = 'badge bg-primary';
+        badge.textContent = 'Lenyitás';
+
+        headerWrap.appendChild(title);
+        headerWrap.appendChild(badge);
+        header.appendChild(headerWrap);
+
+        // COLLAPSE
+        const collapse = document.createElement('div');
+        collapse.className = 'collapse';
+        collapse.id = `new-workout-day-${i}`;
+
+        // BODY
+        const body = document.createElement('div');
+        body.className = 'card-body admin-card-body';
+
+        // ROW
+        const row = document.createElement('div');
+        row.className = 'row g-3';
+
+        // NAME
+        const nameCol = document.createElement('div');
+        nameCol.className = 'col-md-4';
+
+        const nameLabel = document.createElement('label');
+        nameLabel.className = 'food-form-label';
+        nameLabel.textContent = 'Nap neve';
+
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'form-control food-form-control day-name';
+        nameInput.placeholder = 'Pl.: Mell-tricepsz';
+        nameInput.required = true;
+
+        nameCol.appendChild(nameLabel);
+        nameCol.appendChild(nameInput);
+
+        // REST DAY
+        const restCol = document.createElement('div');
+        restCol.className = 'col-md-4 d-flex align-items-end';
+
+        const restWrap = document.createElement('div');
+        restWrap.className = 'form-check food-check-item';
+
+        const restInput = document.createElement('input');
+        restInput.className = 'form-check-input day-rest';
+        restInput.type = 'checkbox';
+        restInput.id = `rest-day-${i}`;
+
+        const restLabel = document.createElement('label');
+        restLabel.className = 'form-check-label';
+        restLabel.setAttribute('for', `rest-day-${i}`);
+        restLabel.textContent = 'Pihenőnap';
+
+        restWrap.appendChild(restInput);
+        restWrap.appendChild(restLabel);
+        restCol.appendChild(restWrap);
+
+        row.appendChild(nameCol);
+        row.appendChild(restCol);
+
+        // HR
+        const hr = document.createElement('hr');
+        hr.className = 'ticket-divider';
+
+        // EXERCISE HEADER
+        const exerciseHeader = document.createElement('div');
+        exerciseHeader.className = 'd-flex justify-content-between align-items-center mb-2';
+
+        const exerciseTitle = document.createElement('h6');
+        exerciseTitle.className = 'ticket-section-title mb-0';
+        exerciseTitle.textContent = 'Gyakorlatok';
+
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-outline-info btn-sm add-exercise-btn';
+        addBtn.textContent = 'Gyakorlat hozzáadása';
+
+        exerciseHeader.appendChild(exerciseTitle);
+        exerciseHeader.appendChild(addBtn);
+
+        // EXERCISE LIST
+        const exerciseList = document.createElement('div');
+        exerciseList.className = 'exercise-list d-flex flex-column gap-2';
+
+        // EVENTEK
+        addBtn.addEventListener('click', () => {
+            addExerciseRow(exerciseList);
+        });
+
+        restInput.addEventListener('change', () => {
+            if(restInput.checked){
+                exerciseList.innerHTML = '';
+                addBtn.disabled = true;
+            }else{
+                addBtn.disabled = false;
+            }
+        });
+
+        // BUILD BODY
+        body.appendChild(row);
+        body.appendChild(hr);
+        body.appendChild(exerciseHeader);
+        body.appendChild(exerciseList);
+
+        collapse.appendChild(body);
+        dayCard.appendChild(header);
+        dayCard.appendChild(collapse);
+
+        workoutDaysBuilder.appendChild(dayCard);
+    }
+}
+function addExerciseRow(container){
+    const row = document.createElement('div');
+    row.className = 'ticket-message-box';
+
+    const order = container.children.length + 1;
+
+    const rowWrap = document.createElement('div');
+    rowWrap.className = 'row g-2 align-items-end';
+
+    const orderCol = document.createElement('div');
+    orderCol.className = 'col-md-2';
+
+    const orderLabel = document.createElement('label');
+    orderLabel.className = 'food-form-label';
+    orderLabel.textContent = 'Sorrend';
+
+    const orderInput = document.createElement('input');
+    orderInput.type = 'number';
+    orderInput.className = 'form-control food-form-control exercise-order';
+    orderInput.value = order;
+    orderInput.min = '1';
+    orderInput.required = true;
+
+    orderCol.appendChild(orderLabel);
+    orderCol.appendChild(orderInput);
+
+    const exerciseCol = document.createElement('div');
+    exerciseCol.className = 'col-md-8';
+
+    const exerciseLabel = document.createElement('label');
+    exerciseLabel.className = 'food-form-label';
+    exerciseLabel.textContent = 'Gyakorlat';
+
+    const exerciseSelect = document.createElement('select');
+    exerciseSelect.className = 'form-select food-form-control exercise-id';
+    exerciseSelect.required = true;
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Válassz gyakorlatot';
+    exerciseSelect.appendChild(defaultOption);
+
+    for(const exercise of allExercises){
+        const option = document.createElement('option');
+        option.value = exercise.id;
+        option.textContent = `${exercise.name} (${formatMuscleGroup(exercise.muscle_group)})`;
+        exerciseSelect.appendChild(option);
+    }
+
+    exerciseCol.appendChild(exerciseLabel);
+    exerciseCol.appendChild(exerciseSelect);
+
+    const btnCol = document.createElement('div');
+    btnCol.className = 'col-md-2';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-outline-danger w-100';
+    removeBtn.textContent = 'Törlés';
+
+    removeBtn.addEventListener('click', () => {
+        row.remove();
+        refreshExerciseOrders(container);
+    });
+
+    btnCol.appendChild(removeBtn);
+
+    rowWrap.appendChild(orderCol);
+    rowWrap.appendChild(exerciseCol);
+    rowWrap.appendChild(btnCol);
+
+    row.appendChild(rowWrap);
+    container.appendChild(row);
+}
+function refreshExerciseOrders(container){
+    const rows = container.querySelectorAll('.ticket-message-box');
+
+    for(let i = 0; i < rows.length; i++){
+        const orderInput = rows[i].querySelector('.exercise-order');
+        orderInput.value = i + 1;
+    }
 }
 
 function formatDate(dateString) {

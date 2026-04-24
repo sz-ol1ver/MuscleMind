@@ -483,7 +483,86 @@
         <section id="workouts" class="admin-section">
             <div class="section-card">
                 <div class="section-title">Workouts</div>
-                <div class="placeholder-box">Workouts tartalom helye</div>
+                <div class="admin-card mb-4">
+                    <div class="card-header admin-card-header d-flex justify-content-between align-items-center"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#workoutCreateCollapse"
+                        aria-expanded="false"
+                        aria-controls="workoutCreateCollapse"
+                        style="cursor: pointer;">
+
+                        <h6 class="ticket-section-title mb-0">Új edzésterv létrehozása</h6>
+                    </div>
+
+                    <div class="collapse" id="workoutCreateCollapse">
+                        <div class="card-body admin-card-body">
+                            <form id="workout-create-form" class="d-flex flex-column gap-3">
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="food-form-label">Edzésterv neve</label>
+                                        <input type="text" name="name" class="form-control food-form-control" required>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Napok száma</label>
+                                        <input type="number" id="workout-days-count" name="days_count"
+                                            class="form-control food-form-control" min="1" max="7" required>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Szint</label>
+                                        <select name="level" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="kezdo">Kezdő</option>
+                                            <option value="kozep">Közepes</option>
+                                            <option value="halado">Haladó</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Hely</label>
+                                        <select name="location" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="gym">Edzőterem</option>
+                                            <option value="home_weights">Otthon súlyokkal</option>
+                                            <option value="home_bodyweight">Otthon saját testsúllyal</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Cél</label>
+                                        <select name="goal" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="tomeg">Tömegelés</option>
+                                            <option value="szalkasitas">Szálkásítás</option>
+                                            <option value="szintentartas">Szinten tartás</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="food-form-label">Leírás</label>
+                                    <textarea name="description" class="form-control food-form-control food-form-textarea" rows="2"></textarea>
+                                </div>
+
+                                <hr class="ticket-divider">
+
+                                <h6 class="ticket-section-title">Edzésnapok</h6>
+
+                                <div id="workout-days-builder" class="d-flex flex-column gap-3"></div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success">
+                                        Edzésterv létrehozása
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder-box" id="workout-container"></div>
             </div>
         </section>
     </main>
