@@ -38,7 +38,7 @@ router.get('/dashboard', loginMw.requireAuthApi, requireAdmin, async(request,res
 });
 
 //? tickets
-router.get('/all-tickets', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.get('/tickets/all', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const tickets = await db.allTickets();
         return response.status(200).json({
@@ -57,7 +57,7 @@ router.get('/all-tickets', loginMw.requireAuthApi, requireAdmin, async(request, 
         });
     }
 });
-router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.patch('/ticket/seen/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
         const valid = await db.validateTicketId(ticketId);
@@ -87,7 +87,7 @@ router.patch('/ticket-seen/:id', loginMw.requireAuthApi, requireAdmin, async(req
         });
     }
 });
-router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.patch('/tickets/all/seen', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const seenTickets = await db.ticketsSeen();
         const id = request.session.user.id;
@@ -110,7 +110,7 @@ router.patch('/all-tickets/seen', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
-router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.patch('/ticket/close/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
         const valid = await db.validateTicketId(ticketId);
@@ -148,7 +148,7 @@ router.patch('/ticket-close/:id', loginMw.requireAuthApi, requireAdmin, async(re
         });
     }
 });
-router.patch('/ticket-answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.patch('/ticket/answer/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const ticketId = request.params.id;
         const valid = await db.validateTicketId(ticketId);
@@ -186,7 +186,7 @@ router.patch('/ticket-answer/:id', loginMw.requireAuthApi, requireAdmin, async(r
 });
 
 //? users
-router.get('/all-user', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
+router.get('/users/all', loginMw.requireAuthApi, requireAdmin, async(request,response)=>{
     try {
         const users = await db.allUserBasicData();
         return response.status(200).json({
@@ -486,7 +486,7 @@ router.post('/foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmi
         });
     }
 });
-router.get('/foods/all-foods', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+router.get('/foods/all', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const foods = await db.allFoods();
         return response.status(200).json({

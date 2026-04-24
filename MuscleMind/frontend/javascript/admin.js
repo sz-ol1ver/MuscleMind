@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     });
     allSeen.addEventListener('click', async()=>{
         try {
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/all-tickets/seen');
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/tickets/all/seen');
             console.log(data.message);
             loadTickets();
         } catch (error) {
@@ -105,7 +105,7 @@ async function loadTickets() {
     try {
         openT.length = 0;
         closedT.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/all-tickets');
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/tickets/all');
         for(let ticket of data.tickets){
             if(ticket.status == 'open' || ticket.status == 'seen'){
                 openT.push(ticket)
@@ -309,7 +309,7 @@ function renderTickets(tickets, container) {
         closeBtn.id = 'closeBtn';
         closeBtn.addEventListener('click', async()=>{
             try {
-                const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-close/'+ticket.id);
+                const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/close/'+ticket.id);
                 alert(data.message);
                 refreshSections();
             } catch (error) {
@@ -357,7 +357,7 @@ function renderTickets(tickets, container) {
                     if(!patchObj.admin_reply){
                         return;
                     }
-                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
+                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/answer/'+ticket.id, patchObj);
                     alert(data.message);
                     adminMessageBox.contentEditable = false;
                     adminMessageBox.blur();
@@ -376,7 +376,7 @@ function renderTickets(tickets, container) {
                         if(!patchObj.admin_reply){
                             return;
                         }
-                        const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-answer/'+ticket.id, patchObj);
+                        const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/answer/'+ticket.id, patchObj);
                         alert(data.message);
                         adminMessageBox.contentEditable = false;
                         adminMessageBox.blur();
@@ -391,7 +391,7 @@ function renderTickets(tickets, container) {
                     return;
                 }
                 try {
-                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket-seen/'+ticket.id);
+                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/seen/'+ticket.id);
                     console.log(data.message);
                     badge.className = 'badge bg-warning text-dark';
                     badge.innerHTML = 'Megtekintve';
@@ -427,7 +427,7 @@ function renderTickets(tickets, container) {
 async function loadUsers(){
     try {
         users.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/all-user');
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/users/all');
         for(let user of data.users){
             users.push(user);
         }
@@ -927,7 +927,7 @@ async function postNewFood() {
 async function loadFoods(){
     try {
         resetFilters();
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all-foods');
+        const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all');
         renderFoods(data.foods, containerFoods);
     } catch (error) {
         console.error(error.message);
