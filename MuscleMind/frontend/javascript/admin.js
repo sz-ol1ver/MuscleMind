@@ -19,6 +19,8 @@ let newFoodForm;
 let workoutContainer;
 let adminWorkouts = [];
 let usersWorkouts = [];
+let filteredAdminWorkouts = [];
+let filteredUsersWorkouts = [];
 let workoutForm;
 let workoutDaysCountInput;
 let workoutDaysBuilder;
@@ -65,15 +67,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
         
     })
     // filter reset btn
-    document.getElementById("filter-reset-btn").addEventListener("click", () => {
+    document.getElementById("filter-food-reset-btn").addEventListener("click", () => {
         resetFilters();
         applyFilters();
     });
     // filter addeventlisteners
     document.querySelectorAll(
-    "#filter-level, #filter-location, #filter-goal, #filter-difficulty, #highProtein, #lowCarb, #bulking, #cutting"
+    "#filter-food-category, #filter-food-type, #filter-food-goal, #filter-food-difficulty, #highProtein, #lowCarb, #bulking, #cutting"
     ).forEach(filter => {
         filter.addEventListener("change", applyFilters);
+    });
+    document.getElementById("filter-reset-btn").addEventListener("click", () => {
+        resetWorkoutFilters();
+        applyWorkoutFilters();
+    });
+
+    document.querySelectorAll(
+        "#filter-level, #filter-location, #filter-goal, #filter-days"
+    ).forEach(filter => {
+        filter.addEventListener("change", applyWorkoutFilters);
     });
     newFoodForm.addEventListener('submit', (e)=>{
         e.preventDefault();
@@ -95,6 +107,7 @@ function refreshSections(){
     loadTickets();
     loadUsers();
     resetFilters();
+    resetWorkoutFilters();
     loadFoods();
     loadWorkouts();
     loadExercises();
@@ -1349,10 +1362,10 @@ function createFoodInfoItem(label, value){
 }
 function applyFilters() {
     // SELECT értékek
-    const category = document.getElementById("filter-level").value;
-    const diet = document.getElementById("filter-location").value;
-    const goal = document.getElementById("filter-goal").value;
-    const difficulty = document.getElementById("filter-difficulty").value;
+    const category = document.getElementById("filter-food-category").value;
+    const diet = document.getElementById("filter-food-type").value;
+    const goal = document.getElementById("filter-food-goal").value;
+    const difficulty = document.getElementById("filter-food-difficulty").value;
 
     // CHECKBOX értékek
     const highProtein = document.getElementById("highProtein").checked;
@@ -1408,10 +1421,10 @@ function applyFilters() {
 }
 function resetFilters(){
     // selectek reset
-    document.getElementById("filter-level").value = "all";
-    document.getElementById("filter-location").value = "all";
-    document.getElementById("filter-goal").value = "all";
-    document.getElementById("filter-difficulty").value = "all";
+    document.getElementById("filter-food-category").value = "all";
+    document.getElementById("filter-food-type").value = "all";
+    document.getElementById("filter-food-goal").value = "all";
+    document.getElementById("filter-food-difficulty").value = "all";
 
     // checkboxok reset
     document.getElementById("highProtein").checked = false;
@@ -1426,6 +1439,8 @@ async function loadWorkouts(){
     try {
         adminWorkouts.length = 0;
         usersWorkouts.length = 0;
+        filteredAdminWorkouts.length = 0;
+        filteredUsersWorkouts.length = 0;
 
         const data = await getFetch('http://127.0.0.1:3000/api/admin/workouts/all');
 
@@ -1477,6 +1492,41 @@ function renderWorkouts(container){
 
     renderWorkoutCards(adminWorkouts, adminList, 'admin');
     renderWorkoutCards(usersWorkouts, userList, 'user');
+}
+function renderFilteredWorkouts(container){
+    container.innerHTML = '';
+
+    const adminSection = document.createElement('div');
+    adminSection.className = 'foods-split-section pt-3 px-3';
+
+    const userSection = document.createElement('div');
+    userSection.className = 'foods-split-section pt-3 px-3';
+
+    const adminTitle = document.createElement('h6');
+    adminTitle.className = 'ticket-section-title';
+    adminTitle.textContent = 'Alap edzéstervek';
+
+    const userTitle = document.createElement('h6');
+    userTitle.className = 'ticket-section-title mt-4';
+    userTitle.textContent = 'Felhasználói edzéstervek';
+
+    const adminList = document.createElement('div');
+    adminList.className = 'foods-scroll';
+
+    const userList = document.createElement('div');
+    userList.className = 'foods-scroll';
+
+    adminSection.appendChild(adminTitle);
+    adminSection.appendChild(adminList);
+
+    userSection.appendChild(userTitle);
+    userSection.appendChild(userList);
+
+    container.appendChild(adminSection);
+    container.appendChild(userSection);
+
+    renderWorkoutCards(filteredAdminWorkouts, adminList, 'admin');
+    renderWorkoutCards(filteredUsersWorkouts, userList, 'user');
 }
 function renderWorkoutCards(workouts, container, prefix){
     container.innerHTML = '';
@@ -2220,7 +2270,6 @@ async function createAdminWorkout() {
         formData.append('location', workoutForm.querySelector('[name="location"]').value || '');
         formData.append('goal', workoutForm.querySelector('[name="goal"]').value || '');
         formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
-        formData.append('is_public', isPublicInput && isPublicInput.checked ? 1 : 0);
         formData.append('days', JSON.stringify(workout.days));
 
         const data = await postForm('http://127.0.0.1:3000/api/admin/workout/new', formData);
@@ -2249,7 +2298,6 @@ async function updateAdminWorkout() {
         formData.append('location', workoutForm.querySelector('[name="location"]').value || '');
         formData.append('goal', workoutForm.querySelector('[name="goal"]').value || '');
         formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
-        formData.append('is_public', isPublicInput && isPublicInput.checked ? 1 : 0);
         formData.append('days', JSON.stringify(workout.days));
 
         const data = await putForm('http://127.0.0.1:3000/api/admin/workout/edit/' + editingWorkoutId, formData);
@@ -2262,6 +2310,49 @@ async function updateAdminWorkout() {
         console.error(error.message);
         alert(error.message);
     }
+}
+function applyWorkoutFilters(){
+    const level = document.getElementById("filter-level").value;
+    const location = document.getElementById("filter-location").value;
+    const goal = document.getElementById("filter-goal").value;
+    const days = document.getElementById("filter-days").value;
+
+    filteredAdminWorkouts = [];
+    filteredUsersWorkouts = [];
+
+    for(const workout of adminWorkouts){
+        let match = true;
+
+        if(level !== "all" && workout.level !== level) match = false;
+        if(location !== "all" && workout.location !== location) match = false;
+        if(goal !== "all" && workout.goal !== goal) match = false;
+        if(days !== "all" && workout.daysCount !== Number(days)) match = false;
+
+        if(match){
+            filteredAdminWorkouts.push(workout);
+        }
+    }
+
+    for(const workout of usersWorkouts){
+        let match = true;
+
+        if(level !== "all" && workout.level !== level) match = false;
+        if(location !== "all" && workout.location !== location) match = false;
+        if(goal !== "all" && workout.goal !== goal) match = false;
+        if(days !== "all" && workout.daysCount !== Number(days)) match = false;
+
+        if(match){
+            filteredUsersWorkouts.push(workout);
+        }
+    }
+
+    renderFilteredWorkouts(workoutContainer);
+}
+function resetWorkoutFilters(){
+    document.getElementById("filter-level").value = "all";
+    document.getElementById("filter-location").value = "all";
+    document.getElementById("filter-goal").value = "all";
+    document.getElementById("filter-days").value = "all";
 }
 
 function formatDate(dateString) {

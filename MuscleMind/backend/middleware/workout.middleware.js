@@ -389,6 +389,7 @@ async function validateActive(req, res, next) {
 async function validateAdminPlan(req, res, next) {
     try {
         const body = req.body;
+        console.log(body)
 
         if (!body || typeof body !== 'object' || Array.isArray(body)) {
             return res.status(400).json({
@@ -404,7 +405,6 @@ async function validateAdminPlan(req, res, next) {
             location: body.location || null,
             goal: body.goal || null,
             description: body.description || null,
-            is_public: body.is_public === '1' || body.is_public === 1 || body.is_public === true,
             days: body.days
         };
 

@@ -626,6 +626,10 @@ router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,w
             'created workout id: ' + planId + ' | name: ' + workout.name + ' | days: ' + workout.days_count,
             ip
         );
+
+        return response.status(200).json({
+            message: 'Sikeres edzésterv létrehozva!'
+        });
     } catch (error) {
         console.error(error.message)
         const ip = requestIp.getClientIp(request);

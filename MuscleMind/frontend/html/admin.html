@@ -381,20 +381,20 @@
                             class="btn btn-outline-light w-25" 
                             type="button" 
                             data-bs-toggle="collapse" 
-                            data-bs-target="#mobileFilters" 
+                            data-bs-target="#mobileFoodsFilters" 
                             aria-expanded="false" 
-                            aria-controls="mobileFilters">
+                            aria-controls="mobileFoodsFilters">
                             ☰ Szűrők
                         </button>
                     </div>
                     <!-- Mobilon collapse -->
-                    <div class="collapse" id="mobileFilters">
+                    <div class="collapse" id="mobileFoodsFilters">
                         <hr class="d-lg-none d-md-none">
                         <div class="row g-3">
 
                             <div class="col-6 col-md-6 col-lg-6 col-xl-3">
-                                <label for="filter-level" class="form-label fw-bold">Kategoria</label>
-                                <select id="filter-level" class="form-select">
+                                <label for="filter-food-category" class="form-label fw-bold">Kategoria</label>
+                                <select id="filter-food-category" class="form-select">
                                     <!--
                                     'reggeli','ebed','vacsora','snack','desszert','ital'
                                     -->
@@ -409,8 +409,8 @@
                             </div>
 
                             <div class="col-6 col-md-6 col-lg-6 col-xl-3">
-                                <label for="filter-location" class="form-label fw-bold">Étrendtípusok</label>
-                                <select id="filter-location" class="form-select">
+                                <label for="filter-food-type" class="form-label fw-bold">Étrendtípusok</label>
+                                <select id="filter-food-type" class="form-select">
                                     <option value="all">Összes étrendtípusok</option>
                                     <option value="mindenevo">mindenevő</option>
                                     <option value="vegetarianus">vegetáriánus</option>
@@ -419,8 +419,8 @@
                             </div>
 
                             <div class="col-6 col-md-6 col-lg-6 col-xl-3">
-                                <label for="filter-goal" class="form-label fw-bold">Cél</label>
-                                <select id="filter-goal" class="form-select">
+                                <label for="filter-food-goal" class="form-label fw-bold">Cél</label>
+                                <select id="filter-food-goal" class="form-select">
                                     <option value="all">Összes cél</option>
                                     <option value="tomegnoveles">Tömegnövelés</option>
                                     <option value="szalkasitas">Szálkásítás</option>
@@ -429,8 +429,8 @@
                             </div>
 
                             <div class="col-6 col-md-6 col-lg-6 col-xl-3">
-                                <label for="filter-difficulty" class="form-label fw-bold">Nehézség</label>
-                                <select id="filter-difficulty" class="form-select">
+                                <label for="filter-food-difficulty" class="form-label fw-bold">Nehézség</label>
+                                <select id="filter-food-difficulty" class="form-select">
                                     <option value="all">Összes Nehézség</option>
                                     <option value="konnyu">könnyű</option>
                                     <option value="kozepes">közepes</option>
@@ -472,7 +472,7 @@
                         </div>
                         <hr>
                         <div class="row mt-2 justify-content-center">
-                            <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
+                            <button type="button" id="filter-food-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
                         </div>
                     </div>
                 </div>
@@ -562,6 +562,80 @@
                                 </div>
 
                             </form>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="container-fluid plans-line pb-4">
+                    <div class="mb-3 text-end">
+                        <button 
+                            class="btn btn-outline-light w-25" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#mobileWorkoutFilters" 
+                            aria-expanded="false" 
+                            aria-controls="mobileWorkoutFilters">
+                            ☰ Szűrők
+                        </button>
+                    </div>
+
+                    <div class="collapse" id="mobileWorkoutFilters">
+                        <hr class="d-lg-none d-md-none">
+
+                        <div class="row g-3">
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-level" class="form-label fw-bold">Szint</label>
+                                <select id="filter-level" class="form-select workout-input">
+                                    <option value="all">Összes szint</option>
+                                    <option value="kezdo">Kezdő</option>
+                                    <option value="kozep">Középhaladó</option>
+                                    <option value="halado">Haladó</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-location" class="form-label fw-bold">Helyszín</label>
+                                <select id="filter-location" class="form-select workout-input">
+                                    <option value="all">Összes helyszín</option>
+                                    <option value="gym">Konditerem</option>
+                                    <option value="home_weights">Otthon súlyzókkal</option>
+                                    <option value="home_bodyweight">Otthon testsúllyal</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-goal" class="form-label fw-bold">Cél</label>
+                                <select id="filter-goal" class="form-select workout-input">
+                                    <option value="all">Összes cél</option>
+                                    <option value="tomeg">Tömegnövelés</option>
+                                    <option value="szalkasitas">Szálkásítás</option>
+                                    <option value="szintentartas">Szintentartás</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-days" class="form-label fw-bold">Edzésnapok</label>
+                                <select id="filter-days" class="form-select workout-input">
+                                    <option value="all">Összes</option>
+                                    <option value="1">1 nap</option>
+                                    <option value="2">2 nap</option>
+                                    <option value="3">3 nap</option>
+                                    <option value="4">4 nap</option>
+                                    <option value="5">5 nap</option>
+                                    <option value="6">6 nap</option>
+                                    <option value="7">7 nap</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="row mt-2 justify-content-center">
+                            <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">
+                                Alaphelyzet
+                            </button>
                         </div>
                     </div>
                 </div>

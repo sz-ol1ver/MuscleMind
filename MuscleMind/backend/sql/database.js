@@ -756,7 +756,7 @@ async function getAllUsersPlans(){
         WHERE wp.user_id IS NOT NULL
 
         ORDER BY
-            wp.id ASC,
+            wp.id DESC,
             wd.day_number ASC,
             de.exercise_order ASC
     `;
@@ -803,7 +803,7 @@ async function getAllDefaultPlans(){
         AND wp.is_public = TRUE
 
         ORDER BY
-            wp.id ASC,
+            wp.id DESC,
             wd.day_number ASC,
             de.exercise_order ASC
     `;
@@ -895,7 +895,7 @@ async function createAdminWorkoutPlan(workout) {
         const insertPlan = `
             INSERT INTO workout_plans
             (user_id, name, level, location, goal, description, is_public, days_count)
-            VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (NULL, ?, ?, ?, ?, ?, 1, ?)
         `;
 
         const [planResult] = await conn.execute(insertPlan, [
@@ -904,7 +904,6 @@ async function createAdminWorkoutPlan(workout) {
             workout.location,
             workout.goal,
             workout.description,
-            workout.is_public,
             workout.days_count
         ]);
 
@@ -968,7 +967,6 @@ async function updateAdminWorkoutPlan(planId, workout) {
                 location = ?,
                 goal = ?,
                 description = ?,
-                is_public = ?,
                 days_count = ?
             WHERE id = ?
             AND user_id IS NULL
@@ -980,7 +978,6 @@ async function updateAdminWorkoutPlan(planId, workout) {
             workout.location,
             workout.goal,
             workout.description,
-            workout.is_public,
             workout.days_count,
             planId
         ]);
@@ -1058,7 +1055,6 @@ async function updateAdminWorkoutPlan(planId, workout) {
         conn.release();
     }
 }
-
 async function deleteAdminPlan(planId) {
     const sql = 'DELETE FROM workout_plans WHERE id = ?';
     const [rows] = await pool.execute(sql, [planId]);
