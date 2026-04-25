@@ -1288,6 +1288,11 @@ function renderFoodCards(foods, container, prefix){
 
         deleteBtn.addEventListener('click', async(e)=>{
             e.stopPropagation();
+            const confirmDelete = confirm('Biztosan törölni szeretnéd ezt az edzéstervet?');
+
+            if(!confirmDelete){
+                return;
+            }
             try {
                 const data = await deleteFetch('http://127.0.0.1:3000/api/admin/foods/delete-food/' + food.id);
                 alert(data.message);
@@ -1689,7 +1694,7 @@ function renderWorkoutCards(workouts, container, prefix){
             }
 
             try {
-                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/workouts/delete/' + workout.planId);
+                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/workout/delete/' + workout.planId);
                 alert(data.message);
                 loadWorkouts();
             } catch (error) {

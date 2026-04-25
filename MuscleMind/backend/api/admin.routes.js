@@ -5,6 +5,7 @@ const fs = require('fs/promises');
 const requestIp = require('request-ip'); //! npm install request-ip
 const loginMw = require('../middleware/login.middleware.js');
 const foodsMw = require('../middleware/foods.middleware.js');
+const workoutsMw = require('../middleware/workout.middleware.js');
 const {requireAdmin} = require('../middleware/isAdmin.middleware.js')
 const multer = require('multer');
 const upload = multer();
@@ -610,11 +611,21 @@ router.get('/workouts/all', loginMw.requireAuthApi, requireAdmin, async(request,
         });
     }
 });
-router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,async(request,response)=> {
+router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,workoutsMw.validateAdminPlan,async(request,response)=> {
     try {
-        return response.status(200).json({
-            message: 'Sikeres edzésterv létrehozás!'
-        });
+        const adminId = request.session.user.id;
+        const workout = request.body;
+
+        const planId = await db.createAdminWorkoutPlan(workout);
+
+        const ip = requestIp.getClientIp(request);
+
+        await db.log_id(
+            adminId,
+            'admin - workout create',
+            'created workout id: ' + planId + ' | name: ' + workout.name + ' | days: ' + workout.days_count,
+            ip
+        );
     } catch (error) {
         console.error(error.message)
         const ip = requestIp.getClientIp(request);
@@ -628,8 +639,23 @@ router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,a
         });
     }
 });
-router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi, requireAdmin,async(request,response)=> {
+router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi,workoutsMw.validateAdminPlan, requireAdmin,async(request,response)=> {
     try {
+        const adminId = request.session.user.id;
+        const planId = request.params.id;
+        const workout = request.body;
+
+        const affectedRows = await db.updateAdminWorkoutPlan(planId, workout);
+
+        const ip = requestIp.getClientIp(request);
+
+        await db.log_id(
+            adminId,
+            'admin - workout update',
+            'updated workout id: ' + planId + ' | name: ' + workout.name + ' | days: ' + workout.days_count,
+            ip
+        );
+
         return response.status(200).json({
             message: 'Sikeres edzésterv frissítés!'
         });
@@ -646,5 +672,43 @@ router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi, requireAdm
         });
     }
 });
+router.delete('/workout/delete/:id', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
+    try {
+        const adminId = request.session.user.id;
+        const planId = request.params.id;
+
+        const deletedRows = await db.deleteAdminPlan(planId);
+
+        if(deletedRows === 0){
+            return response.status(404).json({
+                message: 'Nincs ilyen edzésterv!'
+            });
+        }
+
+        const ip = requestIp.getClientIp(request);
+
+        await db.log_id(
+            adminId,
+            'admin - workout delete',
+            'deleted workout id: ' + planId,
+            ip
+        );
+
+        return response.status(200).json({
+            message: 'Sikeres edzésterv törlés!'
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+})
 
 module.exports = router;

@@ -885,6 +885,185 @@ function formatWorkoutPlans(rows) {
 
     return plans;
 }
+
+async function createAdminWorkoutPlan(workout) {
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const insertPlan = `
+            INSERT INTO workout_plans
+            (user_id, name, level, location, goal, description, is_public, days_count)
+            VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const [planResult] = await conn.execute(insertPlan, [
+            workout.name,
+            workout.level,
+            workout.location,
+            workout.goal,
+            workout.description,
+            workout.is_public,
+            workout.days_count
+        ]);
+
+        const planId = planResult.insertId;
+
+        for (const day of workout.days) {
+            const insertDay = `
+                INSERT INTO workout_days
+                (plan_id, day_number, name, isRestDay, image_url)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            const [dayResult] = await conn.execute(insertDay, [
+                planId,
+                day.dayNumber,
+                day.name,
+                day.restDay,
+                null
+            ]);
+
+            const dayId = dayResult.insertId;
+
+            if (!day.restDay) {
+                for (const exercise of day.exercises) {
+                    const insertExercise = `
+                        INSERT INTO day_exercises
+                        (day_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)
+                    `;
+
+                    await conn.execute(insertExercise, [
+                        dayId,
+                        exercise.exerciseId,
+                        exercise.order
+                    ]);
+                }
+            }
+        }
+
+        await conn.commit();
+        return planId;
+
+    } catch (error) {
+        await conn.rollback();
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+async function updateAdminWorkoutPlan(planId, workout) {
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const updatePlan = `
+            UPDATE workout_plans
+            SET
+                name = ?,
+                level = ?,
+                location = ?,
+                goal = ?,
+                description = ?,
+                is_public = ?,
+                days_count = ?
+            WHERE id = ?
+            AND user_id IS NULL
+        `;
+
+        const [planResult] = await conn.execute(updatePlan, [
+            workout.name,
+            workout.level,
+            workout.location,
+            workout.goal,
+            workout.description,
+            workout.is_public,
+            workout.days_count,
+            planId
+        ]);
+
+        if (planResult.affectedRows === 0) {
+            await conn.rollback();
+            return 0;
+        }
+
+        const selectDays = `
+            SELECT id
+            FROM workout_days
+            WHERE plan_id = ?
+        `;
+
+        const [oldDays] = await conn.execute(selectDays, [planId]);
+
+        for (const oldDay of oldDays) {
+            const deleteExercises = `
+                DELETE FROM day_exercises
+                WHERE day_id = ?
+            `;
+
+            await conn.execute(deleteExercises, [oldDay.id]);
+        }
+
+        const deleteDays = `
+            DELETE FROM workout_days
+            WHERE plan_id = ?
+        `;
+
+        await conn.execute(deleteDays, [planId]);
+
+        for (const day of workout.days) {
+            const insertDay = `
+                INSERT INTO workout_days
+                (plan_id, day_number, name, isRestDay, image_url)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            const [dayResult] = await conn.execute(insertDay, [
+                planId,
+                day.dayNumber,
+                day.name,
+                day.restDay,
+                null
+            ]);
+
+            const dayId = dayResult.insertId;
+
+            if (!day.restDay) {
+                for (const exercise of day.exercises) {
+                    const insertExercise = `
+                        INSERT INTO day_exercises
+                        (day_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)
+                    `;
+
+                    await conn.execute(insertExercise, [
+                        dayId,
+                        exercise.exerciseId,
+                        exercise.order
+                    ]);
+                }
+            }
+        }
+
+        await conn.commit();
+        return planResult.affectedRows;
+
+    } catch (error) {
+        await conn.rollback();
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+
+async function deleteAdminPlan(planId) {
+    const sql = 'DELETE FROM workout_plans WHERE id = ?';
+    const [rows] = await pool.execute(sql, [planId]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -991,5 +1170,8 @@ module.exports = {
     createFood,
     insertFoodAllergen,
     getAllDefaultPlans,
-    getAllUsersPlans
+    getAllUsersPlans,
+    createAdminWorkoutPlan,
+    updateAdminWorkoutPlan,
+    deleteAdminPlan
 };

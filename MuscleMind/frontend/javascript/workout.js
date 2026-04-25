@@ -616,6 +616,11 @@ async function loadWorkoutDetail(id) {
         deleteButton.id = 'deleteBtn';
         deleteButton.textContent = 'Törlés';
         deleteButton.addEventListener('click', ()=>{
+            const confirmDelete = confirm('Biztosan törölni szeretnéd ezt az edzéstervet?');
+
+            if(!confirmDelete){
+                return;
+            }
             deletePlan(id);
         })
         let editButton = document.createElement('button');
