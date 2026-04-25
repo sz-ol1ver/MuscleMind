@@ -1,5 +1,8 @@
 import {deleteFetch, getFetch, patchFetch, postRequest, postForm, putForm} from './api.js';
 
+let adminToggleForm;
+let adminToggleUserIdInput;
+
 let openT = [];
 let closedT = [];
 let containerOpen;
@@ -33,6 +36,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
     const allSeen = document.getElementById('ticket-seen');
     const adminBtn = document.getElementById('user-admin');
+    const allRefresh = document.getElementById('refresh-datas');
     containerOpen = document.getElementById('open-tickets');
     containerClosed = document.getElementById('closed-tickets');
     containerUsers = document.getElementById('users-container');
@@ -42,19 +46,33 @@ document.addEventListener('DOMContentLoaded', ()=>{
     workoutForm = document.getElementById('workout-create-form');
     workoutDaysCountInput = document.getElementById('workout-days-count');
     workoutDaysBuilder = document.getElementById('workout-days-builder');
+    const adminModalElement = document.getElementById('adminToggleModal');
+    adminToggleForm = document.getElementById('admin-toggle-form');
+    adminToggleUserIdInput = document.getElementById('admin-toggle-user-id');
 
+    refreshSections();
+
+    adminModalElement.addEventListener('hide.bs.modal', () => {
+        if(adminModalElement.contains(document.activeElement)){
+            document.activeElement.blur();
+        }
+    });
     workoutDaysCountInput.addEventListener('change', () => {
         const currentWorkout = collectWorkoutFormData();
         generateWorkoutDays();
         refillWorkoutDays(currentWorkout);
     });
-
-    refreshSections();
-
+    adminToggleForm.addEventListener('submit', async(e)=>{
+        e.preventDefault();
+        await toggleAdminById();
+    });
     dashRefresh.addEventListener('click', ()=>{
         loadDash();
     });
     allSeen.addEventListener('click', async()=>{
+        if(openT.length == 0){
+            return;
+        }
         try {
             const data = await patchFetch('http://127.0.0.1:3000/api/admin/tickets/all/seen');
             console.log(data.message);
@@ -63,15 +81,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
             console.error(error.message);
         }
     });
-    adminBtn.addEventListener('click', ()=>{
-        
-    })
-    // filter reset btn
+    allRefresh.addEventListener('click', ()=>{
+        refreshSections();
+    });
+
+    //? filters
     document.getElementById("filter-food-reset-btn").addEventListener("click", () => {
         resetFilters();
         applyFilters();
     });
-    // filter addeventlisteners
     document.querySelectorAll(
     "#filter-food-category, #filter-food-type, #filter-food-goal, #filter-food-difficulty, #highProtein, #lowCarb, #bulking, #cutting"
     ).forEach(filter => {
@@ -87,6 +105,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     ).forEach(filter => {
         filter.addEventListener("change", applyWorkoutFilters);
     });
+
+    //? new forms
     newFoodForm.addEventListener('submit', (e)=>{
         e.preventDefault();
         postNewFood();
@@ -111,6 +131,33 @@ function refreshSections(){
     loadFoods();
     loadWorkouts();
     loadExercises();
+}
+
+//? admin modal
+async function toggleAdminById(){
+    try {
+        const userId = Number(adminToggleUserIdInput.value);
+
+        if(!Number.isInteger(userId) || userId < 1){
+            return alert('Adj meg érvényes felhasználó ID-t!');
+        }
+
+        const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/' + userId);
+
+        alert(data.message);
+
+        adminToggleForm.reset();
+
+        const modalElement = document.getElementById('adminToggleModal');
+        const modal = bootstrap.Modal.getInstance(modalElement);
+
+        modal.hide();
+
+        refreshSections();
+    } catch (error) {
+        console.error(error.message);
+        alert(error.message);
+    }
 }
 
 //? dashboard
@@ -895,10 +942,7 @@ function renderUserBody(user, container) {
 
     adminBtn.addEventListener('click', async() => {
         try {
-            let postObj = {
-                adminStatus: user.admin
-            }
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/'+user.id, postObj);
+            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/'+user.id);
             alert(data.message);
             refreshSections();
         } catch (error) {

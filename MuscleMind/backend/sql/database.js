@@ -601,6 +601,14 @@ async function userAdmin(id) {
     const [rows] = await pool.execute(update, [id]);
     return rows.affectedRows;
 }
+async function selectCurrentAdminStatus(userId) {
+    const select = 'SELECT admin FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [userId]);
+    if(rows.length === 0){
+        return null;
+    }
+    return rows[0].admin;
+}
 async function userBlock(id) {
     const update = 'UPDATE users SET active = NOT active WHERE id = ?';
     const [rows] = await pool.execute(update, [id]);
@@ -1169,5 +1177,6 @@ module.exports = {
     getAllUsersPlans,
     createAdminWorkoutPlan,
     updateAdminWorkoutPlan,
-    deleteAdminPlan
+    deleteAdminPlan,
+    selectCurrentAdminStatus
 };

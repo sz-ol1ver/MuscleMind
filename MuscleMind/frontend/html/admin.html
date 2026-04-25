@@ -17,11 +17,11 @@
     <!-- Admin js-->
      <script type="module" src="../javascript/admin.js"></script>
 </head>
-<body data-bs-spy="scroll" data-bs-target="#adminSidebar" data-bs-offset="140" tabindex="0">
+<body data-bs-spy="scroll" data-bs-target="#adminSidebar" data-bs-offset="0" tabindex="0">
     <!-- Mobile topbar -->
     <div class="mobile-topbar d-block d-lg-none">
         <div class="d-flex justify-content-between align-items-center p-3">
-            <div class="fw-bold text-light">Admin Panel</div>
+            <div class="fw-bold text-light">Admin Felület</div>
 
             <button 
                 class="btn btn-menu"
@@ -35,41 +35,81 @@
 
     <!-- Sidebar -->
     <aside class="admin-sidebar d-none d-lg-block">
-        <div class="admin-logo">Admin Panel</div>
+        <div class="admin-logo">Admin Felület</div>
 
         <nav id="adminSidebar" class="nav flex-column">
-            <a class="nav-link" href="#dashboard">Dashboard</a>
-            <a class="nav-link" href="#support-requests">Support Requests</a>
-            <a class="nav-link" href="#users">Users</a>
-            <a class="nav-link" href="#foods">Foods</a>
-            <a class="nav-link" href="#workouts">Workouts</a>
+            <a class="nav-link" href="#dashboard">Statisztikák</a>
+            <a class="nav-link" href="#support-requests">Üzenetek</a>
+            <a class="nav-link" href="#users">Felhasználók</a>
+            <a class="nav-link" href="#foods">Ételek</a>
+            <a class="nav-link" href="#workouts">Edzéstervek</a>
         </nav>
 
         <a href="/">
-            <button class="btn btn-danger w-100 logout-btn">Quit Admin</button>
+            <button class="btn btn-danger w-100 logout-btn">Kilépés</button>
         </a>
     </aside>
 
     <!-- Mobile sidebar (offcanvas) -->
     <div class="offcanvas offcanvas-start" id="mobileSidebar">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Admin Panel</h5>
+            <h5 class="offcanvas-title">Admin Felület</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
 
         <div class="offcanvas-body">
             <nav class="nav flex-column mb-3">
-                <a class="nav-link" href="#dashboard">Dashboard</a>
-                <a class="nav-link" href="#support-requests">Support Requests</a>
-                <a class="nav-link" href="#users">Users</a>
-                <a class="nav-link" href="#foods">Foods</a>
-                <a class="nav-link" href="#workouts">Workouts</a>
+                <a class="nav-link" href="#dashboard">Statisztikák</a>
+                <a class="nav-link" href="#support-requests">Üzenetek</a>
+                <a class="nav-link" href="#users">Felhasználók</a>
+                <a class="nav-link" href="#foods">Ételek</a>
+                <a class="nav-link" href="#workouts">Edzéstervek</a>
             </nav>
 
             <a href="/">
-                <button class="btn btn-danger w-100 logout-btn">Quit Admin</button>
+                <button class="btn btn-danger w-100 logout-btn">Kilépés</button>
             </a>
             
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminToggleModal" tabindex="-1" aria-labelledby="adminToggleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content admin-card">
+                <div class="modal-header admin-card-header">
+                    <h5 class="modal-title" id="adminToggleModalLabel">Admin jog módosítása</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                </div>
+
+                <div class="modal-body admin-card-body">
+                    <form id="admin-toggle-form" class="d-flex flex-column gap-3">
+                        <div>
+                            <label for="admin-toggle-user-id" class="food-form-label">Felhasználó ID</label>
+                            <input 
+                                type="number" 
+                                id="admin-toggle-user-id" 
+                                class="form-control food-form-control" 
+                                min="1" 
+                                required
+                                placeholder="Pl.: 12"
+                            >
+                        </div>
+
+                        <div class="ticket-empty-message">
+                            A gomb megnyomásával az adott felhasználó admin joga átváltásra kerül.
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                                Mégse
+                            </button>
+                            <button type="submit" class="btn btn-outline-warning">
+                                Admin jog váltása
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -77,11 +117,11 @@
     <main class="admin-main">
         <div class="topbar">
             <div class="topbar-card mb-4">
-                <h2 class="h4 mb-3">Quick Actions</h2>
+                <h2 class="h4 mb-3">Gyors műveletek</h2>
                 <div class="quick-links">
                     <a id="refresh-datas">Összes frissít</a>
                     <a id="refresh-dash">Dashboard frissít</a>
-                    <a id="user-admin">Admin jogok</a>
+                    <a id="user-admin" data-bs-toggle="modal" data-bs-target="#adminToggleModal">Admin jogok</a>
                     <a id="ticket-seen">Ticketek olvasva</a>
                 </div>
             </div>
@@ -89,7 +129,7 @@
 
         <section id="dashboard" class="admin-section">
             <div class="section-card">
-                <div class="section-title">Dashboard</div>
+                <div class="section-title">Statisztikák</div>
 
                 <div class="row g-3" id="dashboard-cards">
                     <div class="col-md-4 d-flex">
@@ -139,7 +179,7 @@
 
         <section id="support-requests" class="admin-section">
             <div class="section-card">
-                <div class="section-title">Support Requests</div>
+                <div class="section-title">Üzenetek</div>
                 <div class="container-fluid placeholder-box">
                     <div class="container-fluid d-flex flex-column align-items-center mt-3" id="open-tickets">
                         
@@ -154,14 +194,14 @@
 
         <section id="users" class="admin-section">
             <div class="section-card">
-                <div class="section-title">Users</div>
+                <div class="section-title">Felhasználók</div>
                 <div class="placeholder-box" id="users-container"></div>
             </div>
         </section>
 
         <section id="foods" class="admin-section">
             <div class="section-card">
-                <div class="section-title">Foods</div>
+                <div class="section-title">Ételek</div>
                 <div class="card admin-card mb-4 w-100">
                     <div 
                         class="card-header admin-card-header d-flex justify-content-between align-items-center flex-wrap gap-3"
@@ -482,7 +522,7 @@
 
         <section id="workouts" class="admin-section">
             <div class="section-card">
-                <div class="section-title">Workouts</div>
+                <div class="section-title">Edzéstervek</div>
                 <div class="card admin-card mb-4">
                     <div class="card-header admin-card-header d-flex justify-content-between align-items-center"
                         data-bs-toggle="collapse"

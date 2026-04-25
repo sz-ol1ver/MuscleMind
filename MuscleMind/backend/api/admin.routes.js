@@ -17,7 +17,7 @@ router.get('/dashboard', loginMw.requireAuthApi, requireAdmin, async(request,res
             allUser: await db.totalUserCount(), //? osszes regisztralt felhasznalo db szam
             todayReg: await db.todayRegistration(), //? osszes regisztracio ma db szam
             todayLog: await db.todayLoginCount(), //? osszes aktiv user ma db szam
-            todayTicket: await db.todayTicketCount(), //? osszes ma nyitott ticket db szan
+            todayTicket: await db.todayTicketCount(), //? osszes ma nyitott ticket db szam
             todayError: await db.todayErrorCount(), //? osszes mai szerver error db szam
             todayWorkout: await db.todayWorkoutCount() //? osszes ma keszitett edzesterv db szam
         };
@@ -230,10 +230,10 @@ router.patch('/user/toggle-admin/:id', loginMw.requireAuthApi, requireAdmin, asy
     try {
         const id = request.params.id;
         const adminId = request.session.user.id;
-        const {adminStatus} = request.body;
+        const adminStatus = await db.selectCurrentAdminStatus(id);
         if (adminStatus !== 0 && adminStatus !== 1) {
-            return response.status(400).json({
-                message: 'Sikertelen fiók állapot frissítés!'
+            return response.status(404).json({
+                message: 'Felhasználó nem található!'
             });
         }
         if(id == adminId){
@@ -643,7 +643,7 @@ router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,w
         });
     }
 });
-router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi,workoutsMw.validateAdminPlan, requireAdmin,async(request,response)=> {
+router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi,requireAdmin,workoutsMw.validateAdminPlan,async(request,response)=> {
     try {
         const adminId = request.session.user.id;
         const planId = request.params.id;
@@ -713,6 +713,6 @@ router.delete('/workout/delete/:id', loginMw.requireAuthApi, requireAdmin, async
             message: 'Sikertelen eleres!'
         });
     }
-})
+});
 
 module.exports = router;
