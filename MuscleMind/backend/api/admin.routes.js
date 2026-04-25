@@ -455,7 +455,7 @@ router.delete('/user/delete/:id', loginMw.requireAuthApi, requireAdmin, async(re
     }
 });
 //? Foods
-router.post('/foods/new-food', upload.none(),loginMw.requireAuthApi, requireAdmin,foodsMw.validateNewFood,async(request, response) =>{
+router.post('/foods/new', upload.none(),loginMw.requireAuthApi, requireAdmin,foodsMw.validateNewFood,async(request, response) =>{
     try {
         const adminId = request.session.user.id;
         const food = request.body;
@@ -589,13 +589,49 @@ router.delete('/foods/delete-food/:id', loginMw.requireAuthApi, requireAdmin, as
     }
 });
 //? workouts
-router.get('/workouts/all', async(request, response) =>{
+router.get('/workouts/all', loginMw.requireAuthApi, requireAdmin, async(request, response) =>{
     try {
         const defWorkouts = await db.getAllDefaultPlans();
         const userWorkouts = await db.getAllUsersPlans();
         return response.status(200).json({
             default: defWorkouts,
             users: userWorkouts
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
+router.post('/workout/new',upload.none(), loginMw.requireAuthApi, requireAdmin,async(request,response)=> {
+    try {
+        return response.status(200).json({
+            message: 'Sikeres edzésterv létrehozás!'
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - admin', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
+router.put('/workout/edit/:id', upload.none(),loginMw.requireAuthApi, requireAdmin,async(request,response)=> {
+    try {
+        return response.status(200).json({
+            message: 'Sikeres edzésterv frissítés!'
         });
     } catch (error) {
         console.error(error.message)

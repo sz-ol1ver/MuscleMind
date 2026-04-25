@@ -1,4 +1,4 @@
-import {deleteFetch, getFetch, patchFetch, postRequest, postForm} from './api.js';
+import {deleteFetch, getFetch, patchFetch, postRequest, postForm, putForm} from './api.js';
 
 let openT = [];
 let closedT = [];
@@ -941,7 +941,7 @@ function renderUserBody(user, container) {
 async function postNewFood() {
     try {
         const newFood = new FormData(newFoodForm)
-        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new-food', newFood);
+        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new', newFood);
         console.log(data);
         alert(data.message);
         setTimeout(() => {
@@ -1517,6 +1517,19 @@ function renderWorkoutCards(workouts, container, prefix){
         leftTop.appendChild(workoutId);
         leftTop.appendChild(separator);
         leftTop.appendChild(name);
+
+        if(prefix === 'user'){
+            const separatorUser = document.createElement('span');
+            separatorUser.className = 'card-separator';
+            separatorUser.textContent = '|';
+
+            const userId = document.createElement('span');
+            userId.className = 'card-content-id fw-bold';
+            userId.textContent = `user id: #${workout.user_id}`;
+
+            leftTop.appendChild(separatorUser);
+            leftTop.appendChild(userId);
+        }
 
         const badgeWrap = document.createElement('div');
         badgeWrap.className = 'd-flex align-items-center gap-2 flex-wrap';
@@ -2186,6 +2199,63 @@ function resetWorkoutForm(){
     if(workoutCancelEditBtn){
         workoutCancelEditBtn.remove();
         workoutCancelEditBtn = null;
+    }
+}
+async function createAdminWorkout() {
+    try {
+        const workout = collectWorkoutFormData();
+
+        const formData = new FormData();
+
+        const isPublicInput = workoutForm.querySelector('[name="is_public"]');
+
+        formData.append('name', workout.name);
+        formData.append('days_count', workout.days_count);
+        formData.append('level', workoutForm.querySelector('[name="level"]').value || '');
+        formData.append('location', workoutForm.querySelector('[name="location"]').value || '');
+        formData.append('goal', workoutForm.querySelector('[name="goal"]').value || '');
+        formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
+        formData.append('is_public', isPublicInput && isPublicInput.checked ? 1 : 0);
+        formData.append('days', JSON.stringify(workout.days));
+
+        const data = await postForm('http://127.0.0.1:3000/api/admin/workout/new', formData);
+
+        alert(data.message);
+        resetWorkoutForm();
+        loadWorkouts();
+
+    } catch (error) {
+        console.error(error.message);
+        alert(error.message);
+    }
+}
+async function updateAdminWorkout() {
+    try {
+        const workout = collectWorkoutFormData();
+
+        const formData = new FormData();
+
+        const isPublicInput = workoutForm.querySelector('[name="is_public"]');
+
+        formData.append('plan_id', editingWorkoutId);
+        formData.append('name', workout.name);
+        formData.append('days_count', workout.days_count);
+        formData.append('level', workoutForm.querySelector('[name="level"]').value || '');
+        formData.append('location', workoutForm.querySelector('[name="location"]').value || '');
+        formData.append('goal', workoutForm.querySelector('[name="goal"]').value || '');
+        formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
+        formData.append('is_public', isPublicInput && isPublicInput.checked ? 1 : 0);
+        formData.append('days', JSON.stringify(workout.days));
+
+        const data = await putForm('http://127.0.0.1:3000/api/admin/workout/edit/' + editingWorkoutId, formData);
+
+        alert(data.message);
+        resetWorkoutForm();
+        loadWorkouts();
+
+    } catch (error) {
+        console.error(error.message);
+        alert(error.message);
     }
 }
 

@@ -727,6 +727,7 @@ async function getAllUsersPlans(){
             wp.id AS plan_id,
             wp.name AS plan_name,
             wp.days_count,
+            wp.user_id,
 
             wd.id AS day_id,
             wd.day_number,
@@ -833,6 +834,7 @@ function formatWorkoutPlans(rows) {
                 planId: row.plan_id,
                 name: row.plan_name,
                 daysCount: row.days_count,
+                user_id: row.user_id ?? null,
 
                 level: row.level ?? null,
                 location: row.location ?? null,
