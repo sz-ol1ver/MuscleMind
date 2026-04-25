@@ -296,13 +296,12 @@
                                 </div>
 
                                 <div class="new-plan-content">
-
                                     <div id="create" class="routine-main-data workout-form-card">
                                         <label for="routine-name" class="form-label fw-bold">Edzésterv neve</label>
-                                        <input type="text" name="routine-name" id="routine-name" maxlength="100" value="new_workout" class="form-control workout-input">
+                                        <input type="text" id="routine-name" maxlength="100" value="new_workout" class="form-control workout-input">
 
                                         <label for="routine-day" class="form-label fw-bold mt-3">Napok száma</label>
-                                        <input type="number" name="routine-day" id="routine-day" placeholder="Napok száma" class="form-control workout-input" min="1" max="7">
+                                        <input type="number" id="routine-day" placeholder="Napok száma" class="form-control workout-input" min="1" max="7">
 
                                         <button type="button" id="next" class="btn btn-outline-success mt-4 w-100">
                                             Tovább
@@ -310,62 +309,7 @@
                                     </div>
 
                                     <div id="info" class="routine-second d-none">
-                                        <div class="day-selector d-flex justify-content-center flex-wrap gap-2">
-                                            <button type="button" value="1" id="day-1" class="day-box btn active">Nap 1</button>
-                                            <button type="button" value="2" id="day-2" class="day-box btn">Nap 2</button>
-                                            <button type="button" value="3" id="day-3" class="day-box btn">Nap 3</button>
-                                            <button type="button" value="4" id="day-4" class="day-box btn">Nap 4</button>
-                                            <button type="button" value="5" id="day-5" class="day-box btn">Nap 5</button>
-                                            <button type="button" value="6" id="day-6" class="day-box btn">Nap 6</button>
-                                            <button type="button" value="7" id="day-7" class="day-box btn">Nap 7</button>
-                                        </div>
-
-                                        <hr>
-
-                                        <div class="day-name-box">
-                                            <label for="day_name" class="form-label fw-bold">Nap neve</label>
-                                            <input type="text" name="day_name" id="day_name" value="" placeholder="Nap neve" class="form-control workout-input">
-                                        </div>
-
-                                        <div class="row day-editor justify-content-center g-3 mt-2">
-
-                                            <div class="routine col-12 col-lg-8">
-                                                <table class="table workout-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Gyakorlat</th>
-                                                            <th>Sorrend</th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="exercise"></tbody>
-                                                </table>
-                                            </div>
-
-                                            <div class="routine-data col-12 col-lg-4">
-                                                <div class="workout-form-card h-100">
-                                                    <label for="muscle-group" class="form-label fw-bold">Izomcsoport</label>
-                                                    <select name="muscle-group" id="muscle-group" class="form-control workout-input d-block mb-3">
-                                                        <option value="all" selected>Összes</option>
-                                                    </select>
-
-                                                    <label for="gyakorlat" class="form-label fw-bold">Gyakorlat</label>
-                                                    <select name="gyakorlat" id="gyakorlat" class="form-control workout-input d-block">
-                                                        <option value="0" selected disabled>
-                                                            Gyakorlat kiválasztása ▼
-                                                        </option>
-                                                        <option value="" disabled>-</option>
-                                                    </select>
-
-                                                    <div class="form-check mt-3">
-                                                        <input class="form-check-input" type="checkbox" value="1" id="rest">
-                                                        <label class="form-check-label fw-bold" for="rest">
-                                                            Pihenő nap
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div id="workout-days-builder" class="d-flex flex-column gap-3"></div>
                                     </div>
 
                                     <div class="alert d-block mx-auto d-none mt-3" role="alert" id="alert-save"></div>
@@ -374,7 +318,6 @@
                                         <input type="button" value="Mégse" id="cancel" class="btn btn-outline-danger d-none">
                                         <input type="button" value="Mentés" id="save" class="btn btn-outline-success d-none">
                                     </div>
-
                                 </div>
                             </div>
                         </div>

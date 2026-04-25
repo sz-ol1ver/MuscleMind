@@ -1,5 +1,7 @@
 import {getFetch, postNewPlan, deleteFetch, putPlan, patchFetch} from './api.js';
 
+let workoutDaysBuilder;
+
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
 let currentDay = 0; //? selected day
@@ -64,6 +66,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     reset = document.getElementById('filter-reset-btn');
     selectedDiv = document.getElementById('selected-plan');
     selectedDivItems = document.getElementById('selected-items');
+    workoutDaysBuilder = document.getElementById('workout-days-builder');
     //* id: day-1 ... day-7
 
     //! start
@@ -89,98 +92,43 @@ document.addEventListener('DOMContentLoaded', ()=>{
     reset.addEventListener('click', ()=>{
         resetFilters();
     })
-    muscleSelect.addEventListener('change', ()=>{
-        exerciseFilter.muscle = muscleSelect.value;
-        filterMuscleGroups();
-    })
-    cancel.addEventListener('click', ()=>{
-        workoutPlan = null;
-        location.reload();
+    cancel.addEventListener('click', () => {
+        resetWorkoutEditor();
     });
-    next.addEventListener('click', ()=>{
-        if(plan_name.value && plan_days.value){
-            if(plan_days.value >= 1 && plan_days.value <=7){
-                workoutPlan = {
-                    name: plan_name.value,
-                    days: []
-                };
-                for(let i = 1; i <= plan_days.value; i++){
-                    workoutPlan.days.push({
-                        dayNumber: i,
-                        name: "Nap " + i,
-                        restDay: false,
-                        exercises: []
-                    });
-                }
-                loadExercises();
-                document.querySelectorAll(".day-box").forEach(button => {
-                    if(button.value > plan_days.value){
-                        button.classList.add("d-none");
-                    }
-                    button.addEventListener("click", () => {
-                        currentDay = Number(button.value) - 1;
-                        renderTable();
-                        if(workoutPlan.days[currentDay].restDay == false){
-                            rest.checked = false;
-                            workoutPlan.days[currentDay].restDay = false;
-                            select.disabled = false;
-                        }else{
-                            rest.checked = true;
-                        }
-                        day_name.value = workoutPlan.days[currentDay].name;
-                        document.querySelectorAll(".day-box").forEach(button => {
-                            button.classList.remove('active');
-                        });
-                        button.classList.add('active');
-                    });
-                });
-                day_name.value = workoutPlan.days[currentDay].name;
-                create.classList.add('d-none');
-                info.classList.remove('d-none');
-                save.classList.remove('d-none');
-                cancel.classList.remove('d-none');
-            }
-        }
-    });
-    day_name.addEventListener('change', ()=>{
-        workoutPlan.days[currentDay].name = day_name.value;
-    })
-    select.addEventListener('change', ()=>{
-        for(let i = 0; i < workoutPlan.days[currentDay].exercises.length; i++){
-            if(Number(select.value) === workoutPlan.days[currentDay].exercises[i].exerciseId){
-                select.value = '';
-                return alert('Ez a gyakorlat már hozzá van adva ehhez a naphoz.');
-            }
+    next.addEventListener('click', async () => {
+        if(!plan_name.value.trim()){
+            return alert('Adj nevet az edzéstervnek!');
         }
 
-        workoutPlan.days[currentDay].exercises.push({
-            exerciseId: Number(select.value),
-            name: select.options[select.selectedIndex].text,
-            order: workoutPlan.days[currentDay].exercises.length + 1
-        });
+        let daysCount = Number(plan_days.value);
 
-        renderTable();
-        filterMuscleGroups();
-        select.value = '';
-    });
-    rest.addEventListener('change', ()=>{
-        if(rest.checked){
-            workoutPlan.days[currentDay].restDay = true;
-            workoutPlan.days[currentDay].exercises = [];
-            workoutPlan.days[currentDay].exercises.push({
-                exerciseId: 0,
-                name: 'REST DAY',
-                order: null
-            })
-            select.disabled = true;
-            renderTable();
-        }else{
-            workoutPlan.days[currentDay].restDay = false;
-            workoutPlan.days[currentDay].exercises = [];
-            select.disabled = false;
-            renderTable();
+        if(!Number.isInteger(daysCount) || daysCount < 1 || daysCount > 7){
+            return alert('A napok száma 1 és 7 között lehet!');
         }
-    })
+
+        await loadExercises();
+
+        workoutPlan = {
+            name: plan_name.value.trim(),
+            days: []
+        };
+
+        for(let i = 1; i <= daysCount; i++){
+            workoutPlan.days.push({
+                dayNumber: i,
+                name: 'Nap ' + i,
+                restDay: false,
+                exercises: []
+            });
+        }
+
+        renderWorkoutDayCards();
+
+        create.classList.add('d-none');
+        info.classList.remove('d-none');
+        save.classList.remove('d-none');
+        cancel.classList.remove('d-none');
+    });
     save.addEventListener('click', ()=>{
         if(create.classList.contains('d-none') && !info.classList.contains('d-none')){
             const days = workoutPlan.days.length;
@@ -197,15 +145,343 @@ document.addEventListener('DOMContentLoaded', ()=>{
                 return alert('Edzésterv nem állhat csak pihenőnapból!')
             }
             if(mode == 'save'){
-                postPlan(workoutPlan);
+                postPlan({
+                    name: workoutPlan.name,
+                    days: workoutPlan.days
+                });
             }else if(mode == 'edit'){
-                updatePlan(workoutPlan)
+                workoutPlan.days_count = workoutPlan.days.length;
+                updatePlan(workoutPlan);
             }
             
         }
         
     })
 });
+function resetWorkoutEditor(){
+    workoutPlan = null;
+    originalWorkoutPlan = null;
+    currentDay = 0;
+    mode = 'save';
+    planEditId = null;
+
+    plan_name.value = 'new_workout';
+    plan_days.value = '';
+
+    workoutDaysBuilder.innerHTML = '';
+
+    document.getElementById('newPlanTitle').innerHTML = 'Új edzésterv';
+
+    create.classList.remove('d-none');
+    info.classList.add('d-none');
+    save.classList.add('d-none');
+    cancel.classList.add('d-none');
+}
+function renderWorkoutDayCards(){
+    workoutDaysBuilder.innerHTML = '';
+
+    for(let i = 0; i < workoutPlan.days.length; i++){
+        const day = workoutPlan.days[i];
+
+        const dayCard = document.createElement('div');
+        dayCard.className = 'workout-form-card';
+
+        const header = document.createElement('div');
+        header.className = 'd-flex justify-content-between align-items-center flex-wrap gap-2 mb-3';
+
+        const title = document.createElement('h5');
+        title.className = 'mb-0 fw-bold';
+        title.textContent = `${day.dayNumber}. nap`;
+
+        const restWrap = document.createElement('div');
+        restWrap.className = 'form-check';
+
+        const restInput = document.createElement('input');
+        restInput.className = 'form-check-input day-rest';
+        restInput.type = 'checkbox';
+        restInput.id = `rest-day-${i}`;
+        restInput.checked = day.restDay;
+
+        const restLabel = document.createElement('label');
+        restLabel.className = 'form-check-label fw-bold';
+        restLabel.setAttribute('for', `rest-day-${i}`);
+        restLabel.textContent = 'Pihenőnap';
+
+        restWrap.appendChild(restInput);
+        restWrap.appendChild(restLabel);
+
+        header.appendChild(title);
+        header.appendChild(restWrap);
+
+        const nameBox = document.createElement('div');
+        nameBox.className = 'mb-3';
+
+        const nameLabel = document.createElement('label');
+        nameLabel.className = 'form-label fw-bold';
+        nameLabel.textContent = 'Nap neve';
+
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'form-control workout-input day-name';
+        nameInput.value = day.name;
+        nameInput.placeholder = 'Pl.: Mell-tricepsz';
+
+        nameBox.appendChild(nameLabel);
+        nameBox.appendChild(nameInput);
+
+        const row = document.createElement('div');
+        row.className = 'row g-3';
+
+        const tableCol = document.createElement('div');
+        tableCol.className = 'col-12 col-lg-8';
+
+        const table = document.createElement('table');
+        table.className = 'table workout-table';
+
+        const thead = document.createElement('thead');
+        const headTr = document.createElement('tr');
+
+        const thExercise = document.createElement('th');
+        thExercise.textContent = 'Gyakorlat';
+
+        const thOrder = document.createElement('th');
+        thOrder.textContent = 'Sorrend';
+
+        const thAction = document.createElement('th');
+        thAction.textContent = '';
+
+        headTr.appendChild(thExercise);
+        headTr.appendChild(thOrder);
+        headTr.appendChild(thAction);
+        thead.appendChild(headTr);
+
+        const tbody = document.createElement('tbody');
+        tbody.className = 'day-exercise-list';
+
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        tableCol.appendChild(table);
+
+        const controlsCol = document.createElement('div');
+        controlsCol.className = 'col-12 col-lg-4';
+
+        const controlsCard = document.createElement('div');
+        controlsCard.className = 'workout-form-card h-100';
+
+        const muscleLabel = document.createElement('label');
+        muscleLabel.className = 'form-label fw-bold';
+        muscleLabel.textContent = 'Izomcsoport';
+
+        const muscleSelect = document.createElement('select');
+        muscleSelect.className = 'form-control workout-input muscle-filter mb-3';
+
+        const allOption = document.createElement('option');
+        allOption.value = 'all';
+        allOption.textContent = 'Összes izomcsoport';
+        muscleSelect.appendChild(allOption);
+
+        for(const group of muscle_groups){
+            const option = document.createElement('option');
+            option.value = group;
+            option.textContent = formatMuscleGroup(group);
+            muscleSelect.appendChild(option);
+        }
+
+        const exerciseLabel = document.createElement('label');
+        exerciseLabel.className = 'form-label fw-bold';
+        exerciseLabel.textContent = 'Gyakorlat';
+
+        const exerciseSelect = document.createElement('select');
+        exerciseSelect.className = 'form-control workout-input exercise-select mb-3';
+
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'btn btn-outline-info w-100';
+        addBtn.textContent = 'Gyakorlat hozzáadása';
+
+        controlsCard.appendChild(muscleLabel);
+        controlsCard.appendChild(muscleSelect);
+        controlsCard.appendChild(exerciseLabel);
+        controlsCard.appendChild(exerciseSelect);
+        controlsCard.appendChild(addBtn);
+
+        controlsCol.appendChild(controlsCard);
+
+        row.appendChild(tableCol);
+        row.appendChild(controlsCol);
+
+        dayCard.appendChild(header);
+        dayCard.appendChild(nameBox);
+        dayCard.appendChild(row);
+
+        workoutDaysBuilder.appendChild(dayCard);
+
+        renderExerciseSelect(exerciseSelect, 'all');
+        renderDayExerciseTable(i, tbody);
+
+        nameInput.addEventListener('change', () => {
+            workoutPlan.days[i].name = nameInput.value.trim() || `Nap ${i + 1}`;
+        });
+
+        muscleSelect.addEventListener('change', () => {
+            renderExerciseSelect(exerciseSelect, muscleSelect.value);
+        });
+
+        addBtn.addEventListener('click', () => {
+            addExerciseToDay(i, exerciseSelect);
+        });
+
+        restInput.addEventListener('change', () => {
+            workoutPlan.days[i].restDay = restInput.checked;
+
+            if(restInput.checked){
+                workoutPlan.days[i].exercises = [{
+                    exerciseId: 0,
+                    name: 'REST DAY',
+                    order: null
+                }];
+
+                muscleSelect.disabled = true;
+                exerciseSelect.disabled = true;
+                addBtn.disabled = true;
+            }else{
+                workoutPlan.days[i].exercises = [];
+
+                muscleSelect.disabled = false;
+                exerciseSelect.disabled = false;
+                addBtn.disabled = false;
+            }
+
+            renderWorkoutDayCards();
+        });
+
+        if(day.restDay){
+            muscleSelect.disabled = true;
+            exerciseSelect.disabled = true;
+            addBtn.disabled = true;
+        }
+    }
+}
+function renderExerciseSelect(selectElement, muscleGroup){
+    selectElement.innerHTML = '';
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Gyakorlat kiválasztása ▼';
+    defaultOption.selected = true;
+    defaultOption.disabled = true;
+    selectElement.appendChild(defaultOption);
+
+    for(const exercise of exercisesList){
+        if(muscleGroup !== 'all' && exercise.muscle_group !== muscleGroup){
+            continue;
+        }
+
+        const option = document.createElement('option');
+        option.value = exercise.id;
+        option.textContent = `[${formatMuscleGroup(exercise.muscle_group)}] - ${exercise.name}`;
+        selectElement.appendChild(option);
+    }
+}
+function addExerciseToDay(dayIndex, exerciseSelect){
+    const exerciseId = Number(exerciseSelect.value);
+
+    if(!exerciseId){
+        return alert('Válassz gyakorlatot!');
+    }
+
+    const day = workoutPlan.days[dayIndex];
+
+    for(const exercise of day.exercises){
+        if(exercise.exerciseId === exerciseId){
+            exerciseSelect.value = '';
+            return alert('Ez a gyakorlat már hozzá van adva ehhez a naphoz.');
+        }
+    }
+
+    const selectedExercise = exercisesList.find(ex => ex.id === exerciseId);
+
+    if(!selectedExercise){
+        return alert('Nem található gyakorlat!');
+    }
+
+    day.exercises.push({
+        exerciseId: selectedExercise.id,
+        name: selectedExercise.name,
+        order: day.exercises.length + 1
+    });
+
+    exerciseSelect.value = '';
+    renderWorkoutDayCards();
+}
+function renderDayExerciseTable(dayIndex, tbody){
+    tbody.innerHTML = '';
+
+    const exercises = workoutPlan.days[dayIndex].exercises;
+
+    for(let i = 0; i < exercises.length; i++){
+        const tr = document.createElement('tr');
+
+        const tdName = document.createElement('td');
+        tdName.className = 'text-start';
+        tdName.textContent = exercises[i].name;
+
+        const tdOrder = document.createElement('td');
+        tdOrder.textContent = exercises[i].order ?? '-';
+
+        const tdAction = document.createElement('td');
+
+        if(exercises[i].exerciseId !== 0){
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn btn-outline-danger btn-sm';
+            deleteBtn.textContent = 'Törlés';
+
+            deleteBtn.addEventListener('click', () => {
+                workoutPlan.days[dayIndex].exercises.splice(i, 1);
+
+                for(let j = 0; j < workoutPlan.days[dayIndex].exercises.length; j++){
+                    workoutPlan.days[dayIndex].exercises[j].order = j + 1;
+                }
+
+                renderWorkoutDayCards();
+            });
+
+            tdAction.appendChild(deleteBtn);
+        }
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdOrder);
+        tr.appendChild(tdAction);
+
+        tbody.appendChild(tr);
+    }
+}
+function formatMuscleGroup(group){
+    if(!group){
+        return '-';
+    }
+
+    const muscles = {
+        mell: 'Mell',
+        hát: 'Hát',
+        váll: 'Váll',
+        bicepsz: 'Bicepsz',
+        tricepsz: 'Tricepsz',
+        alkar: 'Alkar',
+        has: 'Has',
+        ferde_has: 'Ferde has',
+        alsó_hát: 'Alsó hát',
+        comb_első: 'Combfeszítő',
+        comb_hátsó: 'Combhajlító',
+        farizom: 'Farizom',
+        vádli: 'Vádli',
+        teljes_test: 'Teljes test',
+        cardio: 'Cardio'
+    };
+
+    return muscles[group] || group;
+}
 async function deletePlan(id) {
     const alertDelete = document.getElementById('alert-delete-'+id);
     try {
@@ -284,54 +560,21 @@ async function updatePlan(obj) {
 async function loadExercises() {
     try {
         const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
+
         exercisesList = data.message;
         filteredExercisesList = [...exercisesList];
-        renderExercises(filteredExercisesList);
 
-        for(let row of data.message){
-            if(!muscle_groups.includes(row.muscle_group)){
-                muscle_groups.push(row.muscle_group)
+        muscle_groups.length = 0;
+
+        for(const exercise of exercisesList){
+            if(!muscle_groups.includes(exercise.muscle_group)){
+                muscle_groups.push(exercise.muscle_group);
             }
         }
-
-        muscleSelect.innerHTML = '<option value="all">Összes izomcsoport</option>';
-
-        for(let i = 0; i<muscle_groups.length;i++){
-            let option = document.createElement('option');
-            option.value = muscle_groups[i];
-            option.innerHTML = muscle_groups[i].replace("_", " ");
-            muscleSelect.appendChild(option);
-        }
     } catch (error) {
-        console.error(error.message + "\n"+error.error);
+        console.error(error.message + "\n" + error.error);
+        alert('Gyakorlatok betöltése sikertelen!');
     }
-}
-function renderExercises(exercises){
-    select.innerHTML = '';
-
-    let optionSelect = document.createElement('option');
-    optionSelect.value = '';
-    optionSelect.innerHTML = 'Gyakorlat kiválasztása ▼';
-    optionSelect.selected = true;
-    optionSelect.disabled = true;
-    select.appendChild(optionSelect);
-
-    for(let gyakorlat of exercises){
-        let option = document.createElement('option');
-        option.value = gyakorlat.id;
-        option.innerHTML = '['+gyakorlat.muscle_group.replace("_", " ")+'] - '+gyakorlat.name;
-        select.appendChild(option);
-    }
-}
-function filterMuscleGroups(){
-    filteredExercisesList.length = 0;
-    for(let row of exercisesList){
-        if(exerciseFilter.muscle !== 'all' && row.muscle_group !== exerciseFilter.muscle){
-            continue;
-        }
-        filteredExercisesList.push(row);
-    }
-    renderExercises(filteredExercisesList);
 }
 async function getActive() {
     try {
@@ -704,6 +947,10 @@ async function loadRecWorkoutDetail(id) {
 }
 async function editWorkout(id) {
     const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+
+    await loadExercises();
+
+    mode = 'edit';
     planEditId = id;
     workoutPlan = data.details;
 
@@ -721,96 +968,22 @@ async function editWorkout(id) {
 
     originalWorkoutPlan = JSON.parse(JSON.stringify(workoutPlan));
 
-    const editTitle = document.getElementById('newPlanTitle');
-    editTitle.innerHTML = workoutPlan.name + " - szerkesztés";
+    document.getElementById('newPlanTitle').innerHTML = workoutPlan.name + ' - szerkesztés';
+
+    plan_name.value = workoutPlan.name;
+    plan_days.value = workoutPlan.days_count || workoutPlan.days.length;
 
     create.classList.add('d-none');
     info.classList.remove('d-none');
     save.classList.remove('d-none');
     cancel.classList.remove('d-none');
-    location.href = '#action';
 
-    loadExercises();
-    currentDay = 0;
-    renderTable();
+    renderWorkoutDayCards();
 
-    if(workoutPlan.days[currentDay].restDay === false){
-        rest.checked = false;
-        select.disabled = false;
-    }else{
-        rest.checked = true;
-        select.disabled = true;
-    }
-
-    day_name.value = workoutPlan.days[currentDay].name;
-
-    document.querySelectorAll(".day-box").forEach(button => {
-        if(button.value > workoutPlan.days_count){
-            button.classList.add("d-none");
-        }
-
-        button.addEventListener("click", () => {
-            currentDay = Number(button.value) - 1;
-            renderTable();
-
-            if(workoutPlan.days[currentDay].restDay === false){
-                rest.checked = false;
-                select.disabled = false;
-            }else{
-                rest.checked = true;
-                select.disabled = true;
-            }
-
-            day_name.value = workoutPlan.days[currentDay].name;
-
-            document.querySelectorAll(".day-box").forEach(button => {
-                button.classList.remove('active');
-            });
-
-            button.classList.add('active');
-        });
+    document.getElementById('new-plan').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
     });
-}
-function renderTable(){
-    const tbody = document.getElementById('exercise');
-    tbody.innerHTML = "";
-
-    const exercises = workoutPlan.days[currentDay].exercises;
-
-    for(let i = 0; i < exercises.length; i++){
-
-        const tr = document.createElement("tr");
-
-        const tdName = document.createElement("td");
-        tdName.textContent = exercises[i].name;
-        tdName.classList.add('text-start')
-
-        const tdOrder = document.createElement("td");
-        tdOrder.textContent = exercises[i].order;
-
-        const tdDelete = document.createElement("td");
-
-        const btn = document.createElement("button");
-        btn.textContent = "Törlés";
-        btn.classList.add('btn', 'btn-outline-danger');
-
-        btn.addEventListener("click", () => {
-            exercises.splice(i,1);
-            // order újraszámolása
-            for(let j = 0; j < exercises.length; j++){
-                exercises[j].order = j + 1;
-            }
-            renderTable();
-        });
-        if(exercises[i].exerciseId != 0){
-            tdDelete.appendChild(btn);
-        }
-        tr.appendChild(tdName);
-        tr.appendChild(tdOrder);
-        tr.appendChild(tdDelete);
-
-        tbody.appendChild(tr);
-    }
 }
 function filterPlans(){
     filteredPlans.length = 0;
