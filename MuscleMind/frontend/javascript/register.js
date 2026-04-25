@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded',()=>{
     const registBtn = document.getElementById('regist-in');
 
     //? Nev megengedett karakterei
-    const patterName = /^[a-zA-Z]*$/ 
+    const patterName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]*$/;
     //? Felhasznalonev megengedett karakterei
-    const patterUser = /^[a-z0-9]*$/ 
+    const patterUser = /^[a-z0-9]{3,20}$/;
     //? Jelszo megengedett karakterei
-    const patterPass = /^[a-zA-Z0-9]*$/
+    const patterPass = /^[a-zA-Z0-9#?!$._*:\-!@%^&()+=<>[\]{}|\\,./~`]{8,64}$/;
     
     //! jelszo ill. jelszo elotti mezok vizsgalata
     // folyamatos ellenőrzés minden karakter után a jelszo mezoben
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     }
                                 }else{
                                     feedBack.style.color = 'red';
-                                    feedBack.innerHTML = 'Jelszó: a-z & A-Z & 0-9!'
+                                    feedBack.innerHTML = 'A jelszónak legalább 8, de legfeljebb 64 karakter hosszúnak kell lennie, és tartalmazhat betűket, számokat és speciális karaktereket (pl. ! @ # $ % ^ & * _ -).'
                                     pass.style.border = '2px solid red';
                                     passConf.value ='';
                                     passConf.disabled = true;
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 }
             }else{
                 feedBack.style.color = 'red';
-                feedBack.innerHTML = 'Csak a-z & A-Z';
+                feedBack.innerHTML = 'A név csak betűkből, ékezetekkel rendelkező karakterekből állhat.';
                 lastN.style.border = '2px solid red';
                 firstN.style.border = '2px solid red';
                 pass.value = '';
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                 switch(error.obj){
                                     case 1:
                                         feedBack.style.color = 'red';
-                                        feedBack.innerHTML = 'Nev: a-z & A-Z';
+                                        feedBack.innerHTML = 'A név csak betűkből, ékezetekkel rendelkező karakterekből állhat.';
                                         pass.value = '';
                                         passConf.value = '';
                                         passConf.disabled = true;
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                         break;
                                     case 4:
                                         feedBack.style.color = 'red';
-                                        feedBack.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett";
+                                        feedBack.innerHTML = "A jelszónak legalább 8, de legfeljebb 64 karakter hosszúnak kell lennie, és tartalmazhat betűket, számokat és speciális karaktereket (pl. ! @ # $ % ^ & * _ -).";
                                         pass.value = '';
                                         passConf.value = '';
                                         passConf.disabled = true;
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                             switch(error.obj){
                                 case 1:
                                     feedBack.style.color = 'red';
-                                    feedBack.innerHTML = 'Nev: a-z & A-Z';
+                                    feedBack.innerHTML = 'A név csak betűkből, ékezetekkel rendelkező karakterekből állhat.';
                                     pass.value = '';
                                     passConf.value = '';
                                     passConf.disabled = true;
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                                     break;
                                 case 4:
                                     feedBack.style.color = 'red';
-                                    feedBack.innerHTML = "Jelszó: 8–64 karakter, betűk, számok és '#' '?' '!' '-' engedélyezett";
+                                    feedBack.innerHTML = "A jelszónak legalább 8, de legfeljebb 64 karakter hosszúnak kell lennie, és tartalmazhat betűket, számokat és speciális karaktereket (pl. ! @ # $ % ^ & * _ -).";
                                     pass.value = '';
                                     passConf.value = '';
                                     passConf.disabled = true;

@@ -1,4 +1,4 @@
-import {getFetch, postNewPlan, deleteWorkout, putPlan, patchPlan} from './api.js';
+import {getFetch, postNewPlan, deleteFetch, putPlan, patchFetch} from './api.js';
 
 let workoutPlan = null; //? edzesterv obj
 let originalWorkoutPlan = null;
@@ -146,20 +146,23 @@ document.addEventListener('DOMContentLoaded', ()=>{
         workoutPlan.days[currentDay].name = day_name.value;
     })
     select.addEventListener('change', ()=>{
-        for(let i = 0; i<workoutPlan.days[currentDay].exercises.length;i++){
-            if(select.value == workoutPlan.days[currentDay].exercises[i].exerciseId){
-                select.value = 0;
+        for(let i = 0; i < workoutPlan.days[currentDay].exercises.length; i++){
+            if(Number(select.value) === workoutPlan.days[currentDay].exercises[i].exerciseId){
+                select.value = '';
                 return alert('Ez a gyakorlat már hozzá van adva ehhez a naphoz.');
             }
         }
+
         workoutPlan.days[currentDay].exercises.push({
             exerciseId: Number(select.value),
             name: select.options[select.selectedIndex].text,
             order: workoutPlan.days[currentDay].exercises.length + 1
         });
+
         renderTable();
-        renderExercises(filteredExercisesList);
-    })
+        filterMuscleGroups();
+        select.value = '';
+    });
     rest.addEventListener('change', ()=>{
         if(rest.checked){
             workoutPlan.days[currentDay].restDay = true;
@@ -206,7 +209,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 async function deletePlan(id) {
     const alertDelete = document.getElementById('alert-delete-'+id);
     try {
-        const data = await deleteWorkout('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
+        const data = await deleteFetch('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
         alertDelete.innerHTML = data.message;
         alertDelete.classList.add('alert-success');
         alertDelete.classList.remove('d-none');
@@ -282,12 +285,17 @@ async function loadExercises() {
     try {
         const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
         exercisesList = data.message;
-        renderExercises(exercisesList);
+        filteredExercisesList = [...exercisesList];
+        renderExercises(filteredExercisesList);
+
         for(let row of data.message){
             if(!muscle_groups.includes(row.muscle_group)){
                 muscle_groups.push(row.muscle_group)
             }
         }
+
+        muscleSelect.innerHTML = '<option value="all">Összes izomcsoport</option>';
+
         for(let i = 0; i<muscle_groups.length;i++){
             let option = document.createElement('option');
             option.value = muscle_groups[i];
@@ -346,7 +354,7 @@ async function updateActive(id) {
         const obj = {
             active: id
         }
-        const data = await patchPlan('http://127.0.0.1:3000/api/workout/plans/active', obj);
+        const data = await patchFetch('http://127.0.0.1:3000/api/workout/plans/active', obj);
         await getActive();
     } catch (error) {
         console.error(error.message);
@@ -387,9 +395,18 @@ async function loadWorkouts() {
             detailsBtn.setAttribute('aria-expanded', 'false');
             detailsBtn.setAttribute('aria-controls', `workout-details-${data.plans[i].id}`);
             //? load details
-            detailsBtn.addEventListener('click', ()=>{
-                loadWorkoutDetail(detailsBtn.value);
-            })
+            detailsBtn.addEventListener('click', async () => {
+                const detailDiv = document.getElementById(`workout-details-${data.plans[i].id}`);
+
+                if (!detailDiv.dataset.loaded) {
+                    detailDiv.innerHTML = '<div class="text-center py-3">Betöltés...</div>';
+                    
+                    setTimeout(async () => {
+                        await loadWorkoutDetail(data.plans[i].id);
+                        detailDiv.dataset.loaded = 'true';
+                    }, 150);
+                }
+            });
 
             const selectBtn = document.createElement('button');
             selectBtn.className = 'btn btn-outline-light';
@@ -473,8 +490,17 @@ function renderRecWorkouts(plans){
         detailsBtn.setAttribute('data-bs-target', `#workout-details-${plans[i].id}`);
         detailsBtn.setAttribute('aria-expanded', 'false');
         detailsBtn.setAttribute('aria-controls', `workout-details-${plans[i].id}`);
-        detailsBtn.addEventListener('click', ()=>{
-            loadRecWorkoutDetail(detailsBtn.value);
+        detailsBtn.addEventListener('click', async () => {
+            const detailDiv = document.getElementById(`workout-details-${plans[i].id}`);
+
+            if (!detailDiv.dataset.loaded) {
+                detailDiv.innerHTML = '<div class="text-center py-3">Betöltés...</div>';
+
+                setTimeout(async () => {
+                    await loadRecWorkoutDetail(plans[i].id);
+                    detailDiv.dataset.loaded = 'true';
+                }, 150);
+            }
         });
 
         const selectBtn = document.createElement('button');
@@ -590,6 +616,11 @@ async function loadWorkoutDetail(id) {
         deleteButton.id = 'deleteBtn';
         deleteButton.textContent = 'Törlés';
         deleteButton.addEventListener('click', ()=>{
+            const confirmDelete = confirm('Biztosan törölni szeretnéd ezt az edzéstervet?');
+
+            if(!confirmDelete){
+                return;
+            }
             deletePlan(id);
         })
         let editButton = document.createElement('button');
@@ -675,55 +706,67 @@ async function editWorkout(id) {
     const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
     planEditId = id;
     workoutPlan = data.details;
-    originalWorkoutPlan = JSON.parse(JSON.stringify(data.details));
-    for(let i = 0; i<workoutPlan.days.length; i++){
-        if(workoutPlan.days[i].restDay == true){
-            workoutPlan.days[i].exercises.push({
+
+    for(let i = 0; i < workoutPlan.days.length; i++){
+        workoutPlan.days[i].restDay = Boolean(workoutPlan.days[i].restDay);
+
+        if(workoutPlan.days[i].restDay === true){
+            workoutPlan.days[i].exercises = [{
                 exerciseId: 0,
                 name: 'REST DAY',
                 order: null
-            })
+            }];
         }
     }
+
+    originalWorkoutPlan = JSON.parse(JSON.stringify(workoutPlan));
+
     const editTitle = document.getElementById('newPlanTitle');
     editTitle.innerHTML = workoutPlan.name + " - szerkesztés";
-    //? display
+
     create.classList.add('d-none');
     info.classList.remove('d-none');
     save.classList.remove('d-none');
     cancel.classList.remove('d-none');
     location.href = '#action';
 
-
     loadExercises();
     currentDay = 0;
     renderTable();
-    if(workoutPlan.days[currentDay].restDay == false){
+
+    if(workoutPlan.days[currentDay].restDay === false){
         rest.checked = false;
         select.disabled = false;
     }else{
         rest.checked = true;
         select.disabled = true;
     }
+
     day_name.value = workoutPlan.days[currentDay].name;
+
     document.querySelectorAll(".day-box").forEach(button => {
         if(button.value > workoutPlan.days_count){
             button.classList.add("d-none");
         }
+
         button.addEventListener("click", () => {
             currentDay = Number(button.value) - 1;
             renderTable();
-            if(workoutPlan.days[currentDay].restDay == false){
+
+            if(workoutPlan.days[currentDay].restDay === false){
                 rest.checked = false;
                 select.disabled = false;
             }else{
                 rest.checked = true;
                 select.disabled = true;
             }
+
             day_name.value = workoutPlan.days[currentDay].name;
+
             document.querySelectorAll(".day-box").forEach(button => {
                 button.classList.remove('active');
             });
+
             button.classList.add('active');
         });
     });

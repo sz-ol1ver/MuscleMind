@@ -7,13 +7,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //!logout
     const logoutBtn = document.getElementById('logout');
     logoutBtn.addEventListener('click', ()=>{
+        const confirmLogout = confirm('Biztosan ki szeretnél jelentkezni?');
+
+        if(!confirmLogout){
+            return;
+        }
+
         logout();
-    })
+    });
 });
 async function logout() {
     try {
-        const data = await postLogout('http://127.0.0.1:3000/api/auth/logout')
-        alert(data.message);
+        const data = await postLogout('http://127.0.0.1:3000/api/auth/logout');
         window.location.href = '/bejelentkezes';
     } catch (error) {
         console.error(error.message)

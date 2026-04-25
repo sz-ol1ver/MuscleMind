@@ -104,3 +104,7 @@ Content-Type: application/json
   "subject": "test",
   "htmlContent": "<html><body><h1>Test</h1></body></html>"
 }
+
+
+###
+GET http://127.0.0.1:3000/api/admin/workouts/all

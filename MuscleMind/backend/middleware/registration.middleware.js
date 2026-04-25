@@ -20,13 +20,13 @@ const db = require('../sql/database.js');
 
 4️⃣ Anchors:
    - ^ and $ ensure the entire string matches*/
-const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
+const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
 //? Nev megengedett karakterei
-const patternName = /^[a-zA-Z]*$/;
+const patternName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]*$/;
 //? Felhasznalonev megengedett karakterei
 const patternUser = /^[a-z0-9]{3,20}$/;
 //? Jelszo megengedett karakterei
-const patternPass = /^[a-zA-Z0-9#?!\-]{8,64}$/;
+const patternPass = /^[a-zA-Z0-9#?!$._*:\-!@%^&()+=<>[\]{}|\\,./~`]{8,64}$/;
 
 async function validateRegistration(req, res, next) {
     try {

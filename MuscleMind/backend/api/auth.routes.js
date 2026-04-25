@@ -48,6 +48,15 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
         const {email, pass} = request.body;
         const ip = requestIp.getClientIp(request);
         const user = await db.findUser(email);
+
+        const active = await db.checkIfActive(user.id);
+        if(active == 0){
+            return response.status(403).json({
+                message: 'A felhasználói fiók le van tiltva.',
+                id: 5
+            });
+        }
+
         const compare = await bcrypt.compare(pass, user.password_hash);
 
         if(compare == false){
@@ -79,20 +88,36 @@ router.post('/login', upload.none(), loginMw.validateLogin, async(request, respo
     }
 })
 
-router.post('/logout',(request, response)=>{
-    request.session.destroy((err)=>{
-        if (err) {
-            return response.status(500).json({
-                message: "Logout failed"
-            });
-        }
-        response.clearCookie('connect.sid');
+router.post('/logout', async (req, res) => {
+    try {
+        const ip = requestIp.getClientIp(req);
 
-        return response.status(200).json({
-            message: "Sikeres kijelentkezés!"
+        const user = req.session.user;
+
+        if (user) {
+            await db.log_id(user.id, 'logout', 'Sikeres kijelentkezés!', ip);
+        }
+
+        req.session.destroy((err) => {
+            if (err) {
+                return res.status(500).json({
+                    message: "Logout failed"
+                });
+            }
+
+            res.clearCookie('connect.sid');
+
+            return res.status(200).json({
+                message: "Sikeres kijelentkezés!"
+            });
         });
-    });
-})
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Kijelentkezés sikertelen!"
+        });
+    }
+});
 
 router.get('/username', loginMw.requireAuthApi,async (request, response) => {
     try {

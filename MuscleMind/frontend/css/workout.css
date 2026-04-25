@@ -1,157 +1,396 @@
-.workout-plan{
-    border: 2px solid rgba(255,255,255,.10);
-    border-radius: 20px;
-    margin: 10px;
-    background-color: #6c6c862a;
-    padding-left: 10px;
-    padding-right: 10px;
-    min-height: 400px;
-    height: 50vh;
-    overflow-y: scroll;
-    padding-bottom: 40px;
+#middle-part {
+    min-height: calc(100vh - 90px);
+}
+
+.workout-dashboard {
     display: flex;
     flex-direction: column;
+    gap: 1.25rem;
+}
+
+.workout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.workout-plan {
+    border: 1px solid rgba(181, 139, 253, 0.28);
+    border-radius: 24px;
+    background:
+        radial-gradient(circle at top left, rgba(132, 77, 255, 0.20), transparent 32%),
+        linear-gradient(145deg, rgba(20, 15, 38, 0.94), rgba(8, 8, 15, 0.96));
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+    padding: 0;
+    min-height: 0;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     position: relative;
 }
-#new-plan, #selected-plan{
-    height: auto;
-    overflow-x: hidden;
-    overflow-y: hidden;
+
+#new-plan,
+#selected-plan {
+    height: 560px;
+    min-height: 0;
 }
-.headline{
-    margin: 5px 0 5px 0;
-    border-radius: 3px;
+
+.headline {
     width: 100%;
-    position:sticky;
-    top: 0;
-    z-index: 1;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-#recommended-title, #selected-title{
-    text-align: center;
-    font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
+    padding: 1rem 1.15rem 0.75rem;
+    flex: 0 0 auto;
+    background: rgba(10, 8, 20, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(181, 139, 253, 0.22);
 }
 
-#personal-title{
-    text-align: center;
-    font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
+#recommended-title,
+#selected-title,
+#personal-title,
+#new-title {
+    text-align: left;
+    font-weight: 700;
+    color: #d8b4fe;
 }
 
-#new-title{
-    text-align: center;
+#recommended-title h3,
+#selected-title h3,
+#personal-title h3,
+#new-title h3 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.workout-subtitle {
+    color: #b8a9c9;
+    font-size: 0.9rem;
+    margin: 0.25rem 0 0;
+}
+
+.plans-line {
+    flex: 0 0 auto;
+    height: auto;
+    padding: 1rem 1rem 0;
+}
+
+.filter-toggle-btn {
+    width: auto;
+    margin-bottom: 0.75rem;
+}
+
+.filter-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(181, 139, 253, 0.22);
+    border-radius: 16px;
+    padding: 1rem;
+}
+
+.container-items {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+}
+
+#personal-items,
+#recommended-items {
+    width: 100%;
+}
+
+.selected-wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+}
+
+#selected-items {
+    width: 100%;
+}
+
+.new-plan-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 1rem;
+}
+
+.mainCard {
+    margin: 0 0 0.85rem 0;
+    border: 1px solid rgba(181, 139, 253, 0.30);
+    background: linear-gradient(145deg, #171020, #0d0d14);
+    color: #ffffff;
+    width: 100%;
+    border-radius: 16px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.mainCard:hover {
+    border-color: #b58bfd !important;
+    box-shadow:
+        0 0 8px rgba(140, 101, 208, 0.8),
+        0 0 18px rgba(96, 63, 155, 0.55);
+    transform: translateY(-2px);
+}
+
+.detailCard {
+    border: 1px solid rgba(181, 139, 253, 0.35) !important;
+    background: #15111f;
+    color: #fff;
+    width: 100%;
+    overflow: visible;
+    white-space: normal;
+    word-break: break-word;
+    border-radius: 16px;
+}
+
+#selectedPlan {
+    width: 100%;
+}
+
+.workout-form-card {
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(181, 139, 253, 0.25);
+    border-radius: 18px;
+    padding: 1rem;
+}
+
+.routine-main-data {
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.workout-input {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(181, 139, 253, 0.35) !important;
+    border-radius: 12px;
+    color: #f3edff !important;
     font-weight: 600;
-    font-size: larger;
-    margin-top: 10px;
-    color: #b58bfd;
 }
-.routine{
-    overflow-x: scroll;
-    white-space: nowrap;
-    padding: 5px;
+
+.workout-input:focus {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border-color: #b58bfd !important;
+    box-shadow: 0 0 0 0.2rem rgba(181, 139, 253, 0.18);
 }
-.routine table{
-    width:100%;
-    padding: 10px;
+
+.workout-input::placeholder {
+    color: #9f8ab9;
 }
-.routine th,td{
-    vertical-align: middle;
-    padding: 20px;
+
+.day-selector {
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(181, 139, 253, 0.20);
+    border-radius: 16px;
+    padding: 0.75rem;
 }
-table,tr,th,td{
+
+.day-box {
+    color: #b9aacd;
+    border: 1px solid rgba(181, 139, 253, 0.25);
+    border-radius: 12px;
+    min-width: 76px;
+}
+
+.day-selector button:hover {
+    color: #ffffff;
+    border-color: #b58bfd;
+}
+
+.active {
+    border: 2px solid #b58bfd !important;
+    color: #d8b4fe !important;
+    font-weight: bold;
+    font-style: italic;
+    box-shadow: 0 0 12px rgba(181, 139, 253, 0.28);
+}
+
+.day-name-box {
+    max-width: 420px;
+}
+
+.day-editor {
+    align-items: stretch;
+}
+
+.routine {
+    overflow-x: auto;
+    padding: 0;
+}
+
+.routine-data {
+    min-width: 260px;
+}
+
+.workout-table {
+    width: 100%;
+    margin-bottom: 0;
+    overflow: hidden;
+    border-radius: 16px;
+}
+
+.routine table {
+    width: 100%;
+}
+
+.routine th,
+.routine td,
+table,
+tr,
+th,
+td {
     background-color: #0f0f17 !important;
     color: white !important;
     text-align: center;
-}
-tr{
-    border: 2px solid #612eb9 !important;
-}
-th{
-    background-color: #29154c !important;
-}
-#btn-hr{
-    width: 50%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-select{
-    text-align: center;
-    font-weight: bold;
-    border: 1px solid #612eb9 !important;
-}
-.day-selector button:hover{
-    color: #612eb9;
-}
-.active{
-    border: 2px solid #612eb9 !important;
-    color: #a276ef !important;
-    font-weight: bolder;
-    font-style: italic;
-}
-input:disabled{
-    background-color: #6b6b6b !important;
-}
-.day-box{
-    color: #616161;
-}
-#personal-items,#recommended-items{
-    overflow-y: visible;
-    overflow-x: hidden;
-    white-space: nowrap;
-    padding: 5px;
-    height: auto;
-}
-.workout-title{
-    text-wrap: wrap !important;
+    vertical-align: middle;
 }
 
-.mainCard{
-    margin-bottom: 10px;
-    border: 2px solid rgb(92, 92, 92);
-    background-color: #2a2a2a;
-    color: white;
-    width: 95% !important;
-    height: auto !important;
-    display: block !important;
+.routine th,
+.routine td {
+    padding: 1rem;
 }
-.mainCard:hover{
-    border: 2px solid #b58bfd !important;
-    box-shadow:
-        0 0 6px #8c65d0 ,
-        0 0 12px #603f9b,
-        0 0 20px #4d2198 !important;
+
+tr {
+    border: 1px solid rgba(181, 139, 253, 0.35) !important;
 }
-.detailCard{
-    border: 3px solid rgb(92, 92, 92) !important;
-    background-color: #343434;
-    color: rgb(255, 251, 251);
-    width: 100% !important;
-    max-height: 30vh !important;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    white-space: normal !important;
-    word-break: break-word;
+
+th {
+    background-color: #29154c !important;
+    color: #e9d5ff !important;
 }
-#selectedPlan{
-    display: block;
-    width: 100% !important;
-    align-items: center;
-    overflow-x: scroll;
-    white-space: nowrap;
+
+select {
+    text-align: center;
+    font-weight: bold;
 }
-#selectedPlan>.detailCard{
-    max-width: none !important;
+
+input:disabled {
+    background-color: #6b6b6b !important;
 }
-.container-items{
-    flex: 1;
+
+.action-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
-.text-justify{
+
+.action-row .btn {
+    min-width: 130px;
+}
+
+.text-justify {
     text-align: justify;
+}
+
+.container-items::-webkit-scrollbar,
+.selected-wrapper::-webkit-scrollbar,
+.new-plan-content::-webkit-scrollbar,
+.routine::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.container-items::-webkit-scrollbar-thumb,
+.selected-wrapper::-webkit-scrollbar-thumb,
+.new-plan-content::-webkit-scrollbar-thumb,
+.routine::-webkit-scrollbar-thumb {
+    background: #6d43ad;
+    border-radius: 20px;
+}
+
+.container-items::-webkit-scrollbar-track,
+.selected-wrapper::-webkit-scrollbar-track,
+.new-plan-content::-webkit-scrollbar-track,
+.routine::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+@media (max-width: 1199.98px) {
+    .workout-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workout-plan {
+        height: 500px;
+    }
+
+    #new-plan,
+    #selected-plan {
+        height: 540px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    #middle-part {
+        padding: 1rem !important;
+    }
+
+    .workout-plan {
+        height: 480px;
+    }
+
+    #new-plan,
+    #selected-plan {
+        height: 520px;
+    }
+
+    .filter-toggle-btn {
+        width: 100%;
+    }
+
+    #mobileFilters {
+        margin-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .workout-plan {
+        height: 450px;
+    }
+
+    #new-plan,
+    #selected-plan {
+        height: 500px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .headline {
+        padding: 0.85rem;
+    }
+
+    #recommended-title h3,
+    #selected-title h3,
+    #personal-title h3,
+    #new-title h3 {
+        font-size: 1.1rem;
+    }
+
+    .container-items,
+    .new-plan-content,
+    .selected-wrapper {
+        padding: 0.75rem;
+    }
+
+    .routine th,
+    .routine td {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .action-row {
+        flex-direction: column;
+    }
+
+    .action-row .btn {
+        width: 100%;
+    }
 }

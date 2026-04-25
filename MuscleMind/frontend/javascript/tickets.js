@@ -154,6 +154,12 @@ function renderTickets(tickets, container) {
         const hr = document.createElement('hr');
         hr.className = 'ticket-divider';
 
+        const hr2 = document.createElement('hr');
+        hr2.className = 'ticket-divider';
+
+        const adminUsername = document.createElement('p');
+        adminUsername.innerHTML = 'Válaszadó: '+ticket.admin_username + ' (#'+ticket.replied_by_admin_id+')';
+
         const datesWrap = document.createElement('div');
         datesWrap.className = 'ticket-dates';
 
@@ -163,8 +169,15 @@ function renderTickets(tickets, container) {
         const updatedInfo = document.createElement('div');
         updatedInfo.textContent = `Szerkesztve: ${ formatDate(ticket.updated_at)}`;
 
+        const repliedInfo = document.createElement('div');
+        repliedInfo.textContent = `Válasz: ${ formatDate(ticket.replied_at)}`;
+
         datesWrap.appendChild(createdInfo);
         datesWrap.appendChild(updatedInfo);
+
+        if(ticket.status == 'closed'){
+            datesWrap.appendChild(repliedInfo);
+        }
 
         // kategória badge
         const categoryBadge = document.createElement('span');
@@ -194,6 +207,10 @@ function renderTickets(tickets, container) {
         body.appendChild(adminMessageTitle);
         body.appendChild(adminMessageBox);
         body.appendChild(hr);
+        if(ticket.status == 'closed'){
+            body.appendChild(adminUsername);
+            body.appendChild(hr2);
+        }
         body.appendChild(datesWrap);
 
         collapse.appendChild(body);
