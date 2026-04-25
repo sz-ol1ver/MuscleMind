@@ -23,6 +23,9 @@ let workoutForm;
 let workoutDaysCountInput;
 let workoutDaysBuilder;
 let allExercises = [];
+let workoutEditMode = false;
+let editingWorkoutId = null;
+let workoutCancelEditBtn = null;
 
 document.addEventListener('DOMContentLoaded', ()=>{
     const dashRefresh = document.getElementById('refresh-dash');
@@ -39,7 +42,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     workoutDaysBuilder = document.getElementById('workout-days-builder');
 
     workoutDaysCountInput.addEventListener('change', () => {
+        const currentWorkout = collectWorkoutFormData();
         generateWorkoutDays();
+        refillWorkoutDays(currentWorkout);
     });
 
     refreshSections();
@@ -73,7 +78,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
     newFoodForm.addEventListener('submit', (e)=>{
         e.preventDefault();
         postNewFood();
-    })
+    });
+    workoutForm.addEventListener('submit', async(e)=>{
+    e.preventDefault();
+        if(workoutEditMode){
+            await updateAdminWorkout();
+        }else{
+            await createAdminWorkout();
+        }
+    });
 });
 
 //? refresh section data
@@ -1636,6 +1649,19 @@ function renderWorkoutCards(workouts, container, prefix){
         const footerWrap = document.createElement('div');
         footerWrap.className = 'd-flex flex-wrap justify-content-end gap-2';
 
+        if(prefix === 'admin'){
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn btn-outline-warning';
+            editBtn.textContent = 'Szerkesztés';
+
+            editBtn.addEventListener('click', (e)=>{
+                e.stopPropagation();
+                loadWorkoutToForm(workout);
+            });
+
+            footerWrap.appendChild(editBtn);
+        }
+
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn btn-outline-danger';
         deleteBtn.textContent = 'Törlés';
@@ -1963,6 +1989,203 @@ function refreshExerciseOrders(container){
     for(let i = 0; i < rows.length; i++){
         const orderInput = rows[i].querySelector('.exercise-order');
         orderInput.value = i + 1;
+    }
+}
+function loadWorkoutToForm(workout){
+    workoutEditMode = true;
+    editingWorkoutId = workout.planId;
+
+    workoutForm.querySelector('[name="name"]').value = workout.name ?? '';
+    workoutForm.querySelector('[name="days_count"]').value = workout.daysCount ?? 1;
+    workoutForm.querySelector('[name="level"]').value = workout.level ?? '';
+    workoutForm.querySelector('[name="location"]').value = workout.location ?? '';
+    workoutForm.querySelector('[name="goal"]').value = workout.goal ?? '';
+    workoutForm.querySelector('[name="description"]').value = workout.description ?? '';
+
+    const publicInput = workoutForm.querySelector('[name="is_public"]');
+    if(publicInput){
+        publicInput.checked = true;
+    }
+
+    generateWorkoutDays();
+
+    for(let i = 0; i < workout.days.length; i++){
+        const day = workout.days[i];
+        const dayCard = workoutDaysBuilder.children[i];
+
+        if(!dayCard){
+            continue;
+        }
+
+        const nameInput = dayCard.querySelector('.day-name');
+        const restInput = dayCard.querySelector('.day-rest');
+        const addBtn = dayCard.querySelector('.add-exercise-btn');
+        const exerciseList = dayCard.querySelector('.exercise-list');
+
+        nameInput.value = day.name ?? `Nap ${i + 1}`;
+        restInput.checked = Boolean(day.isRestDay);
+
+        exerciseList.innerHTML = '';
+
+        if(restInput.checked){
+            addBtn.disabled = true;
+        }else{
+            addBtn.disabled = false;
+
+            for(let j = 0; j < day.exercises.length; j++){
+                addExerciseRow(exerciseList);
+
+                const row = exerciseList.children[j];
+                const exerciseSelect = row.querySelector('.exercise-id');
+                const orderInput = row.querySelector('.exercise-order');
+
+                exerciseSelect.value = day.exercises[j].exerciseId;
+                orderInput.value = day.exercises[j].order;
+            }
+        }
+    }
+
+    const submitBtn = workoutForm.querySelector('[type="submit"]');
+    if(submitBtn){
+        submitBtn.textContent = 'Módosítás mentése';
+        submitBtn.className = 'btn btn-warning';
+    }
+
+    const createCollapse = document.getElementById('workoutCreateCollapse');
+    if(createCollapse && !createCollapse.classList.contains('show')){
+        const bsCollapse = new bootstrap.Collapse(createCollapse, {
+            show: true
+        });
+    }
+
+    workoutForm.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
+    showWorkoutCancelEditButton();
+}
+function refillWorkoutDays(workout){
+    const dayCards = workoutDaysBuilder.querySelectorAll('.admin-card');
+
+    for(let i = 0; i < dayCards.length; i++){
+        const oldDay = workout.days[i];
+
+        if(!oldDay){
+            continue;
+        }
+
+        const dayCard = dayCards[i];
+
+        const nameInput = dayCard.querySelector('.day-name');
+        const restInput = dayCard.querySelector('.day-rest');
+        const addBtn = dayCard.querySelector('.add-exercise-btn');
+        const exerciseList = dayCard.querySelector('.exercise-list');
+
+        nameInput.value = oldDay.name ?? `Nap ${i + 1}`;
+        restInput.checked = Boolean(oldDay.restDay);
+
+        exerciseList.innerHTML = '';
+
+        if(restInput.checked){
+            addBtn.disabled = true;
+        }else{
+            addBtn.disabled = false;
+
+            for(let j = 0; j < oldDay.exercises.length; j++){
+                addExerciseRow(exerciseList);
+
+                const row = exerciseList.children[j];
+                const exerciseSelect = row.querySelector('.exercise-id');
+                const orderInput = row.querySelector('.exercise-order');
+
+                exerciseSelect.value = oldDay.exercises[j].exerciseId;
+                orderInput.value = oldDay.exercises[j].order;
+            }
+        }
+    }
+}
+function collectWorkoutFormData(){
+    const workout = {
+        name: workoutForm.querySelector('[name="name"]').value,
+        days_count: Number(workoutDaysCountInput.value),
+        days: []
+    };
+
+    const dayCards = workoutDaysBuilder.querySelectorAll('.admin-card');
+
+    for(let i = 0; i < dayCards.length; i++){
+        const dayCard = dayCards[i];
+
+        const name = dayCard.querySelector('.day-name').value;
+        const restDay = dayCard.querySelector('.day-rest').checked;
+
+        const day = {
+            dayNumber: i + 1,
+            name: name,
+            restDay: restDay,
+            exercises: []
+        };
+
+        const rows = dayCard.querySelectorAll('.exercise-list .ticket-message-box');
+
+        for(let j = 0; j < rows.length; j++){
+            const row = rows[j];
+
+            const exerciseId = Number(row.querySelector('.exercise-id').value);
+            const order = Number(row.querySelector('.exercise-order').value);
+
+            if(exerciseId){
+                day.exercises.push({
+                    exerciseId,
+                    order
+                });
+            }
+        }
+
+        workout.days.push(day);
+    }
+
+    return workout;
+}
+function showWorkoutCancelEditButton(){
+    if(workoutCancelEditBtn){
+        return;
+    }
+
+    const submitBtn = workoutForm.querySelector('[type="submit"]');
+
+    if(!submitBtn){
+        return;
+    }
+
+    workoutCancelEditBtn = document.createElement('button');
+    workoutCancelEditBtn.type = 'button';
+    workoutCancelEditBtn.className = 'btn btn-outline-danger ms-2';
+    workoutCancelEditBtn.textContent = 'Mégse';
+
+    workoutCancelEditBtn.addEventListener('click', () => {
+        resetWorkoutForm();
+    });
+
+    submitBtn.parentElement.appendChild(workoutCancelEditBtn);
+}
+function resetWorkoutForm(){
+    workoutEditMode = false;
+    editingWorkoutId = null;
+
+    workoutForm.reset();
+    workoutDaysBuilder.innerHTML = '';
+
+    const submitBtn = workoutForm.querySelector('[type="submit"]');
+
+    if(submitBtn){
+        submitBtn.textContent = 'Edzésterv létrehozása';
+        submitBtn.className = 'btn btn-success';
+    }
+
+    if(workoutCancelEditBtn){
+        workoutCancelEditBtn.remove();
+        workoutCancelEditBtn = null;
     }
 }
 
