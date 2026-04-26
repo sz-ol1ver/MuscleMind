@@ -858,7 +858,7 @@ function renderUserBody(user, container) {
         return item;
     }
 
-    grid.appendChild(createItem('Kor', user.age));
+    grid.appendChild(createItem('Születési dátum', formatOnlyDate(user.birth_date)));
     grid.appendChild(createItem('Magasság', user.height ? user.height + ' cm' : '-'));
     grid.appendChild(createItem('Nem', user.gender));
     grid.appendChild(createItem('Cél', user.goal));
@@ -889,6 +889,33 @@ function renderUserBody(user, container) {
 
     weightBox.appendChild(weight);
     weightBox.appendChild(weightDate);
+
+    const hrMetrics = document.createElement('hr');
+    hrMetrics.className = 'ticket-divider';
+
+    const metricsTitle = document.createElement('h6');
+    metricsTitle.className = 'ticket-section-title';
+    metricsTitle.textContent = 'Kalkulált adatok';
+
+    const metricsBox = document.createElement('div');
+    metricsBox.className = 'ticket-message-box';
+
+    const metricsGrid = document.createElement('div');
+    metricsGrid.className = 'd-flex flex-wrap gap-3';
+
+    metricsGrid.appendChild(createItem('BMI', user.bmi ?? '-'));
+    metricsGrid.appendChild(createItem('BMR', user.bmr ? `${user.bmr} kcal` : '-'));
+    metricsGrid.appendChild(createItem('TDEE', user.tdee ? `${user.tdee} kcal` : '-'));
+    metricsGrid.appendChild(createItem('Cél kalória', user.goal_calories ? `${user.goal_calories} kcal` : '-'));
+    metricsGrid.appendChild(createItem('Ajánlott fehérje', user.protein_recommended ? `${user.protein_recommended} g` : '-'));
+
+    metricsBox.appendChild(metricsGrid);
+
+    const metricsDate = document.createElement('div');
+    metricsDate.className = 'card-content-date mt-2';
+    metricsDate.textContent = `Kiszámítva: ${user.calculated_at ? formatDate(user.calculated_at) : '-'}`;
+
+    metricsBox.appendChild(metricsDate);
 
     const hr3 = document.createElement('hr');
     hr3.className = 'ticket-divider';
@@ -988,6 +1015,11 @@ function renderUserBody(user, container) {
     container.appendChild(hr2);
     container.appendChild(weightTitle);
     container.appendChild(weightBox);
+
+    container.appendChild(hrMetrics);
+    container.appendChild(metricsTitle);
+    container.appendChild(metricsBox);
+
     container.appendChild(hr3);
     container.appendChild(datesWrap);
     container.appendChild(hr4);
@@ -2402,4 +2434,13 @@ function resetWorkoutFilters(){
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleString('hu-HU');
+}
+function formatOnlyDate(dateString) {
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString('hu-HU', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
 }

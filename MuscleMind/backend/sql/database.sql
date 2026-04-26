@@ -98,6 +98,20 @@ CREATE TABLE IF NOT EXISTS user_weights (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE user_metrics (
+    user_id INT PRIMARY KEY,
+
+    bmi DECIMAL(5,2) NOT NULL,
+    bmr INT NOT NULL,
+    tdee DECIMAL(6,2) NOT NULL,
+
+    goal_calories INT NOT NULL,
+
+    protein_recommended DECIMAL(5,2) NOT NULL,
+
+    calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- WORKOUT --
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     user_id INT NOT NULL,
@@ -409,6 +423,11 @@ ALTER TABLE user_profiles
     ADD CONSTRAINT fk_user_profiles_users
     FOREIGN KEY (id)
     REFERENCES users(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE user_metrics
+    ADD CONSTRAINT fk_user_metrics_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
     ON DELETE CASCADE;
 
 ALTER TABLE user_weights

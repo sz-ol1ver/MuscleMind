@@ -18,6 +18,7 @@ router.post('/', registrationComplete, validateInput, async(request, response)=>
         await db.insertWeight(id, weight);
         await db.log_id(id, 'registration', 'registration 2/2',ip);
         await db.updateRegistered(id);
+        await db.saveUserMetrics(id);
         return response.status(201).json({
             message: 'Válaszok elmentve!'
         })
