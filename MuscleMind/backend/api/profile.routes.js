@@ -55,7 +55,7 @@ router.post('/update', validateProfileUpdate, async (request, response) => {
 
         await db.updateUserPreferences(
             id, 
-            mergedData.age, 
+            mergedData.birth_date, 
             mergedData.height, 
             mergedData.goal, 
             mergedData.experience_level, 

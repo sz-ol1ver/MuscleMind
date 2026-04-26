@@ -17,9 +17,10 @@ async function validateProfileUpdate(req, res, next) {
         const oldPref = await db.getUserPreferencesData(id) || {}
 
         // Kovertalashoz kellenek
-        let newAge = oldPref.age || null
+        let newBirthDate = oldPref.age || null
+
         if (body.age) {
-            newAge = parseInt(body.age)
+            newBirthDate = body.age
         }
 
         let newHeight = oldPref.height || null
@@ -39,7 +40,7 @@ async function validateProfileUpdate(req, res, next) {
             last_name: body.last_name || oldBasic.last_name,
             email: body.email || oldBasic.email,
             password: body.password || null,
-            age: newAge,
+            birth_date: newBirthDate,
             height: newHeight,
             weight: newWeight,
             goal: body.goal || oldPref.goal || null,
@@ -102,10 +103,28 @@ async function validateProfileUpdate(req, res, next) {
         }
 
         // Kerdoiv adatok elenorzese
-        if (mergedData.age && (isNaN(mergedData.age) || mergedData.age < 18 || mergedData.age > 99)) {
-            return res.status(400).json({
-                message: "Érvénytelen életkor (18-99)!" 
-            })
+        if (mergedData.birth_date) {
+            const birthDate = new Date(mergedData.birth_date)
+
+            if (isNaN(birthDate.getTime())) {
+                return res.status(400).json({
+                    message: "Érvénytelen születési dátum!"
+                })
+            }
+
+            const today = new Date()
+            let age = today.getFullYear() - birthDate.getFullYear()
+            const monthDiff = today.getMonth() - birthDate.getMonth()
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--
+            }
+
+            if (age < 18 || age > 99) {
+                return res.status(400).json({
+                    message: "Érvénytelen életkor (18-99)!"
+                })
+            }
         }
         if (mergedData.height && (isNaN(mergedData.height) || mergedData.height < 140 || mergedData.height > 220)) {
             return res.status(400).json({

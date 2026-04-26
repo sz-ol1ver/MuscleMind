@@ -91,9 +91,9 @@ async function registComp(id) {
 }
 
 //user kerdoiv adatok (insert) /without weight
-async function insertPreferences(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
-    const data = 'Insert into user_profiles(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) VALUES (?,?,?,?,?,?,?,?,?,?)';
-    const [rows] = await pool.execute(data, [id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day])
+async function insertPreferences(id, date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const data = 'Insert into user_profiles(id, birth_date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) VALUES (?,?,?,?,?,?,?,?,?,?)';
+    const [rows] = await pool.execute(data, [id, date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day])
     return rows.insertId;
 }
 
@@ -125,7 +125,7 @@ async function getUserBasicData(id) {
 
 // user profil adatok
 async function getUserPreferencesData(id) {
-    const query = 'SELECT age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
+    const query = 'SELECT birth_date AS age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
     const [rows] = await pool.execute(query, [id]);
     return rows[0];
 }
@@ -146,7 +146,7 @@ async function updateUserBasic(id, username, firstName, lastName, email) {
 
 // user update preferences
 async function updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
-    const query = 'UPDATE user_profiles SET age = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
+    const query = 'UPDATE user_profiles SET birth_date = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
     const [result] = await pool.execute(query, [age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day, id]);
     return result;
 }
