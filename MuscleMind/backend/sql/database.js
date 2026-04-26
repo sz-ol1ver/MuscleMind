@@ -111,6 +111,152 @@ async function updateRegistered(id) {
     return rows;
 }
 
+//? user metrics
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+
+    let age = today.getFullYear() - birth.getFullYear();
+
+    const monthDiff = today.getMonth() - birth.getMonth();
+    const dayDiff = today.getDate() - birth.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+    }
+
+    return age;
+}
+
+function getActivityMultiplier(trainingDays) {
+    switch (trainingDays) {
+        case '2–3 nap':
+            return 1.375;
+        case '4 nap':
+            return 1.55;
+        case '5–6 nap':
+            return 1.725;
+        default:
+            return 1.2;
+    }
+}
+
+function getGoalCalories(tdee, goal) {
+    switch (goal) {
+        case 'tömegnövelés':
+            return Math.round(tdee + 300);
+        case 'szálkásítás':
+            return Math.round(tdee - 300);
+        case 'szintentartás':
+            return Math.round(tdee);
+        default:
+            return Math.round(tdee);
+    }
+}
+
+function getProteinRecommended(weight, goal) {
+    switch (goal) {
+        case 'tömegnövelés':
+            return Number((weight * 1.8).toFixed(2));
+        case 'szálkásítás':
+            return Number((weight * 2.0).toFixed(2));
+        case 'szintentartás':
+            return Number((weight * 1.6).toFixed(2));
+        default:
+            return Number((weight * 1.6).toFixed(2));
+    }
+}
+
+async function calculateUserMetrics(userId) {
+    const profileSql = `
+        SELECT 
+            birth_date,
+            height,
+            gender,
+            goal,
+            training_days
+        FROM user_profiles
+        WHERE id = ?
+    `;
+
+    const [profileRows] = await pool.execute(profileSql, [userId]);
+    const profile = profileRows[0];
+
+    if (!profile) {
+        throw new Error('Hiányzó profil adatok.');
+    }
+
+    const weightData = await getUserWeightData(userId);
+
+    if (!weightData) {
+        throw new Error('Hiányzó testsúly adat.');
+    }
+
+    if (!profile.birth_date || !profile.height || !profile.gender || !profile.goal || !profile.training_days) {
+        throw new Error('Hiányos profil adatok a számításhoz.');
+    }
+
+    const age = calculateAge(profile.birth_date);
+    const height = Number(profile.height);
+    const weight = Number(weightData.weight);
+
+    const bmi = Number((weight / Math.pow(height / 100, 2)).toFixed(2));
+
+    let bmr;
+
+    if (profile.gender === 'férfi') {
+        bmr = Math.round((10 * weight) + (6.25 * height) - (5 * age) + 5);
+    } else {
+        bmr = Math.round((10 * weight) + (6.25 * height) - (5 * age) - 161);
+    }
+
+    const activityMultiplier = getActivityMultiplier(profile.training_days);
+    const tdee = Number((bmr * activityMultiplier).toFixed(2));
+
+    const goalCalories = getGoalCalories(tdee, profile.goal);
+    const proteinRecommended = getProteinRecommended(weight, profile.goal);
+
+    return {
+        bmi,
+        bmr,
+        tdee,
+        goalCalories,
+        proteinRecommended
+    };
+}
+
+async function saveUserMetrics(userId) {
+    const metrics = await calculateUserMetrics(userId);
+
+    const sql = `
+        INSERT INTO user_metrics (
+            user_id,
+            bmi,
+            bmr,
+            tdee,
+            goal_calories,
+            protein_recommended
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            bmi = VALUES(bmi),
+            bmr = VALUES(bmr),
+            tdee = VALUES(tdee),
+            goal_calories = VALUES(goal_calories),
+            protein_recommended = VALUES(protein_recommended)
+    `;
+
+    const [result] = await pool.execute(sql, [
+        userId,
+        metrics.bmi,
+        metrics.bmr,
+        metrics.tdee,
+        metrics.goalCalories,
+        metrics.proteinRecommended
+    ]);
+
+    return result.affectedRows;
+}
+
 
 // -------
 // PROFILE
@@ -565,7 +711,7 @@ async function userAllData(id) {
             u.active,
             u.created_at AS profil_date,
 
-            up.age,
+            up.birth_date,
             up.height,
             up.gender,
             up.goal,
@@ -577,12 +723,22 @@ async function userAllData(id) {
             up.created_at AS registration_date,
 
             uw.weight,
-            uw.created_at AS weight_date
+            uw.created_at AS weight_date,
+
+            um.bmi,
+            um.bmr,
+            um.tdee,
+            um.goal_calories,
+            um.protein_recommended,
+            um.calculated_at
 
         FROM users u
 
         LEFT JOIN user_profiles up 
             ON up.id = u.id
+
+        LEFT JOIN user_metrics um
+            ON um.user_id = u.id
 
         LEFT JOIN user_weights uw 
             ON uw.id = (
@@ -1179,5 +1335,6 @@ module.exports = {
     createAdminWorkoutPlan,
     updateAdminWorkoutPlan,
     deleteAdminPlan,
-    selectCurrentAdminStatus
+    selectCurrentAdminStatus,
+    saveUserMetrics
 };

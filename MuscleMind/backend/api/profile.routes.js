@@ -86,7 +86,8 @@ router.post('/update', validateProfileUpdate, async (request, response) => {
             }
         }
 
-        await db.log_id(id, 'profile', 'Sikeres profil frissítés', ip)
+        await db.log_id(id, 'profile', 'Sikeres profil frissítés', ip);
+        await db.saveUserMetrics(id);
 
         return response.status(200).json({
             message: 'Profil sikeresen frissítve!'
