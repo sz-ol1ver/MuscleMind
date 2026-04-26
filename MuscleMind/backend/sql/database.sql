@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS user_profiles (
     id INT PRIMARY KEY,
 
-    age INT NULL,
+    birth_date DATE NULL,
     height INT NULL,
 
     gender ENUM('férfi', 'nő') NULL,
