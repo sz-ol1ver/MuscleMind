@@ -705,6 +705,7 @@ async function getUserCalendar(userId) {
             wcl.id AS log_id,
             wce.id AS calendar_exercise_id,
             e.name AS exercise_name,
+            e.muscle_group AS exercise_muscle_group,
             wce.exercise_order
         FROM workout_calendar_logs wcl
         INNER JOIN workout_calendar_exercises wce ON wcl.id = wce.workout_calendar_log_id
@@ -729,6 +730,7 @@ async function getUserCalendar(userId) {
                     isRestDay: logs[i].isRestDay,
                     calendar_exercise_id: exercises[j].calendar_exercise_id,
                     exercise_name: exercises[j].exercise_name,
+                    exercise_muscle_group: exercises[j].exercise_muscle_group,
                     exercise_order: exercises[j].exercise_order
                 });
                 hasExercise = true;
@@ -744,6 +746,7 @@ async function getUserCalendar(userId) {
                 isRestDay: logs[i].isRestDay,
                 calendar_exercise_id: null,
                 exercise_name: null,
+                exercise_muscle_group: null,
                 exercise_order: null
             });
         }

@@ -98,10 +98,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
-                        </li>
                         
                         <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
@@ -138,10 +134,6 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="/naptar">Naptár</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
                         </li>
 
                         <li class="nav-item">
@@ -349,29 +341,25 @@
                 </div>
 
                 <!-- Jobb oldali blokk/Izom követő -->
-                <div id="muscle-tracker" class="col-3 d-none d-xl-block">
-
-                        <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
-                        
-
-                    <div>
-                        <label for="muscles">Válasszon izmot:</label>
-                        <select class="form-control" name="Izmok" id="muscles">
-                            <option id="chest">Mell</option>
-                            <option id="shoulders">Váll</option>
-                            <option id="thighs">Comb</option>
-                            <option id="calves">Vádli</option>
-                            <option id="back">Hát</option>
-                            <option id="biceps">Bicepsz</option>
-                            <option id="triceps">Tricepsz</option>
-                            <option id="forearm">Alkar</option>
-                            <option id="abs">Has</option>
-                        </select>
+                <div id="muscle-tracker" class="col-3 d-none d-xl-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center gap-2 w-100">
+                        <h6 id="muscle-tracker-title" class="m-0 fw-bold">Mai izomkövetés</h6>
+                        <input id="front-back" class="btn button-sample" value="Elől / Hátul" type="button">
                     </div>
 
-                    <img id="muscle-picture" src="../images/muscle-tracker/alapelol.png" alt="Izom követő">
-                    <br>
+                    <div id="muscle-status" class="tracker-status">Mai edzés betöltése...</div>
 
+                    <div id="muscle-stage">
+                        <div class="muscle-wrapper">
+                            <img
+                                id="muscle-base-image"
+                                class="muscle-layer muscle-base-layer"
+                                src="../images/muscle-tracker/alapelol.svg"
+                                alt="Izomkövető alap ábra"
+                            >
+                            <div id="muscle-highlight-layer" class="muscle-highlight-layer"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
