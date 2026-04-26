@@ -368,6 +368,7 @@ async function getActive(id) {
     const [rows] = await pool.execute(sql, [id]);
     return rows[0].active_plan;
 }
+
 async function updateActive(userId,plan) {
     const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
     const [rows] = await pool.execute(sql, [plan, userId]);

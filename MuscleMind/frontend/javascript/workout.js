@@ -797,11 +797,66 @@ async function loadRecWorkouts() {
         if(recommendedPlans.length === 0){
             return;
         }
-
-        renderRecWorkouts(recommendedPlans);
+        await setRecommendedFiltersFromUserPreferences();
 
     } catch (error) {
         console.error(error.message + '\n' + error.error);
+    }
+}
+async function setRecommendedFiltersFromUserPreferences(){
+    try {
+        const pref = await getFetch('http://127.0.0.1:3000/api/workout/user-preferences');
+
+        console.log(pref)
+
+        filters.level = levelConv(pref.level) || 'all';
+        filters.location = locationConv(pref.location) || 'all';
+        filters.goal = goalConv(pref.goal) || 'all';
+
+        level.value = filters.level;
+        wLocation.value = filters.location;
+        goal.value = filters.goal;
+
+        filterPlans();
+    } catch (error) {
+        console.error(error.message);
+        renderRecWorkouts(recommendedPlans);
+    }
+}
+function levelConv(level){
+    switch(level){
+        case 'kezdő (0-6 hónap)':
+            return 'kezdo';
+        case 'középhaladó (6-24 hónap)':
+            return 'kozep';
+        case 'haladó (2+ év)':
+            return 'halado';
+        default:
+            return 'all';
+    }
+}
+function locationConv(location){
+    switch(location){
+        case 'konditeremben':
+            return 'gym';
+        case 'otthon, súlyzókkal':
+            return 'home_weights';
+        case 'otthon, saját testsúllyal':
+            return 'home_bodyweight';
+        default:
+            return 'all';
+    }
+}
+function goalConv(goal){
+    switch(goal){
+        case 'tömegnövelés':
+            return 'tomeg';
+        case 'szálkásítás':
+            return 'szalkasitas';
+        case 'szintentartás':
+            return 'szintentartas';
+        default:
+            return 'all';
     }
 }
 async function loadWorkoutDetail(id) {

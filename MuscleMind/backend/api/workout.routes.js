@@ -362,4 +362,29 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
     }
 })
 
+router.get('/user-preferences', requireAuthApi, async(request,response)=>{
+    try {
+        const userId = request.session.user.id;
+        const {goal, experience_level, training_days, training_location} = await db.getUserPreferencesData(userId);
+
+        return response.status(200).json({
+            goal: goal,
+            level: experience_level,
+            days: training_days,
+            location: training_location
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
+
 module.exports = router;
