@@ -110,11 +110,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 workoutDiv.style.fontSize = '14px'
                 workoutDiv.style.textAlign = 'center'
 
-                if (currentDayPlan.isRestDay) {
-                    workoutDiv.style.backgroundColor = 'rgba(255, 193, 7, 0.2)'
+                if (currentDayPlan.status === 'missed') {
+                    workoutDiv.style.backgroundColor = 'rgba(220, 53, 69, 0.2)' // piros
+                    workoutDiv.style.color = '#dc3545'
+                } else if (currentDayPlan.isRestDay || currentDayPlan.status === 'rest') {
+                    workoutDiv.style.backgroundColor = 'rgba(255, 193, 7, 0.2)' // sarga
                     workoutDiv.style.color = '#ffc107'
                 } else {
-                    workoutDiv.style.backgroundColor = 'rgba(40, 167, 69, 0.2)'
+                    workoutDiv.style.backgroundColor = 'rgba(40, 167, 69, 0.2)' // zold
                     workoutDiv.style.color = '#28a745'
                 }
 
@@ -240,10 +243,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     let isLoaded = false
                     let setCounter = 1
 
-                    // ha mar lezart az edzes, letiltunk mindent
+                    // statuszok kimentese
+                    const isPending = currentDayPlan.status === 'pending'
+                    const isStarted = currentDayPlan.status === 'started'
                     const isCompleted = currentDayPlan.status === 'completed'
 
-                    if (isCompleted) {
+                    // csak started allapotban jelenjen meg a plusz gomb
+                    if (!isStarted) {
                         addSetBtn.classList.add('d-none')
                     }
 
@@ -321,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         delBtn.classList.add('btn', 'btn-sm', 'btn-danger')
                         delBtn.textContent = 'X'
                         
-                        if (isCompleted) {
+                        if (!isStarted) {
                             repInput.disabled = true
                             weightInput.disabled = true
                             rowCheckbox.disabled = true
@@ -353,19 +359,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 setCounter++
                             }
                             
-                            if (!isCompleted) {
+                            if (isStarted) {
                                 saveSetsForExercise()
                             }
                         })
                         
                         repInput.addEventListener('input', () => {
-                            if (rowCheckbox.checked && !isCompleted) {
+                            if (rowCheckbox.checked && isStarted) {
                                 rowCheckbox.checked = false
                                 saveSetsForExercise()
                             }
                         })
                         weightInput.addEventListener('input', () => {
-                            if (rowCheckbox.checked && !isCompleted) {
+                            if (rowCheckbox.checked && isStarted) {
                                 rowCheckbox.checked = false
                                 saveSetsForExercise()
                             }
@@ -395,19 +401,20 @@ document.addEventListener('DOMContentLoaded', async () => {
                                             createSetRow(s.reps_done, s.weight_done, s.set_number, true)
                                         }
                                     } else {
-                                        if (!isCompleted) {
+                                        if (isStarted || isPending) {
+                                            // ures sor hozzaadasa ha pending vagy started
                                             createSetRow()
                                         }
                                     }
                                 } catch (e) {
                                     console.error(e)
-                                    if (!isCompleted) {
+                                    if (isStarted || isPending) {
                                         createSetRow()
                                     }
                                 }
                                 isLoaded = true
                             } else if (!isLoaded) {
-                                if (!isCompleted) {
+                                if (isStarted || isPending) {
                                     createSetRow()
                                 }
                                 isLoaded = true
@@ -425,38 +432,108 @@ document.addEventListener('DOMContentLoaded', async () => {
                     workoutList.appendChild(li)
                 }
 
-                // edzes befejezese ha meg pending
-                if (currentDayPlan.status === 'pending') {
-                    const finishDiv = document.createElement('div')
-                    finishDiv.classList.add('d-flex', 'justify-content-end', 'mt-3')
+                // gomb megjelenitese ha meg pending vagy started
+                if (currentDayPlan.status === 'pending' || currentDayPlan.status === 'started') {
+                    const actionDiv = document.createElement('div')
+                    actionDiv.classList.add('d-flex', 'justify-content-end', 'mt-3')
 
-                    const finishBtn = document.createElement('button')
-                    finishBtn.classList.add('btn', 'btn-info', 'w-100', 'fw-bold')
-                    finishBtn.textContent = 'Edzés befejezése és lezárása'
-
-                    finishBtn.addEventListener('click', async () => {
-                        if(!currentDayPlan.log_id) {
-                            alert('Érvénytelen edzésnap!')
-                            return
-                        }
-
-                        if(confirm('Biztosan le akarod zárni az edzést? Utána nem tudsz módosítani az eredményeken!')){
+                    const actionBtn = document.createElement('button')
+                    actionBtn.classList.add('btn', 'w-100', 'fw-bold')
+                    
+                    if (currentDayPlan.status === 'pending') {
+                        actionBtn.classList.add('btn-primary')
+                        actionBtn.textContent = 'Edzés kezdése'
+                        
+                        actionBtn.addEventListener('click', async () => {
+                            if(!currentDayPlan.log_id) {
+                                alert('Érvénytelen edzésnap!')
+                                return
+                            }
                             try {
-                                const data = await patchPlan(`/api/workout/calendar/finish/${currentDayPlan.log_id}`, {})
-                                alert('Edzés sikeresen lezárva!')
-                                dayDetailsModal.hide()
-                                
-                                currentDayPlan.status = 'completed'
+                                const data = await patchPlan(`/api/workout/calendar/start/${currentDayPlan.log_id}`, {})
+                                alert('Edzés sikeresen elkezdve!')
+                                currentDayPlan.status = 'started'
                                 location.reload() 
                             } catch (err) {
                                 console.error(err)
-                                alert(err.message || 'Sikertelen lezárás!')
+                                alert(err.message || 'Sikertelen elkezdés!')
+                            }
+                        })
+                    } else { // started
+                        actionBtn.classList.add('btn-info')
+                        actionBtn.textContent = 'Edzés lezárása/végzése'
+
+                        actionBtn.addEventListener('click', async () => {
+                            if(!currentDayPlan.log_id) {
+                                alert('Érvénytelen edzésnap!')
+                                return
+                            }
+
+                            if(confirm('Biztosan le akarod zárni az edzést? Utána nem tudsz módosítani az eredményeken!')){
+                                try {
+                                    const data = await patchPlan(`/api/workout/calendar/finish/${currentDayPlan.log_id}`, {})
+                                    alert('Edzés sikeresen lezárva!')
+                                    dayDetailsModal.hide()
+                                    
+                                    currentDayPlan.status = 'completed'
+                                    location.reload() 
+                                } catch (err) {
+                                    console.error(err)
+                                    alert(err.message || 'Sikertelen lezárás!')
+                                }
+                            }
+                        })
+                    }
+
+                    actionDiv.appendChild(actionBtn)
+                    workoutList.appendChild(actionDiv)
+                }
+
+                // plusz gombok halasztashoz es kihagyashoz, foleg ha meg pending (esetleg started)
+                if (currentDayPlan.status === 'pending' || currentDayPlan.status === 'started') {
+                    const extraDiv = document.createElement('div')
+                    extraDiv.classList.add('d-flex', 'gap-2', 'mt-2')
+
+                    // halasztas gomb
+                    const postponeBtn = document.createElement('button')
+                    postponeBtn.classList.add('btn', 'btn-warning', 'w-50', 'fw-bold', 'text-dark')
+                    postponeBtn.textContent = 'Edzés halasztása'
+                    postponeBtn.addEventListener('click', async () => {
+                        if (!currentDayPlan.log_id) return
+                        const newDate = prompt('Kérlek add meg az új dátumot (ÉÉÉÉ-HH-NN formátumban), ahová halasztani szeretnéd:', currentDayPlan.date || '')
+                        if (newDate) {
+                            try {
+                                await patchPlan(`/api/workout/calendar/postpone/${currentDayPlan.log_id}`, { newDate })
+                                alert('Edzés sikeresen elhalasztva!')
+                                location.reload()
+                            } catch (err) {
+                                console.error(err)
+                                alert(err.message || 'Hiba történt a halasztás során!')
                             }
                         }
                     })
 
-                    finishDiv.appendChild(finishBtn)
-                    workoutList.appendChild(finishDiv)
+                    // kihagyas gomb
+                    const skipBtn = document.createElement('button')
+                    skipBtn.classList.add('btn', 'btn-danger', 'w-50', 'fw-bold')
+                    skipBtn.textContent = 'Edzés kihagyása'
+                    skipBtn.addEventListener('click', async () => {
+                        if (!currentDayPlan.log_id) return
+                        if (confirm('Biztosan ki akarod hagyni ezt az edzést?')) {
+                            try {
+                                await patchPlan(`/api/workout/calendar/skip/${currentDayPlan.log_id}`, {})
+                                alert('Edzés kihagyva!')
+                                location.reload()
+                            } catch (err) {
+                                console.error(err)
+                                alert(err.message || 'Hiba történt a kihagyás során!')
+                            }
+                        }
+                    })
+
+                    extraDiv.appendChild(postponeBtn)
+                    extraDiv.appendChild(skipBtn)
+                    workoutList.appendChild(extraDiv)
                 }
 
             } else {

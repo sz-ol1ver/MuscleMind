@@ -792,6 +792,79 @@ async function updateWorkoutCalendarLogStatus(userId, logId, status) {
     return result;
 }
 
+async function startWorkoutCalendarLogStatus(userId, logId) {
+    const sql = `UPDATE workout_calendar_logs SET status = 'started', start_time = NOW() WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [logId, userId]);
+    return result;
+}
+
+async function finishWorkoutCalendarLogStatus(userId, logId) {
+    const sql = `UPDATE workout_calendar_logs SET status = 'completed', workout_time_sec = TIMESTAMPDIFF(SECOND, start_time, NOW()) WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [logId, userId]);
+    return result;
+}
+
+async function postponeWorkoutCalendarLog(userId, logId, newDate) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // lekerjuk a jelenlegi edzest, hogy megtudjuk a datumot
+        const [currentLog] = await connection.execute(
+            `SELECT workout_date FROM workout_calendar_logs WHERE id = ? AND user_id = ?`,
+            [logId, userId]
+        );
+
+        if (currentLog.length === 0) {
+            throw new Error('Nem talalhato az edzes!');
+        }
+
+        const currentDate = formatDate(new Date(currentLog[0].workout_date));
+
+        // megnezzuk van-e a cel datumon masik edzes
+        const [targetLog] = await connection.execute(
+            `SELECT id FROM workout_calendar_logs WHERE user_id = ? AND workout_date = ?`,
+            [userId, newDate]
+        );
+
+        if (targetLog.length > 0) {
+            const targetLogId = targetLog[0].id;
+            
+            // letrehozunk egy ideiglenes datumot ('1000-01-01') a cserelodeshez hogy ne legyen duplicate hiba
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = '1000-01-01' WHERE id = ?`,
+                [targetLogId]
+            );
+
+            // atmozgatjuk a mostani edzest az uj datumra
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [newDate, logId]
+            );
+
+            // vegul a regi datumra tesszuk a masikat
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [currentDate, targetLogId]
+            );
+        } else {
+            // ha nincs a cel datumon semmi, csak siman atallitjuk
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [newDate, logId]
+            );
+        }
+
+        await connection.commit();
+        return true;
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
 //format date for update active
 function formatDate(date) {
     const year = date.getFullYear();
@@ -931,5 +1004,8 @@ module.exports = {
     getUserCalendar,
     getCalendarSets,
     saveCalendarSets,
-    updateWorkoutCalendarLogStatus
+    updateWorkoutCalendarLogStatus,
+    startWorkoutCalendarLogStatus,
+    finishWorkoutCalendarLogStatus,
+    postponeWorkoutCalendarLog
 };

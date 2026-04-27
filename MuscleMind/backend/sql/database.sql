@@ -240,8 +240,9 @@ CREATE TABLE IF NOT EXISTS workout_calendar_logs(
     workout_plan_id INT NOT NULL,
     workout_day_id INT NOT NULL,
     workout_date DATE NOT NULL,
+    start_time DATETIME DEFAULT NULL,
     workout_time_sec INT NOT NULL DEFAULT 0,
-    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'started', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

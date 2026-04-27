@@ -442,17 +442,66 @@ router.post('/calendar/sets', requireAuthApi, async (request, response) => {
     }
 })
 
+router.patch('/calendar/start/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.startWorkoutCalendarLogStatus(userId, logId)
+        
+        return response.status(200).json({ message: 'Edzés elkezdve!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen elkezdés!' })
+    }
+})
+
 router.patch('/calendar/finish/:logId', requireAuthApi, async (request, response) => {
     try {
         const logId = request.params.logId
         const userId = request.session.user.id
         
-        await db.updateWorkoutCalendarLogStatus(userId, logId, 'completed')
+        await db.finishWorkoutCalendarLogStatus(userId, logId)
         
         return response.status(200).json({ message: 'Edzés lezárva!' })
     } catch (error) {
         console.log(error.message)
         return response.status(500).json({ message: 'Sikertelen lezárás!' })
+    }
+})
+
+// halasztas
+router.patch('/calendar/postpone/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        const { newDate } = request.body
+        
+        if (!newDate) {
+            return response.status(400).json({ message: 'Hiányzó dátum!' })
+        }
+        
+        await db.postponeWorkoutCalendarLog(userId, logId, newDate)
+        
+        return response.status(200).json({ message: 'Edzés elhalasztva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen halasztás!' })
+    }
+})
+
+// kihagyas
+router.patch('/calendar/skip/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.updateWorkoutCalendarLogStatus(userId, logId, 'missed')
+        
+        return response.status(200).json({ message: 'Edzés kihagyva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen kihagyás!' })
     }
 })
 
