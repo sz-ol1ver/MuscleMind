@@ -11,7 +11,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
 }
 
 .stats-header h1 {
@@ -26,12 +26,23 @@
     font-size: 14px;
 }
 
+/* Section separation */
 .stats-section {
-    margin-bottom: 18px;
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.stats-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
 }
 
 .stats-section-title {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid #7c3aed;
 }
 
 .stats-section-title h2 {
@@ -60,7 +71,8 @@
 
 .summary-label,
 .detail-card span,
-.section-label {
+.section-label,
+.mini-stat span {
     color: #b8b8d4;
     font-size: 13px;
     font-weight: 600;
@@ -127,22 +139,29 @@
     color: #b8b8d4;
     font-size: 12px;
     margin-bottom: 6px;
+    gap: 12px;
 }
 
 .progress-bar-bg {
     width: 100%;
-    height: 10px;
-    background-color: #2c203b;
+    height: 12px;
+
+    background: linear-gradient(180deg, #4f3b6e, #000000);
     border-radius: 999px;
+    
     overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.301);
 }
 
 .progress-bar-fill {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #612eb9, #9b5cff);
+
+    background: linear-gradient(90deg, #382373, #ad92ff);
+
     border-radius: 999px;
-    transition: width .3s ease;
+    transition: width .4s cubic-bezier(.4,0,.2,1);
 }
 
 .rank-progress small {
@@ -197,6 +216,22 @@
     color: #ffffff;
 }
 
+.mini-stat {
+    background: #0f0f17;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-stat strong {
+    margin-top: 5px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
 .muscle-card {
     height: 100%;
     background: linear-gradient(145deg, #151522, #1d1630);
@@ -224,7 +259,8 @@
     font-size: 13px;
 }
 
-.muscle-detail-card {
+.muscle-detail-card,
+.exercise-pr-card {
     padding: 18px;
 }
 
@@ -255,6 +291,33 @@
     display: flex;
     align-items: center;
     gap: 18px;
+}
+
+.exercise-pr-content {
+    margin-top: 8px;
+}
+
+.empty-state {
+    margin: 14px 0 0;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: rgba(124,58,237,.12);
+    color: #cfcfea;
+    border: 1px solid rgba(124,58,237,.28);
+}
+
+.period-summary-card {
+    padding: 18px;
+}
+
+.period-summary-header {
+    margin-bottom: 14px;
+}
+
+.period-summary-header h3 {
+    margin: 4px 0 0;
+    font-size: 20px;
+    color: #ffffff;
 }
 
 .summary-card:hover,
@@ -365,6 +428,11 @@
     .rank-image-box {
         width: 110px;
         height: 110px;
+    }
+
+    .rank-progress-top {
+        flex-direction: column;
+        gap: 3px;
     }
 
     .chart-box {

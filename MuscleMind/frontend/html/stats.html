@@ -172,53 +172,71 @@
                         <div class="stats-header">
                             <div>
                                 <h1>Statisztikák</h1>
-                                <p>Áttekintés az edzéseidről, fejlődésedről és rangjaidról.</p>
+                                <p>Áttekintés az edzéseidről, fejlődésedről, rangjaidról és PR-jaidról.</p>
                             </div>
                         </div>
 
-                        <!-- Top summary -->
+                        <!-- Top summary cards -->
                         <section class="stats-section">
+                            <div class="stats-section-title">
+                                <h2>Gyors áttekintés</h2>
+                            </div>
+
                             <div class="row g-3">
 
-                                <div class="col-12 col-sm-6 col-xl-2">
+                                <div class="col-12 col-sm-6 col-xl-3">
                                     <div class="summary-card">
                                         <span class="summary-label">Globális rang</span>
                                         <strong id="summary-global-rank">-</strong>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-2">
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="summary-card">
+                                        <span class="summary-label">Globális XP</span>
+                                        <strong id="summary-global-xp">0 XP</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
                                     <div class="summary-card">
                                         <span class="summary-label">Teljesített edzések</span>
                                         <strong id="summary-completed-workouts">0</strong>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-2">
-                                    <div class="summary-card">
-                                        <span class="summary-label">PR-ok</span>
-                                        <strong id="summary-pr-count">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-2">
+                                <div class="col-12 col-sm-6 col-xl-3">
                                     <div class="summary-card">
                                         <span class="summary-label">Össz. volumen</span>
                                         <strong id="summary-total-volume">0 kg</strong>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-2">
+                                <div class="col-12 col-sm-6 col-xl-3">
                                     <div class="summary-card">
-                                        <span class="summary-label">Aktuális súly</span>
-                                        <strong id="summary-current-weight">- kg</strong>
+                                        <span class="summary-label">Össz. set</span>
+                                        <strong id="summary-total-sets">0</strong>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-2">
+                                <div class="col-12 col-sm-6 col-xl-3">
                                     <div class="summary-card">
-                                        <span class="summary-label">Globális XP</span>
-                                        <strong id="summary-global-xp">0 XP</strong>
+                                        <span class="summary-label">Össz. ismétlés</span>
+                                        <strong id="summary-total-reps">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="summary-card">
+                                        <span class="summary-label">PR-ok</span>
+                                        <strong id="summary-pr-count">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="summary-card">
+                                        <span class="summary-label">Aktuális súly</span>
+                                        <strong id="summary-current-weight">- kg</strong>
                                     </div>
                                 </div>
 
@@ -227,13 +245,17 @@
 
                         <!-- Global rank -->
                         <section class="stats-section">
+                            <div class="stats-section-title">
+                                <h2>Globális rang</h2>
+                            </div>
+
                             <div class="stats-card global-rank-card">
                                 <div class="rank-image-box">
                                     <img id="global-rank-image" src="../images/ranks/default.png" alt="Globális rang">
                                 </div>
 
                                 <div class="rank-info">
-                                    <span class="section-label">Globális rang</span>
+                                    <span class="section-label">Globális XP rang</span>
                                     <h2 id="global-rank-name">-</h2>
                                     <p><span id="global-rank-xp">0</span> XP</p>
 
@@ -253,6 +275,145 @@
                             </div>
                         </section>
 
+                        <!-- Global statistics -->
+                        <section class="stats-section">
+                            <div class="stats-section-title">
+                                <h2>Összesített edzés statisztikák</h2>
+                            </div>
+
+                            <div class="row g-3">
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Teljesített edzések</span>
+                                        <strong id="total-completed-workouts">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Össz. volumen</span>
+                                        <strong id="total-volume">0 kg</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Össz. set</span>
+                                        <strong id="total-sets">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Össz. ismétlés</span>
+                                        <strong id="total-reps">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>PR-ok</span>
+                                        <strong id="total-pr-count">0</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Össz. edzésidő</span>
+                                        <strong id="total-workout-time">0 perc</strong>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6 col-xl-3">
+                                    <div class="detail-card">
+                                        <span>Átlag edzésidő</span>
+                                        <strong id="average-workout-time">0 perc</strong>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </section>
+
+                        <!-- Period statistics -->
+                        <section class="stats-section">
+                            <div class="stats-section-title stats-title-with-actions">
+                                <h2>Időszakos összesítés</h2>
+
+                                <div class="stats-period-tabs" id="stats-period-tabs">
+                                    <button type="button" class="period-tab active" data-period="daily">Napi</button>
+                                    <button type="button" class="period-tab" data-period="weekly">Heti</button>
+                                    <button type="button" class="period-tab" data-period="monthly">Havi</button>
+                                    <button type="button" class="period-tab" data-period="all-time">Összes</button>
+                                </div>
+                            </div>
+
+                            <div class="stats-card period-summary-card">
+                                <div class="period-summary-header">
+                                    <span class="section-label">Kiválasztott időszak</span>
+                                    <h3 id="period-title">Napi összesítés</h3>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Edzések</span>
+                                            <strong id="period-completed-workouts">0</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Volumen</span>
+                                            <strong id="period-total-volume">0 kg</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Set</span>
+                                            <strong id="period-total-sets">0</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Ismétlés</span>
+                                            <strong id="period-total-reps">0</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Szerzett XP</span>
+                                            <strong id="period-xp-gained">0 XP</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>PR-ok</span>
+                                            <strong id="period-pr-count">0</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Edzésidő</span>
+                                            <strong id="period-total-workout-time">0 perc</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-sm-6 col-xl-3">
+                                        <div class="mini-stat">
+                                            <span>Átl. edzésidő</span>
+                                            <strong id="period-avg-time">0</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
                         <!-- Charts -->
                         <section class="stats-section">
                             <div class="stats-section-title">
@@ -260,18 +421,6 @@
                             </div>
 
                             <div class="row g-3">
-
-                                <div class="col-12 col-xl-6">
-                                    <div class="stats-card chart-card">
-                                        <div class="card-header-row">
-                                            <h3>Súlyváltozás</h3>
-                                        </div>
-
-                                        <div class="chart-box">
-                                            <canvas id="weight-chart"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="col-12 col-xl-6">
                                     <div class="stats-card chart-card">
@@ -285,77 +434,38 @@
                                     </div>
                                 </div>
 
-                            </div>
-                        </section>
+                                <div class="col-12 col-xl-6">
+                                    <div class="stats-card chart-card">
+                                        <div class="card-header-row">
+                                            <h3>Súlyváltozás</h3>
+                                        </div>
 
-                        <!-- Global stats -->
-                        <section class="stats-section">
-                            <div class="stats-section-title stats-title-with-actions">
-                                <h2>Edzés statisztikák</h2>
+                                        <div class="chart-box">
+                                            <canvas id="weight-chart"></canvas>
+                                        </div>
 
-                                <div class="stats-period-tabs" id="stats-period-tabs">
-                                    <button type="button" class="period-tab active" data-period="daily">Napi</button>
-                                    <button type="button" class="period-tab" data-period="weekly">Heti</button>
-                                    <button type="button" class="period-tab" data-period="monthly">Havi</button>
-                                    <button type="button" class="period-tab" data-period="total">Összes</button>
-                                </div>
-                            </div>
+                                        <div class="row g-3 mt-1">
+                                            <div class="col-12 col-md-4">
+                                                <div class="mini-stat">
+                                                    <span>Kezdő súly</span>
+                                                    <strong id="weight-start">- kg</strong>
+                                                </div>
+                                            </div>
 
-                            <div class="row g-3">
+                                            <div class="col-12 col-md-4">
+                                                <div class="mini-stat">
+                                                    <span>Aktuális súly</span>
+                                                    <strong id="weight-current">- kg</strong>
+                                                </div>
+                                            </div>
 
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Teljesített edzések</span>
-                                        <strong id="period-completed-workouts">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. volumen</span>
-                                        <strong id="period-total-volume">0 kg</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. set</span>
-                                        <strong id="period-total-sets">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. ismétlés</span>
-                                        <strong id="period-total-reps">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>PR-ok</span>
-                                        <strong id="period-pr-count">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. edzésidő</span>
-                                        <strong id="period-total-workout-time">0 perc</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Átlag edzésidő</span>
-                                        <strong id="period-average-workout-time">0 perc</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Szerzett XP</span>
-                                        <strong id="period-xp-gained">0 XP</strong>
+                                            <div class="col-12 col-md-4">
+                                                <div class="mini-stat">
+                                                    <span>Változás</span>
+                                                    <strong id="weight-change">- kg</strong>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -365,7 +475,7 @@
                         <!-- Body metrics -->
                         <section class="stats-section">
                             <div class="stats-section-title">
-                                <h2>Testadatok és súly</h2>
+                                <h2>Testadatok</h2>
                             </div>
 
                             <div class="row g-3">
@@ -405,43 +515,19 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Kezdő súly</span>
-                                        <strong id="weight-start">- kg</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Aktuális súly</span>
-                                        <strong id="weight-current">- kg</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Súlyváltozás</span>
-                                        <strong id="weight-change">- kg</strong>
-                                    </div>
-                                </div>
-
                             </div>
                         </section>
 
-                        <!-- Muscle overview -->
+                        <!-- Muscle group selector -->
                         <section class="stats-section">
                             <div class="stats-section-title">
                                 <h2>Izomcsoport rangok</h2>
                             </div>
 
-                            <div id="muscle-overview" class="row g-3">
-                                <!-- JS generálja ide az izomcsoport kártyákat -->
-                            </div>
-                        </section>
+                            <div id="muscle-overview" class="row g-3 mb-3">
 
-                        <!-- Muscle selector + detail -->
-                        <section class="stats-section">
+                            </div>
+
                             <div class="stats-card muscle-detail-card">
 
                                 <div class="muscle-selector-row">
@@ -482,6 +568,65 @@
                             </div>
                         </section>
 
+                        <!-- Exercise PR selector -->
+                        <section class="stats-section">
+                            <div class="stats-section-title">
+                                <h2>Gyakorlat PR-ok</h2>
+                            </div>
+
+                            <div class="stats-card exercise-pr-card">
+
+                                <div class="muscle-selector-row">
+                                    <div>
+                                        <span class="section-label">Részletes gyakorlat PR statisztika</span>
+                                        <h2 id="selected-exercise-title">Gyakorlat</h2>
+                                    </div>
+
+                                    <select id="exercise-selector" class="muscle-select">
+                                       
+                                    </select>
+                                </div>
+
+                                <div id="exercise-pr-content" class="exercise-pr-content">
+                                    <div class="row g-3">
+
+                                        <div class="col-12 col-sm-6 col-xl-3">
+                                            <div class="mini-stat">
+                                                <span>Max súly</span>
+                                                <strong id="exercise-pr-max-weight">- kg</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-xl-3">
+                                            <div class="mini-stat">
+                                                <span>Ismétlés</span>
+                                                <strong id="exercise-pr-max-weight-reps">-</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-xl-3">
+                                            <div class="mini-stat">
+                                                <span>Legjobb volumen</span>
+                                                <strong id="exercise-pr-best-volume">- kg</strong>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 col-sm-6 col-xl-3">
+                                            <div class="mini-stat">
+                                                <span>Dátum</span>
+                                                <strong id="exercise-pr-achieved-date">-</strong>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <p id="exercise-pr-empty" class="empty-state d-none">
+                                        Ehhez a gyakorlathoz még nincs PR rögzítve.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>

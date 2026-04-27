@@ -113,6 +113,7 @@ CREATE TABLE user_metrics (
 );
 
 -- WORKOUT --
+-- stats
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     user_id INT NOT NULL,
 
@@ -176,6 +177,20 @@ CREATE TABLE IF NOT EXISTS user_stats (
     pr_count INT NOT NULL DEFAULT 0,
     total_workout_time_sec INT NOT NULL DEFAULT 0,
 
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_exercise_prs (
+    user_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+
+    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
+    max_weight_reps INT DEFAULT NULL,
+    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+    achieved_at DATETIME DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 -- gyakorlatok
@@ -256,20 +271,6 @@ CREATE TABLE IF NOT EXISTS workout_calendar_sets(
     reps_done INT NOT NULL,
     weight_done DECIMAL(6,2) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_exercise_prs (
-    user_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-
-    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
-    max_weight_reps INT DEFAULT NULL,
-    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
-
-    achieved_at DATETIME DEFAULT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- FOODS
