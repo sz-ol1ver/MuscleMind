@@ -311,6 +311,149 @@ async function updateUserPassword(id, hashedPassword) {
     return result;
 }
 
+// ----
+// STATS
+// ----
+
+async function getUserGlobalXp(userId) {
+    const sql = `
+        SELECT 
+            user_id,
+            xp,
+            updated_at
+        FROM user_global_xp
+        WHERE user_id = ?
+    `;
+
+    const [rows] = await pool.execute(sql, [userId]);
+
+    if (rows.length === 0) {
+        return {
+            user_id: userId,
+            xp: 0,
+            updated_at: null
+        };
+    }
+
+    return rows[0];
+}
+
+async function getUserMuscleXp(userId) {
+    const sql = `
+        SELECT
+            muscle_group,
+            xp,
+            updated_at
+        FROM user_muscle_xp
+        WHERE user_id = ?
+        ORDER BY muscle_group ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function getUserDailyStatsLast30Days(userId) {
+    const sql = `
+        SELECT
+            stat_date,
+            completed_workouts,
+            total_volume,
+            total_sets,
+            total_reps,
+            total_workout_time_sec,
+            xp_gained,
+            prs_achieved,
+            updated_at
+        FROM user_daily_stats
+        WHERE user_id = ?
+        AND stat_date >= CURDATE() - INTERVAL 30 DAY
+        ORDER BY stat_date DESC
+    `;
+
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function getUserFullStats(userId) {
+    const sql = 'SELECT * FROM user_stats WHERE user_id = ?';
+
+    const [rows] = await pool.execute(sql, [userId]);
+
+    if (rows.length === 0) {
+        return {
+            user_id: userId,
+            completed_workouts: 0,
+            total_volume: 0,
+            total_sets: 0,
+            total_reps: 0,
+            pr_count: 0,
+            total_workout_time_sec: 0,
+            updated_at: null
+        };
+    }
+
+    return rows[0];
+}
+
+async function getUserExercisePrs(userId) {
+    const sql = `
+        SELECT
+            uep.exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group,
+
+            uep.max_weight,
+            uep.max_weight_reps,
+            uep.best_volume,
+            uep.achieved_at,
+            uep.created_at,
+            uep.updated_at
+        FROM user_exercise_prs uep
+        INNER JOIN exercises e
+            ON uep.exercise_id = e.id
+        WHERE uep.user_id = ?
+        ORDER BY e.name ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function getUserWeights(userId) {
+    const sql = `
+        SELECT
+            id,
+            weight,
+            created_at
+        FROM user_weights
+        WHERE user_id = ?
+        ORDER BY created_at ASC
+    `;
+
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function getAllExercisesForStats() {
+    const sql = 'SELECT * FROM exercises ORDER BY id ASC';
+
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
+
+async function getUserMetrics(userId) {
+    const sql = 'SELECT * FROM user_metrics WHERE user_id = ?';
+
+    const [rows] = await pool.execute(sql, [userId]);
+
+    if (rows.length === 0) {
+        return null;
+    }
+
+    return rows[0];
+}
+
 
 
 // -------
@@ -1336,5 +1479,13 @@ module.exports = {
     updateAdminWorkoutPlan,
     deleteAdminPlan,
     selectCurrentAdminStatus,
-    saveUserMetrics
+    saveUserMetrics,
+    getUserGlobalXp,
+    getUserMuscleXp,
+    getUserDailyStatsLast30Days,
+    getUserFullStats,
+    getUserExercisePrs,
+    getUserWeights,
+    getAllExercisesForStats,
+    getUserMetrics
 };
