@@ -1,0 +1,373 @@
+#stats.stats-page {
+    border: 2px solid rgba(255,255,255,.10);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #11111b, #171124);
+    padding: 18px;
+    text-align: left;
+    color: #f5f5ff;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.stats-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.stats-header p {
+    margin: 4px 0 0;
+    color: #b8b8d4;
+    font-size: 14px;
+}
+
+.stats-section {
+    margin-bottom: 18px;
+}
+
+.stats-section-title {
+    margin-bottom: 10px;
+}
+
+.stats-section-title h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.summary-card,
+.detail-card,
+.stats-card {
+    background: linear-gradient(145deg, #151522, #1d1630);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(0,0,0,.22);
+}
+
+.summary-card {
+    padding: 14px;
+    min-height: 82px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.summary-label,
+.detail-card span,
+.section-label {
+    color: #b8b8d4;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.summary-card strong {
+    color: #ffffff;
+    font-size: 21px;
+    margin-top: 6px;
+}
+
+.global-rank-card {
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rank-image-box {
+    width: 128px;
+    height: 128px;
+    border-radius: 18px;
+    background: rgba(124,58,237,.13);
+    border: 1px solid rgba(124,58,237,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rank-image-box.small {
+    width: 96px;
+    height: 96px;
+}
+
+.rank-image-box img {
+    max-width: 82%;
+    max-height: 82%;
+    object-fit: contain;
+}
+
+.rank-info {
+    width: 100%;
+}
+
+.rank-info h2,
+.rank-info h3 {
+    margin: 4px 0;
+    color: #ffffff;
+}
+
+.rank-info p {
+    margin: 0 0 12px;
+    color: #cfcfea;
+}
+
+.rank-progress {
+    width: 100%;
+}
+
+.rank-progress-top {
+    display: flex;
+    justify-content: space-between;
+    color: #b8b8d4;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background-color: #2c203b;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #612eb9, #9b5cff);
+    border-radius: 999px;
+    transition: width .3s ease;
+}
+
+.rank-progress small {
+    display: block;
+    margin-top: 6px;
+    color: #b8b8d4;
+}
+
+.chart-card {
+    padding: 16px;
+    height: 100%;
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-header-row h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.chart-box {
+    height: 260px;
+    width: 100%;
+    background-color: #0f0f17;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 10px;
+}
+
+.chart-box canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.detail-card {
+    padding: 14px;
+    min-height: 78px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detail-card strong {
+    margin-top: 6px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.muscle-card {
+    height: 100%;
+    background: linear-gradient(145deg, #151522, #1d1630);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+}
+
+.muscle-card img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.muscle-card h3 {
+    font-size: 15px;
+    margin: 0 0 4px;
+}
+
+.muscle-card p {
+    margin: 0;
+    color: #b8b8d4;
+    font-size: 13px;
+}
+
+.muscle-detail-card {
+    padding: 18px;
+}
+
+.muscle-selector-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.muscle-selector-row h2 {
+    margin: 4px 0 0;
+    font-size: 20px;
+}
+
+.muscle-select {
+    min-width: 220px;
+    background-color: #0f0f17;
+    color: #f5f5ff;
+    border: 1px solid #612eb9;
+    border-radius: 12px;
+    padding: 10px 12px;
+    outline: none;
+}
+
+.selected-muscle-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.summary-card:hover,
+.detail-card:hover,
+.stats-card:hover,
+.muscle-card:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 10px 25px rgba(124,58,237,.25);
+}
+
+.stats-title-with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.stats-period-tabs {
+    display: flex;
+    gap: 8px;
+    background-color: #0f0f17;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 999px;
+    padding: 5px;
+}
+
+.period-tab {
+    border: none;
+    border-radius: 999px;
+    padding: 7px 13px;
+    background-color: transparent;
+    color: #b8b8d4;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.period-tab:hover {
+    background-color: rgba(124,58,237,.18);
+    color: #ffffff;
+}
+
+.period-tab.active {
+    background: linear-gradient(90deg, #612eb9, #7c3aed);
+    color: #ffffff;
+}
+
+/* Scrollbar - middle part */
+#middle-part::-webkit-scrollbar {
+    width: 10px;
+}
+
+#middle-part::-webkit-scrollbar-track {
+    background: #181818;
+    border-radius: 10px;
+}
+
+#middle-part::-webkit-scrollbar-thumb {
+    background: linear-gradient(0deg, #4a2092, #a87cf5);
+    border-radius: 10px;
+    border: 2px solid #0b0b10;
+}
+
+#middle-part::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7c3aed, #9b5cff);
+}
+
+#middle-part {
+    scrollbar-width: thin;
+    scrollbar-color: #7c3aed #181818;
+}
+
+@media (max-width: 768px) {
+    .stats-title-with-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .stats-period-tabs {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: space-between;
+    }
+
+    .period-tab {
+        flex: 1;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 576px) {
+    #stats.stats-page {
+        margin: 12px;
+        padding: 14px;
+    }
+
+    .global-rank-card,
+    .selected-muscle-content,
+    .muscle-selector-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .muscle-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .rank-image-box {
+        width: 110px;
+        height: 110px;
+    }
+
+    .chart-box {
+        height: 220px;
+    }
+}

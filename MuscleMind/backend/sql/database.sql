@@ -149,6 +149,35 @@ CREATE TABLE IF NOT EXISTS user_global_xp (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS user_daily_stats (
+    user_id INT NOT NULL,
+    stat_date DATE NOT NULL,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+
+    xp_gained INT NOT NULL DEFAULT 0,
+    prs_achieved INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_stats (
+    user_id INT PRIMARY KEY,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    pr_count INT NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 -- gyakorlatok
 CREATE TABLE IF NOT EXISTS exercises(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,8 +201,6 @@ CREATE TABLE IF NOT EXISTS exercises(
     ) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -242,35 +269,6 @@ CREATE TABLE IF NOT EXISTS user_exercise_prs (
     achieved_at DATETIME DEFAULT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_daily_stats (
-    user_id INT NOT NULL,
-    stat_date DATE NOT NULL,
-
-    completed_workouts INT NOT NULL DEFAULT 0,
-    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_sets INT NOT NULL DEFAULT 0,
-    total_reps INT NOT NULL DEFAULT 0,
-    total_workout_time_sec INT NOT NULL DEFAULT 0,
-
-    xp_gained INT NOT NULL DEFAULT 0,
-    prs_achieved INT NOT NULL DEFAULT 0,
-
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_stats (
-    user_id INT PRIMARY KEY,
-
-    completed_workouts INT NOT NULL DEFAULT 0,
-    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_sets INT NOT NULL DEFAULT 0,
-    total_reps INT NOT NULL DEFAULT 0,
-    pr_count INT NOT NULL DEFAULT 0,
-    total_workout_time_sec INT NOT NULL DEFAULT 0,
-
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
