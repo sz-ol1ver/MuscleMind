@@ -413,6 +413,7 @@ router.get('/calendar', requireAuthApi, async (request, response) => {
                 calendarMap[dateStr].exercises.push({
                     calendar_exercise_id: row.calendar_exercise_id,
                     name: row.exercise_name,
+                    muscle_group: row.exercise_muscle_group,
                     order: row.exercise_order
                 })
             }
