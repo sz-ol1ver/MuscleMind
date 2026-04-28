@@ -439,3 +439,65 @@
         height: 220px;
     }
 }
+
+.bmi-card {
+    padding: 20px;
+}
+
+.bmi-main {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#bmi-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+#bmi-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.bmi-bar-wrapper {
+    margin: 20px 0;
+}
+
+.bmi-bar {
+    position: relative;
+    height: 10px;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right,
+        #3498db 0%,     /* sovány */
+        #2ecc71 25%,    /* normál */
+        #f1c40f 50%,    /* túlsúly */
+        #e74c3c 75%     /* elhízás */
+    );
+}
+
+.bmi-indicator {
+    position: absolute;
+    top: -5px;
+    width: 12px;
+    height: 20px;
+    border-radius: 4px;
+    background: #fff;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+}
+
+.bmi-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    opacity: 0.8;
+}
+
+.bmi-description {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}

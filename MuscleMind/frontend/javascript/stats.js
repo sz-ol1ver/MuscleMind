@@ -81,6 +81,7 @@ const muscleRanks = {
 
 document.addEventListener('DOMContentLoaded', async()=>{
     await getStats();
+    
     loadSummaryCard();
     loadGlobalRank();
 });
@@ -165,13 +166,11 @@ function getUserRank() {
     const xp = userGlobal.xp || 0;
 
     const rankEntries = Object.entries(globalRanks);
-    console.log(rankEntries);
 
     let currentRank = null;
     let nextRank = null;
 
     for (let i = 0; i < rankEntries.length; i++) {
-        const rankName = rankEntries[i][0];
         const rankData = rankEntries[i][1];
 
         if (xp >= rankData.min) {

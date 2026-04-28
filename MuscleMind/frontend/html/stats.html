@@ -276,62 +276,36 @@
                             </div>
                         </section>
 
-                        <!-- Global statistics -->
+                        <!-- BMI Feedback -->
                         <section class="stats-section">
                             <div class="stats-section-title">
-                                <h2>Összesített edzés statisztikák</h2>
+                                <h2>Egészségi állapot (BMI)</h2>
                             </div>
 
-                            <div class="row g-3">
+                            <div class="stats-card bmi-card">
 
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Teljesített edzések</span>
-                                        <strong id="total-completed-workouts">0</strong>
+                                <div class="bmi-main">
+                                    <span class="section-label">Testtömeg index</span>
+                                    <h2 id="bmi-value">-</h2>
+                                    <p id="bmi-category">-</p>
+                                </div>
+
+                                <div class="bmi-bar-wrapper">
+                                    <div class="bmi-bar">
+                                        <div id="bmi-indicator" class="bmi-indicator"></div>
+                                    </div>
+
+                                    <div class="bmi-labels">
+                                        <span>Sovány</span>
+                                        <span>Normál</span>
+                                        <span>Túlsúly</span>
+                                        <span>Elhízás</span>
                                     </div>
                                 </div>
 
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. volumen</span>
-                                        <strong id="total-volume">0 kg</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. set</span>
-                                        <strong id="total-sets">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. ismétlés</span>
-                                        <strong id="total-reps">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>PR-ok</span>
-                                        <strong id="total-pr-count">0</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Össz. edzésidő</span>
-                                        <strong id="total-workout-time">0 perc</strong>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6 col-xl-3">
-                                    <div class="detail-card">
-                                        <span>Átlag edzésidő</span>
-                                        <strong id="average-workout-time">0 perc</strong>
-                                    </div>
-                                </div>
+                                <p id="bmi-description" class="bmi-description">
+                                    -
+                                </p>
 
                             </div>
                         </section>
