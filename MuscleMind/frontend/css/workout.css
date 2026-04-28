@@ -394,3 +394,8 @@ input:disabled {
         width: 100%;
     }
 }
+
+option{
+    background-color: #29154c;
+    color: white;
+}
