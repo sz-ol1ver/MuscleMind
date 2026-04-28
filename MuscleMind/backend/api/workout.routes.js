@@ -13,9 +13,13 @@ router.get('/exercises', requireAuthApi, async(request, response)=>{
             message: data
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -99,9 +103,13 @@ router.get('/my-plans', requireAuthApi, async(request, response)=>{
             plans: workouts
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -114,9 +122,13 @@ router.get('/default-plans', requireAuthApi, async(request, response)=>{
             plans: workouts
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -161,9 +173,13 @@ router.get('/my-plan/:id', requireAuthApi, async(request, response)=>{
             details: plan
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -212,9 +228,13 @@ router.get('/default-plan/:id', requireAuthApi, async(request, response)=>{
             details: plan
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -229,9 +249,13 @@ router.get('/plans/active', requireAuthApi, async(request,response)=>{
             active: activeP
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -298,9 +322,13 @@ router.patch('/plans/active', requireAuthApi, validateActive, async(request, res
             message: 'Aktív edzésterv frissítve.'
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
@@ -331,14 +359,19 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
             row: deleted
         });
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - workout', error.message,ip);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
     }
 })
+
 
 router.get('/calendar', requireAuthApi, async (request, response) => {
     try {
@@ -504,5 +537,30 @@ router.patch('/calendar/skip/:logId', requireAuthApi, async (request, response) 
         return response.status(500).json({ message: 'Sikertelen kihagyás!' })
     }
 })
+
+router.get('/user-preferences', requireAuthApi, async(request,response)=>{
+    try {
+        const userId = request.session.user.id;
+        const {goal, experience_level, training_days, training_location} = await db.getUserPreferencesData(userId);
+
+        return response.status(200).json({
+            goal: goal,
+            level: experience_level,
+            days: training_days,
+            location: training_location
+        });
+    } catch (error) {
+        console.error(error.message)
+        const ip = requestIp.getClientIp(request);
+        try {
+            await db.log_error('Server error - workouts', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        });
+    }
+});
 
 module.exports = router;

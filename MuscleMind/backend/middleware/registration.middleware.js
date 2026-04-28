@@ -20,13 +20,13 @@ const db = require('../sql/database.js');
 
 4️⃣ Anchors:
    - ^ and $ ensure the entire string matches*/
-const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)?@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
+const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
 //? Nev megengedett karakterei
-const patternName = /^[a-zA-Z]*$/;
+const patternName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]*$/;
 //? Felhasznalonev megengedett karakterei
 const patternUser = /^[a-z0-9]{3,20}$/;
 //? Jelszo megengedett karakterei
-const patternPass = /^[a-zA-Z0-9#?!\-]{8,64}$/;
+const patternPass = /^[a-zA-Z0-9#?!$._*:\-!@%^&()+=<>[\]{}|\\,./~`]{8,64}$/;
 
 async function validateRegistration(req, res, next) {
     try {
@@ -60,12 +60,12 @@ async function validateRegistration(req, res, next) {
         }
 
         let exist =[];
-        const emailExist = await db.email_exist(email);
-        if(emailExist == 1){
-            exist.push(1);
-        }
         const usernameExist = await db.username_exist(userN);
         if(usernameExist == 1){
+            exist.push(1);
+        }
+        const emailExist = await db.email_exist(email);
+        if(emailExist == 1){
             exist.push(2);
         }
         if(exist.length >0){

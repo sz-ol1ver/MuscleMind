@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         //kerdoiv adatok
         if (data.preferences) {
             if (data.preferences.age) {
-                document.getElementById('Kor').value = data.preferences.age
+                const input = document.getElementById('Kor');
+                input.value = data.preferences.age.split('T')[0];
             }
             if (data.preferences.height) {
                 document.getElementById('Magassag').value = data.preferences.height
@@ -258,7 +259,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById('Email').value = originalData.basic.email
         }
         if (originalData.preferences) {
-             document.getElementById('Kor').value = originalData.preferences.age
+            const input = document.getElementById('Kor');
+            input.value = originalData.preferences.age.split('T')[0];
         }
     }
 

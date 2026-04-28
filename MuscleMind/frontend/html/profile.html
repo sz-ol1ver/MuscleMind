@@ -75,8 +75,8 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Bezárás"></button>
                 </div>
 
-                <div class="offcanvas-body">
-                    <ul class="nav flex-column d-flex gap-3">
+                <div class="offcanvas-body" id="mobil-nav">
+                    <ul class="nav flex-column d-flex gap-3" id="mobil-nav-list">
 
                         <li class="nav-item">
                             <a class="nav-link" href="/">Főoldal</a>
@@ -105,6 +105,14 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tickets">Ticketek</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -116,7 +124,7 @@
                     
                     <div class="m-2">MENÜ</div>
 
-                    <ul class="nav flex-column d-flex gap-4 align-items-center">
+                    <ul class="nav flex-column d-flex gap-4 align-items-center" id="side-nav-list">
 
                         <!-- Opciók -->
                         <li class="nav-item">
@@ -145,6 +153,14 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tickets">Ticketek</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
                         </li>
                     </ul>
                 </div>    
@@ -178,8 +194,8 @@
                                     </div>
                                     <hr class="line">
 
-                                    <label for="Kor">Életkor:</label>
-                                    <input class="form-control" min="18" max="99" type="text" placeholder="Életkor" id="Kor" name="age" disabled>
+                                    <label for="Kor">Születési év:</label>
+                                    <input class="form-control" min="1900-01-01" type="date" placeholder="2000-01-01" id="Kor" name="age" disabled>
                                     <hr class="line">
 
                                     <label for="Email">Email cím:</label>

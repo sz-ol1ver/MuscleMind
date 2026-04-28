@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Ranglista</title>
+        <title>Kapcsolat</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -11,13 +11,14 @@
         <script src="../bootstrap/js/popper.min.js"></script>
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
-        <link rel="stylesheet" href="../css/index.css" />
-        <link rel="stylesheet" href="../css/ranglist.css" />
+        <link rel="stylesheet" href="../css/index.css" type="text/css">
+        <link rel="stylesheet" href="../css/tickets.css" type="text/css">
         <!--!JavaScript-->
-        <script type="module" src="../javascript/index.js"></script>
+        <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script type="module" src="../javascript/global.js"></script>
+        <script type="module" src="../javascript/tickets.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -43,10 +44,8 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Ranglista</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Support Tickets</p>
                     
-
-
                     <div class="d-flex align-items-center gap-3">
                         <input type="checkbox" id="theme-switch" class="switch">
 
@@ -59,7 +58,7 @@
                         </a>
 
                         <div id="logout">
-                            <input type="button" id="logout" class="btn button-sample d-block mx-auto" value="Kilépés">
+                            <a href="/bejelentkezes"><input type="button" class="btn button-sample d-block mx-auto" value="Kilépés"></a>
                         </div>
                     </div>
                 </div>
@@ -75,22 +74,22 @@
                 </div>
 
                 <div class="offcanvas-body">
-                    <ul class="nav flex-column d-flex gap-3" id="mobil-nav-list">
+                    <ul class="nav flex-column d-flex gap-3 pb-3" id="mobil-nav-list">
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Főoldal</a>
+                            <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="/statisztika">Statisztikák</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/naptar">Naptár</a>
+                            <a class="nav-link" href="">Naptár</a>
                         </li>
 
                         <li class="nav-item">
@@ -105,7 +104,7 @@
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/tickets">Ticketek</a>
                         </li>
 
@@ -119,7 +118,7 @@
             <!-- Második sor/Main sor -->
             <div id="main-row" class="row me-2">
                 <!-- Navbar -->
-                <div class="col-lg-3 col-xl-2 d-none d-lg-block" id="side-nav">
+                <div class="col-lg-3 col-xl-2 d-none d-lg-block pb-3" id="side-nav">
                     
                     <div class="m-2">MENÜ</div>
 
@@ -134,12 +133,12 @@
                             <a class="nav-link" href="/statisztika">Statisztikák</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
                             <a class="nav-link" href="/ranglista">Ranglista</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/naptar">Naptár</a>
+                            <a class="nav-link" href="">Naptár</a>
                         </li>
 
                         <li class="nav-item">
@@ -154,7 +153,7 @@
                             <a class="nav-link" href="/edzesterv">Edzésterv</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/tickets">Ticketek</a>
                         </li>
 
@@ -166,63 +165,20 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
-                            <div id="ranglist">
-                                <div id="ranglist-title">
-                                    Ranglista
-                                    <hr>
-                                </div>
-
-                                <!-- 1. 2. 3. -->
-                                <div class="row" id="first-second-third">
-                                    <div class="col-4">
-                                        <div id="second-place">
-                                            <span id="second-place-sign" class="placement">2.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
-                                        </div>
-                                    </div>
-
-                                    <div class="col-4">
-                                        <div id="first-place">
-                                            <span id="first-place-sign" class="placement">1.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
-                                        </div>
-                                    </div>
-
-                                    <div class="col-4">
-                                        <div id="third-place">
-                                            <span id="third-place-sign" class="placement">3.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            676767
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Mindenki más -->
-                                 <div class="row" id="outside-top-three">
-                                    <div class="col-12">
-                                        <div class="ranglisted-people">
-                                            <span class="placement">4.</span>
-                                            <span class="name">Sajtos Lajos</span>
-                                            <span class="points">67</span>
-                                        </div>
-
-                                        <!-- <div class="ranglisted-people">
-                                            <span class="placement">5.</span>
-                                            <span class="name">Sajtos János</span>
-                                            <span class="points">76</span>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="continer-fluid text-end mt-3">
+                        <a href="/kapcsolat"><button class="btn btn-light me-2" id="new-ticket">
+                            Új ticket
+                        </button></a>
+                        <button id="reload-tickets" class="btn btn-light">Frissítés</button>
+                    </div>
+                    <hr>
+                    <div class="container-fluid">
+                        <div class="container-fluid d-flex flex-column align-items-center mt-3" id="open-tickets">
+                            
+                        </div>
+                        <hr>
+                        <div class="container-fluid d-flex flex-column align-items-center mt-3" id="closed-tickets">
+                            
                         </div>
                     </div>
                 </div>

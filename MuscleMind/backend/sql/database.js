@@ -68,6 +68,12 @@ async function findUser(email) {
     return rows[0];
 }
 
+async function checkIfActive(id) {
+    const select = 'SELECT active FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0].active;
+}
+
 async function ifAdmin(id) {
     const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(userN, [id]);
@@ -85,9 +91,9 @@ async function registComp(id) {
 }
 
 //user kerdoiv adatok (insert) /without weight
-async function insertPreferences(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
-    const data = 'Insert into user_profiles(id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) VALUES (?,?,?,?,?,?,?,?,?,?)';
-    const [rows] = await pool.execute(data, [id, age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day])
+async function insertPreferences(id, date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
+    const data = 'Insert into user_profiles(id, birth_date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day) VALUES (?,?,?,?,?,?,?,?,?,?)';
+    const [rows] = await pool.execute(data, [id, date, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day])
     return rows.insertId;
 }
 
@@ -105,6 +111,152 @@ async function updateRegistered(id) {
     return rows;
 }
 
+//? user metrics
+function calculateAge(birthDate) {
+    const today = new Date();
+    const birth = new Date(birthDate);
+
+    let age = today.getFullYear() - birth.getFullYear();
+
+    const monthDiff = today.getMonth() - birth.getMonth();
+    const dayDiff = today.getDate() - birth.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+        age--;
+    }
+
+    return age;
+}
+
+function getActivityMultiplier(trainingDays) {
+    switch (trainingDays) {
+        case '2–3 nap':
+            return 1.375;
+        case '4 nap':
+            return 1.55;
+        case '5–6 nap':
+            return 1.725;
+        default:
+            return 1.2;
+    }
+}
+
+function getGoalCalories(tdee, goal) {
+    switch (goal) {
+        case 'tömegnövelés':
+            return Math.round(tdee + 300);
+        case 'szálkásítás':
+            return Math.round(tdee - 300);
+        case 'szintentartás':
+            return Math.round(tdee);
+        default:
+            return Math.round(tdee);
+    }
+}
+
+function getProteinRecommended(weight, goal) {
+    switch (goal) {
+        case 'tömegnövelés':
+            return Number((weight * 1.8).toFixed(2));
+        case 'szálkásítás':
+            return Number((weight * 2.0).toFixed(2));
+        case 'szintentartás':
+            return Number((weight * 1.6).toFixed(2));
+        default:
+            return Number((weight * 1.6).toFixed(2));
+    }
+}
+
+async function calculateUserMetrics(userId) {
+    const profileSql = `
+        SELECT 
+            birth_date,
+            height,
+            gender,
+            goal,
+            training_days
+        FROM user_profiles
+        WHERE id = ?
+    `;
+
+    const [profileRows] = await pool.execute(profileSql, [userId]);
+    const profile = profileRows[0];
+
+    if (!profile) {
+        throw new Error('Hiányzó profil adatok.');
+    }
+
+    const weightData = await getUserWeightData(userId);
+
+    if (!weightData) {
+        throw new Error('Hiányzó testsúly adat.');
+    }
+
+    if (!profile.birth_date || !profile.height || !profile.gender || !profile.goal || !profile.training_days) {
+        throw new Error('Hiányos profil adatok a számításhoz.');
+    }
+
+    const age = calculateAge(profile.birth_date);
+    const height = Number(profile.height);
+    const weight = Number(weightData.weight);
+
+    const bmi = Number((weight / Math.pow(height / 100, 2)).toFixed(2));
+
+    let bmr;
+
+    if (profile.gender === 'férfi') {
+        bmr = Math.round((10 * weight) + (6.25 * height) - (5 * age) + 5);
+    } else {
+        bmr = Math.round((10 * weight) + (6.25 * height) - (5 * age) - 161);
+    }
+
+    const activityMultiplier = getActivityMultiplier(profile.training_days);
+    const tdee = Number((bmr * activityMultiplier).toFixed(2));
+
+    const goalCalories = getGoalCalories(tdee, profile.goal);
+    const proteinRecommended = getProteinRecommended(weight, profile.goal);
+
+    return {
+        bmi,
+        bmr,
+        tdee,
+        goalCalories,
+        proteinRecommended
+    };
+}
+
+async function saveUserMetrics(userId) {
+    const metrics = await calculateUserMetrics(userId);
+
+    const sql = `
+        INSERT INTO user_metrics (
+            user_id,
+            bmi,
+            bmr,
+            tdee,
+            goal_calories,
+            protein_recommended
+        ) VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            bmi = VALUES(bmi),
+            bmr = VALUES(bmr),
+            tdee = VALUES(tdee),
+            goal_calories = VALUES(goal_calories),
+            protein_recommended = VALUES(protein_recommended)
+    `;
+
+    const [result] = await pool.execute(sql, [
+        userId,
+        metrics.bmi,
+        metrics.bmr,
+        metrics.tdee,
+        metrics.goalCalories,
+        metrics.proteinRecommended
+    ]);
+
+    return result.affectedRows;
+}
+
 
 // -------
 // PROFILE
@@ -119,7 +271,7 @@ async function getUserBasicData(id) {
 
 // user profil adatok
 async function getUserPreferencesData(id) {
-    const query = 'SELECT age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
+    const query = 'SELECT birth_date AS age, height, gender, goal, experience_level, training_days, training_location, diet_type, meals_per_day FROM user_profiles WHERE id = ?';
     const [rows] = await pool.execute(query, [id]);
     return rows[0];
 }
@@ -140,7 +292,7 @@ async function updateUserBasic(id, username, firstName, lastName, email) {
 
 // user update preferences
 async function updateUserPreferences(id, age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day) {
-    const query = 'UPDATE user_profiles SET age = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
+    const query = 'UPDATE user_profiles SET birth_date = ?, height = ?, goal = ?, experience_level = ?, training_days = ?, training_location = ?, diet_type = ?, meals_per_day = ? WHERE id = ?';
     const [result] = await pool.execute(query, [age, height, goal, experience_level, training_days, training_location, diet_type, meals_per_day, id]);
     return result;
 }
@@ -542,6 +694,10 @@ async function updateActive(userId, planId) {
     } finally {
         connection.release();
     }
+async function updateActive(userId,plan) {
+    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
+    const [rows] = await pool.execute(sql, [plan, userId]);
+    return rows.affectedRows;
 }
 async function calendarUpToDate(userId) {
     const connection = await pool.getConnection();
@@ -914,17 +1070,671 @@ async function token_expire_del() {
     const [rows] = await pool.execute(del);
     return rows;
 }
+// ----
+// TICKET
+// ----
+async function findTicketEmail(id) {
+    const sql = 'SELECT email FROM users WHERE id = ?';
+    const [rows] = await pool.execute(sql, [id]);
+    return rows[0].email;
+}
+async function findPreId(ticketId, userId) {
+    const sql = 'SELECT id FROM support_requests WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(sql, [ticketId, userId]);
+    return rows;
+}
+async function createTicket(userId, email, category, subject, message, preId) {
+    const insert = 'INSERT INTO support_requests(user_id, email, category, subject, message, related_request_id) VALUES (?,?,?,?,?,?)';
+    const [rows] = await pool.execute(insert, [userId, email, category, subject, message, preId]);
+    return rows.insertId;
+}
+async function limitTicketCreation(userId) {
+    const sql = 'SELECT COUNT(*) AS ticket_count FROM support_requests WHERE user_id = ? AND created_at >= NOW() - INTERVAL 1 HOUR;'
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows[0].ticket_count;
+}
+async function allUserTickets(userId) {
+    const sql = 'SELECT support_requests.*, users.username AS admin_username FROM support_requests LEFT JOIN users ON(support_requests.replied_by_admin_id = users.id) WHERE user_id = ? ORDER BY created_at DESC';
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+async function allTickets() {
+    const sql = 'SELECT support_requests.*, users.username AS admin_username FROM support_requests LEFT JOIN users ON(support_requests.replied_by_admin_id = users.id)ORDER BY created_at DESC';
+    const [rows] = await pool.execute(sql);
+    return rows;
+}
 
 // ----
 // ADMIN
 // ----
-async function isAdminCheck(userId) {
+/*async function isAdminCheck(userId) {
     const sql = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(sql, [userId]);
     return rows;
+}*/
+
+async function todayRegistration() {
+    const regCount = `
+        SELECT COUNT(DISTINCT user_id) AS regCount 
+        FROM logs 
+        WHERE action = 'registration'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(regCount);
+    return rows[0].regCount;
+}
+async function totalUserCount() {
+    const select = 'SELECT COUNT(*) AS userCount FROM users WHERE admin = 0';
+    const [rows] = await pool.execute(select);
+    return rows[0].userCount;
+}
+async function todayLoginCount() {
+    const select = `
+        SELECT COUNT(DISTINCT user_id) AS loginCount 
+        FROM logs INNER JOIN users ON(logs.user_id = users.id)
+        WHERE (action = 'login' OR action = 'registration')
+        AND users.admin = 0
+        AND logs.created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].loginCount;
+}
+async function todayTicketCount(params) {
+    const select = `
+        SELECT COUNT(*) AS ticketCount 
+        FROM logs 
+        WHERE action = 'ticket_created'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].ticketCount;
+}
+async function todayErrorCount() {
+    const select = `
+        SELECT COUNT(*) AS errorCount 
+        FROM logs 
+        WHERE type = 'error'
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].errorCount;
+};
+async function todayWorkoutCount() {
+    const select = `
+        SELECT COUNT(*) AS workoutCount 
+        FROM workout_plans 
+        WHERE is_public = 0
+        AND created_at >= CURDATE()
+    `;
+    const [rows] = await pool.execute(select);
+    return rows[0].workoutCount;
+}
+async function validateTicketId(id) {
+    const select = 'SELECT id FROM support_requests WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    if(rows.length >= 1){
+        return 1;
+    }else{
+        return 0;
+    }
+}
+async function ticketSeen(id) {
+    const update = 'UPDATE support_requests SET status = "seen" WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function ticketsSeen() {
+    const update = 'UPDATE support_requests SET status = "seen" WHERE status = "open"';
+    const [rows] = await pool.execute(update);
+    return rows.affectedRows;
+}
+async function ticketClose(id, status) {
+    const update = 'UPDATE support_requests SET status = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [status, id]);
+    return rows.affectedRows;
+}
+async function ticketAnswer(id, adminMessage, adminId) {
+    const update = 'UPDATE support_requests SET admin_reply = ?, replied_by_admin_id = ?, replied_at = CURRENT_TIMESTAMP WHERE id = ?';
+    const [rows] = await pool.execute(update, [adminMessage,adminId,id]);
+    return rows.affectedRows;
+}
+async function ticketAdminReplyCheck(id) {
+    const select = 'SELECT admin_reply FROM support_requests WHERE id = ?';
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0].admin_reply;
+}
+async function allUserBasicData() {
+    const select = 'SELECT id, username, active, created_at FROM users ORDER BY created_at DESC';
+    const [rows] = await pool.execute(select);
+    return rows;
+}
+async function userAllData(id) {
+    const select = `
+        SELECT 
+            u.id,
+            u.first_name,
+            u.last_name,
+            u.username,
+            u.email,
+            u.registered,
+            u.admin,
+            u.active,
+            u.created_at AS profil_date,
+
+            up.birth_date,
+            up.height,
+            up.gender,
+            up.goal,
+            up.experience_level,
+            up.training_days,
+            up.training_location,
+            up.diet_type,
+            up.meals_per_day,
+            up.created_at AS registration_date,
+
+            uw.weight,
+            uw.created_at AS weight_date,
+
+            um.bmi,
+            um.bmr,
+            um.tdee,
+            um.goal_calories,
+            um.protein_recommended,
+            um.calculated_at
+
+        FROM users u
+
+        LEFT JOIN user_profiles up 
+            ON up.id = u.id
+
+        LEFT JOIN user_metrics um
+            ON um.user_id = u.id
+
+        LEFT JOIN user_weights uw 
+            ON uw.id = (
+                SELECT id 
+                FROM user_weights 
+                WHERE user_id = u.id 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            )
+        WHERE u.id = ?;
+    `
+    const [rows] = await pool.execute(select, [id]);
+    return rows[0];
+}
+async function userAdmin(id) {
+    const update = 'UPDATE users SET admin = NOT admin WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function selectCurrentAdminStatus(userId) {
+    const select = 'SELECT admin FROM users WHERE id = ?';
+    const [rows] = await pool.execute(select, [userId]);
+    if(rows.length === 0){
+        return null;
+    }
+    return rows[0].admin;
+}
+async function userBlock(id) {
+    const update = 'UPDATE users SET active = NOT active WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function userDelete(id) {
+    const deleteU = 'DELETE FROM users WHERE id = ?';
+    const [rows] = await pool.execute(deleteU, [id]);
+    return rows.affectedRows;
+}
+async function userChangeEmail(id, email) {
+    const update = 'UPDATE users SET email = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [email,id]);
+    return rows.affectedRows;
+}
+async function userChangeUsername(id, username) {
+    const update = 'UPDATE users SET username = ? WHERE id = ?';
+    const [rows] = await pool.execute(update, [username,id]);
+    return rows.affectedRows;
+}
+async function allFoods() {
+    const selectFoods = 'SELECT * FROM foods ORDER BY id DESC';
+    const [foods] = await pool.execute(selectFoods);
+
+    const selectAllergens = `
+        SELECT 
+            fa.food_id,
+            a.id,
+            a.name
+        FROM food_allergens fa
+        INNER JOIN allergens a ON fa.allergen_id = a.id
+    `;
+    const [allergens] = await pool.execute(selectAllergens);
+
+    for (let food of foods) {
+        food.allergens = [];
+        for (let allergen of allergens) {
+            if (allergen.food_id == food.id) {
+                food.allergens.push({
+                    id: allergen.id,
+                    name: allergen.name
+                });
+            }
+        }
+    }
+
+    return foods;
+}
+async function foodApproved(id) {
+    const update = 'UPDATE foods SET is_approved = NOT is_approved WHERE id = ?';
+    const [rows] = await pool.execute(update, [id]);
+    return rows.affectedRows;
+}
+async function deleteFood(id) {
+    const del = 'DELETE FROM foods WHERE id = ?';
+    const [rows] = await pool.execute(del, [id]);
+    return rows.affectedRows;
 }
 
+async function createFood(adminId,food) {
+    const insert = `
+        INSERT INTO foods (
+            created_by,
+            name,
+            description,
+            image_url,
+            category,
+            calories_kcal,
+            protein_g,
+            carbs_g,
+            fat_g,
+            fiber_g,
+            sugar_g,
+            salt_g,
+            serving_size,
+            serving_unit,
+            goal_tag,
+            diet_tag,
+            difficulty,
+            prep_time_min,
+            high_protein,
+            low_carb,
+            bulk_friendly,
+            cut_friendly,
+            is_approved
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `;
+    const [rows] = await pool.execute(insert, [
+        adminId,
+        food.name,
+        food.description,
+        food.url || null,
+        food.category,
+        food.calories_kcal,
+        food.protein_g,
+        food.carbs_g,
+        food.fat_g,
+        food.fiber_g,
+        food.sugar_g,
+        food.salt_g,
+        food.serving_size,
+        food.serving_unit,
+        food.goal_tag,
+        food.diet_tag,
+        food.difficulty,
+        food.prep_time_min,
+        food.high_protein,
+        food.low_carb,
+        food.bulk_friendly,
+        food.cut_friendly,
+        1
+    ]);
+    return rows.insertId;
+}
+async function insertFoodAllergen(foodId, allergenId) {
+    const insert = 'INSERT INTO food_allergens(food_id, allergen_id)VALUES(?,?)';
+    const [rows] = await pool.execute(insert, [foodId, allergenId]);
+    return rows.insertId;
+}
+//? workouts
+async function getAllUsersPlans(){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.user_id,
 
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.user_id IS NOT NULL
+
+        ORDER BY
+            wp.id DESC,
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql);
+    return formatWorkoutPlans(rows);
+}
+async function getAllDefaultPlans(){
+    const sql = `
+        SELECT
+            wp.id AS plan_id,
+            wp.name AS plan_name,
+            wp.days_count,
+            wp.level,
+            wp.location,
+            wp.goal,
+            wp.description,
+
+            wd.id AS day_id,
+            wd.day_number,
+            wd.name AS day_name,
+            wd.isRestDay,
+            wd.image_url,
+
+            de.id AS day_exercise_id,
+            de.exercise_order,
+
+            e.id AS exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group
+
+        FROM workout_plans wp
+
+        INNER JOIN workout_days wd
+            ON wp.id = wd.plan_id
+
+        LEFT JOIN day_exercises de
+            ON wd.id = de.day_id
+
+        LEFT JOIN exercises e
+            ON de.exercise_id = e.id
+
+        WHERE wp.user_id is NULL
+        AND wp.is_public = TRUE
+
+        ORDER BY
+            wp.id DESC,
+            wd.day_number ASC,
+            de.exercise_order ASC
+    `;
+
+    const [rows] = await pool.execute(sql);
+    return formatWorkoutPlans(rows);
+}
+//? workout helper function
+function formatWorkoutPlans(rows) {
+    const plans = [];
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+
+        // 1. PLAN keresése
+        let plan = null;
+
+        for (let j = 0; j < plans.length; j++) {
+            if (plans[j].planId === row.plan_id) {
+                plan = plans[j];
+                break;
+            }
+        }
+
+        // 2. Ha nincs még plan → létrehozás
+        if (!plan) {
+            plan = {
+                planId: row.plan_id,
+                name: row.plan_name,
+                daysCount: row.days_count,
+                user_id: row.user_id ?? null,
+
+                level: row.level ?? null,
+                location: row.location ?? null,
+                goal: row.goal ?? null,
+                description: row.description ?? null,
+
+                days: []
+            };
+
+            plans.push(plan);
+        }
+
+        // 3. DAY keresése
+        let day = null;
+
+        for (let k = 0; k < plan.days.length; k++) {
+            if (plan.days[k].dayId === row.day_id) {
+                day = plan.days[k];
+                break;
+            }
+        }
+
+        // 4. Ha nincs még day → létrehozás
+        if (!day) {
+            day = {
+                dayId: row.day_id,
+                dayNumber: row.day_number,
+                name: row.day_name,
+                isRestDay: Boolean(row.isRestDay),
+                imageUrl: row.image_url,
+                exercises: []
+            };
+
+            plan.days.push(day);
+        }
+
+        // 5. Exercise hozzáadás (ha van)
+        if (row.exercise_id !== null) {
+            day.exercises.push({
+                dayExerciseId: row.day_exercise_id,
+                exerciseId: row.exercise_id,
+                name: row.exercise_name,
+                muscleGroup: row.muscle_group,
+                order: row.exercise_order
+            });
+        }
+    }
+
+    return plans;
+}
+
+async function createAdminWorkoutPlan(workout) {
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const insertPlan = `
+            INSERT INTO workout_plans
+            (user_id, name, level, location, goal, description, is_public, days_count)
+            VALUES (NULL, ?, ?, ?, ?, ?, 1, ?)
+        `;
+
+        const [planResult] = await conn.execute(insertPlan, [
+            workout.name,
+            workout.level,
+            workout.location,
+            workout.goal,
+            workout.description,
+            workout.days_count
+        ]);
+
+        const planId = planResult.insertId;
+
+        for (const day of workout.days) {
+            const insertDay = `
+                INSERT INTO workout_days
+                (plan_id, day_number, name, isRestDay, image_url)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            const [dayResult] = await conn.execute(insertDay, [
+                planId,
+                day.dayNumber,
+                day.name,
+                day.restDay,
+                null
+            ]);
+
+            const dayId = dayResult.insertId;
+
+            if (!day.restDay) {
+                for (const exercise of day.exercises) {
+                    const insertExercise = `
+                        INSERT INTO day_exercises
+                        (day_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)
+                    `;
+
+                    await conn.execute(insertExercise, [
+                        dayId,
+                        exercise.exerciseId,
+                        exercise.order
+                    ]);
+                }
+            }
+        }
+
+        await conn.commit();
+        return planId;
+
+    } catch (error) {
+        await conn.rollback();
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+async function updateAdminWorkoutPlan(planId, workout) {
+    const conn = await pool.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const updatePlan = `
+            UPDATE workout_plans
+            SET
+                name = ?,
+                level = ?,
+                location = ?,
+                goal = ?,
+                description = ?,
+                days_count = ?
+            WHERE id = ?
+            AND user_id IS NULL
+        `;
+
+        const [planResult] = await conn.execute(updatePlan, [
+            workout.name,
+            workout.level,
+            workout.location,
+            workout.goal,
+            workout.description,
+            workout.days_count,
+            planId
+        ]);
+
+        if (planResult.affectedRows === 0) {
+            await conn.rollback();
+            return 0;
+        }
+
+        const selectDays = `
+            SELECT id
+            FROM workout_days
+            WHERE plan_id = ?
+        `;
+
+        const [oldDays] = await conn.execute(selectDays, [planId]);
+
+        for (const oldDay of oldDays) {
+            const deleteExercises = `
+                DELETE FROM day_exercises
+                WHERE day_id = ?
+            `;
+
+            await conn.execute(deleteExercises, [oldDay.id]);
+        }
+
+        const deleteDays = `
+            DELETE FROM workout_days
+            WHERE plan_id = ?
+        `;
+
+        await conn.execute(deleteDays, [planId]);
+
+        for (const day of workout.days) {
+            const insertDay = `
+                INSERT INTO workout_days
+                (plan_id, day_number, name, isRestDay, image_url)
+                VALUES (?, ?, ?, ?, ?)
+            `;
+
+            const [dayResult] = await conn.execute(insertDay, [
+                planId,
+                day.dayNumber,
+                day.name,
+                day.restDay,
+                null
+            ]);
+
+            const dayId = dayResult.insertId;
+
+            if (!day.restDay) {
+                for (const exercise of day.exercises) {
+                    const insertExercise = `
+                        INSERT INTO day_exercises
+                        (day_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)
+                    `;
+
+                    await conn.execute(insertExercise, [
+                        dayId,
+                        exercise.exerciseId,
+                        exercise.order
+                    ]);
+                }
+            }
+        }
+
+        await conn.commit();
+        return planResult.affectedRows;
+
+    } catch (error) {
+        await conn.rollback();
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+async function deleteAdminPlan(planId) {
+    const sql = 'DELETE FROM workout_plans WHERE id = ?';
+    const [rows] = await pool.execute(sql, [planId]);
+    return rows.affectedRows;
+}
 // ----
 // LOG
 // ----
@@ -947,8 +1757,8 @@ async function log_email(email, action, desc, ip) {
 }
 //log server failure
 async function log_error(action, desc, ip) {
-    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,error,?)';
-    const [result] = await pool.execute(insert, [action, desc, ip]);
+    const insert = 'INSERT INTO logs(action, description,type, ip_address) VALUES (?,?,?,?)';
+    const [result] = await pool.execute(insert, [action, desc, 'error',ip]);
     return result.insertId;
 }
 
@@ -991,7 +1801,7 @@ module.exports = {
     getDefaultWorkoutPlanDetails,
     getActive,
     updateActive,
-    isAdminCheck,
+    //isAdminCheck,
     save_token,
     delete_tokens,
     token_expire_del,
@@ -1008,4 +1818,42 @@ module.exports = {
     startWorkoutCalendarLogStatus,
     finishWorkoutCalendarLogStatus,
     postponeWorkoutCalendarLog
+    findTicketEmail,
+    findPreId,
+    createTicket,
+    limitTicketCreation,
+    allUserTickets,
+    todayRegistration,
+    totalUserCount,
+    todayLoginCount,
+    todayTicketCount,
+    todayErrorCount,
+    todayWorkoutCount,
+    allTickets,
+    validateTicketId,
+    ticketSeen,
+    ticketsSeen,
+    ticketClose,
+    ticketAnswer,
+    ticketAdminReplyCheck,
+    allUserBasicData,
+    userAllData,
+    userAdmin,
+    userBlock,
+    userDelete,
+    userChangeEmail,
+    userChangeUsername,
+    checkIfActive,
+    allFoods,
+    foodApproved,
+    deleteFood,
+    createFood,
+    insertFoodAllergen,
+    getAllDefaultPlans,
+    getAllUsersPlans,
+    createAdminWorkoutPlan,
+    updateAdminWorkoutPlan,
+    deleteAdminPlan,
+    selectCurrentAdminStatus,
+    saveUserMetrics
 };
