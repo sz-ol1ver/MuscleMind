@@ -10,279 +10,678 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css"/>
     <script src="../bootstrap/js/popper.min.js"></script>
-    <script src="../bootstrap/js/bootstrap.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Admin CSS -->
     <link rel="stylesheet" href="../css/admin.css">
     <!-- Admin js-->
+     <script type="module" src="../javascript/admin.js"></script>
 </head>
+<body data-bs-spy="scroll" data-bs-target="#adminSidebar" data-bs-offset="0" tabindex="0">
+    <!-- Mobile topbar -->
+    <div class="mobile-topbar d-block d-lg-none">
+        <div class="d-flex justify-content-between align-items-center p-3">
+            <div class="fw-bold text-light">Admin Felület</div>
 
-<body class="admin-bg">
-    <div class="container py-4">
-        <h1 class="text-center mb-5 admin-title">MuscleMind – Admin Panel</h1>
-        
-        <div class="admin-card scroll mb-4">
-            <h4>Összes felhasználó</h4>
-
-            <div class="row g-3 mt-3 scroll-box">
-                <!-- Példa felhasználói profil kártya -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="user-card">
-                        <h5>PéldaUser</h5>
-                        <p><strong>Email:</strong> peld@example.com</p>
-                        <p><strong>Testsúly:</strong> 75 kg</p>
-                        <p><strong>Életkor:</strong> 28</p>
-                        <p><strong>Magasság:</strong> 180 cm</p>
-                        <p><strong>Nem:</strong> férfi</p>
-                        <p><strong>Cél:</strong> tömegnövelés</p>
-                        <p><strong>Tapasztalat:</strong> középhaladó</p>
-                        <p><strong>Edzésnapok:</strong> 4 nap</p>
-                        <p><strong>Edzés helye:</strong> konditeremben</p>
-                        <p><strong>Étrend:</strong> mindenevő</p>
-                        <p><strong>Étkezések száma:</strong> 4–5 alkalom</p>
-                        <p><strong>Admin:</strong> NO</p>
-                    </div>
-                </div>
-
-                <!-- Több felhasználó ide jöhet -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="user-card">
-                        <h5>KovácsAnna</h5>
-                        <p><strong>Email:</strong> anna@example.com</p>
-                        <p><strong>Testsúly:</strong> 60 kg</p>
-                        <p><strong>Életkor:</strong> 25</p>
-                        <p><strong>Magasság:</strong> 165 cm</p>
-                        <p><strong>Nem:</strong> nő</p>
-                        <p><strong>Cél:</strong> szálkásítás</p>
-                        <p><strong>Tapasztalat:</strong> kezdő</p>
-                        <p><strong>Edzésnapok:</strong> 2–3 nap</p>
-                        <p><strong>Edzés helye:</strong> otthon, saját testsúllyal</p>
-                        <p><strong>Étrend:</strong> vegetáriánus</p>
-                        <p><strong>Étkezések száma:</strong> 2–3 alkalom</p>
-                        <p><strong>Admin:</strong> NO</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="user-card">
-                        <h5>KovácsAnna</h5>
-                        <p><strong>Email:</strong> anna@example.com</p>
-                        <p><strong>Testsúly:</strong> 60 kg</p>
-                        <p><strong>Életkor:</strong> 25</p>
-                        <p><strong>Magasság:</strong> 165 cm</p>
-                        <p><strong>Nem:</strong> nő</p>
-                        <p><strong>Cél:</strong> szálkásítás</p>
-                        <p><strong>Tapasztalat:</strong> kezdő</p>
-                        <p><strong>Edzésnapok:</strong> 2–3 nap</p>
-                        <p><strong>Edzés helye:</strong> otthon, saját testsúllyal</p>
-                        <p><strong>Étrend:</strong> vegetáriánus</p>
-                        <p><strong>Étkezések száma:</strong> 2–3 alkalom</p>
-                        <p><strong>Admin:</strong> NO</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="user-card">
-                        <h5>KovácsAnna</h5>
-                        <p><strong>Email:</strong> anna@example.com</p>
-                        <p><strong>Testsúly:</strong> 60 kg</p>
-                        <p><strong>Életkor:</strong> 25</p>
-                        <p><strong>Magasság:</strong> 165 cm</p>
-                        <p><strong>Nem:</strong> nő</p>
-                        <p><strong>Cél:</strong> szálkásítás</p>
-                        <p><strong>Tapasztalat:</strong> kezdő</p>
-                        <p><strong>Edzésnapok:</strong> 2–3 nap</p>
-                        <p><strong>Edzés helye:</strong> otthon, saját testsúllyal</p>
-                        <p><strong>Étrend:</strong> vegetáriánus</p>
-                        <p><strong>Étkezések száma:</strong> 2–3 alkalom</p>
-                        <p><strong>Admin:</strong> NO</p>
-                    </div>
-                </div>
-                <div class="col-md-6 col-lg-4">
-                    <div class="user-card">
-                        <h5>KovácsAnna</h5>
-                        <p><strong>Email:</strong> anna@example.com</p>
-                        <p><strong>Testsúly:</strong> 60 kg</p>
-                        <p><strong>Életkor:</strong> 25</p>
-                        <p><strong>Magasság:</strong> 165 cm</p>
-                        <p><strong>Nem:</strong> nő</p>
-                        <p><strong>Cél:</strong> szálkásítás</p>
-                        <p><strong>Tapasztalat:</strong> kezdő</p>
-                        <p><strong>Edzésnapok:</strong> 2–3 nap</p>
-                        <p><strong>Edzés helye:</strong> otthon, saját testsúllyal</p>
-                        <p><strong>Étrend:</strong> vegetáriánus</p>
-                        <p><strong>Étkezések száma:</strong> 2–3 alkalom</p>
-                        <p><strong>Admin:</strong> NO</p>
-                    </div>
-                </div>
-            </div>
+            <button 
+                class="btn btn-menu"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#mobileSidebar">
+                ☰
+            </button>
         </div>
-
-
-        <div class="admin-card mb-4">
-            <h4>Felhasználó szerkesztése</h4>
-
-            <!-- KERESÉS -->
-            <div class="row g-2 mb-3">
-                <div class="col-md-4">
-                    <input class="form-control" placeholder="Email vagy felhasználónév">
-                </div>
-                <div class="col-md-2">
-                    <button class="btn btn-purple w-100">Betölt</button>
-                </div>
-            </div>
-
-            <!-- ADATOK -->
-            <div class="user-card">
-
-                <div class="row g-2 mb-3">
-                    <div class="col-md-3">
-                        <input class="form-control" placeholder="Email">
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" placeholder="Felhasználónév">
-                    </div>
-                    <div class="col-md-3">
-                        <input class="form-control" placeholder="Új jelszó">
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option>Admin: NO</option>
-                            <option>Admin: YES</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row g-2 mb-2">
-                    <div class="col-md-2">
-                        <input class="form-control" placeholder="Testsúly (kg)">
-                    </div>
-                    <div class="col-md-2">
-                        <input class="form-control" placeholder="Életkor">
-                    </div>
-                    <div class="col-md-2">
-                        <input class="form-control" placeholder="Magasság (cm)">
-                    </div>
-
-                    <!-- GENDER -->
-                    <div class="col-md-2">
-                        <select class="form-select">
-                            <option disabled selected>Nem</option>
-                            <option>férfi</option>
-                            <option>nő</option>
-                        </select>
-                    </div>
-
-                    <!-- GOAL -->
-                    <div class="col-md-2">
-                        <select class="form-select">
-                            <option disabled selected>Cél</option>
-                            <option>tömegnövelés</option>
-                            <option>szálkásítás</option>
-                            <option>szintentartás</option>
-                        </select>
-                    </div>
-
-                    <!-- EXPERIENCE -->
-                    <div class="col-md-2">
-                        <select class="form-select">
-                            <option disabled selected>Tapasztalat</option>
-                            <option>kezdő (0–6 hónap)</option>
-                            <option>középhaladó (6–24 hónap)</option>
-                            <option>haladó (2+ év)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="row g-2 mb-3">
-                    <!-- TRAINING DAYS -->
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option disabled selected>Edzésnapok</option>
-                            <option>2–3 nap</option>
-                            <option>4 nap</option>
-                            <option>5–6 nap</option>
-                        </select>
-                    </div>
-
-                    <!-- LOCATION -->
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option disabled selected>Edzés helye</option>
-                            <option>konditeremben</option>
-                            <option>otthon, súlyzókkal</option>
-                            <option>otthon, saját testsúllyal</option>
-                        </select>
-                    </div>
-
-                    <!-- DIET -->
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option disabled selected>Étrend</option>
-                            <option>mindenevő</option>
-                            <option>vegetáriánus</option>
-                            <option>vegán</option>
-                        </select>
-                    </div>
-
-                    <!-- MEALS -->
-                    <div class="col-md-3">
-                        <select class="form-select">
-                            <option disabled selected>Étkezések száma</option>
-                            <option>2–3 alkalom</option>
-                            <option>4–5 alkalom</option>
-                            <option>6 vagy több alkalom</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="text-end">
-                    <button class="btn btn-success">Mentés</button>
-                    <button class="btn btn-danger">Felhasználó törlése</button>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="admin-card mb-4">
-            <h4>Ételek kezelése</h4>
-
-            <div class="row g-2 mb-2">
-                <div class="col-md-3">
-                    <input class="form-control" placeholder="Food ID (egyedi)">
-                </div>
-                <div class="col-md-4">
-                    <input class="form-control" placeholder="Étel neve">
-                </div>
-            </div>
-
-            <textarea class="form-control mb-2" rows="3" placeholder="Leírás"></textarea>
-
-            <div class="text-end">
-                <button class="btn btn-purple">Hozzáadás / Módosítás</button>
-                <button class="btn btn-danger">Törlés</button>
-            </div>
-        </div>
-
-        <div class="admin-card mb-4">
-            <h4>Edzéstervek kezelése</h4>
-
-            <div class="row g-2 mb-2">
-                <div class="col-md-3">
-                    <input class="form-control" placeholder="Edzésterv ID">
-                </div>
-                <div class="col-md-5">
-                    <input class="form-control" placeholder="Cím">
-                </div>
-            </div>
-
-            <textarea class="form-control mb-2" rows="2" placeholder="Leírás"></textarea>
-            <textarea class="form-control mb-2" rows="4" placeholder="Gyakorlatok (pl. fekvenyomás, guggolás...)"></textarea>
-
-            <div class="text-end">
-                <button class="btn btn-purple">Hozzáadás / Módosítás</button>
-                <button class="btn btn-danger">Törlés</button>
-            </div>
-        </div>
-
     </div>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar d-none d-lg-block">
+        <div class="admin-logo">Admin Felület</div>
+
+        <nav id="adminSidebar" class="nav flex-column">
+            <a class="nav-link" href="#dashboard">Statisztikák</a>
+            <a class="nav-link" href="#support-requests">Üzenetek</a>
+            <a class="nav-link" href="#users">Felhasználók</a>
+            <a class="nav-link" href="#foods">Ételek</a>
+            <a class="nav-link" href="#workouts">Edzéstervek</a>
+        </nav>
+
+        <a href="/">
+            <button class="btn btn-danger w-100 logout-btn">Kilépés</button>
+        </a>
+    </aside>
+
+    <!-- Mobile sidebar (offcanvas) -->
+    <div class="offcanvas offcanvas-start" id="mobileSidebar">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Admin Felület</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <nav class="nav flex-column mb-3">
+                <a class="nav-link" href="#dashboard">Statisztikák</a>
+                <a class="nav-link" href="#support-requests">Üzenetek</a>
+                <a class="nav-link" href="#users">Felhasználók</a>
+                <a class="nav-link" href="#foods">Ételek</a>
+                <a class="nav-link" href="#workouts">Edzéstervek</a>
+            </nav>
+
+            <a href="/">
+                <button class="btn btn-danger w-100 logout-btn">Kilépés</button>
+            </a>
+            
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminToggleModal" tabindex="-1" aria-labelledby="adminToggleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content admin-card">
+                <div class="modal-header admin-card-header">
+                    <h5 class="modal-title" id="adminToggleModalLabel">Admin jog módosítása</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                </div>
+
+                <div class="modal-body admin-card-body">
+                    <form id="admin-toggle-form" class="d-flex flex-column gap-3">
+                        <div>
+                            <label for="admin-toggle-user-id" class="food-form-label">Felhasználó ID</label>
+                            <input 
+                                type="number" 
+                                id="admin-toggle-user-id" 
+                                class="form-control food-form-control" 
+                                min="1" 
+                                required
+                                placeholder="Pl.: 12"
+                            >
+                        </div>
+
+                        <div class="ticket-empty-message">
+                            A gomb megnyomásával az adott felhasználó admin joga átváltásra kerül.
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">
+                                Mégse
+                            </button>
+                            <button type="submit" class="btn btn-outline-warning">
+                                Admin jog váltása
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main content -->
+    <main class="admin-main">
+        <div class="topbar">
+            <div class="topbar-card mb-4">
+                <h2 class="h4 mb-3">Gyors műveletek</h2>
+                <div class="quick-links">
+                    <a id="refresh-datas">Összes frissít</a>
+                    <a id="refresh-dash">Dashboard frissít</a>
+                    <a id="user-admin" data-bs-toggle="modal" data-bs-target="#adminToggleModal">Admin jogok</a>
+                    <a id="ticket-seen">Ticketek olvasva</a>
+                </div>
+            </div>
+        </div>
+
+        <section id="dashboard" class="admin-section">
+            <div class="section-card">
+                <div class="section-title">Statisztikák</div>
+
+                <div class="row g-3" id="dashboard-cards">
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Felhasználók</div>
+                            <div id="stat-allUser" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Új felhasználók</div>
+                            <div id="stat-todayReg" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai aktívak</div>
+                            <div id="stat-todayLog" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai ticketek</div>
+                            <div id="stat-todayTicket" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai edzéstervek</div>
+                            <div id="stat-todayWorkout" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 d-flex">
+                        <div class="card dashboard-card text-center p-3 w-100">
+                            <div class="dashboard-card-title fw-bold">Mai hibák</div>
+                            <div id="stat-todayError" class="dashboard-card-value fs-4">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="support-requests" class="admin-section">
+            <div class="section-card">
+                <div class="section-title">Üzenetek</div>
+                <div class="container-fluid placeholder-box">
+                    <div class="container-fluid d-flex flex-column align-items-center mt-3" id="open-tickets">
+                        
+                    </div>
+                    <hr>
+                    <div class="container-fluid d-flex flex-column align-items-center mt-3" id="closed-tickets">
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="users" class="admin-section">
+            <div class="section-card">
+                <div class="section-title">Felhasználók</div>
+                <div class="placeholder-box" id="users-container"></div>
+            </div>
+        </section>
+
+        <section id="foods" class="admin-section">
+            <div class="section-card">
+                <div class="section-title">Ételek</div>
+                <div class="card admin-card mb-4 w-100">
+                    <div 
+                        class="card-header admin-card-header d-flex justify-content-between align-items-center flex-wrap gap-3"
+                        style="cursor: pointer;"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#food-create-collapse"
+                        aria-expanded="false"
+                        aria-controls="food-create-collapse"
+                    >
+                        <div class="d-flex align-items-center gap-2 flex-wrap ticket-title-wrap">
+                            <span class="card-content-id fw-bold">+</span>
+                            <span class="card-subject fw-bold">Új étel hozzáadása</span>
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="food-create-collapse">
+                        <div class="card-body admin-card-body">
+                            <form id="food-create-form" class="food-form-wrap">
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-6">
+                                        <label for="food-name" class="form-label food-form-label">Étel neve</label>
+                                        <input type="text" id="food-name" name="name" class="form-control food-form-control" maxlength="150" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <label for="food-url" class="form-label food-form-label">Kép url</label>
+                                        <input type="text" id="food-url" name="url" class="form-control food-form-control" placeholder="xy.jpeg/.png" maxlength="150">
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <label for="food-category" class="form-label food-form-label">Kategória</label>
+                                        <select id="food-category" name="category" class="form-select food-form-control" required>
+                                            <option value="">Válassz kategóriát</option>
+                                            <option value="reggeli">Reggeli</option>
+                                            <option value="ebed">Ebéd</option>
+                                            <option value="vacsora">Vacsora</option>
+                                            <option value="snack">Snack</option>
+                                            <option value="desszert">Desszert</option>
+                                            <option value="ital">Ital</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="food-description" class="form-label food-form-label">Leírás</label>
+                                        <textarea id="food-description" name="description" class="form-control food-form-control food-form-textarea" rows="4" required></textarea>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-calories" class="form-label food-form-label">Kalória (kcal)</label>
+                                        <input type="number" step="0.01" min="0" id="food-calories" name="calories_kcal" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-protein" class="form-label food-form-label">Fehérje (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-protein" name="protein_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-carbs" class="form-label food-form-label">Szénhidrát (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-carbs" name="carbs_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-fat" class="form-label food-form-label">Zsír (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-fat" name="fat_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-fiber" class="form-label food-form-label">Rost (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-fiber" name="fiber_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-sugar" class="form-label food-form-label">Cukor (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-sugar" name="sugar_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-salt" class="form-label food-form-label">Só (g)</label>
+                                        <input type="number" step="0.01" min="0" id="food-salt" name="salt_g" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-serving-size" class="form-label food-form-label">Adag méret</label>
+                                        <input type="number" step="0.01" min="0" id="food-serving-size" name="serving_size" class="form-control food-form-control" value="0" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-serving-unit" class="form-label food-form-label">Mértékegység</label>
+                                        <select id="food-serving-unit" name="serving_unit" class="form-select food-form-control" required>
+                                            <option value="g">g</option>
+                                            <option value="ml">ml</option>
+                                            <option value="db">db</option>
+                                            <option value="szelet">szelet</option>
+                                            <option value="tal">tál</option>
+                                            <option value="pohar">pohár</option>
+                                            <option value="adag">adag</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-prep-time" class="form-label food-form-label">Elkészítési idő (perc)</label>
+                                        <input type="number" min="0" id="food-prep-time" name="prep_time_min" class="form-control food-form-control" required>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-goal-tag" class="form-label food-form-label">Cél</label>
+                                        <select id="food-goal-tag" name="goal_tag" class="form-select food-form-control" required>
+                                            <option value="mind">Mind</option>
+                                            <option value="tomegnoveles">Tömegnövelés</option>
+                                            <option value="szalkasitas">Szálkásítás</option>
+                                            <option value="szintentartas">Szintentartás</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-diet-tag" class="form-label food-form-label">Étrend</label>
+                                        <select id="food-diet-tag" name="diet_tag" class="form-select food-form-control" required>
+                                            <option value="mindenevo">Mindenevő</option>
+                                            <option value="vegetarianus">Vegetáriánus</option>
+                                            <option value="vegan">Vegán</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <label for="food-difficulty" class="form-label food-form-label">Nehézség</label>
+                                        <select id="food-difficulty" name="difficulty" class="form-select food-form-control" required>
+                                            <option value="konnyu">Könnyű</option>
+                                            <option value="kozepes">Közepes</option>
+                                            <option value="nehez">Nehéz</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label food-form-label">Allergének</label>
+
+                                        <div class="food-checkbox-grid ps-4">
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tej" name="allergens" value="1">
+                                                <label class="form-check-label" for="food-allergen-tej">Tej</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-tojas" name="allergens" value="2">
+                                                <label class="form-check-label" for="food-allergen-tojas">Tojás</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-gluten" name="allergens" value="3">
+                                                <label class="form-check-label" for="food-allergen-gluten">Glutén</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-mogyoro" name="allergens" value="4">
+                                                <label class="form-check-label" for="food-allergen-mogyoro">Mogyoró</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-diofelek" name="allergens" value="5">
+                                                <label class="form-check-label" for="food-allergen-diofelek">Diófélék</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-magvak" name="allergens" value="6">
+                                                <label class="form-check-label" for="food-allergen-magvak">Magvak</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-allergen-hal" name="allergens" value="7">
+                                                <label class="form-check-label" for="food-allergen-hal">Hal</label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label class="form-label food-form-label">További szűrési lehetőségek</label>
+
+                                        <div class="food-checkbox-grid ps-4">
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-high-protein" name="high_protein">
+                                                <label class="form-check-label" for="food-high-protein">Magas fehérje</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-low-carb" name="low_carb">
+                                                <label class="form-check-label" for="food-low-carb">Low carb</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-bulk-friendly" name="bulk_friendly">
+                                                <label class="form-check-label" for="food-bulk-friendly">Tömegeléshez jó</label>
+                                            </div>
+
+                                            <div class="form-check food-check-item">
+                                                <input class="form-check-input" type="checkbox" id="food-cut-friendly" name="cut_friendly">
+                                                <label class="form-check-label" for="food-cut-friendly">Szálkásításhoz jó</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex flex-wrap justify-content-end gap-2 pt-2">
+                                        <button type="reset" class="btn btn-outline-light">Mezők ürítése</button>
+                                        <button type="submit" class="btn btn-success">Étel létrehozása</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="container-fluid plans-line pb-4">
+                    <!-- Mobil gomb -->
+                    <div class="mb-3 text-end">
+                        <button 
+                            class="btn btn-outline-light w-25" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#mobileFoodsFilters" 
+                            aria-expanded="false" 
+                            aria-controls="mobileFoodsFilters">
+                            ☰ Szűrők
+                        </button>
+                    </div>
+                    <!-- Mobilon collapse -->
+                    <div class="collapse" id="mobileFoodsFilters">
+                        <hr class="d-lg-none d-md-none">
+                        <div class="row g-3">
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-food-category" class="form-label fw-bold">Kategoria</label>
+                                <select id="filter-food-category" class="form-select">
+                                    <!--
+                                    'reggeli','ebed','vacsora','snack','desszert','ital'
+                                    -->
+                                    <option value="all">Összes kategória</option>
+                                    <option value="reggeli">reggeli</option>
+                                    <option value="ebed">ebéd</option>
+                                    <option value="vacsora">vacsora</option>
+                                    <option value="snack">snack</option>
+                                    <option value="desszert">desszert</option>
+                                    <option value="ital">ital</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-food-type" class="form-label fw-bold">Étrendtípusok</label>
+                                <select id="filter-food-type" class="form-select">
+                                    <option value="all">Összes étrendtípusok</option>
+                                    <option value="mindenevo">mindenevő</option>
+                                    <option value="vegetarianus">vegetáriánus</option>
+                                    <option value="vegan">vegán</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-food-goal" class="form-label fw-bold">Cél</label>
+                                <select id="filter-food-goal" class="form-select">
+                                    <option value="all">Összes cél</option>
+                                    <option value="tomegnoveles">Tömegnövelés</option>
+                                    <option value="szalkasitas">Szálkásítás</option>
+                                    <option value="szintentartas">Szintentartás</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-food-difficulty" class="form-label fw-bold">Nehézség</label>
+                                <select id="filter-food-difficulty" class="form-select">
+                                    <option value="all">Összes Nehézség</option>
+                                    <option value="konnyu">könnyű</option>
+                                    <option value="kozepes">közepes</option>
+                                    <option value="nehez">nehéz</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div class="row g-3 justify-content-between food-checkbox-grid">
+                            <div class="food-check-item form-check">
+                                <input class="form-check-input" type="checkbox" id="highProtein">
+                                <label class="form-check-label" for="highProtein">
+                                    Magas fehérje
+                                </label>
+                            </div>
+
+                            <div class="food-check-item form-check">
+                                <input class="form-check-input" type="checkbox" id="lowCarb">
+                                <label class="form-check-label" for="lowCarb">
+                                    Alacsony szénhidrát
+                                </label>
+                            </div>
+
+                            <div class="food-check-item form-check">
+                                <input class="form-check-input" type="checkbox" id="bulking">
+                                <label class="form-check-label" for="bulking">
+                                    Tömegelés barát
+                                </label>
+                            </div>
+
+                            <div class="food-check-item form-check">
+                                <input class="form-check-input" type="checkbox" id="cutting">
+                                <label class="form-check-label" for="cutting">
+                                    Szálkásítás barát
+                                </label>
+                            </div>
+
+                        </div>
+                        <hr>
+                        <div class="row mt-2 justify-content-center">
+                            <button type="button" id="filter-food-reset-btn" class="btn btn-outline-primary w-auto">Alaphelyzet</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder-box" id="foods-container"></div>
+            </div>
+        </section>
+
+        <section id="workouts" class="admin-section">
+            <div class="section-card">
+                <div class="section-title">Edzéstervek</div>
+                <div class="card admin-card mb-4">
+                    <div class="card-header admin-card-header d-flex justify-content-between align-items-center"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#workoutCreateCollapse"
+                        aria-expanded="false"
+                        aria-controls="workoutCreateCollapse"
+                        style="cursor: pointer;">
+
+                        <div class="d-flex align-items-center gap-2 flex-wrap ticket-title-wrap">
+                            <span class="card-content-id fw-bold">+</span>
+                            <span class="card-subject fw-bold">Új edzésterv hozzáadása</span>
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="workoutCreateCollapse">
+                        <div class="card-body admin-card-body">
+                            <form id="workout-create-form" class="d-flex flex-column gap-3">
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="food-form-label">Edzésterv neve</label>
+                                        <input type="text" name="name" class="form-control food-form-control" required>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Napok száma</label>
+                                        <input type="number" id="workout-days-count" name="days_count"
+                                            class="form-control food-form-control" min="1" max="7" required>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Szint</label>
+                                        <select name="level" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="kezdo">Kezdő</option>
+                                            <option value="kozep">Közepes</option>
+                                            <option value="halado">Haladó</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Hely</label>
+                                        <select name="location" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="gym">Edzőterem</option>
+                                            <option value="home_weights">Otthon súlyokkal</option>
+                                            <option value="home_bodyweight">Otthon saját testsúllyal</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="food-form-label">Cél</label>
+                                        <select name="goal" class="form-select food-form-control">
+                                            <option value="">-</option>
+                                            <option value="tomeg">Tömegelés</option>
+                                            <option value="szalkasitas">Szálkásítás</option>
+                                            <option value="szintentartas">Szinten tartás</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="food-form-label">Leírás</label>
+                                    <textarea name="description" class="form-control food-form-control food-form-textarea" rows="2"></textarea>
+                                </div>
+
+                                <hr class="ticket-divider">
+
+                                <h6 class="ticket-section-title">Edzésnapok</h6>
+
+                                <div id="workout-days-builder" class="d-flex flex-column gap-3"></div>
+
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-success">
+                                        Edzésterv létrehozása
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="container-fluid plans-line pb-4">
+                    <div class="mb-3 text-end">
+                        <button 
+                            class="btn btn-outline-light w-25" 
+                            type="button" 
+                            data-bs-toggle="collapse" 
+                            data-bs-target="#mobileWorkoutFilters" 
+                            aria-expanded="false" 
+                            aria-controls="mobileWorkoutFilters">
+                            ☰ Szűrők
+                        </button>
+                    </div>
+
+                    <div class="collapse" id="mobileWorkoutFilters">
+                        <hr class="d-lg-none d-md-none">
+
+                        <div class="row g-3">
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-level" class="form-label fw-bold">Szint</label>
+                                <select id="filter-level" class="form-select workout-input">
+                                    <option value="all">Összes szint</option>
+                                    <option value="kezdo">Kezdő</option>
+                                    <option value="kozep">Középhaladó</option>
+                                    <option value="halado">Haladó</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-location" class="form-label fw-bold">Helyszín</label>
+                                <select id="filter-location" class="form-select workout-input">
+                                    <option value="all">Összes helyszín</option>
+                                    <option value="gym">Konditerem</option>
+                                    <option value="home_weights">Otthon súlyzókkal</option>
+                                    <option value="home_bodyweight">Otthon testsúllyal</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-goal" class="form-label fw-bold">Cél</label>
+                                <select id="filter-goal" class="form-select workout-input">
+                                    <option value="all">Összes cél</option>
+                                    <option value="tomeg">Tömegnövelés</option>
+                                    <option value="szalkasitas">Szálkásítás</option>
+                                    <option value="szintentartas">Szintentartás</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 col-md-6 col-lg-6 col-xl-3">
+                                <label for="filter-days" class="form-label fw-bold">Edzésnapok</label>
+                                <select id="filter-days" class="form-select workout-input">
+                                    <option value="all">Összes</option>
+                                    <option value="1">1 nap</option>
+                                    <option value="2">2 nap</option>
+                                    <option value="3">3 nap</option>
+                                    <option value="4">4 nap</option>
+                                    <option value="5">5 nap</option>
+                                    <option value="6">6 nap</option>
+                                    <option value="7">7 nap</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
+                        <div class="row mt-2 justify-content-center">
+                            <button type="button" id="filter-reset-btn" class="btn btn-outline-primary w-auto">
+                                Alaphelyzet
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder-box" id="workout-container"></div>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

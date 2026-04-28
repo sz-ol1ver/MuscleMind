@@ -77,7 +77,7 @@ async function validateInput(req, res, next){
                 "6 vagy több alkalom"
             ]
         ];
-        const {weight, age, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = req.body;
+        const {weight, birthDate, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = req.body;
         let index = 0;
         if(weight<40 || weight >200 || weight ==null){
             return res.status(400).json({
@@ -85,12 +85,43 @@ async function validateInput(req, res, next){
                 id: index
             })
         }else{index++}
-        if(age<18 || age >99 || age ==null){
+        if(typeof birthDate !== 'string' || !birthDate.trim()){
             return res.status(400).json({
                 message: 'Validation error',
                 id: index
             })
+        }
+        const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+        if(!datePattern.test(birthDate)){
+            return res.status(400).json({
+                message: 'Validation error',
+                id: index
+            });
+        }
+        const birth = new Date(birthDate);
+        const today = new Date();
+
+        if(Number.isNaN(birth.getTime()) || birth > today){
+            return res.status(400).json({
+                message: 'Validation error',
+                id: index
+            });
+        }
+
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+
+        if(monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())){
+            age--;
+        }
+
+        if(age < 18 || age > 99){
+            return res.status(400).json({
+                message: 'Validation error',
+                id: index
+            });
         }else{index++}
+        
         if(height<140 || height >220 || height ==null){
             return res.status(400).json({
                 message: 'Validation error',

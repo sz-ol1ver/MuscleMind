@@ -1,0 +1,226 @@
+import { getFetch } from "./api.js";
+
+let openT = [];
+let closedT = [];
+let containerOpen;
+let containerClosed;
+
+document.addEventListener('DOMContentLoaded', ()=>{
+    const refreshBtn = document.getElementById('reload-tickets');
+    containerOpen = document.getElementById('open-tickets');
+    containerClosed = document.getElementById('closed-tickets');
+
+    //? ticketek betoltese
+    getTickets();
+
+    refreshBtn.addEventListener('click', ()=>{
+        getTickets(); //? ticketek ujboli betoltese oldal frissites nelkul
+    })
+});
+async function getTickets() {
+    try {
+        openT.length = 0;
+        closedT.length = 0;
+        const data = await getFetch('http://127.0.0.1:3000/api/tickets/my-tickets');
+        for(let ticket of data.tickets){
+            if(ticket.status == 'open' || ticket.status == 'seen'){
+                openT.push(ticket)
+            }else{
+                closedT.push(ticket);
+            }
+        }
+        renderTickets(openT, containerOpen);
+        renderTickets(closedT, containerClosed);
+    } catch (error) {
+        console.error(error);
+        setTimeout(() => {
+            window.location.reload();
+        }, 10000);
+    }
+}
+function renderTickets(tickets, container) {
+    // törlés
+    container.innerHTML = '';
+
+    if (!tickets || tickets.length === 0) {
+        const empty = document.createElement('p');
+        empty.className = 'text-center text-secondary';
+        empty.textContent = 'Nincs megjeleníthető ticket.';
+        container.appendChild(empty);
+        return;
+    }
+    for (let ticket of tickets) {
+        const card = document.createElement('div');
+        card.className = 'card ticket-card mb-3 w-100';
+
+        const header = document.createElement('div');
+        header.className = 'card-header ticket-card-header';
+        header.style.cursor = 'pointer';
+        header.setAttribute('data-bs-toggle', 'collapse');
+        header.setAttribute('data-bs-target', `#ticket-${ticket.id}`);
+        header.setAttribute('aria-expanded', 'false');
+        header.setAttribute('aria-controls', `ticket-${ticket.id}`);
+
+        // felső sor
+        const headerTop = document.createElement('div');
+        headerTop.className = 'd-flex justify-content-between align-items-start gap-3 flex-wrap';
+
+        const leftTop = document.createElement('div');
+        leftTop.className = 'd-flex align-items-center gap-2 flex-wrap ticket-title-wrap';
+
+        const ticketId = document.createElement('span');
+        ticketId.className = 'ticket-id fw-bold';
+        ticketId.textContent = `#${ticket.id}`;
+
+        const separator = document.createElement('span');
+        separator.className = 'ticket-separator';
+        separator.textContent = '|';
+
+        const subject = document.createElement('span');
+        subject.className = 'ticket-subject fw-bold';
+        subject.textContent = ticket.subject;
+
+        const badge = document.createElement('span');
+        switch (ticket.status) {
+            case 'open': {
+                badge.className = 'badge bg-danger';
+                badge.innerHTML = 'Folyamatban';
+                break;
+            }
+            case 'seen': {
+                badge.className = 'badge bg-warning text-dark';
+                badge.innerHTML = 'Megtekintve';
+                break;
+            }
+            case 'closed': {
+                badge.className = 'badge bg-success';
+                badge.innerHTML = 'Lezárva';
+                break;
+            }
+            case 'closed_no_reply': {
+                badge.className = 'badge bg-info text-dark';
+                badge.innerHTML = 'Lezárva (válasz nélkül)';
+                break;
+            }
+        }
+
+        leftTop.appendChild(ticketId);
+        leftTop.appendChild(separator);
+        leftTop.appendChild(subject);
+
+        headerTop.appendChild(leftTop);
+        headerTop.appendChild(badge);
+
+        // alsó sor a headerben
+        const createdDate = document.createElement('div');
+        createdDate.className = 'ticket-created-date mt-2';
+        createdDate.textContent = `Létrehozva: ${ formatDate(ticket.created_at)}`;
+
+        header.appendChild(headerTop);
+        header.appendChild(createdDate);
+
+        const collapse = document.createElement('div');
+        collapse.className = 'collapse';
+        collapse.id = `ticket-${ticket.id}`;
+
+        const body = document.createElement('div');
+        body.className = 'card-body ticket-card-body';
+
+        // user üzenet rész
+        const userMessageTitle = document.createElement('h6');
+        userMessageTitle.className = 'ticket-section-title';
+        userMessageTitle.textContent = 'Üzenet';
+
+        const userMessageBox = document.createElement('div');
+        userMessageBox.className = 'ticket-message-box';
+        userMessageBox.textContent = ticket.message;
+
+        // admin üzenet rész
+        const adminMessageTitle = document.createElement('h6');
+        adminMessageTitle.className = 'ticket-section-title mt-4';
+        adminMessageTitle.textContent = 'Admin üzenet';
+
+        const adminMessageBox = document.createElement('div');
+        adminMessageBox.className = 'ticket-message-box';
+
+        if (ticket.admin_reply && ticket.admin_reply.trim()) {
+            adminMessageBox.textContent = ticket.admin_reply;
+        } else {
+            adminMessageBox.textContent = 'Erre a ticketre még nem érkezett admin válasz.';
+            adminMessageBox.classList.add('ticket-empty-message');
+        }
+
+        // dátum elválasztás
+        const hr = document.createElement('hr');
+        hr.className = 'ticket-divider';
+
+        const hr2 = document.createElement('hr');
+        hr2.className = 'ticket-divider';
+
+        const adminUsername = document.createElement('p');
+        adminUsername.innerHTML = 'Válaszadó: '+ticket.admin_username + ' (#'+ticket.replied_by_admin_id+')';
+
+        const datesWrap = document.createElement('div');
+        datesWrap.className = 'ticket-dates';
+
+        const createdInfo = document.createElement('div');
+        createdInfo.textContent = `Létrehozva: ${ formatDate(ticket.created_at)}`;
+
+        const updatedInfo = document.createElement('div');
+        updatedInfo.textContent = `Szerkesztve: ${ formatDate(ticket.updated_at)}`;
+
+        const repliedInfo = document.createElement('div');
+        repliedInfo.textContent = `Válasz: ${ formatDate(ticket.replied_at)}`;
+
+        datesWrap.appendChild(createdInfo);
+        datesWrap.appendChild(updatedInfo);
+
+        if(ticket.status == 'closed'){
+            datesWrap.appendChild(repliedInfo);
+        }
+
+        // kategória badge
+        const categoryBadge = document.createElement('span');
+
+        switch (ticket.category) {
+            case 'contact': {
+                categoryBadge.className = 'badge ticket-category bg-primary';
+                categoryBadge.textContent = 'Kapcsolat';
+                break;
+            }
+            case 'bug': {
+                categoryBadge.className = 'badge ticket-category bg-danger';
+                categoryBadge.textContent = 'Hiba';
+                break;
+            }
+            case 'idea': {
+                categoryBadge.className = 'badge ticket-category bg-success';
+                categoryBadge.textContent = 'Ötlet';
+                break;
+            }
+        }
+
+        body.appendChild(categoryBadge);
+
+        body.appendChild(userMessageTitle);
+        body.appendChild(userMessageBox);
+        body.appendChild(adminMessageTitle);
+        body.appendChild(adminMessageBox);
+        body.appendChild(hr);
+        if(ticket.status == 'closed'){
+            body.appendChild(adminUsername);
+            body.appendChild(hr2);
+        }
+        body.appendChild(datesWrap);
+
+        collapse.appendChild(body);
+        card.appendChild(header);
+        card.appendChild(collapse);
+
+        container.appendChild(card);
+    }
+}
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('hu-HU');
+}

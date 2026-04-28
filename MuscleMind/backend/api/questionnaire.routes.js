@@ -13,18 +13,23 @@ router.post('/', registrationComplete, validateInput, async(request, response)=>
         return response.redirect('/')
         }
         
-        const {weight, age, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = request.body;
-        await db.insertPreferences(id, age, height, gender, goal, experienceLevel,trainingDays,trainingLocation,dietType,mealsPerDay);
+        const {weight, birthDate, height, gender, goal, experienceLevel, trainingDays, trainingLocation, dietType, mealsPerDay} = request.body;
+        await db.insertPreferences(id, birthDate, height, gender, goal, experienceLevel,trainingDays,trainingLocation,dietType,mealsPerDay);
         await db.insertWeight(id, weight);
         await db.log_id(id, 'registration', 'registration 2/2',ip);
         await db.updateRegistered(id);
+        await db.saveUserMetrics(id);
         return response.status(201).json({
             message: 'Válaszok elmentve!'
         })
     } catch (error) {
-        console.log(error.message)
+        console.error(error.message)
         const ip = requestIp.getClientIp(request);
-        await db.log_error('Server error - questionnaire', error.message,ip);
+        try {
+            await db.log_error('Server error - questionnaire', error.message, ip);
+        } catch (error) {
+            console.error('Logging failed:', error);
+        }
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });

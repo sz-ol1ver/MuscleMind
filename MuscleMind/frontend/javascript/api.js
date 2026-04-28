@@ -95,7 +95,7 @@ export async function userAns(url, value) {
     }
 }
 
-export async function getWorkout(url) {
+export async function getFetch(url) {
     try {
         const data = await fetch(url, {
             method: 'GET',
@@ -113,7 +113,7 @@ export async function getWorkout(url) {
     }
 }
 
-export async function deleteWorkout(url) {
+export async function deleteFetch(url) {
     try {
         const data = await fetch(url, {
             method: 'DELETE',
@@ -168,7 +168,24 @@ export async function putPlan(url, value) {
         throw error;
     }
 }
-export async function patchPlan(url, value) {
+export async function putForm(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'PUT',
+            body: value
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+export async function patchFetch(url, value) {
     try {
         const data = await fetch(url, {
             method: 'PATCH',
@@ -211,6 +228,24 @@ export async function postLogout(url) {
         const data = await fetch(url, {
             method: 'POST',
             headers: {'Content-type':'application/json'}
+        })
+        if(!data.ok){
+            const res = await data.json();
+            const err = new Error(res.message);
+            err.error = res.error;
+            throw err;
+        }
+        return await data.json();
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function postForm(url, value) {
+    try {
+        const data = await fetch(url, {
+            method: 'POST',
+            body: value
         })
         if(!data.ok){
             const res = await data.json();

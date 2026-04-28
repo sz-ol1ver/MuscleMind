@@ -177,7 +177,6 @@ async function validateUpdate(req,res,next) {
         const allowedDay = ['dayId','dayNumber', 'name', 'restDay', 'exercises', 'url'];
         const allowedExercise = ['exerciseId', 'name', 'order'];
         console.log(workoutPlan);
-        console.log(workoutPlan.days[1].exercises)
         if (!workoutPlan || typeof workoutPlan !== 'object' || Array.isArray(workoutPlan)) {
             return res.status(400).json({
                 message: 'Nem sikerült feldolgozni az edzésterv adatait.1'
@@ -248,7 +247,7 @@ async function validateUpdate(req,res,next) {
                     message: 'Adj nevet a napnak!'
                 });
             }
-            if(typeof day.restDay !== 'number'){
+            if(typeof day.restDay !== 'boolean'){
                 return res.status(400).json({
                     message: 'Napok adatainak feldolgozása sikertelen!3'
                 });
@@ -387,8 +386,235 @@ async function validateActive(req, res, next) {
         next(error);
     }
 }
+async function validateAdminPlan(req, res, next) {
+    try {
+        const body = req.body;
+        console.log(body)
+
+        if (!body || typeof body !== 'object' || Array.isArray(body)) {
+            return res.status(400).json({
+                message: 'Nem sikerült feldolgozni az edzésterv adatait.'
+            });
+        }
+
+        let workoutPlan = {
+            plan_id: body.plan_id ? Number(body.plan_id) : null,
+            name: body.name,
+            days_count: Number(body.days_count),
+            level: body.level || null,
+            location: body.location || null,
+            goal: body.goal || null,
+            description: body.description || null,
+            days: body.days
+        };
+
+        if (typeof workoutPlan.days === 'string') {
+            try {
+                workoutPlan.days = JSON.parse(workoutPlan.days);
+            } catch (error) {
+                return res.status(400).json({
+                    message: 'Nem sikerült feldolgozni az edzésnapokat.'
+                });
+            }
+        }
+
+        const allowedLevels = ['kezdo', 'kozep', 'halado'];
+        const allowedLocations = ['gym', 'home_weights', 'home_bodyweight'];
+        const allowedGoals = ['tomeg', 'szalkasitas', 'szintentartas'];
+
+        if (!workoutPlan.name || typeof workoutPlan.name !== 'string' || !workoutPlan.name.trim() || workoutPlan.name.length > 100) {
+            return res.status(400).json({
+                message: 'Adj nevet az edzéstervnek.'
+            });
+        }
+
+        workoutPlan.name = workoutPlan.name.trim();
+
+        if (!Number.isInteger(workoutPlan.days_count) || workoutPlan.days_count < 1 || workoutPlan.days_count > 7) {
+            return res.status(400).json({
+                message: 'Legfeljebb 7 napos edzéstervet hozhatsz létre.'
+            });
+        }
+
+        if (workoutPlan.level !== null && !allowedLevels.includes(workoutPlan.level)) {
+            return res.status(400).json({
+                message: 'Érvénytelen edzésterv szint.'
+            });
+        }
+
+        if (workoutPlan.location !== null && !allowedLocations.includes(workoutPlan.location)) {
+            return res.status(400).json({
+                message: 'Érvénytelen edzés helyszín.'
+            });
+        }
+
+        if (workoutPlan.goal !== null && !allowedGoals.includes(workoutPlan.goal)) {
+            return res.status(400).json({
+                message: 'Érvénytelen edzés cél.'
+            });
+        }
+
+        if (workoutPlan.description !== null) {
+            if (typeof workoutPlan.description !== 'string' || workoutPlan.description.length > 255) {
+                return res.status(400).json({
+                    message: 'A leírás legfeljebb 255 karakter lehet.'
+                });
+            }
+
+            workoutPlan.description = workoutPlan.description.trim() || null;
+        }
+
+        if (!Array.isArray(workoutPlan.days)) {
+            return res.status(400).json({
+                message: 'Nem sikerült feldolgozni az edzésnapokat.'
+            });
+        }
+
+        if (workoutPlan.days.length < 1) {
+            return res.status(400).json({
+                message: 'Adj hozzá legalább 1 napot az edzéstervhez.'
+            });
+        }
+
+        if (workoutPlan.days.length > 7) {
+            return res.status(400).json({
+                message: 'Legfeljebb 7 napos edzéstervet hozhatsz létre.'
+            });
+        }
+
+        if (workoutPlan.days.length !== workoutPlan.days_count) {
+            return res.status(400).json({
+                message: 'A napok száma nem egyezik az edzésnapokkal.'
+            });
+        }
+
+        const usedDayNumbers = [];
+        let restDaysCount = 0;
+
+        for (let i = 0; i < workoutPlan.days.length; i++) {
+            const day = workoutPlan.days[i];
+
+            if (!day || typeof day !== 'object' || Array.isArray(day)) {
+                return res.status(400).json({
+                    message: 'Napok adatainak feldolgozása sikertelen!'
+                });
+            }
+
+            if (!Number.isInteger(day.dayNumber) || day.dayNumber < 1 || day.dayNumber > 7 || usedDayNumbers.includes(day.dayNumber)) {
+                return res.status(400).json({
+                    message: 'Napok adatainak feldolgozása sikertelen!'
+                });
+            }
+
+            usedDayNumbers.push(day.dayNumber);
+
+            if (typeof day.name !== 'string' || !day.name.trim() || day.name.length > 100) {
+                return res.status(400).json({
+                    message: 'Adj nevet a napnak!'
+                });
+            }
+
+            day.name = day.name.trim();
+
+            if (typeof day.restDay !== 'boolean') {
+                return res.status(400).json({
+                    message: 'Napok adatainak feldolgozása sikertelen!'
+                });
+            }
+
+            if (!Array.isArray(day.exercises)) {
+                return res.status(400).json({
+                    message: `${i + 1}. nap hiányos!`
+                });
+            }
+
+            if (day.restDay === true) {
+                restDaysCount++;
+
+                if (day.exercises.length > 0) {
+                    return res.status(400).json({
+                        message: 'Ütközés: pihenőnap + gyakorlat nem lehet!'
+                    });
+                }
+
+                continue;
+            }
+
+            if (day.exercises.length < 1) {
+                return res.status(400).json({
+                    message: `${i + 1}. nap hiányos!`
+                });
+            }
+
+            const usedExerciseIds = [];
+            const usedOrders = [];
+
+            for (let j = 0; j < day.exercises.length; j++) {
+                const exercise = day.exercises[j];
+
+                if (!exercise || typeof exercise !== 'object' || Array.isArray(exercise)) {
+                    return res.status(400).json({
+                        message: 'Gyakorlatok feldolgozása sikertelen!'
+                    });
+                }
+
+                exercise.exerciseId = Number(exercise.exerciseId);
+                exercise.order = Number(exercise.order);
+
+                if (!Number.isInteger(exercise.exerciseId) || exercise.exerciseId <= 0) {
+                    return res.status(400).json({
+                        message: 'Gyakorlatok feldolgozása sikertelen!'
+                    });
+                }
+
+                if (!Number.isInteger(exercise.order) || exercise.order < 1) {
+                    return res.status(400).json({
+                        message: 'Gyakorlatok feldolgozása sikertelen!'
+                    });
+                }
+
+                if (usedExerciseIds.includes(exercise.exerciseId)) {
+                    return res.status(400).json({
+                        message: 'Duplikáció a gyakorlatok között!'
+                    });
+                }
+
+                if (usedOrders.includes(exercise.order)) {
+                    return res.status(400).json({
+                        message: 'Duplikáció a gyakorlatok sorrendjében!'
+                    });
+                }
+
+                usedExerciseIds.push(exercise.exerciseId);
+                usedOrders.push(exercise.order);
+
+                const exist = await db.exerciseExist(exercise.exerciseId);
+
+                if (!exist) {
+                    return res.status(400).json({
+                        message: 'Nem létező gyakorlat! (' + (i + 1) + '. nap)'
+                    });
+                }
+            }
+        }
+
+        if (restDaysCount === workoutPlan.days.length) {
+            return res.status(400).json({
+                message: 'Edzésterv nem állhat csak pihenőnapból!'
+            });
+        }
+
+        req.body = workoutPlan;
+
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     validateNewPlan,
     validateUpdate,
-    validateActive
+    validateActive,
+    validateAdminPlan
 }

@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Étrend</title>
+        <title>Kapcsolat</title>
         <link rel="icon" type="image/png" href="../images/dumbbell-icon.png">
         <!--!Bootstrap-->
         <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css" />
@@ -11,13 +11,14 @@
         <script src="../bootstrap/js/popper.min.js"></script>
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
-        <link rel="stylesheet" href="../css/index.css" />
-        <link rel="stylesheet" href="../css/workout.css" />
+        <link rel="stylesheet" href="../css/index.css" type="text/css">
+        <link rel="stylesheet" href="../css/contact.css" type="text/css">
         <!--!JavaScript-->
-        <script type="module" src="../javascript/index.js"></script>
+        <script src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script type="module" src="../javascript/global.js"></script>
+        <script type="module" src="../javascript/contact.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -43,7 +44,7 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Étrend</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Kapcsolat</p>
                     
 
 
@@ -75,10 +76,10 @@
                 </div>
 
                 <div class="offcanvas-body">
-                    <ul class="nav flex-column d-flex gap-3" id="mobil-nav-list">
+                    <ul class="nav flex-column d-flex gap-3 pb-3" id="mobil-nav-list">
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/">Főoldal</a>
+                            <a class="nav-link"  href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
@@ -90,10 +91,14 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/naptar">Naptár</a>
+                            <a class="nav-link" href="">Naptár</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
                         </li>
 
@@ -105,7 +110,7 @@
                             <a class="nav-link" href="/tickets">Ticketek</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
                         </li>
                     </ul>
@@ -115,7 +120,7 @@
             <!-- Második sor/Main sor -->
             <div id="main-row" class="row me-2">
                 <!-- Navbar -->
-                <div class="col-lg-3 col-xl-2 d-none d-lg-block" id="side-nav">
+                <div class="col-lg-3 col-xl-2 d-none d-lg-block pb-3" id="side-nav">
                     
                     <div class="m-2">MENÜ</div>
 
@@ -135,10 +140,14 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="/naptar">Naptár</a>
+                            <a class="nav-link" href="">Naptár</a>
                         </li>
 
-                        <li class="nav-item selected-navoption">
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Izom követés</a>
+                        </li>
+
+                        <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
                         </li>
 
@@ -150,7 +159,7 @@
                             <a class="nav-link" href="/tickets">Ticketek</a>
                         </li>
 
-                        <li class="nav-item">
+                        <li class="nav-item selected-navoption">
                             <a class="nav-link" href="/kapcsolat">Kapcsolat</a>
                         </li>
                     </ul>
@@ -158,16 +167,72 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="workout-plan">
-                                <div id="recommended-title">Ajánlott étrend <hr></div>
-
+                    <div class="container-fluid d-flex align-items-center">
+                        <div class="card w-100">
+                            <div class="card-header text-center">
+                                <h3 class="mt-2">Support Center</h3>
+                                <p>Küldj üzenetet, hibajelentést vagy ötletet a csapatnak.</p>
                             </div>
-
-                            <div class="workout-plan">
-
-                                <div id="personal-title">Saját étrend <hr></div>
+                            <div class="card-body">
+                                <form id="support-form">
+                                    <div class="mb-3">
+                                        <label for="support-email" class="form-label">Email cím</label>
+                                        <input 
+                                            type="email" 
+                                            name="email"
+                                            class="form-control contact-input" 
+                                            id="support-email" 
+                                            value="user@email.com"
+                                            readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="support-category" class="form-label">Kategória</label>
+                                        <select name="category" class="form-select contact-input" id="support-category">
+                                            <option value="contact">Kapcsolat</option>
+                                            <option value="bug">Hiba</option>
+                                            <option value="idea">Ötlet</option>
+                                        </select>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-8 col-sm-9 col-md-9 col-lg-9 col-xl-10">
+                                            <label for="support-subject" class="form-label">Tárgy</label>
+                                            <input 
+                                                type="text"
+                                                name="subject" 
+                                                class="form-control contact-input" 
+                                                id="support-subject" 
+                                                placeholder="Pl. Nem működik a mentés">
+                                        </div>
+                                        <div class="col-4 col-sm-3 col-md-3 col-lg-3 col-xl-2">
+                                            <label for="pre-ticket" class="form-label">Előző ticket id</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text contact-input">#</span>
+                                                <input 
+                                                type="number"
+                                                min="1"
+                                                name="preId" 
+                                                class="form-control contact-input" 
+                                                id="pre-ticket" 
+                                                placeholder="id">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="support-message" class="form-label">Üzenet</label>
+                                        <textarea
+                                            name="message" 
+                                            class="form-control contact-input contact-textarea" 
+                                            id="support-message" 
+                                            rows="7"
+                                            placeholder="Írd le részletesen a problémát vagy az ötletedet..."
+                                        ></textarea>
+                                    </div>
+                                </form>
+                                <p id="feedback" class="text-center"></p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="/tickets"><button class="btn btn-outline-secondary">Saját ticketek</button></a>
+                                <button id="send-msg" class="btn btn-success">Ticket küldés</button>
                             </div>
                         </div>
                     </div>

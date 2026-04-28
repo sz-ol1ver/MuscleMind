@@ -69,6 +69,12 @@ router.get('/admin', loginMw.requireAuthPage ,requireAdmin, (request, response) 
 router.get('/profil', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/profile.html'));
 });
+router.get('/kapcsolat', loginMw.requireAuthPage, requireComplete, (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/contact.html'));
+});
+router.get('/tickets', loginMw.requireAuthPage, requireComplete, (request, response) => {
+    response.sendFile(path.join(__dirname, '../frontend/html/tickets.html'));
+});
 router.get('/ranglista', loginMw.requireAuthPage, requireComplete, (request, response) => {
     response.sendFile(path.join(__dirname, '../frontend/html/ranglist.html'));
 });
@@ -112,6 +118,12 @@ app.use((err, req, res, next) => {
             id: 3
         });
     }
+
+    console.error(err.message); // log a szerveren
+        res.status(err.status || 500).json({
+        message: err.message || 'Belső szerverhiba',
+        status: err.status || 500
+    }); // vissza a kliensnek JSON-ban
 
     console.error(err.message);
 

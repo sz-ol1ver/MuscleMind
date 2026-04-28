@@ -1,0 +1,105 @@
+#middle-part {
+    min-height: calc(100vh - 80px);
+}
+
+.card {
+    background: linear-gradient(180deg, #0f0f17, #0a0a12);
+    border: 1px solid rgba(162, 89, 255, 0.25);
+    box-shadow:
+        0 0 15px rgba(162, 89, 255, 0.15),
+        0 0 40px rgba(111, 0, 255, 0.08);
+    color: #f1eaff;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-header {
+    background: linear-gradient(90deg, #141420, #1c0f2b);
+    border-bottom: 1px solid rgba(162, 89, 255, 0.2);
+    color: #f5e9ff;
+    text-align: center;
+}
+
+.card-header h3 {
+    font-weight: 700;
+}
+
+.card-header p {
+    color: rgba(220, 200, 255, 0.7);
+}
+
+.card-body {
+    padding: 25px;
+    overflow-y: auto;
+}
+
+.form-label {
+    color: #d9c6ff;
+    font-weight: 600;
+}
+
+.contact-input {
+    background-color: #141420 !important;
+    border: 1px solid rgba(162, 89, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 12px;
+    padding: 10px 12px;
+    transition: 0.2s ease;
+}
+
+.contact-input::placeholder {
+    color: rgba(200, 180, 255, 0.4);
+}
+
+.contact-input:focus {
+    background-color: #181824 !important;
+    border-color: rgba(180, 120, 255, 0.8) !important;
+    box-shadow: 0 0 0 0.2rem rgba(140, 60, 255, 0.2) !important;
+}
+
+.contact-input[readonly] {
+    background-color: #1a1624 !important;
+    color: rgba(230, 210, 255, 0.7) !important;
+}
+
+.contact-textarea {
+    resize: vertical;
+    min-height: 160px;
+}
+
+.card-footer {
+    background: #0f0f17;
+    border-top: 1px solid rgba(162, 89, 255, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+#send-msg {
+    background: linear-gradient(90deg, #7a2cff, #b84dff);
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 8px 16px;
+    box-shadow: 0 0 12px rgba(162, 89, 255, 0.4);
+    transition: 0.2s ease;
+}
+
+#send-msg:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(90deg, #8d44ff, #c96bff);
+}
+
+.card-footer .btn-outline-secondary {
+    border-color: rgba(162, 89, 255, 0.3);
+    color: #d9c6ff;
+}
+
+.card-footer .btn-outline-secondary:hover {
+    background: rgba(162, 89, 255, 0.1);
+    color: white;
+    border-color: rgba(200, 140, 255, 0.5);
+}
