@@ -216,6 +216,7 @@ CREATE TABLE IF NOT EXISTS exercises(
         'teljes_test',
         'cardio'
     ) NOT NULL,
+    bodyweight BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -649,125 +650,126 @@ ALTER TABLE reset_tokens
     ON DELETE CASCADE;
 
 -- INSERTEK
-INSERT INTO exercises (name, muscle_group)
+INSERT INTO exercises (name, muscle_group, bodyweight)
 VALUES
     -- mell
-    ('Ferde padon csiga tárogatás', 'mell'),
-    ('Lejtős padon csiga mellnyomás', 'mell'),
-    ('Ferde padon rúddal fekvenyomás', 'mell'),
-    ('Fekvenyomás kézisúlyzóval', 'mell'),
-    ('Fekvőtámasz', 'mell'),
-    ('Tolódzkodás mellre döntve', 'mell'),
+    ('Ferde padon csiga tárogatás', 'mell', FALSE),
+    ('Lejtős padon csiga mellnyomás', 'mell', FALSE),
+    ('Ferde padon rúddal fekvenyomás', 'mell', FALSE),
+    ('Fekvenyomás kézisúlyzóval', 'mell', FALSE),
+    ('Fekvőtámasz', 'mell', TRUE),
+    ('Tolódzkodás mellre döntve', 'mell', TRUE),
 
     -- hát
-    ('Csiga lehúzás ferde fogással', 'hát'),
-    ('Ülő evezőgép ferde háttámasz', 'hát'),
-    ('Evezés padon rúddal', 'hát'),
-    ('Egykezes evezés kézisúlyzóval', 'hát'),
-    ('Húzódzkodás', 'hát'),
-    ('Fordított evezés testsúllyal', 'hát'),
+    ('Csiga lehúzás ferde fogással', 'hát', FALSE),
+    ('Ülő evezőgép ferde háttámasz', 'hát', FALSE),
+    ('Evezés padon rúddal', 'hát', FALSE),
+    ('Egykezes evezés kézisúlyzóval', 'hát', FALSE),
+    ('Húzódzkodás', 'hát', TRUE),
+    ('Fordított evezés testsúllyal', 'hát', TRUE),
 
     -- váll
-    ('Ferde padon csiga vállnyomás', 'váll'),
-    ('Hátsó delt csiga ferde ülés', 'váll'),
-    ('Vállból nyomás rúddal', 'váll'),
-    ('Oldalemelés kézisúlyzóval', 'váll'),
-    ('Kézenállás tartás', 'váll'),
-    ('Pike push-up', 'váll'),
+    ('Ferde padon csiga vállnyomás', 'váll', FALSE),
+    ('Hátsó delt csiga ferde ülés', 'váll', FALSE),
+    ('Vállból nyomás rúddal', 'váll', FALSE),
+    ('Oldalemelés kézisúlyzóval', 'váll', FALSE),
+    ('Kézenállás tartás', 'váll', TRUE),
+    ('Pike push-up', 'váll', TRUE),
 
     -- bicepsz
-    ('Csiga bicepsz hajlítás', 'bicepsz'),
-    ('Gépi bicepsz hajlítás', 'bicepsz'),
-    ('Rúddal bicepsz hajlítás', 'bicepsz'),
-    ('Kalapács bicepsz kézisúlyzóval', 'bicepsz'),
-    ('Húzódzkodás szűk fogással', 'bicepsz'),
-    ('Bicepsz tartás testsúllyal', 'bicepsz'),
+    ('Csiga bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Gépi bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Rúddal bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Kalapács bicepsz kézisúlyzóval', 'bicepsz', FALSE),
+    ('Húzódzkodás szűk fogással', 'bicepsz', TRUE),
+    ('Bicepsz tartás testsúllyal', 'bicepsz', TRUE),
 
     -- tricepsz
-    ('Csiga tricepsz letolás', 'tricepsz'),
-    ('Csiga tricepsz nyújtás fej felett', 'tricepsz'),
-    ('Fekvenyomás szűk fogással', 'tricepsz'),
-    ('Tricepsz kickback kézisúlyzóval', 'tricepsz'),
-    ('Tolódzkodás', 'tricepsz'),
-    ('Szűk fekvőtámasz', 'tricepsz'),
+    ('Csiga tricepsz letolás', 'tricepsz', FALSE),
+    ('Csiga tricepsz nyújtás fej felett', 'tricepsz', FALSE),
+    ('Fekvenyomás szűk fogással', 'tricepsz', FALSE),
+    ('Tricepsz kickback kézisúlyzóval', 'tricepsz', FALSE),
+    ('Tolódzkodás', 'tricepsz', TRUE),
+    ('Szűk fekvőtámasz', 'tricepsz', TRUE),
 
     -- alkar
-    ('Csukló hajlítás csigán', 'alkar'),
-    ('Fordított csukló hajlítás csigán', 'alkar'),
-    ('Rúddal csukló hajlítás', 'alkar'),
-    ('Kézisúlyzó tartás', 'alkar'),
-    ('Tárcsa csípés', 'alkar'),
-    ('Rúdon függés', 'alkar'),
+    ('Csukló hajlítás csigán', 'alkar', FALSE),
+    ('Fordított csukló hajlítás csigán', 'alkar', FALSE),
+    ('Rúddal csukló hajlítás', 'alkar', FALSE),
+    ('Kézisúlyzó tartás', 'alkar', FALSE),
+    ('Tárcsa csípés', 'alkar', FALSE),
+    ('Rúdon függés', 'alkar', TRUE),
 
     -- has
-    ('Csiga hasprés', 'has'),
-    ('Csiga lábemelés', 'has'),
-    ('Súlyozott felülés', 'has'),
-    ('Oldalirányú csavarás kézisúlyzóval', 'has'),
-    ('Plank', 'has'),
-    ('Mountain climbers', 'has'),
+    ('Csiga hasprés', 'has', FALSE),
+    ('Csiga lábemelés', 'has', FALSE),
+    ('Súlyozott felülés', 'has', FALSE),
+    ('Oldalirányú csavarás kézisúlyzóval', 'has', FALSE),
+    ('Plank', 'has', TRUE),
+    ('Mountain climbers', 'has', TRUE),
 
     -- ferde has
-    ('Csiga oldalsó csavarás', 'ferde_has'),
-    ('Pallof press', 'ferde_has'),
-    ('Orosz csavar kézisúlyzóval', 'ferde_has'),
-    ('Oldalsó plank súlyzóval', 'ferde_has'),
-    ('Oldalsó plank', 'ferde_has'),
-    ('Ferde has V-emelés', 'ferde_has'),
+    ('Csiga oldalsó csavarás', 'ferde_has', FALSE),
+    ('Pallof press', 'ferde_has', FALSE),
+    ('Orosz csavar kézisúlyzóval', 'ferde_has', FALSE),
+    ('Oldalsó plank súlyzóval', 'ferde_has', FALSE),
+    ('Oldalsó plank', 'ferde_has', TRUE),
+    ('Ferde has V-emelés', 'ferde_has', TRUE),
 
     -- alsó hát
-    ('Hátfeszítés csigán', 'alsó_hát'),
-    ('Ülő csiga hátfeszítés', 'alsó_hát'),
-    ('Román felhúzás rúddal', 'alsó_hát'),
-    ('Good morning kézisúlyzóval', 'alsó_hát'),
-    ('Superman tartás', 'alsó_hát'),
-    ('Bird-Dog', 'alsó_hát'),
+    ('Hátfeszítés csigán', 'alsó_hát', FALSE),
+    ('Ülő csiga hátfeszítés', 'alsó_hát', FALSE),
+    ('Román felhúzás rúddal', 'alsó_hát', FALSE),
+    ('Good morning kézisúlyzóval', 'alsó_hát', FALSE),
+    ('Superman tartás', 'alsó_hát', TRUE),
+    ('Bird-Dog', 'alsó_hát', TRUE),
 
     -- comb elülső
-    ('Lábtolás csigán', 'comb_első'),
-    ('Lábfeszítés csigán', 'comb_első'),
-    ('Rúddal guggolás', 'comb_első'),
-    ('Sétáló kitörés kézisúlyzóval', 'comb_első'),
-    ('Testtömeg guggolás', 'comb_első'),
-    ('Falnál ülés', 'comb_első'),
+    ('Lábtolás csigán', 'comb_első', FALSE),
+    ('Lábfeszítés csigán', 'comb_első', FALSE),
+    ('Rúddal guggolás', 'comb_első', FALSE),
+    ('Sétáló kitörés kézisúlyzóval', 'comb_első', FALSE),
+    ('Testtömeg guggolás', 'comb_első', TRUE),
+    ('Falnál ülés', 'comb_első', TRUE),
 
     -- comb hátsó
-    ('Lábhajlítás csigán ülve', 'comb_hátsó'),
-    ('Lábhajlítás csigán fekve', 'comb_hátsó'),
-    ('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó'),
-    ('Lábhajlítás kézisúlyzóval', 'comb_hátsó'),
-    ('Nordic hamstring curl', 'comb_hátsó'),
-    ('Egylábas farizom emelés testsúllyal', 'comb_hátsó'),
+    ('Lábhajlítás csigán ülve', 'comb_hátsó', FALSE),
+    ('Lábhajlítás csigán fekve', 'comb_hátsó', FALSE),
+    ('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó', FALSE),
+    ('Lábhajlítás kézisúlyzóval', 'comb_hátsó', FALSE),
+    ('Nordic hamstring curl', 'comb_hátsó', TRUE),
+    ('Egylábas farizom emelés testsúllyal', 'comb_hátsó', TRUE),
 
     -- farizom
-    ('Csípőnyomás csigán', 'farizom'),
-    ('Kickback csigán', 'farizom'),
-    ('Hip thrust rúddal', 'farizom'),
-    ('Lépés padra kézisúlyzóval', 'farizom'),
-    ('Glute bridge testsúllyal', 'farizom'),
-    ('Donkey kicks testsúllyal', 'farizom'),
+    ('Csípőnyomás csigán', 'farizom', FALSE),
+    ('Kickback csigán', 'farizom', FALSE),
+    ('Hip thrust rúddal', 'farizom', FALSE),
+    ('Lépés padra kézisúlyzóval', 'farizom', FALSE),
+    ('Glute bridge testsúllyal', 'farizom', TRUE),
+    ('Donkey kicks testsúllyal', 'farizom', TRUE),
 
     -- vádli
-    ('Ülő vádli csigán', 'vádli'),
-    ('Álló vádli csigán', 'vádli'),
-    ('Álló rúddal vádli emelés', 'vádli'),
-    ('Kézisúlyzóval vádli emelés', 'vádli'),
-    ('Testtömeg vádli emelés', 'vádli'),
-    ('Ugrókötél vádli edzés', 'vádli'),
+    ('Ülő vádli csigán', 'vádli', FALSE),
+    ('Álló vádli csigán', 'vádli', FALSE),
+    ('Álló rúddal vádli emelés', 'vádli', FALSE),
+    ('Kézisúlyzóval vádli emelés', 'vádli', FALSE),
+    ('Testtömeg vádli emelés', 'vádli', TRUE),
+    ('Ugrókötél vádli edzés', 'vádli', TRUE),
 
     -- teljes test
-    ('Felhúzás rúddal', 'teljes_test'),
-    ('Guggolás rúddal', 'teljes_test'),
-    ('Clean & Press rúddal', 'teljes_test'),
-    ('Burpee testsúllyal', 'teljes_test'),
-    ('Kettlebell swing', 'teljes_test'),
-    ('Farmer walk kézisúlyzóval', 'teljes_test'),
+    ('Felhúzás rúddal', 'teljes_test', FALSE),
+    ('Guggolás rúddal', 'teljes_test', FALSE),
+    ('Clean & Press rúddal', 'teljes_test', FALSE),
+    ('Burpee testsúllyal', 'teljes_test', TRUE),
+    ('Kettlebell swing', 'teljes_test', FALSE),
+    ('Farmer walk kézisúlyzóval', 'teljes_test', FALSE),
+
     -- cardio
-    ('Futópad', 'cardio'),
-    ('Lépcsőző gép', 'cardio'),
-    ('Elliptikus tréner', 'cardio'),
-    ('Szobakerékpár', 'cardio'),
-    ('Evezőgép', 'cardio');
+    ('Futópad', 'cardio', FALSE),
+    ('Lépcsőző gép', 'cardio', FALSE),
+    ('Elliptikus tréner', 'cardio', FALSE),
+    ('Szobakerékpár', 'cardio', FALSE),
+    ('Evezőgép', 'cardio', FALSE);
 
 -- insert allergens
 INSERT INTO allergens (name) VALUES
