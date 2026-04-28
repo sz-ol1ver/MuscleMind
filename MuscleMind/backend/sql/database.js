@@ -694,6 +694,7 @@ async function updateActive(userId, planId) {
     } finally {
         connection.release();
     }
+}
 async function updateActive(userId,plan) {
     const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
     const [rows] = await pool.execute(sql, [plan, userId]);
@@ -1790,7 +1791,6 @@ module.exports = {
     getUserPassword,
     updateUserPassword,
     allExercises,
-    allExercises,
     exerciseExist,
     createWorkoutPlan,
     createWorkoutDay,
@@ -1820,7 +1820,7 @@ module.exports = {
     updateWorkoutCalendarLogStatus,
     startWorkoutCalendarLogStatus,
     finishWorkoutCalendarLogStatus,
-    postponeWorkoutCalendarLog
+    postponeWorkoutCalendarLog,
     findTicketEmail,
     findPreId,
     createTicket,

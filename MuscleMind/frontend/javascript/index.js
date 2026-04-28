@@ -1,4 +1,4 @@
-import { getWorkout } from './api.js';
+import { getFetch } from './api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   //Világos/Sötét mód gomb------------------------------------
@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return trackerState.todayWorkout
     }
 
-    const data = await getWorkout('/api/workout/calendar')
+    const data = await getFetch('/api/workout/calendar')
     trackerState.todayWorkout = findTodayWorkout(data.calendar || [])
     trackerState.loaded = true
     return trackerState.todayWorkout
@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   async function loadWorkoutReminder() {
       try {
-          const data = await getWorkout('http://127.0.0.1:3000/api/workout/calendar')
+          const data = await getFetch('http://127.0.0.1:3000/api/workout/calendar')
 
           const dDate = new Date()
           let monthStr = dDate.getMonth() + 1

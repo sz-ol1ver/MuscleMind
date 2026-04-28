@@ -1,11 +1,11 @@
-import { getWorkout, postRequest, patchPlan } from './api.js'
+import { getFetch, postRequest, patchFetch } from './api.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
     let calendarDataMap = {} // naptar adatok letarolasa
     let hasActivePlan = false
 
     try {
-        const response = await getWorkout('/api/workout/plans/active')
+        const response = await getFetch('/api/workout/plans/active')
         if (response.active) {
             hasActivePlan = true
         } else {
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // naptar adatok lekerese, completed edzesek miatt mindig kell
-        const calRes = await getWorkout('/api/workout/calendar')
+        const calRes = await getFetch('/api/workout/calendar')
         if (calRes.calendar) {
             calRes.calendar.forEach((item) => {
                 calendarDataMap[item.date] = item
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             
                             if (!isLoaded && ex.calendar_exercise_id) {
                                 try {
-                                    const res = await getWorkout(`/api/workout/calendar/sets/${ex.calendar_exercise_id}`)
+                                    const res = await getFetch(`/api/workout/calendar/sets/${ex.calendar_exercise_id}`)
                                     if (res.sets && res.sets.length > 0) {
                                         for (let i = 0; i < res.sets.length; i++) {
                                             const s = res.sets[i]
@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 return
                             }
                             try {
-                                const data = await patchPlan(`/api/workout/calendar/start/${currentDayPlan.log_id}`, {})
+                                const data = await patchFetch(`/api/workout/calendar/start/${currentDayPlan.log_id}`, {})
                                 alert('Edzés sikeresen elkezdve!')
                                 currentDayPlan.status = 'started'
                                 location.reload() 
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                             if(confirm('Biztosan le akarod zárni az edzést? Utána nem tudsz módosítani az eredményeken!')){
                                 try {
-                                    const data = await patchPlan(`/api/workout/calendar/finish/${currentDayPlan.log_id}`, {})
+                                    const data = await patchFetch(`/api/workout/calendar/finish/${currentDayPlan.log_id}`, {})
                                     alert('Edzés sikeresen lezárva!')
                                     dayDetailsModal.hide()
                                     
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const newDate = prompt('Kérlek add meg az új dátumot (ÉÉÉÉ-HH-NN formátumban), ahová halasztani szeretnéd:', currentDayPlan.date || '')
                         if (newDate) {
                             try {
-                                await patchPlan(`/api/workout/calendar/postpone/${currentDayPlan.log_id}`, { newDate })
+                                await patchFetch(`/api/workout/calendar/postpone/${currentDayPlan.log_id}`, { newDate })
                                 alert('Edzés sikeresen elhalasztva!')
                                 location.reload()
                             } catch (err) {
@@ -521,7 +521,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         if (!currentDayPlan.log_id) return
                         if (confirm('Biztosan ki akarod hagyni ezt az edzést?')) {
                             try {
-                                await patchPlan(`/api/workout/calendar/skip/${currentDayPlan.log_id}`, {})
+                                await patchFetch(`/api/workout/calendar/skip/${currentDayPlan.log_id}`, {})
                                 alert('Edzés kihagyva!')
                                 location.reload()
                             } catch (err) {
