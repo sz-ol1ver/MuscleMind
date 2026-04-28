@@ -1,3 +1,24 @@
+/* Modal emlékeztető cuccok */
+.custom-modal {
+    background-color: #0f0f17;
+    color: #f5f5ff;
+    border: 1px groove #7c3aed;
+    border-radius: 10px;
+}
+
+.modal-backdrop.show {
+    opacity: 0.8 !important;
+}
+
+.custom-modal-header {
+    border-bottom: 1px ridge #7c3aed;
+}
+
+.custom-modal-footer {
+    border-top: 1px ridge #7c3aed;
+}
+
+/* -------------Minden is------------- */
 html,body{
     height: 100%;
     overflow: hidden;
@@ -16,6 +37,7 @@ html,body{
 #main-row {
     flex: 1;
     overflow: hidden;
+    min-height: 0;
 }
 
 #side-nav {
@@ -30,7 +52,9 @@ html,body{
 
 #middle-part {
     height: 100%;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 @media (max-width: 991px) {
@@ -119,8 +143,11 @@ a{
 .button-sample{
     display: flex;
     align-items: center;
+    justify-content: center;
     height: 40px;
-    width: 80px;
+    min-width: 80px;
+    width: auto;
+    padding: 0 12px;
     font-size: 15px;
     font-weight: 600;
     background-color: #2c203b;
@@ -298,6 +325,7 @@ a{
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
+    flex-shrink: 0;
 }
 #stat-title{
     font-size: larger ;
@@ -378,9 +406,12 @@ a{
 }
 
 #ranglist-calendar{
-    height: 60%;
+    flex: 1;
+    min-height: 0;
     width: 100%;
-    
+    position: relative;
+    overflow: hidden;
+    margin: 0;
 }
 
 #ranglist, #calendar{
@@ -478,7 +509,6 @@ a{
     margin-bottom: 10px;
 }
 
-
 .placement{
     padding-left: 2px;
     padding-right: 2px;
@@ -487,14 +517,17 @@ a{
     font-weight: bolder;
 }
 
-
-
 .name{
     padding: 8px 16px;
 }
 
 .points{
     margin-left: auto;
+}
+
+#calendar-title{
+    text-align: center;
+    font-size: large;
 }
 
 /* Jobb oldali rész --------------------------*/
@@ -556,7 +589,8 @@ a{
     #ranglist-calendar{
         flex: 1 1 auto;
         height: auto;
-        overflow: auto;
+        overflow: hidden;
+        min-height: 0;
     }
 }
 
@@ -602,9 +636,11 @@ a{
     }
 
     .button-sample{
-        width: 64px;
+        width: auto;
+        min-width: 64px;
         height: 38px;
         font-size: 14px;
+        padding: 0 10px;
     }
 }
 

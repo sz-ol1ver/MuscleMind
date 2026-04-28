@@ -113,6 +113,7 @@ CREATE TABLE user_metrics (
 );
 
 -- WORKOUT --
+-- workout - stats
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     user_id INT NOT NULL,
 
@@ -149,6 +150,51 @@ CREATE TABLE IF NOT EXISTS user_global_xp (
         REFERENCES users(id)
         ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS user_exercise_prs (
+    user_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+
+    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
+    max_weight_reps INT DEFAULT NULL,
+    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+    achieved_at DATETIME DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_daily_stats (
+    user_id INT NOT NULL,
+    stat_date DATE NOT NULL,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+
+    xp_gained INT NOT NULL DEFAULT 0,
+    prs_achieved INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_stats (
+    user_id INT PRIMARY KEY,
+
+    completed_workouts INT NOT NULL DEFAULT 0,
+    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
+    total_sets INT NOT NULL DEFAULT 0,
+    total_reps INT NOT NULL DEFAULT 0,
+    pr_count INT NOT NULL DEFAULT 0,
+    total_workout_time_sec INT NOT NULL DEFAULT 0,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- workout - plans
 -- gyakorlatok
 CREATE TABLE IF NOT EXISTS exercises(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -172,8 +218,6 @@ CREATE TABLE IF NOT EXISTS exercises(
     ) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 CREATE TABLE IF NOT EXISTS workout_plans(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -204,14 +248,16 @@ CREATE TABLE IF NOT EXISTS day_exercises(
     exercise_order INT NOT NULL
 );
 
+-- workout - calendar
 CREATE TABLE IF NOT EXISTS workout_calendar_logs(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     workout_plan_id INT NOT NULL,
     workout_day_id INT NOT NULL,
     workout_date DATE NOT NULL,
+    start_time DATETIME DEFAULT NULL,
     workout_time_sec INT NOT NULL DEFAULT 0,
-    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'started', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -273,7 +319,6 @@ CREATE TABLE IF NOT EXISTS user_stats (
 
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
 -- FOODS
 CREATE TABLE IF NOT EXISTS foods (
     id INT AUTO_INCREMENT PRIMARY KEY,

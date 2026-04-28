@@ -311,7 +311,12 @@ router.patch('/plans/active', requireAuthApi, validateActive, async(request, res
     try {
         const userId = request.session.user.id;
         const plan = request.body.active;
-        await db.updateActive(userId, plan);
+
+        if(plan === null){
+            await db.updateActiveNull(userId);
+        }else{
+            await db.updateActive(userId, plan);
+        }
 
         return response.status(200).json({
             message: 'Aktív edzésterv frissítve.'
@@ -336,6 +341,11 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
         const userId = request.session.user.id;
         const ip = requestIp.getClientIp(request);
 
+        const activeP = await db.getActive(userId);
+        if(activeP == planId){
+            await db.updateActiveNull(userId);
+        }
+
         const deleted = await db.deletePlan(userId, planId);
     
         await db.log_id(
@@ -359,6 +369,172 @@ router.delete('/my-plan/delete/:id', requireAuthApi, async(request, response)=>{
         return response.status(500).json({
             message: 'Sikertelen eleres!'
         });
+    }
+})
+
+
+router.get('/calendar', requireAuthApi, async (request, response) => {
+    try {
+        const userId = request.session.user.id
+        // 2 honapra elore generalas
+        await db.calendarUpToDate(userId)
+        const rows = await db.getUserCalendar(userId)
+
+        // napok csoportositasa
+        const calendarMap = {}
+        for (const row of rows) {
+            // datum konvertalasa
+            const workoutDate = new Date(row.workout_date)
+            const yearStr = workoutDate.getFullYear()
+            let monthStr = workoutDate.getMonth() + 1
+            let dayStr = workoutDate.getDate()
+
+            if (monthStr < 10) {
+                monthStr = '0' + monthStr
+            }
+            if (dayStr < 10) {
+                dayStr = '0' + dayStr
+            }
+
+            const dateStr = yearStr + '-' + monthStr + '-' + dayStr
+
+            if (!calendarMap[dateStr]) {
+                calendarMap[dateStr] = {
+                    date: dateStr,
+                    log_id: row.log_id,
+                    dayName: row.day_name,
+                    isRestDay: row.isRestDay,
+                    status: row.status,
+                    exercises: []
+                }
+            }
+
+            if (row.exercise_name) {
+                calendarMap[dateStr].exercises.push({
+                    calendar_exercise_id: row.calendar_exercise_id,
+                    name: row.exercise_name,
+                    order: row.exercise_order
+                })
+            }
+        }
+
+        return response.status(200).json({
+            calendar: Object.values(calendarMap)
+        })
+    } catch (error) {
+        console.log(error.message)
+        const ip = requestIp.getClientIp(request)
+        await db.log_error('Server error - workout calendar', error.message, ip)
+        return response.status(500).json({
+            message: 'Sikertelen eleres!'
+        })
+    }
+});
+
+router.get('/calendar/sets/:exerciseId', requireAuthApi, async (request, response) => {
+    try {
+        const exerciseId = request.params.exerciseId
+        const sets = await db.getCalendarSets(exerciseId)
+        return response.status(200).json({ sets })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen lekérés!' })
+    }
+})
+
+router.post('/calendar/sets', requireAuthApi, async (request, response) => {
+    try {
+        const { calendarExerciseId, sets } = request.body
+        if (!calendarExerciseId || !sets) {
+            return response.status(400).json({ message: 'Hiányzó adatok!' })
+        }
+
+        if (!Array.isArray(sets)) {
+            return response.status(400).json({ message: 'Érvénytelen sorozat adatok!' })
+        }
+
+        for (let i = 0; i < sets.length; i++) {
+            const s = sets[i];
+            // ures ertekek szurese
+            if (s.reps_done === '' || s.reps_done === null || s.reps_done === undefined ||
+                s.weight_done === '' || s.weight_done === null || s.weight_done === undefined) {
+                return response.status(400).json({ message: 'Minden sorozatnál kötelező megadni az ismétlést és a súlyt!' })
+            }
+            
+            // negativ szamok es betuk szurese
+            if (!(s.reps_done >= 0 && s.weight_done >= 0)) {
+                return response.status(400).json({ message: 'Az ismétlés és a súly csak nulla vagy pozitív szám lehet!' })
+            }
+        }
+
+        await db.saveCalendarSets(calendarExerciseId, sets)
+        return response.status(200).json({ message: 'Sikeres mentés!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen mentés!' })
+    }
+})
+
+router.patch('/calendar/start/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.startWorkoutCalendarLogStatus(userId, logId)
+        
+        return response.status(200).json({ message: 'Edzés elkezdve!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen elkezdés!' })
+    }
+})
+
+router.patch('/calendar/finish/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.finishWorkoutCalendarLogStatus(userId, logId)
+        
+        return response.status(200).json({ message: 'Edzés lezárva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen lezárás!' })
+    }
+})
+
+// halasztas
+router.patch('/calendar/postpone/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        const { newDate } = request.body
+        
+        if (!newDate) {
+            return response.status(400).json({ message: 'Hiányzó dátum!' })
+        }
+        
+        await db.postponeWorkoutCalendarLog(userId, logId, newDate)
+        
+        return response.status(200).json({ message: 'Edzés elhalasztva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen halasztás!' })
+    }
+})
+
+// kihagyas
+router.patch('/calendar/skip/:logId', requireAuthApi, async (request, response) => {
+    try {
+        const logId = request.params.logId
+        const userId = request.session.user.id
+        
+        await db.updateWorkoutCalendarLogStatus(userId, logId, 'missed')
+        
+        return response.status(200).json({ message: 'Edzés kihagyva!' })
+    } catch (error) {
+        console.log(error.message)
+        return response.status(500).json({ message: 'Sikertelen kihagyás!' })
     }
 })
 
