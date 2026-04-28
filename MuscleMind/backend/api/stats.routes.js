@@ -21,14 +21,16 @@ router.get('/me', loginMw.requireAuthApi, async(request, response) => {
         const metrics = await db.getUserMetrics(userId);
 
         return response.status(200).json({
-            globalXp,
-            muscleXp,
-            last30DaysStats,
-            fullStats,
-            prs,
-            weights,
-            exercises,
-            metrics
+            stats: {
+                globalXp,
+                muscleXp,
+                last30DaysStats,
+                fullStats,
+                prs,
+                weights,
+                metrics
+            },
+            exercises
         });
 
     } catch (error) {

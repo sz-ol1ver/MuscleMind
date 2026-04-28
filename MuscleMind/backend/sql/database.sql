@@ -723,6 +723,97 @@ VALUES
     ('Szobakerékpár', 'cardio'),
     ('Evezőgép', 'cardio');
 
+-- statisztika teszt adatok
+-- =========================
+-- USER EXERCISE PRs
+-- =========================
+INSERT INTO user_exercise_prs (
+    user_id,
+    exercise_id,
+    max_weight,
+    max_weight_reps,
+    best_volume,
+    achieved_at
+) VALUES
+-- mell
+(1, 3, 90.00, 5, 1800.00, '2026-04-25 18:00:00'),
+(1, 4, 36.00, 8, 1400.00, '2026-04-25 18:20:00'),
+
+-- hát
+(1, 9, 80.00, 6, 2000.00, '2026-04-26 18:10:00'),
+(1, 11, 0.00, 10, 1200.00, '2026-04-26 18:40:00'),
+
+-- váll
+(1, 15, 60.00, 5, 1300.00, '2026-04-27 17:50:00'),
+
+-- láb
+(1, 57, 120.00, 5, 2500.00, '2026-04-27 18:30:00'),
+(1, 61, 70.00, 8, 1800.00, '2026-04-27 18:50:00'),
+
+-- teljes test
+(1, 73, 160.00, 3, 3000.00, '2026-04-27 19:10:00');
+
+
+-- =========================
+-- USER DAILY STATS
+-- =========================
+INSERT INTO user_daily_stats (
+    user_id, stat_date,
+    completed_workouts,
+    total_volume,
+    total_sets,
+    total_reps,
+    total_workout_time_sec,
+    xp_gained,
+    prs_achieved
+) VALUES
+(1, '2026-04-25', 1, 3200, 20, 160, 3600, 320, 2),
+(1, '2026-04-26', 1, 3500, 22, 180, 3800, 350, 1),
+(1, '2026-04-27', 1, 5300, 26, 210, 4200, 530, 2);
+
+
+-- =========================
+-- USER MUSCLE XP
+-- =========================
+INSERT INTO user_muscle_xp (user_id, muscle_group, xp) VALUES
+(1, 'mell', 320),
+(1, 'hát', 320),
+(1, 'váll', 130),
+(1, 'bicepsz', 120),
+(1, 'tricepsz', 150),
+(1, 'alkar', 80),
+(1, 'has', 140),
+(1, 'ferde_has', 90),
+(1, 'alsó_hát', 120),
+(1, 'comb_első', 250),
+(1, 'comb_hátsó', 180),
+(1, 'farizom', 160),
+(1, 'vádli', 100),
+(1, 'teljes_test', 300),
+(1, 'cardio', 45);
+
+
+-- =========================
+-- USER GLOBAL XP
+-- =========================
+INSERT INTO user_global_xp (user_id, xp) VALUES
+(1, 2085);
+
+
+-- =========================
+-- USER STATS
+-- =========================
+INSERT INTO user_stats (
+    user_id,
+    completed_workouts,
+    total_volume,
+    total_sets,
+    total_reps,
+    pr_count,
+    total_workout_time_sec
+) VALUES
+(1, 3, 12000, 68, 550, 5, 11600);
+
 -- insert allergens
 INSERT INTO allergens (name) VALUES
     ('tej'),
