@@ -173,6 +173,10 @@
 .chart-card {
     padding: 16px;
     height: 100%;
+    min-height: 360px;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .card-header-row {
@@ -188,12 +192,16 @@
 }
 
 .chart-box {
-    height: 260px;
+    flex: 1;
     width: 100%;
+    min-height: 280px;
+
     background-color: #0f0f17;
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 14px;
     padding: 10px;
+
+    position: relative;
 }
 
 .chart-box canvas {

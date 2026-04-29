@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', async()=>{
     loadGlobalRank();
     loadBmiIndicator();
     loadMetrics();
+    loadPeriodStats('daily');
+    loadMuscleChart();
 
     //? period stats
     const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async()=>{
 
             loadPeriodStats(selectedPeriod);
         });
-    }
+    };
 });
 
 async function getStats() {
@@ -194,7 +196,7 @@ function loadBmiIndicator(){
     bmiCategory.style.color = getBmiCategory(userMetrics.bmi).color;
     bmiIndicator.style.left = getBmiPosition(userMetrics.bmi) + '%';
     bmiDescription.innerText = getBmiDescription(userMetrics.bmi);
-}
+};
 function loadMetrics(){
     const metricBmi = document.getElementById('metric-bmi'); // BMI érték megjelenítése
     const metricBmr = document.getElementById('metric-bmr'); // BMR (alapanyagcsere kcal)
@@ -207,7 +209,7 @@ function loadMetrics(){
     metricTdee.innerText = userMetrics.tdee + ' kcal';
     metricGoalCalories.innerText = userMetrics.goal_calories + ' kcal';
     metricProtein.innerText = userMetrics.protein_recommended + ' g';
-}
+};
 function loadPeriodStats(period){
     const periodTitle = document.getElementById('period-title'); // kiválasztott időszak címe
 
@@ -222,9 +224,121 @@ function loadPeriodStats(period){
     const periodTotalWorkoutTime = document.getElementById('period-total-workout-time'); // időszak alatti összes edzésidő
     const periodAvgTime = document.getElementById('period-avg-time'); // időszak alatti átlag edzésidő
 
-    
+    const totals = {
+        completedWorkouts: 0,
+        totalVolume: 0,
+        totalSets: 0,
+        totalReps: 0,
+        xpGained: 0,
+        prCount: 0,
+        totalWorkoutTimeSec: 0
+    };
+
+    let daysToCount = [];
+
+    if (period === 'daily') {
+        daysToCount = userDailyStat.slice(0, 1);
+    } 
+    else if (period === 'weekly') {
+        daysToCount = userDailyStat.slice(0, 7);
+    } 
+    else if (period === 'monthly') {
+        daysToCount = userDailyStat.slice(0, 30);
+    } 
+    else if (period === 'all-time') {
+        daysToCount = userDailyStat;
+    }
+
+    for (let day of daysToCount) {
+        totals.completedWorkouts += Number(day.completed_workouts || 0);
+        totals.totalVolume += Number(day.total_volume || 0);
+        totals.totalSets += Number(day.total_sets || 0);
+        totals.totalReps += Number(day.total_reps || 0);
+        totals.xpGained += Number(day.xp_gained || 0);
+        totals.prCount += Number(day.pr_count || 0);
+        totals.totalWorkoutTimeSec += Number(day.total_workout_time_sec || 0);
+    }
+
+    const avgWorkoutTimeSec = totals.completedWorkouts > 0
+        ? totals.totalWorkoutTimeSec / totals.completedWorkouts
+        : 0;
+
+    periodCompletedWorkouts.innerText = totals.completedWorkouts;
+    periodTotalVolume.innerText = totals.totalVolume + ' kg';
+    periodTotalSets.innerText = totals.totalSets;
+    periodTotalReps.innerText = totals.totalReps;
+    periodXpGained.innerText = totals.xpGained + ' XP';
+    periodPrCount.innerText = totals.prCount;
+    periodTotalWorkoutTime.innerText = Math.round(totals.totalWorkoutTimeSec / 60) + ' perc';
+    periodAvgTime.innerText = Math.round(avgWorkoutTimeSec / 60) + ' perc';
+};
+function loadMuscleChart(){
+    const muscleXpChart = document.getElementById('muscle-xp-chart'); // izomcsoport XP grafikon canvas
+    const grouped = getGroupedMuscleData();
+
+    const labels = Object.keys(grouped);
+    const data = Object.values(grouped);
+
+    const max = Math.max(...data)*1.2;
+
+
+    new Chart(muscleXpChart, {
+        type: 'radar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Izomcsoport XP',
+                data: data,
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    suggestedMax: max,
+
+                    ticks: {
+                        display: false
+                    },
+
+                    grid: {
+                        color: 'rgba(155, 155, 155, 0.4)', 
+                        lineWidth: 1
+                    },
+
+                    angleLines: {
+                        color: 'rgb(193, 123, 255)'
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 16
+                        },
+                        color: 'rgb(215, 150, 255)'
+                    }
+                }
+            }
+        }
+    });
+};
+function loadWeightChart(){
+    const weightChart = document.getElementById('weight-chart'); // súlyváltozás grafikon canvas
+    const weightStart = document.getElementById('weight-start'); // kezdő testsúly megjelenítése
+    const weightCurrent = document.getElementById('weight-current'); // aktuális testsúly megjelenítése
+    const weightChange = document.getElementById('weight-change'); // súlyváltozás (különbség) megjelenítése
 }
 
+//? helper functions
 function getUserRank() {
     const xp = userGlobal.xp || 0;
 
@@ -407,4 +521,41 @@ function getBmiDescription(bmi) {
             return 'Extrém elhízás. Erősen ajánlott szakember segítségét kérni.';
         }
     }
+}
+function getGroupedMuscleData() {
+    const muscleGroups = {
+        'Mell': ['mell'],
+        'Hát': ['hát', 'alsó_hát'],
+        'Váll': ['váll'],
+        'Kar': ['bicepsz', 'tricepsz', 'alkar'],
+        'Has': ['has', 'ferde_has'],
+        'Láb': ['comb_első', 'comb_hátsó', 'farizom', 'vádli'],
+        'Teljes test': ['teljes_test']
+    };
+    const result = {};
+
+    for (let group in muscleGroups) {
+        result[group] = 0;
+    }
+
+    let fullBodyXp = 0;
+
+    for (let muscle of userMuscleXp) {
+        if (muscle.muscle_group === 'teljes_test') {
+            fullBodyXp += Number(muscle.xp || 0);
+            continue;
+        }
+
+        for (let group in muscleGroups) {
+            if (muscleGroups[group].includes(muscle.muscle_group)) {
+                result[group] += Number(muscle.xp || 0);
+            }
+        }
+    }
+
+    for (let group in result) {
+        result[group] += fullBodyXp;
+    }
+
+    return result;
 }
