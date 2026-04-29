@@ -81,9 +81,31 @@ const muscleRanks = {
 
 document.addEventListener('DOMContentLoaded', async()=>{
     await getStats();
-    
+
     loadSummaryCard();
     loadGlobalRank();
+    loadBmiIndicator();
+    loadMetrics();
+
+    //? period stats
+    const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
+    const periodButtons = statsPeriodTabs.querySelectorAll('.period-tab');
+    for (let button of periodButtons) {
+        button.addEventListener('click', () => {
+
+            // active leszedése
+            for (let btn of periodButtons) {
+                btn.classList.remove('active');
+            }
+
+            // aktuális gomb
+            button.classList.add('active');
+
+            const selectedPeriod = button.dataset.period;
+
+            loadPeriodStats(selectedPeriod);
+        });
+    }
 });
 
 async function getStats() {
@@ -160,6 +182,47 @@ function loadGlobalRank(){
     nextRankLabel.innerText = getUserRank().nextRank.name;
     globalRankProgressBar.style.width = getUserRank().progressPercent+'%';
     globalRankProgressText.innerText = Math.round(getUserRank().progressPercent) +'%';
+};
+function loadBmiIndicator(){
+    const bmiValue = document.getElementById('bmi-value'); // BMI érték (pl. 22.5)
+    const bmiCategory = document.getElementById('bmi-category'); // BMI kategória (pl. Normál, Túlsúly)
+    const bmiIndicator = document.getElementById('bmi-indicator'); // csúszka pozíció a bar-on
+    const bmiDescription = document.getElementById('bmi-description'); // visszajelzés / leírás szöveg
+
+    bmiValue.innerText = userMetrics.bmi;
+    bmiCategory.innerText = getBmiCategory(userMetrics.bmi).label;
+    bmiCategory.style.color = getBmiCategory(userMetrics.bmi).color;
+    bmiIndicator.style.left = getBmiPosition(userMetrics.bmi) + '%';
+    bmiDescription.innerText = getBmiDescription(userMetrics.bmi);
+}
+function loadMetrics(){
+    const metricBmi = document.getElementById('metric-bmi'); // BMI érték megjelenítése
+    const metricBmr = document.getElementById('metric-bmr'); // BMR (alapanyagcsere kcal)
+    const metricTdee = document.getElementById('metric-tdee'); // TDEE (napi kalóriaszükséglet)
+    const metricGoalCalories = document.getElementById('metric-goal-calories'); // cél kalóriabevitel
+    const metricProtein = document.getElementById('metric-protein'); // ajánlott napi fehérjebevitel (g)
+
+    metricBmi.innerText = userMetrics.bmi;
+    metricBmr.innerText = userMetrics.bmr + ' kcal';
+    metricTdee.innerText = userMetrics.tdee + ' kcal';
+    metricGoalCalories.innerText = userMetrics.goal_calories + ' kcal';
+    metricProtein.innerText = userMetrics.protein_recommended + ' g';
+}
+function loadPeriodStats(period){
+    const periodTitle = document.getElementById('period-title'); // kiválasztott időszak címe
+
+    const periodCompletedWorkouts = document.getElementById('period-completed-workouts'); // időszak alatt teljesített edzések száma
+    const periodTotalVolume = document.getElementById('period-total-volume'); // időszak alatti összes volumen
+    const periodTotalSets = document.getElementById('period-total-sets'); // időszak alatti összes set
+    const periodTotalReps = document.getElementById('period-total-reps'); // időszak alatti összes ismétlés
+
+    const periodXpGained = document.getElementById('period-xp-gained'); // időszak alatt szerzett XP
+    const periodPrCount = document.getElementById('period-pr-count'); // időszak alatti PR-ok száma
+
+    const periodTotalWorkoutTime = document.getElementById('period-total-workout-time'); // időszak alatti összes edzésidő
+    const periodAvgTime = document.getElementById('period-avg-time'); // időszak alatti átlag edzésidő
+
+    
 }
 
 function getUserRank() {
@@ -268,4 +331,80 @@ function getMuscleRank(muscleData) {
         xpToNext,
         progressPercent
     };
+}
+function getBmiCategory(bmi) {
+    if (bmi < 18.5) {
+        return {
+            label: 'Sovány',
+            color: 'blue'
+        };
+    } else if (bmi < 25) {
+        return {
+            label: 'Normál',
+            color: 'green'
+        };
+    } else if (bmi < 30) {
+        return {
+            label: 'Túlsúly',
+            color: 'orange'
+        };
+    } else {
+        return {
+            label: 'Elhízás',
+            color: 'red'
+        };
+    }
+}
+function getBmiPosition(bmi) {
+    //? 4 tartomany 0-25% / 25-50% / 50-75% / 75-100%
+    if (bmi < 18.5) {
+        return (bmi / 18.5) * 25;
+    } else if (bmi < 25) {
+        return 25 + ((bmi - 18.5) / (25 - 18.5)) * 25;
+    } else if (bmi < 30) {
+        return 50 + ((bmi - 25) / (30 - 25)) * 25;
+    } else {
+        return 75 + Math.min(((bmi - 30) / 10) * 25, 25);
+    }
+}
+function getBmiDescription(bmi) {
+    if (bmi < 18.5) {
+        if (bmi < 16) {
+            return 'Jelentősen alacsony testsúly. Érdemes mielőbb növelni a kalóriabevitelt és szakemberhez fordulni.';
+        } else if (bmi < 17.5) {
+            return 'Alacsony testsúly. Az izomtömeg növelése és több kalória bevitele ajánlott.';
+        } else {
+            return 'Kicsivel a normál alatt vagy. Egy enyhe tömegnövelés segíthet az optimális tartomány elérésében.';
+        }
+    } 
+    
+    else if (bmi < 25) {
+        if (bmi < 20) {
+            return 'Normál tartományban vagy, de az alsó részén. Izomtömeg növelés még javíthat az összképen.';
+        } else if (bmi < 23) {
+            return 'Ideális tartományban vagy. Ez egy nagyon jó állapot, tartsd ezt a szintet.';
+        } else {
+            return 'Még normál tartomány, de közelítesz a túlsúly felé. Érdemes figyelni a kalóriákra.';
+        }
+    } 
+    
+    else if (bmi < 30) {
+        if (bmi < 27) {
+            return 'Enyhe túlsúly. Egy kis zsírvesztéssel könnyen visszatérhetsz a normál tartományba.';
+        } else if (bmi < 29) {
+            return 'Túlsúlyos tartomány közepe. Érdemes már tudatosabban figyelni az étrendre és aktivitásra.';
+        } else {
+            return 'Közel az elhízás határához. Itt már erősen ajánlott a zsírcsökkentés.';
+        }
+    } 
+    
+    else {
+        if (bmi < 35) {
+            return 'Elhízás kezdete. Célszerű életmódváltásba kezdeni és csökkenteni a testzsírt.';
+        } else if (bmi < 40) {
+            return 'Magas elhízás szint. Érdemes komolyabban foglalkozni a testsúly csökkentésével.';
+        } else {
+            return 'Extrém elhízás. Erősen ajánlott szakember segítségét kérni.';
+        }
+    }
 }
