@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async()=>{
     loadMetrics();
     loadPeriodStats('daily');
     loadMuscleChart();
+    loadWeightChart();
 
     //? period stats
     const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
@@ -336,6 +337,107 @@ function loadWeightChart(){
     const weightStart = document.getElementById('weight-start'); // kezdő testsúly megjelenítése
     const weightCurrent = document.getElementById('weight-current'); // aktuális testsúly megjelenítése
     const weightChange = document.getElementById('weight-change'); // súlyváltozás (különbség) megjelenítése
+
+    const dateLabels = [];
+    const weights = [];
+
+    const weightsLimited = userWeights.slice(-10);
+
+    for (let item of weightsLimited) {
+        dateLabels.push(formatDate(item.created_at));
+        weights.push(Number(item.weight));
+    }
+
+    if (weights.length > 0) {
+        const start = weights[0];
+        const current = weights[weights.length - 1];
+        const change = current - start;
+
+        weightStart.innerText = start + ' kg';
+        weightCurrent.innerText = current + ' kg';
+        weightChange.innerText = (change >= 0 ? '+' : '') + change.toFixed(1) + ' kg';
+    }
+
+    new Chart(weightChart, {
+        type: 'line',
+        data: {
+            labels: dateLabels,
+            datasets: [{
+                label: 'Testsúly',
+                data: weights,
+
+                borderColor: '#a87cf5',
+                backgroundColor: 'rgba(168, 124, 245, 0.18)',
+                pointBackgroundColor: '#d7a0ff',
+                pointBorderColor: '#ffffff',
+
+                borderWidth: 3,
+                pointRadius: weights.length > 20 ? 0 : 4,
+                pointHoverRadius: 6,
+
+                tension: 0.35,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: '#151522',
+                    titleColor: '#ffffff',
+                    bodyColor: '#d7a0ff',
+                    borderColor: '#7c3aed',
+                    borderWidth: 1
+                }
+            },
+
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#b8b8d4',
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 6
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.06)'
+                    }
+                },
+                y: {
+                    beginAtZero: false,
+                    ticks: {
+                        color: '#b8b8d4'
+                    },
+                    grid: {
+                        color: 'rgba(168,124,245,0.12)'
+                    }
+                }
+            }
+        }
+    });
+};
+function loadMuscleRanks(){
+    const muscleOverview = document.getElementById('muscle-overview'); // összesített izomcsoport kártyák konténere
+
+    const selectedMuscleTitle = document.getElementById('selected-muscle-title'); // kiválasztott izomcsoport neve (cím)
+
+    const muscleSelector = document.getElementById('muscle-selector'); // izomcsoport választó dropdown
+
+    const selectedMuscleRankImage = document.getElementById('selected-muscle-rank-image'); // kiválasztott izomcsoport rang képe
+
+    const selectedMuscleRankName = document.getElementById('selected-muscle-rank-name'); // kiválasztott izom rang neve
+    const selectedMuscleXp = document.getElementById('selected-muscle-xp'); // kiválasztott izom XP értéke
+
+    const selectedMuscleCurrentRank = document.getElementById('selected-muscle-current-rank'); // jelenlegi rang szöveg
+    const selectedMuscleNextRank = document.getElementById('selected-muscle-next-rank'); // következő rang szöveg
+
+    const selectedMuscleProgressBar = document.getElementById('selected-muscle-progress-bar'); // progress bar kitöltése
+    const selectedMuscleProgressText = document.getElementById('selected-muscle-progress-text'); // progress százalék szöveg
 }
 
 //? helper functions
@@ -558,4 +660,16 @@ function getGroupedMuscleData() {
     }
 
     return result;
+}
+function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hour}:${minute}`;
 }
