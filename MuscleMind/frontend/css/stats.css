@@ -170,15 +170,6 @@
     color: #b8b8d4;
 }
 
-.chart-card {
-    padding: 16px;
-    height: 100%;
-    min-height: 360px;
-
-    display: flex;
-    flex-direction: column;
-}
-
 .card-header-row {
     display: flex;
     justify-content: space-between;
@@ -189,6 +180,15 @@
 .card-header-row h3 {
     margin: 0;
     font-size: 16px;
+}
+
+.chart-card {
+    padding: 16px;
+    height: 100%;
+    min-height: 360px;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-box {
@@ -205,8 +205,11 @@
 }
 
 .chart-box canvas {
-    width: 100% !important;
-    height: 100% !important;
+    position: absolute !important;
+    top: 10px;
+    left: 10px;
+    width: calc(100%-20px) !important;
+    height: calc(100%-20px) !important;
 }
 
 .detail-card {
