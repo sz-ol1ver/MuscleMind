@@ -8,7 +8,7 @@ const wOut = require('./workout.routes.js');
 const profile = require('./profile.routes.js');
 const supportTicket = require('./ticket.routes.js');
 const adminApis = require('./admin.routes.js');
-const stats = require('./stats.routes.js');
+const statApis = require('./stats.routes.js');
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -32,7 +32,7 @@ router.use('/workout', wOut);
 router.use('/profile', profile);
 router.use('/tickets', supportTicket);
 router.use('/admin', adminApis);
-router.use('/stats', stats);
+router.use('/stats', statApis);
 
 //?GET /api/testsql
 /*router.get('/testsql', async (request, response) => {

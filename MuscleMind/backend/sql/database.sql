@@ -131,8 +131,7 @@ CREATE TABLE IF NOT EXISTS user_muscle_xp (
         'comb_hátsó',
         'farizom',
         'vádli',
-        'teljes_test',
-        'cardio'
+        'teljes_test'
     ) NOT NULL,
 
     xp INT NOT NULL DEFAULT 0,
@@ -149,20 +148,6 @@ CREATE TABLE IF NOT EXISTS user_global_xp (
     FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS user_exercise_prs (
-    user_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-
-    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
-    max_weight_reps INT DEFAULT NULL,
-    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
-
-    achieved_at DATETIME DEFAULT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_daily_stats (
@@ -194,6 +179,20 @@ CREATE TABLE IF NOT EXISTS user_stats (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS user_exercise_prs (
+    user_id INT NOT NULL,
+    exercise_id INT NOT NULL,
+
+    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
+    max_weight_reps INT DEFAULT NULL,
+    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
+
+    achieved_at DATETIME DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- workout - plans
 -- gyakorlatok
 CREATE TABLE IF NOT EXISTS exercises(
@@ -213,8 +212,7 @@ CREATE TABLE IF NOT EXISTS exercises(
         'comb_hátsó',
         'farizom',
         'vádli',
-        'teljes_test',
-        'cardio'
+        'teljes_test'
     ) NOT NULL,
     bodyweight BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -278,48 +276,6 @@ CREATE TABLE IF NOT EXISTS workout_calendar_sets(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS user_exercise_prs (
-    user_id INT NOT NULL,
-    exercise_id INT NOT NULL,
-
-    max_weight DECIMAL(6,2) NOT NULL DEFAULT 0,
-    max_weight_reps INT DEFAULT NULL,
-    best_volume DECIMAL(10,2) NOT NULL DEFAULT 0,
-
-    achieved_at DATETIME DEFAULT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_daily_stats (
-    user_id INT NOT NULL,
-    stat_date DATE NOT NULL,
-
-    completed_workouts INT NOT NULL DEFAULT 0,
-    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_sets INT NOT NULL DEFAULT 0,
-    total_reps INT NOT NULL DEFAULT 0,
-    total_workout_time_sec INT NOT NULL DEFAULT 0,
-
-    xp_gained INT NOT NULL DEFAULT 0,
-    prs_achieved INT NOT NULL DEFAULT 0,
-
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS user_stats (
-    user_id INT PRIMARY KEY,
-
-    completed_workouts INT NOT NULL DEFAULT 0,
-    total_volume DECIMAL(12,2) NOT NULL DEFAULT 0,
-    total_sets INT NOT NULL DEFAULT 0,
-    total_reps INT NOT NULL DEFAULT 0,
-    pr_count INT NOT NULL DEFAULT 0,
-    total_workout_time_sec INT NOT NULL DEFAULT 0,
-
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 -- FOODS
 CREATE TABLE IF NOT EXISTS foods (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -757,19 +713,13 @@ VALUES
     ('Ugrókötél vádli edzés', 'vádli', TRUE),
 
     -- teljes test
-    ('Felhúzás rúddal', 'teljes_test', FALSE),
-    ('Guggolás rúddal', 'teljes_test', FALSE),
-    ('Clean & Press rúddal', 'teljes_test', FALSE),
-    ('Burpee testsúllyal', 'teljes_test', TRUE),
-    ('Kettlebell swing', 'teljes_test', FALSE),
-    ('Farmer walk kézisúlyzóval', 'teljes_test', FALSE),
+    ('Felhúzás rúddal', 'teljes_test'),
+    ('Guggolás rúddal', 'teljes_test'),
+    ('Clean & Press rúddal', 'teljes_test'),
+    ('Burpee testsúllyal', 'teljes_test'),
+    ('Kettlebell swing', 'teljes_test'),
+    ('Farmer walk kézisúlyzóval', 'teljes_test');
 
-    -- cardio
-    ('Futópad', 'cardio', FALSE),
-    ('Lépcsőző gép', 'cardio', FALSE),
-    ('Elliptikus tréner', 'cardio', FALSE),
-    ('Szobakerékpár', 'cardio', FALSE),
-    ('Evezőgép', 'cardio', FALSE);
 
 -- insert allergens
 INSERT INTO allergens (name) VALUES

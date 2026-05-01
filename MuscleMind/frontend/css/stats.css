@@ -1,0 +1,514 @@
+#stats.stats-page {
+    border: 2px solid rgba(255,255,255,.10);
+    border-radius: 20px;
+    background: linear-gradient(145deg, #11111b, #171124);
+    padding: 18px;
+    text-align: left;
+    color: #f5f5ff;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.stats-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+}
+
+.stats-header p {
+    margin: 4px 0 0;
+    color: #b8b8d4;
+    font-size: 14px;
+}
+
+/* Section separation */
+.stats-section {
+    margin-bottom: 22px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.stats-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.stats-section-title {
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid #7c3aed;
+}
+
+.stats-section-title h2 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.summary-card,
+.detail-card,
+.stats-card {
+    background: linear-gradient(145deg, #151522, #1d1630);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px;
+    box-shadow: 0 8px 22px rgba(0,0,0,.22);
+}
+
+.summary-card {
+    padding: 14px;
+    min-height: 82px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.summary-label,
+.detail-card span,
+.section-label,
+.mini-stat span {
+    color: #b8b8d4;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.summary-card strong {
+    color: #ffffff;
+    font-size: 21px;
+    margin-top: 6px;
+}
+
+.global-rank-card {
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rank-image-box {
+    width: 128px;
+    height: 128px;
+    border-radius: 18px;
+    background: rgba(124,58,237,.13);
+    border: 1px solid rgba(124,58,237,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rank-image-box.small {
+    width: 96px;
+    height: 96px;
+}
+
+.rank-image-box img {
+    max-width: 82%;
+    max-height: 82%;
+    object-fit: contain;
+}
+
+.rank-info {
+    width: 100%;
+}
+
+.rank-info h2,
+.rank-info h3 {
+    margin: 4px 0;
+    color: #ffffff;
+}
+
+.rank-info p {
+    margin: 0 0 12px;
+    color: #cfcfea;
+}
+
+.rank-progress {
+    width: 100%;
+}
+
+.rank-progress-top {
+    display: flex;
+    justify-content: space-between;
+    color: #b8b8d4;
+    font-size: 12px;
+    margin-bottom: 6px;
+    gap: 12px;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 12px;
+
+    background: linear-gradient(180deg, #4f3b6e, #000000);
+    border-radius: 999px;
+    
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.301);
+}
+
+.progress-bar-fill {
+    width: 0%;
+    height: 100%;
+
+    background: linear-gradient(90deg, #382373, #ad92ff);
+
+    border-radius: 999px;
+    transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+
+.rank-progress small {
+    display: block;
+    margin-top: 6px;
+    color: #b8b8d4;
+}
+
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-header-row h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.chart-card {
+    padding: 16px;
+    height: 100%;
+    min-height: 360px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-box {
+    flex: 1;
+    width: 100%;
+    min-height: 280px;
+
+    background-color: #0f0f17;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 10px;
+
+    position: relative;
+}
+
+.chart-box canvas {
+    position: absolute !important;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
+}
+
+.detail-card {
+    padding: 14px;
+    min-height: 78px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.detail-card strong {
+    margin-top: 6px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.mini-stat {
+    background: #0f0f17;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    padding: 12px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-stat strong {
+    margin-top: 5px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.muscle-card {
+    height: 100%;
+    background: linear-gradient(145deg, #151522, #1d1630);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+}
+
+.muscle-card img {
+    width: 58px;
+    height: 58px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.muscle-card h3 {
+    font-size: 15px;
+    margin: 0 0 4px;
+}
+
+.muscle-card p {
+    margin: 0;
+    color: #b8b8d4;
+    font-size: 13px;
+}
+
+.muscle-detail-card,
+.exercise-pr-card {
+    padding: 18px;
+}
+
+.muscle-selector-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.muscle-selector-row h2 {
+    margin: 4px 0 0;
+    font-size: 20px;
+}
+
+.muscle-select {
+    min-width: 220px;
+    background-color: #0f0f17;
+    color: #f5f5ff;
+    border: 1px solid #612eb9;
+    border-radius: 12px;
+    padding: 10px 12px;
+    outline: none;
+}
+
+.selected-muscle-content {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.exercise-pr-content {
+    margin-top: 8px;
+}
+
+.empty-state {
+    margin: 14px 0 0;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: rgba(124,58,237,.12);
+    color: #cfcfea;
+    border: 1px solid rgba(124,58,237,.28);
+}
+
+.period-summary-card {
+    padding: 18px;
+}
+
+.period-summary-header {
+    margin-bottom: 14px;
+}
+
+.period-summary-header h3 {
+    margin: 4px 0 0;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.summary-card:hover,
+.detail-card:hover,
+.stats-card:hover,
+.muscle-card:hover {
+    border-color: #7c3aed;
+    box-shadow: 0 10px 25px rgba(124,58,237,.25);
+}
+
+.stats-title-with-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.stats-period-tabs {
+    display: flex;
+    gap: 8px;
+    background-color: #0f0f17;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 999px;
+    padding: 5px;
+}
+
+.period-tab {
+    border: none;
+    border-radius: 999px;
+    padding: 7px 13px;
+    background-color: transparent;
+    color: #b8b8d4;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.period-tab:hover {
+    background-color: rgba(124,58,237,.18);
+    color: #ffffff;
+}
+
+.period-tab.active {
+    background: linear-gradient(90deg, #612eb9, #7c3aed);
+    color: #ffffff;
+}
+
+/* Scrollbar - middle part */
+#middle-part::-webkit-scrollbar {
+    width: 10px;
+}
+
+#middle-part::-webkit-scrollbar-track {
+    background: #181818;
+    border-radius: 10px;
+}
+
+#middle-part::-webkit-scrollbar-thumb {
+    background: linear-gradient(0deg, #4a2092, #a87cf5);
+    border-radius: 10px;
+    border: 2px solid #0b0b10;
+}
+
+#middle-part::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7c3aed, #9b5cff);
+}
+
+#middle-part {
+    scrollbar-width: thin;
+    scrollbar-color: #7c3aed #181818;
+}
+
+@media (max-width: 768px) {
+    .stats-title-with-actions {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .stats-period-tabs {
+        width: 100%;
+        overflow-x: auto;
+        justify-content: space-between;
+    }
+
+    .period-tab {
+        flex: 1;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 576px) {
+    #stats.stats-page {
+        margin: 12px;
+        padding: 14px;
+    }
+
+    .global-rank-card,
+    .selected-muscle-content,
+    .muscle-selector-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .muscle-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .rank-image-box {
+        width: 110px;
+        height: 110px;
+    }
+
+    .rank-progress-top {
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .chart-box {
+        height: 220px;
+    }
+}
+
+.bmi-card {
+    padding: 20px;
+}
+
+.bmi-main {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#bmi-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+}
+
+#bmi-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.bmi-bar-wrapper {
+    margin: 20px 0;
+}
+
+.bmi-bar {
+    position: relative;
+    height: 10px;
+    border-radius: 10px;
+    background: linear-gradient(
+        to right,
+        #3498db 0%,     /* sovány */
+        #2ecc71 25%,    /* normál */
+        #f1c40f 50%,    /* túlsúly */
+        #e74c3c 75%     /* elhízás */
+    );
+}
+
+.bmi-indicator {
+    position: absolute;
+    top: -5px;
+    width: 12px;
+    height: 20px;
+    border-radius: 4px;
+    background: #fff;
+    transform: translateX(-50%);
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+}
+
+.bmi-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    margin-top: 6px;
+    opacity: 0.8;
+}
+
+.bmi-description {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    opacity: 0.9;
+}
