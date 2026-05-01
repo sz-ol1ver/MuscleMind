@@ -184,3 +184,24 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+/* szuro cimkek es checkbox labelek */
+.filter-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.filter-checkbox-label {
+    font-size: 0.8rem;
+}
+
+/* csuszka ertek kijelzo */
+.slider-value {
+    font-size: 0.8rem;
+}
+
+/* szekcio leirasa */
+.section-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}

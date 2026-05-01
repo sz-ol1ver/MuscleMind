@@ -168,7 +168,7 @@
 
                     <div class="row mb-4">
                         <div class="col-12">
-                            <div class="filter-card p-3 rounded" style="background-color: var(--secondary-color); color: var(--text-color);">
+                            <div class="filter-card p-3 rounded">
                                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
                                     <button class="btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target="#newRecipeModal">
                                         + Új recept létrehozása
@@ -180,7 +180,7 @@
                                 
                                 <div class="row g-3">
                                     <div class="col-md-2">
-                                        <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Kategória</label>
+                                        <label class="form-label filter-label">Kategória</label>
                                         <select id="filter-category" class="form-select bg-dark text-light border-secondary">
                                             <option value="all">Összes</option>
                                             <option value="reggeli">Reggeli</option>
@@ -192,7 +192,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Goal tag</label>
+                                        <label class="form-label filter-label">Cél</label>
                                         <select id="filter-goal" class="form-select bg-dark text-light border-secondary">
                                             <option value="all">Összes</option>
                                             <option value="tomegnoveles">Tömegnövelés</option>
@@ -201,7 +201,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Diet tag</label>
+                                        <label class="form-label filter-label">Étrend</label>
                                         <select id="filter-diet" class="form-select bg-dark text-light border-secondary">
                                             <option value="all">Összes</option>
                                             <option value="mindenevo">Mindenevő</option>
@@ -210,7 +210,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Difficulty</label>
+                                        <label class="form-label filter-label">Nehézség</label>
                                         <select id="filter-difficulty" class="form-select bg-dark text-light border-secondary">
                                             <option value="all">Összes</option>
                                             <option value="konnyu">Könnyű</option>
@@ -219,7 +219,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-2">
-                                        <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Prep time</label>
+                                        <label class="form-label filter-label">Idő</label>
                                         <select id="filter-time" class="form-select bg-dark text-light border-secondary">
                                             <option value="all">Összes</option>
                                             <option value="15">< 15 perc</option>
@@ -227,14 +227,22 @@
                                             <option value="60">< 60 perc</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-2 d-flex flex-column justify-content-end">
+                                    <div class="col-md-4 d-flex align-items-end gap-3 flex-wrap">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="filter-high-protein">
-                                            <label class="form-check-label text-light" style="font-size: 0.8rem;">High protein</label>
+                                            <label class="form-check-label text-light filter-checkbox-label">High protein</label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" id="filter-low-carb">
-                                            <label class="form-check-label text-light" style="font-size: 0.8rem;">Low carb</label>
+                                            <label class="form-check-label text-light filter-checkbox-label">Low carb</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-bulk-friendly">
+                                            <label class="form-check-label text-light filter-checkbox-label">Bulk friendly</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-cut-friendly">
+                                            <label class="form-check-label text-light filter-checkbox-label">Cut friendly</label>
                                         </div>
                                     </div>
                                 </div>
@@ -243,24 +251,24 @@
                                         <!-- Sliders (simplified) -->
                                         <div class="d-flex gap-4 flex-grow-1">
                                             <div class="flex-grow-1">
-                                                <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Kalória (kcal)</label>
+                                                <label class="form-label filter-label">Kalória (kcal)</label>
                                                 <input type="range" class="form-range" id="filter-calories" min="0" max="2000" step="50" value="2000">
-                                                <div class="text-center text-success" style="font-size: 0.8rem;" id="val-calories">0-2000+</div>
+                                                <div class="text-center text-success slider-value" id="val-calories">0-2000+</div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Fehérje (g)</label>
+                                                <label class="form-label filter-label">Fehérje (g)</label>
                                                 <input type="range" class="form-range" id="filter-protein" min="0" max="150" step="5" value="150">
-                                                <div class="text-center text-success" style="font-size: 0.8rem;" id="val-protein">0-150+</div>
+                                                <div class="text-center text-success slider-value" id="val-protein">0-150+</div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Szénhidrát (g)</label>
+                                                <label class="form-label filter-label">Szénhidrát (g)</label>
                                                 <input type="range" class="form-range" id="filter-carbs" min="0" max="200" step="10" value="200">
-                                                <div class="text-center text-success" style="font-size: 0.8rem;" id="val-carbs">0-200+</div>
+                                                <div class="text-center text-success slider-value" id="val-carbs">0-200+</div>
                                             </div>
                                             <div class="flex-grow-1">
-                                                <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);">Zsír (g)</label>
+                                                <label class="form-label filter-label">Zsír (g)</label>
                                                 <input type="range" class="form-range" id="filter-fat" min="0" max="100" step="5" value="100">
-                                                <div class="text-center text-success" style="font-size: 0.8rem;" id="val-fat">0-100+</div>
+                                                <div class="text-center text-success slider-value" id="val-fat">0-100+</div>
                                             </div>
                                         </div>
                                     </div>
@@ -279,7 +287,7 @@
                                 <div class="section-header">
                                     <h4 class="section-title text-warning">⭐ Ajánlott receptek</h4>
                                 </div>
-                                <p class="text-muted mb-4" style="font-size: 0.9rem;">Céljaidnak és étrendednek megfelelő, megbízható receptek</p>
+                                <p class="section-desc mb-4">Céljaidnak és étrendednek megfelelő, megbízható receptek</p>
                                 <div id="recommended-container" class="recipe-grid">
                                     <!-- JS render -->
                                 </div>
@@ -289,7 +297,7 @@
                                 <div class="section-header">
                                     <h4 class="section-title text-info">👥 Közösségi receptek</h4>
                                 </div>
-                                <p class="text-muted mb-4" style="font-size: 0.9rem;">Más felhasználók által megosztott és jóváhagyott receptek</p>
+                                <p class="section-desc mb-4">Más felhasználók által megosztott és jóváhagyott receptek</p>
                                 <div id="community-container" class="recipe-grid">
                                     <!-- JS render -->
                                 </div>
@@ -299,7 +307,7 @@
                                 <div class="section-header">
                                     <h4 class="section-title text-success">📘 Saját receptjeim</h4>
                                 </div>
-                                <p class="text-muted mb-4" style="font-size: 0.9rem;">Általad létrehozott receptek</p>
+                                <p class="section-desc mb-4">Általad létrehozott receptek</p>
                                 <div id="my-recipes-container" class="recipe-grid">
                                     <!-- JS render -->
                                 </div>
@@ -309,6 +317,24 @@
                 </div>
             </div>
         </div>
+    <!-- Recipe Details Modal -->
+    <div class="modal fade" id="recipeDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="detail-modal-title">Recept neve</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detail-modal-body">
+                    <!-- JS tölti ki -->
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- New Recipe Modal -->
     <div class="modal fade" id="newRecipeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
