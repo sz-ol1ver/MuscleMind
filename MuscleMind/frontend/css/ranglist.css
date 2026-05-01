@@ -1,0 +1,120 @@
+/* tab rendszer stilusok */
+.active-tab {
+    background-color: #7c3aed !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.5);
+    transform: translateY(-2px);
+}
+
+.tab-pane {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* baratlista dobozok */
+.friend-box {
+    background: rgba(27, 27, 43, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* felhasznalo kartyak */
+.user-card {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+}
+
+.user-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(124, 58, 237, 0.3);
+    transform: translateX(5px);
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #fff;
+}
+
+.user-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* gombok finomitasa */
+.btn-accept {
+    background-color: #10b981 !important;
+    border: none;
+    padding: 5px 12px;
+    font-size: 13px;
+    border-radius: 5px;
+    color: white;
+}
+
+.btn-reject {
+    background-color: #ef4444 !important;
+    border: none;
+    padding: 5px 12px;
+    font-size: 13px;
+    border-radius: 5px;
+    color: white;
+}
+
+/* ranglista lista stilus */
+#leaderboard-list {
+    margin-top: 20px;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    background: rgba(108, 108, 134, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.leaderboard-item:hover {
+    transform: scale(1.02);
+    border-color: rgba(124, 58, 237, 0.4);
+    background: rgba(124, 58, 237, 0.1);
+}
+
+.rank {
+    font-weight: 800;
+    width: 30px;
+    color: #7c3aed;
+}
+
+.item-name {
+    flex-grow: 1;
+    font-weight: 500;
+}
+
+.item-points {
+    font-weight: 700;
+    color: #fbbf24;
+}
+
+/* podium placeholder fix */
+#first-second-third .name {
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+#first-second-third .points {
+    color: #fbbf24;
+    font-size: 14px;
+}
