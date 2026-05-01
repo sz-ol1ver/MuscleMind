@@ -8,29 +8,29 @@ const loginMw = require('./middleware/login.middleware.js');
 const db = require('./sql/database');
 
 //!Beállítások
+//!Beállítások
 const app = express();
 const router = express.Router();
 
-const ip = '127.0.0.1';
-const port = 3000;
+const port = process.env.PORT || 3000;
 
-app.use(express.json()); //?Middleware JSON
-app.set('trust proxy', 1); //?Middleware Proxy
+app.use(express.json());
+app.set('trust proxy', 1);
 
-//? https --> http
+/*//? https --> http
 app.use((req, res, next) => {
     if (req.secure) {
         return res.redirect('http://' + req.headers.host + req.url);
     }
     next();
-});
+});*/
 
 app.use(express.static(path.join(__dirname, '../frontend'))); //?frontend mappa tartalmának betöltése az oldal működéséhez
 
 //!Session beállítása:
 app.use(
     session({
-        secret: 'titkos_kulcs',
+        secret: 'valami_hosszu_random_teszt_kulcs_123456',
         resave: false,
         saveUninitialized: false,
         rolling: true,
@@ -38,7 +38,7 @@ app.use(
             httpOnly: true,
             maxAge: 30 * 60 * 1000,
             sameSite: 'lax',
-            secure: false
+            secure: process.env.NODE_ENV === 'production'
         }
     })
 );
@@ -140,8 +140,8 @@ app.use((err, req, res, next) => {
 });
 
 //!Szerver futtatása
-app.listen(port, ip, () => {
-    console.log(`Szerver elérhetősége: http://${ip}:${port}`);
+app.listen(port, () => {
+    console.log(`Szerver fut a ${port} porton`);
 });
 
 // óránként lejárt tokenek törlése

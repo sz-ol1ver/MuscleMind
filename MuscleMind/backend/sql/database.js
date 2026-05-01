@@ -2,13 +2,17 @@
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'musclemind',
+    host: 'musclemind-musclemind.h.aivencloud.com',
+    port: 16402,
+    user: 'avnadmin',
+    password: 'AVNS_DWyJNwIObjLdFJOodMT',
+    database: 'defaultdb',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 //!SQL Queries
