@@ -55,6 +55,16 @@ html,body{
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+@media (max-width: 991.98px) {
+    #middle-part {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 @media (max-width: 991px) {
