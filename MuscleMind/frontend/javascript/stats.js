@@ -81,7 +81,7 @@ const muscleRanks = {
 
 document.addEventListener('DOMContentLoaded', async()=>{
     await getStats();
-    console.log(exercises)
+
     loadSummaryCard();
     loadGlobalRank();
     loadBmiIndicator();
@@ -89,6 +89,8 @@ document.addEventListener('DOMContentLoaded', async()=>{
     loadPeriodStats('daily');
     loadMuscleChart();
     loadWeightChart();
+    loadMuscleRanks();
+    loadPr();
 
     //? period stats
     const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
@@ -445,7 +447,70 @@ function loadMuscleRanks(){
     const selectedMuscleProgressBar = document.getElementById('selected-muscle-progress-bar'); // progress bar kitöltése
     const selectedMuscleProgressText = document.getElementById('selected-muscle-progress-text'); // progress százalék szöveg
 
+    for(let muscle of userMuscleXp){
+        const option = document.createElement('option');
+        option.innerText = formatMuscleGroup(muscle.muscle_group);
+        option.value = muscle.muscle_group;
+        muscleSelector.appendChild(option);
+    }
 
+    muscleSelector.addEventListener('change', ()=>{
+        const muscleG = muscleSelector.value;
+        let data = null;
+
+        for(let muscles of userMuscleXp){
+            if(muscles.muscle_group === muscleG){
+                data = muscles;
+                break;
+            }
+        }
+
+        selectedMuscleTitle.innerText = formatMuscleGroup(data.muscle_group);
+        selectedMuscleRankName.innerText = getMuscleRank(data).currentRank.name;
+        selectedMuscleRankImage.src = './images/ranks/' + getMuscleRank(data).currentRank.pic;
+        selectedMuscleXp.innerText = data.xp;
+        selectedMuscleCurrentRank.innerText = getMuscleRank(data).currentRank.name;
+        selectedMuscleNextRank.innerText = getMuscleRank(data).nextRank.name;
+        selectedMuscleProgressBar.style.width = getMuscleRank(data).progressPercent+ '%';
+        selectedMuscleProgressText.innerText = Math.round(getMuscleRank(data).progressPercent)+ '%';
+    })
+
+};
+function loadPr(){
+    const selectedExerciseTitle = document.getElementById('selected-exercise-title'); // kiválasztott gyakorlat neve (cím)
+    const exerciseSelector = document.getElementById('exercise-selector'); // select dropdown (gyakorlat választó)
+
+    const maxWeight = document.getElementById('exercise-pr-max-weight'); // max súly (kg)
+    const maxWeightReps = document.getElementById('exercise-pr-max-weight-reps'); // ismétlésszám a max súlyhoz
+    const bestVolume = document.getElementById('exercise-pr-best-volume'); // legjobb volumen
+    const achievedDate = document.getElementById('exercise-pr-achieved-date'); // PR dátuma
+
+    const emptyState = document.getElementById('exercise-pr-empty'); // nincs adat üzenet
+
+    for(let exerciseOpt of userPrs){
+        const option = document.createElement('option');
+        option.innerText = exerciseOpt.exercise_name;
+        option.value = exerciseOpt.exercise_id;
+        exerciseSelector.appendChild(option);
+    }
+
+    exerciseSelector.addEventListener('change', ()=>{
+        const exerciseId = exerciseSelector.value;
+        let data = null;
+
+        for(let exerciseOpt of userPrs){
+            if(exerciseOpt.exercise_id == exerciseId){
+                data = exerciseOpt;
+                break;
+            }
+        }
+
+        selectedExerciseTitle.innerText = data.exercise_name;
+        maxWeight.innerText = data.max_weight + ' Kg';
+        maxWeightReps.innerText = data.max_weight_reps;
+        bestVolume.innerText = data.best_volume + ' Kg';
+        achievedDate.innerText = formatDate(data.achieved_at);
+    })
 }
 
 //? helper functions
@@ -668,6 +733,25 @@ function getGroupedMuscleData() {
     }
 
     return result;
+}
+function formatMuscleGroup(muscle) {
+    switch (muscle) {
+        case 'mell': return 'Mell';
+        case 'hát': return 'Hát';
+        case 'váll': return 'Váll';
+        case 'bicepsz': return 'Bicepsz';
+        case 'tricepsz': return 'Tricepsz';
+        case 'alkar': return 'Alkar';
+        case 'has': return 'Has';
+        case 'ferde_has': return 'Ferde has';
+        case 'alsó_hát': return 'Alsó hát';
+        case 'comb_első': return 'Comb elülső';
+        case 'comb_hátsó': return 'Comb hátsó';
+        case 'farizom': return 'Farizom';
+        case 'vádli': return 'Vádli';
+        case 'teljes_test': return 'Teljes test';
+        default: return muscle;
+    }
 }
 function formatDate(dateString) {
     const date = new Date(dateString);

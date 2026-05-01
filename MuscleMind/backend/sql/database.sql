@@ -131,8 +131,7 @@ CREATE TABLE IF NOT EXISTS user_muscle_xp (
         'comb_hátsó',
         'farizom',
         'vádli',
-        'teljes_test',
-        'cardio'
+        'teljes_test'
     ) NOT NULL,
 
     xp INT NOT NULL DEFAULT 0,
@@ -211,8 +210,7 @@ CREATE TABLE IF NOT EXISTS exercises(
         'comb_hátsó',
         'farizom',
         'vádli',
-        'teljes_test',
-        'cardio'
+        'teljes_test'
     ) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -715,13 +713,7 @@ VALUES
     ('Clean & Press rúddal', 'teljes_test'),
     ('Burpee testsúllyal', 'teljes_test'),
     ('Kettlebell swing', 'teljes_test'),
-    ('Farmer walk kézisúlyzóval', 'teljes_test'),
-    -- cardio
-    ('Futópad', 'cardio'),
-    ('Lépcsőző gép', 'cardio'),
-    ('Elliptikus tréner', 'cardio'),
-    ('Szobakerékpár', 'cardio'),
-    ('Evezőgép', 'cardio');
+    ('Farmer walk kézisúlyzóval', 'teljes_test');
 
 -- statisztika teszt adatok
 -- =========================
@@ -789,8 +781,7 @@ INSERT INTO user_muscle_xp (user_id, muscle_group, xp) VALUES
 (1, 'comb_hátsó', 180),
 (1, 'farizom', 160),
 (1, 'vádli', 100),
-(1, 'teljes_test', 300),
-(1, 'cardio', 45);
+(1, 'teljes_test', 300);
 
 
 -- =========================
