@@ -287,9 +287,9 @@ function loadPeriodStats(period){
 
         if (
             (period === 'daily' && diffDays === 0) ||
-            (period === 'weekly' && diffDays < 7) ||
-            (period === 'monthly' && diffDays < 30) ||
-            (period === 'all-time')
+            (period === 'weekly' && diffDays >= 0 && diffDays < 7) ||
+            (period === 'monthly' && diffDays >= 0 && diffDays < 30) ||
+            (period === 'all-time' && diffDays >= 0)
         ) {
             daysToCount.push(stat);
         }
