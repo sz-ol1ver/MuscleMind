@@ -69,7 +69,6 @@ option{
 
 /* Topbar */
 .topbar {
-    position: sticky;
     top: 40px;
     z-index: 1000;
     backdrop-filter: blur(3px);
@@ -413,4 +412,11 @@ option{
 
 .food-check-item .form-check-label {
     cursor: pointer;
+}
+
+@media (max-width: 991.98px) {
+    .topbar {
+        position: relative; /* vagy static */
+        top: auto;
+    }
 }

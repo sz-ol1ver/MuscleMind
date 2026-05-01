@@ -5,14 +5,14 @@
         background-size: cover;
     }
     #login-card{
-        width: 65% !important; 
+        width: 90% !important; 
     }
     #registration{
         background: url("../images/registration-9-16.png") no-repeat center center;
         background-size: cover;
     }
     #registration-card{
-        width: 70% !important; 
+        width: 90% !important; 
     }
     #kerdoiv{
         background: url("../images/kerdoiv-9-16.png") no-repeat center center;
