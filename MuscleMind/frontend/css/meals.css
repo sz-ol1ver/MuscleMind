@@ -1,71 +1,112 @@
-/* etrend oldal stilusai */
+/* etrend oldal */
 
 :root {
-    --glass-bg: rgba(30, 30, 40, 0.6);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --neon-accent: #00d2ff;
-    --neon-accent-secondary: #3a7bd5;
-    --card-hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
-    --transition-speed: 0.3s;
+    --meals-bg: #0b0b10;
+    --meals-panel: #11111a;
+    --meals-panel-soft: #171426;
+    --meals-purple: #7c3aed;
+    --meals-purple-light: #a78bfa;
+    --meals-purple-soft: rgba(124, 58, 237, 0.16);
+    --meals-border: rgba(124, 58, 237, 0.32);
+    --meals-text: #f5f3ff;
+    --meals-muted: #c4b5fd;
+    --meals-yellow: #fbbf24;
+    --meals-red: #f87171;
+    --meals-blue: #93c5fd;
+    --meals-orange: #fb923c;
+    --meals-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    --meals-transition: 0.22s ease;
 }
 
-/* fenti statisztika kartyak stilusai */
+/* stat kártyák */
 .metric-card {
-    background: var(--glass-bg) !important;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid var(--glass-border);
+    background: linear-gradient(145deg, var(--meals-panel), var(--meals-panel-soft)) !important;
+    border: 1px solid var(--meals-border);
     border-radius: 16px !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    box-shadow: var(--meals-shadow);
+    color: var(--meals-text);
+    transition: transform var(--meals-transition), border-color var(--meals-transition), box-shadow var(--meals-transition);
 }
 
 .metric-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--card-hover-shadow);
-    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px);
+    border-color: var(--meals-purple-light);
+    box-shadow: 0 12px 30px rgba(124, 58, 237, 0.25);
 }
 
-/* szuro sav */
+/* szűrő */
 .filter-card {
-    background: linear-gradient(145deg, rgba(25, 25, 35, 0.8), rgba(15, 15, 20, 0.9)) !important;
-    border: 1px solid var(--glass-border);
-    border-radius: 16px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    padding: 1.5rem !important;
+    background: linear-gradient(145deg, var(--meals-panel), var(--meals-bg)) !important;
+    border: 1px solid var(--meals-border);
+    border-radius: 18px !important;
+    box-shadow: var(--meals-shadow);
 }
 
-.filter-card select, .filter-card input[type="text"] {
-    background-color: rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    color: #e0e0e0 !important;
-    border-radius: 8px;
-    padding: 0.6rem 1rem;
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+.filter-card select,
+.filter-card input[type="text"],
+#newRecipeModal input,
+#newRecipeModal select,
+#newRecipeModal textarea {
+    background-color: #0f0f17 !important;
+    border: 1px solid var(--meals-border) !important;
+    color: var(--meals-text) !important;
+    border-radius: 10px;
 }
 
-.filter-card select:focus, .filter-card input[type="text"]:focus {
-    border-color: var(--neon-accent) !important;
-    box-shadow: 0 0 10px rgba(0, 210, 255, 0.3) !important;
+.filter-card select:focus,
+.filter-card input[type="text"]:focus,
+#newRecipeModal input:focus,
+#newRecipeModal select:focus,
+#newRecipeModal textarea:focus {
+    border-color: var(--meals-purple-light) !important;
+    box-shadow: 0 0 0 0.18rem rgba(124, 58, 237, 0.25) !important;
     outline: none;
 }
 
-/* csuszkak (range) stilusai */
-.form-range::-webkit-slider-thumb {
-    background: var(--neon-accent);
-    box-shadow: 0 0 10px var(--neon-accent);
-    border: none;
-    height: 16px;
-    width: 16px;
-    margin-top: -6px;
-}
-.form-range::-webkit-slider-runnable-track {
-    background: rgba(255, 255, 255, 0.1);
-    height: 6px;
-    border-radius: 3px;
+.filter-card input::placeholder,
+#newRecipeModal textarea::placeholder,
+#newRecipeModal input::placeholder {
+    color: var(--meals-muted);
 }
 
-/* recept grid tarolo */
+.filter-label,
+.filter-checkbox-label,
+.slider-value,
+.section-desc {
+    color: var(--meals-muted) !important;
+}
+
+/* range */
+.form-range::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(167, 139, 250, 0.22);
+}
+
+.form-range::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    margin-top: -5px;
+    background: var(--meals-purple);
+    border: none;
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.8);
+}
+
+.form-range::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(167, 139, 250, 0.22);
+}
+
+.form-range::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--meals-purple);
+    border: none;
+    box-shadow: 0 0 12px rgba(124, 58, 237, 0.8);
+}
+
+/* receptek */
 .recipe-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -73,43 +114,40 @@
     padding-bottom: 2rem;
 }
 
-/* mar nincs vizszintes gorgetes */
 .recipe-card {
-    background: var(--glass-bg) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: 16px !important;
-    overflow: hidden;
-    transition: all var(--transition-speed) ease;
-    width: 100% !important; /* felulirja a korabbi fix szelesseget */
+    width: 100% !important;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, var(--meals-panel), var(--meals-panel-soft)) !important;
+    border: 1px solid var(--meals-border);
+    box-shadow: var(--meals-shadow);
+    color: var(--meals-text);
+    transition: transform var(--meals-transition), border-color var(--meals-transition), box-shadow var(--meals-transition);
 }
 
 .recipe-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--card-hover-shadow);
-    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-6px);
+    border-color: var(--meals-purple-light);
+    box-shadow: 0 14px 32px rgba(124, 58, 237, 0.22);
 }
 
 .recipe-card .card-body {
-    padding: 1.5rem;
-    flex-grow: 1;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    padding: 1.5rem;
 }
 
 .recipe-title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: 1rem;
-    background: linear-gradient(90deg, #fff, #aaa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--meals-text);
 }
 
-/* makro badge-ek */
+/* makrók */
 .macro-badges {
     display: flex;
     flex-wrap: wrap;
@@ -118,90 +156,183 @@
 }
 
 .macro-badge {
-    padding: 0.35rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     gap: 0.3rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
-.macro-cal { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); }
-.macro-pro { background: rgba(220, 53, 69, 0.15); color: #ff6b81; border: 1px solid rgba(220, 53, 69, 0.3); }
-.macro-car { background: rgba(13, 110, 253, 0.15); color: #70a1ff; border: 1px solid rgba(13, 110, 253, 0.3); }
-.macro-fat { background: rgba(253, 126, 20, 0.15); color: #ffa502; border: 1px solid rgba(253, 126, 20, 0.3); }
+.macro-cal {
+    background: rgba(251, 191, 36, 0.12);
+    color: var(--meals-yellow);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.macro-pro {
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--meals-red);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.macro-car {
+    background: rgba(147, 197, 253, 0.12);
+    color: var(--meals-blue);
+    border: 1px solid rgba(147, 197, 253, 0.35);
+}
+
+.macro-fat {
+    background: rgba(251, 146, 60, 0.12);
+    color: var(--meals-orange);
+    border: 1px solid rgba(251, 146, 60, 0.35);
+}
 
 .recipe-meta {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    gap: 12px;
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    color: #999;
+    border-top: 1px solid rgba(167, 139, 250, 0.18);
+    color: var(--meals-muted);
     font-size: 0.85rem;
 }
 
-/* gombok a recept kartyan */
+/* gombok */
 .recipe-actions {
-    margin-top: 1rem;
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
+    margin-top: 1rem;
 }
 
-.recipe-actions .btn {
-    border-radius: 8px;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.5px;
+.recipe-actions .btn,
+.filter-card .btn,
+#newRecipeModal .btn,
+#recipeDetailsModal .btn {
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.8rem;
 }
 
-/* egyedi checkboxok */
+.btn-success {
+    background-color: var(--meals-purple) !important;
+    border-color: var(--meals-purple) !important;
+    color: #ffffff !important;
+}
+
+.btn-success:hover {
+    background-color: #6d28d9 !important;
+    border-color: #a78bfa !important;
+}
+
+.btn-outline-light {
+    color: var(--meals-text) !important;
+    border-color: var(--meals-purple-light) !important;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--meals-purple) !important;
+    border-color: var(--meals-purple) !important;
+}
+
+.btn-outline-info {
+    color: var(--meals-purple-light) !important;
+    border-color: var(--meals-purple-light) !important;
+}
+
+.btn-outline-info:hover {
+    background-color: var(--meals-purple) !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+    color: var(--meals-muted) !important;
+    border-color: rgba(167, 139, 250, 0.45) !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--meals-purple-soft) !important;
+    color: #ffffff !important;
+}
+
+/* checkbox */
+.form-check-input {
+    background-color: #0f0f17;
+    border-color: var(--meals-border);
+}
+
 .form-check-input:checked {
-    background-color: var(--neon-accent);
-    border-color: var(--neon-accent);
+    background-color: var(--meals-purple);
+    border-color: var(--meals-purple-light);
 }
 
-/* szekcio cimek */
+/* szekciók */
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(167, 139, 250, 0.18);
 }
 
 .section-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
 }
 
-/* szuro cimkek es checkbox labelek */
-.filter-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+.section-title.text-warning,
+.section-title.text-info,
+.section-title.text-success {
+    color: var(--meals-purple-light) !important;
 }
 
-.filter-checkbox-label {
-    font-size: 0.8rem;
+/* modal */
+#recipeDetailsModal .modal-content,
+#newRecipeModal .modal-content {
+    background: linear-gradient(145deg, var(--meals-panel), var(--meals-bg)) !important;
+    border: 1px solid var(--meals-border) !important;
+    color: var(--meals-text);
 }
 
-/* csuszka ertek kijelzo */
-.slider-value {
-    font-size: 0.8rem;
+#recipeDetailsModal .modal-header,
+#recipeDetailsModal .modal-footer,
+#newRecipeModal .modal-header {
+    border-color: rgba(167, 139, 250, 0.22) !important;
 }
 
-/* szekcio leirasa */
-.section-desc {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.6);
+#detail-modal-title,
+#newRecipeModal .modal-title {
+    color: var(--meals-purple-light);
+    font-weight: 800;
+}
+
+#detail-modal-body .list-group-item {
+    border-color: rgba(167, 139, 250, 0.22) !important;
+}
+
+#detail-modal-body .text-muted {
+    color: var(--meals-muted) !important;
+}
+
+/* reszponzív */
+@media (max-width: 768px) {
+    .recipe-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .recipe-actions {
+        flex-direction: column;
+    }
+
+    .recipe-meta {
+        flex-direction: column;
+    }
 }
