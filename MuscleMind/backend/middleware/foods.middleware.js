@@ -63,17 +63,17 @@ async function validateNewFood(req, res, next) {
             });
         }
         // url ellenorzes
-        if (food.url !== undefined && food.url !== null && typeof food.url !== 'string') {
-            return res.status(400).json({
-                message: 'Érvénytelen url.'
-            });
-        }
-        let urlReg = /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
-        if(!urlReg.test(food.url)){
-            return res.status(400).json({
-                message: 'Érvénytelen url.'
-            });
-        }
+        // if (food.url !== undefined && food.url !== null && typeof food.url !== 'string') {
+        //     return res.status(400).json({
+        //         message: 'Érvénytelen url.'
+        //     });
+        // }
+        // let urlReg = /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
+        // if(!urlReg.test(food.url)){
+        //     return res.status(400).json({
+        //         message: 'Érvénytelen url.'
+        //     });
+        // }
         //? leiras ellenorzes
         if (typeof food.description !== 'string' || !food.description.trim()) {
             return res.status(400).json({
