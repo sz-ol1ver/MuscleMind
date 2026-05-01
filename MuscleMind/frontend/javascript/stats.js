@@ -79,6 +79,10 @@ const muscleRanks = {
     legend: { name: 'Legend', pic: 'legend.png', min: 120000 }
 };
 
+//? weight chart
+let nextWeightViewAll = true;
+let chartInstance = null;
+
 document.addEventListener('DOMContentLoaded', async()=>{
     await getStats();
 
@@ -111,6 +115,15 @@ document.addEventListener('DOMContentLoaded', async()=>{
             loadPeriodStats(selectedPeriod);
         });
     };
+    //? weight chart btn
+    document.getElementById('toggle-weight').addEventListener('click', () => {
+        nextWeightViewAll = !nextWeightViewAll;
+
+        document.getElementById('toggle-weight').innerText =
+            nextWeightViewAll ? 'Összes' : 'Utolsó 10';
+
+        loadWeightChart();
+    });
 });
 
 async function getStats() {
@@ -127,7 +140,9 @@ async function getStats() {
         //* full stat
         Object.assign(userFullStat, data.stats.fullStats);
         //* metrics
-        Object.assign(userMetrics, data.stats.metrics);
+        if (data.stats.metrics) {
+            Object.assign(userMetrics, data.stats.metrics);
+        }
         //* muscle xp
         for(let muscleXp of data.stats.muscleXp){
             userMuscleXp.push(muscleXp);
@@ -169,7 +184,10 @@ function loadSummaryCard(){
     totalSets.innerText = userFullStat.total_sets;
     totalReps.innerText = userFullStat.total_reps;
     prCount.innerText = userFullStat.pr_count;
-    currentWeight.innerText = userWeights[userWeights.length-1].weight + ' Kg';
+    if(userWeights.length > 0){
+        currentWeight.innerText = userWeights[userWeights.length-1].weight + ' Kg';
+    }else{currentWeight.innerText = '- Kg';}
+    
 };
 function loadGlobalRank(){
     const globalRankImage = document.getElementById('global-rank-image'); // globális rank képe
@@ -194,6 +212,14 @@ function loadBmiIndicator(){
     const bmiIndicator = document.getElementById('bmi-indicator'); // csúszka pozíció a bar-on
     const bmiDescription = document.getElementById('bmi-description'); // visszajelzés / leírás szöveg
 
+    if (userMetrics.bmi === null) {
+        bmiValue.innerText = '-';
+        bmiCategory.innerText = 'Nincs adat';
+        bmiIndicator.style.left = '0%';
+        bmiDescription.innerText = 'Nincs elég adat a BMI kiszámításához.';
+        return;
+    }
+
     bmiValue.innerText = userMetrics.bmi;
     bmiCategory.innerText = getBmiCategory(userMetrics.bmi).label;
     bmiCategory.style.color = getBmiCategory(userMetrics.bmi).color;
@@ -206,6 +232,15 @@ function loadMetrics(){
     const metricTdee = document.getElementById('metric-tdee'); // TDEE (napi kalóriaszükséglet)
     const metricGoalCalories = document.getElementById('metric-goal-calories'); // cél kalóriabevitel
     const metricProtein = document.getElementById('metric-protein'); // ajánlott napi fehérjebevitel (g)
+
+    if (userMetrics.bmi === null) {
+        metricBmi.innerText = '-';
+        metricBmr.innerText = '- kcal';
+        metricTdee.innerText = '- kcal';
+        metricGoalCalories.innerText = '- kcal';
+        metricProtein.innerText = '- g';
+        return;
+    }
 
     metricBmi.innerText = userMetrics.bmi;
     metricBmr.innerText = userMetrics.bmr + ' kcal';
@@ -261,12 +296,13 @@ function loadPeriodStats(period){
     }
 
     for (let day of daysToCount) {
+        console.log(day);
         totals.completedWorkouts += Number(day.completed_workouts || 0);
         totals.totalVolume += Number(day.total_volume || 0);
         totals.totalSets += Number(day.total_sets || 0);
         totals.totalReps += Number(day.total_reps || 0);
         totals.xpGained += Number(day.xp_gained || 0);
-        totals.prCount += Number(day.pr_count || 0);
+        totals.prCount += Number(day.prs_achieved || 0);
         totals.totalWorkoutTimeSec += Number(day.total_workout_time_sec || 0);
     }
 
@@ -343,6 +379,9 @@ function loadMuscleChart(){
     });
 };
 function loadWeightChart(){
+    if(userWeights.length === 0){
+        return;
+    }
     const weightChart = document.getElementById('weight-chart'); // súlyváltozás grafikon canvas
     const weightStart = document.getElementById('weight-start'); // kezdő testsúly megjelenítése
     const weightCurrent = document.getElementById('weight-current'); // aktuális testsúly megjelenítése
@@ -351,9 +390,9 @@ function loadWeightChart(){
     const dateLabels = [];
     const weights = [];
 
-    const weightsLimited = userWeights.slice(-10);
+    let dataToUse = nextWeightViewAll ? userWeights.slice(-10) : userWeights;
 
-    for (let item of weightsLimited) {
+    for (let item of dataToUse) {
         dateLabels.push(formatDate(item.created_at));
         weights.push(Number(item.weight));
     }
@@ -368,7 +407,12 @@ function loadWeightChart(){
         weightChange.innerText = (change >= 0 ? '+' : '') + change.toFixed(1) + ' kg';
     }
 
-    new Chart(weightChart, {
+    // ha már létezik chart → destroy
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(weightChart, {
         type: 'line',
         data: {
             labels: dateLabels,
@@ -505,6 +549,18 @@ function loadPr(){
             }
         }
 
+        if (!data) {
+            selectedExerciseTitle.innerText = 'Gyakorlat';
+            maxWeight.innerText = '- kg';
+            maxWeightReps.innerText = '-';
+            bestVolume.innerText = '- kg';
+            achievedDate.innerText = '-';
+            emptyState.classList.remove('d-none');
+            return;
+        }
+        
+        emptyState.classList.add('d-none');
+
         selectedExerciseTitle.innerText = data.exercise_name;
         maxWeight.innerText = data.max_weight + ' Kg';
         maxWeightReps.innerText = data.max_weight_reps;
@@ -538,6 +594,10 @@ function getUserRank() {
                     pic: rankEntries[i + 1][1].pic,
                     min: rankEntries[i + 1][1].min
                 };
+            }else{
+                nextRank = {
+                    name: 'Max'
+                };
             }
         } else {
             break;
@@ -547,17 +607,18 @@ function getUserRank() {
     let xpToNext = 0;
     let progressPercent = 100;
 
-    if (nextRank) {
+    if (nextRank && nextRank.min !== undefined) {
         const xpNeeded = nextRank.min - currentRank.min;
         const xpProgress = xp - currentRank.min;
 
         xpToNext = nextRank.min - xp;
-
         progressPercent = (xpProgress / xpNeeded) * 100;
 
-        // biztonság
         if (progressPercent > 100) progressPercent = 100;
         if (progressPercent < 0) progressPercent = 0;
+    }else{
+        xpToNext = 0;
+        progressPercent = 100;
     }
 
     return {
@@ -591,6 +652,10 @@ function getMuscleRank(muscleData) {
                     pic: rankEntries[i + 1][1].pic,
                     min: rankEntries[i + 1][1].min
                 };
+            }else{
+                nextRank = {
+                    name: 'Max'
+                };
             }
         } else {
             break;
@@ -600,16 +665,18 @@ function getMuscleRank(muscleData) {
     let xpToNext = 0;
     let progressPercent = 100;
 
-    if (nextRank && currentRank) {
+    if (nextRank && nextRank.min !== undefined) {
         const xpNeeded = nextRank.min - currentRank.min;
         const xpProgress = xp - currentRank.min;
 
         xpToNext = nextRank.min - xp;
-
         progressPercent = (xpProgress / xpNeeded) * 100;
 
         if (progressPercent > 100) progressPercent = 100;
         if (progressPercent < 0) progressPercent = 0;
+    }else{
+        xpToNext = 0;
+        progressPercent = 100;
     }
 
     return {

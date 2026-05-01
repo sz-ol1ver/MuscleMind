@@ -208,8 +208,8 @@
     position: absolute !important;
     top: 10px;
     left: 10px;
-    width: calc(100%-20px) !important;
-    height: calc(100%-20px) !important;
+    width: calc(100% - 20px) !important;
+    height: calc(100% - 20px) !important;
 }
 
 .detail-card {
