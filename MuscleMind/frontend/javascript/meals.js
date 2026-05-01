@@ -82,9 +82,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         container.appendChild(createMetricCard('BMI', metrics.bmi, 'Normál', 'text-success'));
         container.appendChild(createMetricCard('🔥 BMR', metrics.bmr, 'kcal / nap', 'text-warning'));
-        container.appendChild(createMetricCard('💧 TDEE', metrics.tdee, 'kcal / nap', 'text-info'));
-        container.appendChild(createMetricCard('⏳ Calorie goal', metrics.goal_calories, 'kcal / nap', 'text-warning'));
-        container.appendChild(createMetricCard('🥩 Protein goal', metrics.protein_recommended, 'g / nap', 'text-secondary'));
+        container.appendChild(createMetricCard('💧 Napi kalóriaigény', metrics.tdee, 'kcal / nap', 'text-info'));
+        container.appendChild(createMetricCard('⏳ Napi kalóriacél', metrics.goal_calories, 'kcal / nap', 'text-warning'));
+        container.appendChild(createMetricCard('🥩 Napi fehérjecél', metrics.protein_recommended, 'g / nap', 'text-secondary'));
         container.appendChild(createMetricCard('🎯 Célod', prefs.goal || '-', null, 'text-primary'));
         container.appendChild(createMetricCard('🍽️ Napi étkezések', prefs.meals_per_day || '-', null, 'text-info'));
     }
