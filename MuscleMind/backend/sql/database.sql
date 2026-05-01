@@ -713,12 +713,12 @@ VALUES
     ('Ugrókötél vádli edzés', 'vádli', TRUE),
 
     -- teljes test
-    ('Felhúzás rúddal', 'teljes_test'),
-    ('Guggolás rúddal', 'teljes_test'),
-    ('Clean & Press rúddal', 'teljes_test'),
-    ('Burpee testsúllyal', 'teljes_test'),
-    ('Kettlebell swing', 'teljes_test'),
-    ('Farmer walk kézisúlyzóval', 'teljes_test');
+    ('Felhúzás rúddal', 'teljes_test', FALSE),
+    ('Guggolás rúddal', 'teljes_test', FALSE),
+    ('Clean & Press rúddal', 'teljes_test', FALSE),
+    ('Burpee testsúllyal', 'teljes_test', TRUE),
+    ('Kettlebell swing', 'teljes_test', FALSE),
+    ('Farmer walk kézisúlyzóval', 'teljes_test', FALSE);
 
 
 -- insert allergens

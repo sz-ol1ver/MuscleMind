@@ -1921,8 +1921,12 @@ async function finalizeWorkoutStats(userId, logId) {
 
         // log betoltese es ellenorzese
         const [logRows] = await connection.execute(
-            'SELECT status, workout_date FROM workout_calendar_logs WHERE id = ? AND user_id = ?',
-             [logId, userId]
+            `SELECT 
+                status, 
+                DATE_FORMAT(workout_date, '%Y-%m-%d') AS workout_date
+            FROM workout_calendar_logs 
+            WHERE id = ? AND user_id = ?`,
+            [logId, userId]
         );
 
         if (logRows.length === 0) {
@@ -1932,8 +1936,7 @@ async function finalizeWorkoutStats(userId, logId) {
             throw new Error("Ez az edzés már véglegesítve lett (duplikáció védelem)!");
         }
 
-        const workoutDate = logRows[0].workout_date;
-        const formattedWorkoutDate = new Date(workoutDate).toISOString().split('T')[0];
+        const formattedWorkoutDate = logRows[0].workout_date;
 
         // edzes lezarasa  és időtartam kiszámolása. 
         await connection.execute(
@@ -1965,76 +1968,158 @@ async function finalizeWorkoutStats(userId, logId) {
         let totalReps = 0;
         let prCount = 0;
         
-        // izomcsoportonkénti volumen gyujtése
+        // izomcsoportonkénti volumen gyűjtése + gyakorlatonkénti PR adatok
         const muscleVolume = {};
-        
+        const exerciseStats = {};
+
         for (const set of sets) {
+            const exerciseId = set.exercise_id;
             const weightDone = Number(set.weight) || 0;
             const repsDone = Number(set.reps) || 0;
             const setVolume = weightDone * repsDone;
-            
+
             workoutTotalVolume += setVolume;
             totalReps += repsDone;
 
-            // izom volumen hozzadasa
             const muscle = set.muscle_group;
             if (!muscleVolume[muscle]) muscleVolume[muscle] = 0;
             muscleVolume[muscle] += setVolume;
 
-            // pr logika megvizsgalasa 
+            if (!exerciseStats[exerciseId]) {
+                exerciseStats[exerciseId] = {
+                    maxWeight: 0,
+                    maxWeightReps: 0,
+                    bestVolume: 0
+                };
+            }
+
+            if (weightDone > exerciseStats[exerciseId].maxWeight) {
+                exerciseStats[exerciseId].maxWeight = weightDone;
+                exerciseStats[exerciseId].maxWeightReps = repsDone;
+            }
+
+            if (setVolume > exerciseStats[exerciseId].bestVolume) {
+                exerciseStats[exerciseId].bestVolume = setVolume;
+            }
+        }
+
+        for (const exerciseId in exerciseStats) {
+            const exercise = exerciseStats[exerciseId];
+
             const [prRows] = await connection.execute(
-                'SELECT max_weight, best_volume FROM user_exercise_prs WHERE user_id = ? AND exercise_id = ?', 
-                [userId, set.exercise_id]
+                'SELECT max_weight, best_volume FROM user_exercise_prs WHERE user_id = ? AND exercise_id = ?',
+                [userId, exerciseId]
             );
 
             let isPrBroken = false;
 
             if (prRows.length === 0) {
-                // uj pr sor
                 await connection.execute(
-                    `INSERT INTO user_exercise_prs (user_id, exercise_id, max_weight, max_weight_reps, best_volume, achieved_at) 
-                     VALUES (?, ?, ?, ?, ?, NOW())`,
-                    [userId, set.exercise_id, weightDone, repsDone, setVolume]
+                    `INSERT INTO user_exercise_prs 
+                    (user_id, exercise_id, max_weight, max_weight_reps, best_volume, achieved_at) 
+                    VALUES (?, ?, ?, ?, ?, NOW())`,
+                    [
+                        userId,
+                        exerciseId,
+                        exercise.maxWeight,
+                        exercise.maxWeightReps,
+                        exercise.bestVolume
+                    ]
                 );
+
                 isPrBroken = true;
             } else {
                 const currentMaxWeight = Number(prRows[0].max_weight) || 0;
                 const currentBestVolume = Number(prRows[0].best_volume) || 0;
-                
-                let updates = [];
-                let params = [];
-                
-                if (weightDone > currentMaxWeight) {
+
+                const updates = [];
+                const params = [];
+
+                if (exercise.maxWeight > currentMaxWeight) {
                     updates.push('max_weight = ?, max_weight_reps = ?');
-                    params.push(weightDone, repsDone);
+                    params.push(exercise.maxWeight, exercise.maxWeightReps);
                     isPrBroken = true;
                 }
-                
-                if (setVolume > currentBestVolume) {
+
+                if (exercise.bestVolume > currentBestVolume) {
                     updates.push('best_volume = ?');
-                    params.push(setVolume);
+                    params.push(exercise.bestVolume);
                     isPrBroken = true;
                 }
-                
+
                 if (updates.length > 0) {
                     updates.push('achieved_at = NOW()');
-                    params.push(userId, set.exercise_id);
-                    
+                    params.push(userId, exerciseId);
+
                     await connection.execute(
-                        `UPDATE user_exercise_prs SET ${updates.join(', ')} WHERE user_id = ? AND exercise_id = ?`,
+                        `UPDATE user_exercise_prs 
+                        SET ${updates.join(', ')} 
+                        WHERE user_id = ? AND exercise_id = ?`,
                         params
                     );
                 }
             }
-            
+
             if (isPrBroken) {
-                // csak akkor növeljük 1el ha legalabb 1 pr megdolt 
-                prCount = 1;
+                prCount++;
             }
         }
 
         // xp
         const workoutXp = Math.floor(workoutTotalVolume / 10);
+
+        // napi statisztika frissítése
+        const [dailyRows] = await connection.execute(
+            'SELECT user_id FROM user_daily_stats WHERE user_id = ? AND stat_date = ?',
+            [userId, formattedWorkoutDate]
+        );
+
+        if (dailyRows.length === 0) {
+            await connection.execute(`
+                INSERT INTO user_daily_stats (
+                    user_id,
+                    stat_date,
+                    completed_workouts,
+                    total_volume,
+                    total_sets,
+                    total_reps,
+                    total_workout_time_sec,
+                    xp_gained,
+                    prs_achieved
+                ) VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?)
+            `, [
+                Number(userId),
+                formattedWorkoutDate,
+                Number(workoutTotalVolume.toFixed(2)),
+                Number(totalSets),
+                Number(totalReps),
+                Number(workoutTimeSec),
+                Number(workoutXp),
+                Number(prCount)
+            ]);
+        } else {
+            await connection.execute(`
+                UPDATE user_daily_stats SET
+                    completed_workouts = completed_workouts + 1,
+                    total_volume = total_volume + ?,
+                    total_sets = total_sets + ?,
+                    total_reps = total_reps + ?,
+                    total_workout_time_sec = total_workout_time_sec + ?,
+                    xp_gained = xp_gained + ?,
+                    prs_achieved = prs_achieved + ?
+                WHERE user_id = ?
+                AND stat_date = ?
+            `, [
+                Number(workoutTotalVolume.toFixed(2)),
+                Number(totalSets),
+                Number(totalReps),
+                Number(workoutTimeSec),
+                Number(workoutXp),
+                Number(prCount),
+                Number(userId),
+                formattedWorkoutDate
+            ]);
+        }
         
         // xp frissites
         const [globalXpRows] = await connection.execute('SELECT xp FROM user_global_xp WHERE user_id = ?', [userId]);
