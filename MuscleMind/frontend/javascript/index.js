@@ -632,6 +632,77 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.removeItem('showWorkoutReminder')
         loadWorkoutReminder()
       }
+
+      loadMiniLeaderboard();
+    }
+
+    async function loadMiniLeaderboard() {
+      try {
+        const data = await getFetch('/api/ranglist/leaderboard');
+
+        if (!data || data.length === 0) {
+          return;
+        }
+
+        const updatePodium = (id, user) => {
+          const el = document.getElementById(id);
+
+          if (!el || !user) {
+            return;
+          }
+
+          const nameEl = el.querySelector('.name');
+          const pointsEl = el.querySelector('.points');
+
+          if (nameEl) {
+            nameEl.textContent = user.username;
+          }
+
+          if (pointsEl) {
+            pointsEl.textContent = user.xp + ' XP';
+          }
+        };
+
+        updatePodium('first-place', data[0]);
+        updatePodium('second-place', data[1]);
+        updatePodium('third-place', data[2]);
+
+        const listContainer = document.getElementById('mini-leaderboard-list');
+
+        if (!listContainer) {
+          return;
+        }
+
+        listContainer.innerHTML = '';
+
+        for (let i = 3; i < data.length; i++) {
+          const user = data[i];
+
+          const div = document.createElement('div');
+          div.className = 'ranglisted-people';
+
+          const placementSpan = document.createElement('span');
+          placementSpan.className = 'placement';
+          placementSpan.textContent = (i + 1) + '.';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'name';
+          nameSpan.textContent = user.username;
+
+          const pointsSpan = document.createElement('span');
+          pointsSpan.className = 'points';
+          pointsSpan.textContent = user.xp + ' XP';
+
+          div.appendChild(placementSpan);
+          div.appendChild(nameSpan);
+          div.appendChild(pointsSpan);
+
+          listContainer.appendChild(div);
+        }
+
+      } catch (error) {
+        console.error('Hiba a mini ranglista betöltésekor:', error);
+      }
     }
 
     initializeMuscleTracker()

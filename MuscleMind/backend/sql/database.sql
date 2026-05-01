@@ -285,6 +285,7 @@ CREATE TABLE IF NOT EXISTS foods (
     name VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
     image_url VARCHAR(255) DEFAULT NULL,
+    share BOOLEAN DEFAULT FALSE,
 
     category ENUM(
         'reggeli',

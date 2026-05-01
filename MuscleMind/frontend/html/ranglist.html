@@ -18,6 +18,7 @@
         <script src="../javascript/loading-overlay.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script type="module" src="../javascript/global.js"></script>
+        <script type="module" src="../javascript/ranglist.js"></script>
     </head>
     <body>
         <div class="container-fluid">
@@ -43,7 +44,7 @@
                     </div>
                         
                     <!-- Cím -->
-                    <p id="main-page-title" class="m-0 fw-bold fs-3">Ranglista</p>
+                    <p id="main-page-title" class="m-0 fw-bold fs-3">Ranglista & Barátok</p>
                     
 
 
@@ -86,7 +87,7 @@
                         </li>
 
                         <li class="nav-item selected-navoption">
-                            <a class="nav-link" href="/ranglista">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Barátok, Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -131,7 +132,7 @@
                         </li>
 
                         <li class="nav-item selected-navoption">
-                            <a class="nav-link" href="/ranglista">Ranglista</a>
+                            <a class="nav-link" href="/ranglista">Barátok, Ranglista</a>
                         </li>
 
                         <li class="nav-item">
@@ -158,11 +159,22 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
-                    <div class="row">
-                        <div class="col-12">
+                    
+                    <!-- Tab gombok -->
+                    <div class="row mb-3">
+                        <div class="col-12 d-flex gap-2 justify-content-center">
+                            <button id="tab-leaderboard" class="btn button-sample active-tab">🏆 Ranglista</button>
+                            <button id="tab-friends" class="btn button-sample">👥 Barátok</button>
+                        </div>
+                    </div>
+
+                    <div id="tab-content-container">
+                        
+                        <!-- Ranglista Tab -->
+                        <div id="leaderboard-content" class="tab-panel active">
                             <div id="ranglist">
                                 <div id="ranglist-title">
-                                    Ranglista
+                                    Globális Ranglista
                                     <hr>
                                 </div>
 
@@ -171,51 +183,67 @@
                                     <div class="col-4">
                                         <div id="second-place">
                                             <span id="second-place-sign" class="placement">2.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
+                                            <div class="name">...</div>
+                                            <div class="points">... XP</div>
                                         </div>
                                     </div>
 
                                     <div class="col-4">
                                         <div id="first-place">
                                             <span id="first-place-sign" class="placement">1.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            67676767
+                                            <div class="name">...</div>
+                                            <div class="points">... XP</div>
                                         </div>
                                     </div>
 
                                     <div class="col-4">
                                         <div id="third-place">
                                             <span id="third-place-sign" class="placement">3.</span>
-                                            <br>
-                                            Istense Tudja
-                                            <br>
-                                            676767
+                                            <div class="name">...</div>
+                                            <div class="points">... XP</div>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- Mindenki más -->
                                  <div class="row" id="outside-top-three">
-                                    <div class="col-12">
-                                        <div class="ranglisted-people">
-                                            <span class="placement">4.</span>
-                                            <span class="name">Sajtos Lajos</span>
-                                            <span class="points">67</span>
-                                        </div>
-
-                                        <!-- <div class="ranglisted-people">
-                                            <span class="placement">5.</span>
-                                            <span class="name">Sajtos János</span>
-                                            <span class="points">76</span>
-                                        </div> -->
+                                    <div class="col-12" id="leaderboard-list">
+                                        <!-- Ide jönnek a többiek -->
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Barátok Tab -->
+                        <div id="friends-content" class="tab-panel d-none">
+                            <div class="row g-3">
+                                
+                                <!-- Keresés és Jelölések -->
+                                <div class="col-md-5">
+                                    <div class="friend-box p-3 mb-3">
+                                        <h5 class="mb-3">🔍 Felhasználó keresése</h5>
+                                        <div class="input-group mb-2">
+                                            <input type="text" id="user-search-input" class="form-control bg-dark text-white border-secondary" placeholder="Felhasználónév...">
+                                            <button id="btn-user-search" class="btn button-sample">Keresés</button>
+                                        </div>
+                                        <div id="search-results" class="mt-3"></div>
+                                    </div>
+
+                                    <div class="friend-box p-3">
+                                        <h5 class="mb-3">📩 Beérkezett jelölések</h5>
+                                        <div id="pending-requests" class="mt-2"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Barátok lista -->
+                                <div class="col-md-7">
+                                    <div class="friend-box p-3 h-100">
+                                        <h5 class="mb-3">⭐ Barátaim</h5>
+                                        <div id="friends-list" class="mt-2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

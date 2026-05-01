@@ -10,6 +10,7 @@ const supportTicket = require('./ticket.routes.js');
 const adminApis = require('./admin.routes.js');
 const statApis = require('./stats.routes.js');
 const mealsApis = require('./meals.routes.js');
+const ranglistApis = require('./ranglist.routes.js');
 
 //!Multer
 const multer = require('multer'); //?npm install multer
@@ -35,6 +36,7 @@ router.use('/tickets', supportTicket);
 router.use('/admin', adminApis);
 router.use('/stats', statApis);
 router.use('/meals', mealsApis);
+router.use('/ranglist', ranglistApis);
 
 //?GET /api/testsql
 /*router.get('/testsql', async (request, response) => {

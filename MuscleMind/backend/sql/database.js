@@ -104,6 +104,13 @@ async function insertWeight(id, weight) {
     return rows.insertId;
 }
 
+// legutobbi suly lekerese
+async function getLatestWeight(userId) {
+    const sql = 'SELECT weight FROM user_weights WHERE user_id = ? ORDER BY created_at DESC LIMIT 1'
+    const [rows] = await pool.execute(sql, [userId])
+    return rows.length > 0 ? Number(rows[0].weight) : 80
+}
+
 //user update registered
 async function updateRegistered(id) {
     const update = 'UPDATE users SET registered = 1 WHERE id = ?';
@@ -2027,14 +2034,18 @@ async function finalizeWorkoutStats(userId, logId) {
         const [timeRows] = await connection.execute('SELECT workout_time_sec FROM workout_calendar_logs WHERE id = ?', [logId]);
         const workoutTimeSec = timeRows.length > 0 ? (timeRows[0].workout_time_sec || 0) : 0;
 
-        // mentett szettek beolvasasa (workout_calendar_sets + exercises.muscle_group)
+        // felhasznalo aktualis sulya
+        const userWeight = await getLatestWeight(userId)
+
+        // mentett szettek beolvasasa (workout_calendar_sets + exercises.muscle_group + bodyweight)
         const [sets] = await connection.execute(`
             SELECT 
                 s.id as set_id, 
                 s.weight_done AS weight,
                 s.reps_done AS reps,
                 e.id as exercise_id, 
-                e.muscle_group 
+                e.muscle_group,
+                e.bodyweight
             FROM workout_calendar_sets s
             JOIN workout_calendar_exercises ce ON s.workout_calendar_exercise_id = ce.id
             JOIN exercises e ON ce.exercise_id = e.id
@@ -2052,13 +2063,20 @@ async function finalizeWorkoutStats(userId, logId) {
         const exerciseStats = {};
 
         for (const set of sets) {
-            const exerciseId = set.exercise_id;
-            const weightDone = Number(set.weight) || 0;
-            const repsDone = Number(set.reps) || 0;
-            const setVolume = weightDone * repsDone;
+            const exerciseId = set.exercise_id
+            const weightDone = Number(set.weight) || 0
+            const repsDone = Number(set.reps) || 0
+            
+            // volumen szamitasa (sajat testsulyosnal hozzaadjuk a user sulyat)
+            let setVolume = 0
+            if (set.bodyweight) {
+                setVolume = (userWeight + weightDone) * repsDone
+            } else {
+                setVolume = weightDone * repsDone
+            }
 
-            workoutTotalVolume += setVolume;
-            totalReps += repsDone;
+            workoutTotalVolume += setVolume
+            totalReps += repsDone
 
             const muscle = set.muscle_group;
             if (!muscleVolume[muscle]) muscleVolume[muscle] = 0;
@@ -2282,6 +2300,155 @@ async function finalizeWorkoutStats(userId, logId) {
     }
 }
 
+// ranglista / baratlista
+
+// ranglista lekerese baratok es sajat magunk xp szerint
+async function getLeaderboard(userId) {
+    const sql = `
+        SELECT
+            u.id,
+            u.username,
+            IFNULL(gxp.xp, 0) AS xp
+        FROM users u
+        LEFT JOIN user_global_xp gxp ON u.id = gxp.user_id
+        WHERE u.active = 1 AND u.registered = 1
+        AND (
+            u.id = ? 
+            OR u.id IN (
+                SELECT user1_id FROM user_friendships WHERE user2_id = ? AND status = 'accepted'
+                UNION
+                SELECT user2_id FROM user_friendships WHERE user1_id = ? AND status = 'accepted'
+            )
+        )
+        ORDER BY xp DESC
+    `
+    const [rows] = await pool.execute(sql, [userId, userId, userId])
+    return rows
+}
+
+// felhasznalo kereses username alapjan
+async function searchUsers(query, currentUserId) {
+    const sql = `
+        SELECT id, username
+        FROM users
+        WHERE username LIKE ?
+        AND id != ?
+        AND active = 1
+        AND registered = 1
+        LIMIT 10
+    `
+    const [rows] = await pool.execute(sql, ['%' + query + '%', currentUserId])
+    return rows
+}
+
+// ellenorzi van-e mar baratsag/jeloles a ket user kozott
+async function checkExistingFriendship(userId, targetId) {
+    const smallId = Math.min(userId, targetId)
+    const bigId = Math.max(userId, targetId)
+    const sql = `
+        SELECT id, status, requested_by
+        FROM user_friendships
+        WHERE user1_id = ? AND user2_id = ?
+    `
+    const [rows] = await pool.execute(sql, [smallId, bigId])
+    return rows.length > 0 ? rows[0] : null
+}
+
+// barat jeloles kuldese
+async function sendFriendRequest(userId, targetId) {
+    const smallId = Math.min(userId, targetId)
+    const bigId = Math.max(userId, targetId)
+    const sql = `
+        INSERT INTO user_friendships (user1_id, user2_id, requested_by, status)
+        VALUES (?, ?, ?, 'pending')
+    `
+    const [result] = await pool.execute(sql, [smallId, bigId, userId])
+    return result.insertId
+}
+
+// beerkezett (pending) jelolesek lekerese
+async function getPendingRequests(userId) {
+    const sql = `
+        SELECT
+            uf.id AS friendship_id,
+            uf.requested_by,
+            u.username AS requester_username,
+            uf.created_at
+        FROM user_friendships uf
+        JOIN users u ON u.id = uf.requested_by
+        WHERE (uf.user1_id = ? OR uf.user2_id = ?)
+        AND uf.requested_by != ?
+        AND uf.status = 'pending'
+        ORDER BY uf.created_at DESC
+    `
+    const [rows] = await pool.execute(sql, [userId, userId, userId])
+    return rows
+}
+
+// jeloles elfogadasa
+async function acceptFriendRequest(friendshipId, userId) {
+    const sql = `
+        UPDATE user_friendships
+        SET status = 'accepted', responded_at = NOW()
+        WHERE id = ?
+        AND (user1_id = ? OR user2_id = ?)
+        AND requested_by != ?
+        AND status = 'pending'
+    `
+    const [result] = await pool.execute(sql, [friendshipId, userId, userId, userId])
+    return result.affectedRows
+}
+
+// jeloles elutasitasa (torles)
+async function rejectFriendRequest(friendshipId, userId) {
+    const sql = `
+        DELETE FROM user_friendships
+        WHERE id = ?
+        AND (user1_id = ? OR user2_id = ?)
+        AND requested_by != ?
+        AND status = 'pending'
+    `
+    const [result] = await pool.execute(sql, [friendshipId, userId, userId, userId])
+    return result.affectedRows
+}
+
+// elfogadott baratok listaja
+async function getFriends(userId) {
+    const sql = `
+        SELECT
+            uf.id AS friendship_id,
+            CASE
+                WHEN uf.user1_id = ? THEN uf.user2_id
+                ELSE uf.user1_id
+            END AS friend_id,
+            CASE
+                WHEN uf.user1_id = ? THEN u2.username
+                ELSE u1.username
+            END AS friend_username,
+            uf.responded_at
+        FROM user_friendships uf
+        JOIN users u1 ON u1.id = uf.user1_id
+        JOIN users u2 ON u2.id = uf.user2_id
+        WHERE (uf.user1_id = ? OR uf.user2_id = ?)
+        AND uf.status = 'accepted'
+        ORDER BY uf.responded_at DESC
+    `
+    const [rows] = await pool.execute(sql, [userId, userId, userId, userId])
+    return rows
+}
+
+// barat torlese
+async function removeFriend(friendshipId, userId) {
+    const sql = `
+        DELETE FROM user_friendships
+        WHERE id = ?
+        AND (user1_id = ? OR user2_id = ?)
+        AND status = 'accepted'
+    `
+    const [result] = await pool.execute(sql, [friendshipId, userId, userId])
+    return result.affectedRows
+}
+
 //!Export
 module.exports = {
     pool,
@@ -2385,5 +2552,14 @@ module.exports = {
     finalizeWorkoutStats,
     createUserFood,
     deleteUserFood,
-    createShareTicket
+    createShareTicket,
+    getLeaderboard,
+    searchUsers,
+    checkExistingFriendship,
+    sendFriendRequest,
+    getPendingRequests,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    getFriends,
+    removeFriend
 };
