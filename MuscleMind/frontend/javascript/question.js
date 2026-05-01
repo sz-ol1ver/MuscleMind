@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if(currentIndex+1 == 10){
             try {
                 console.log(userProfile)
-                const data = await userAns('http://127.0.0.1:3000/api/question', userProfile);
+                const data = await userAns('/api/question', userProfile);
                 kerdoivCon.style.display = 'none';
                 successCon.style.display = 'block';
                 messageCon.innerHTML = data.message;

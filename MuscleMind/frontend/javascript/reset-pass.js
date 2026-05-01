@@ -36,7 +36,7 @@ async function tokenOnLoadCheck() {
         const postObj = {
             token: token
         }
-        const data = await postRequest('http://127.0.0.1:3000/api/auth/check-token', postObj);
+        const data = await postRequest('/api/auth/check-token', postObj);
         console.log(data);
     } catch (error) {
         feedback.style.color = 'red';
@@ -54,7 +54,7 @@ async function sendNewPassword(pass, passConf) {
             confirm: passConf,
             token: token
         };
-        const data = await postRequest('http://127.0.0.1:3000/api/auth/new-password', postObj);
+        const data = await postRequest('/api/auth/new-password', postObj);
         feedback.style.color = 'lightgreen';
         feedback.innerHTML = data.message;
         setTimeout(() => {

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function logout() {
     try {
-        const data = await postLogout('http://127.0.0.1:3000/api/auth/logout');
+        const data = await postLogout('/api/auth/logout');
         window.location.href = '/bejelentkezes';
     } catch (error) {
         console.error(error.message)
@@ -28,7 +28,7 @@ async function checkAdmin() {
     //? side-nav-list
     //? mobil-nav-list
     try {
-        const data = await getFetch('http://127.0.0.1:3000/api/auth/is-admin');
+        const data = await getFetch('/api/auth/is-admin');
         const sn = document.getElementById('side-nav-list');
         const mn = document.getElementById('mobil-nav-list');
         if(data.admin == 1){

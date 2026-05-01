@@ -485,7 +485,7 @@ function formatMuscleGroup(group){
 async function deletePlan(id) {
     const alertDelete = document.getElementById('alert-delete-'+id);
     try {
-        const data = await deleteFetch('http://127.0.0.1:3000/api/workout/my-plan/delete/'+id);
+        const data = await deleteFetch('/api/workout/my-plan/delete/'+id);
         alertDelete.innerHTML = data.message;
         alertDelete.classList.add('alert-success');
         alertDelete.classList.remove('d-none');
@@ -508,7 +508,7 @@ async function postPlan(obj) {
     const alert = document.getElementById('alert-save');
     
     try {
-        const data = await postNewPlan('http://127.0.0.1:3000/api/workout/newPlan', obj);
+        const data = await postNewPlan('/api/workout/newPlan', obj);
         alert.innerHTML = data.message;
         alert.classList.add('alert-success', 'w-100');
         alert.classList.remove('d-none');
@@ -541,7 +541,7 @@ async function updatePlan(obj) {
                 obj.days[i].name = 'Nap '+(i+1);
             }
         }
-        const data = await putPlan('http://127.0.0.1:3000/api/workout/my-plan/update/'+planEditId, obj);
+        const data = await putPlan('/api/workout/my-plan/update/'+planEditId, obj);
         alert.innerHTML = data.message;
         alert.classList.add('alert-success', 'w-100');
         alert.classList.remove('d-none');
@@ -559,7 +559,7 @@ async function updatePlan(obj) {
 }
 async function loadExercises() {
     try {
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
+        const data = await getFetch('/api/workout/exercises');
 
         exercisesList = data.message;
         filteredExercisesList = [...exercisesList];
@@ -578,7 +578,7 @@ async function loadExercises() {
 }
 async function getActive() {
     try {
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/plans/active');
+        const data = await getFetch('/api/workout/plans/active');
         activePlan = data.active;
         if(activePlan == null){
             selectedDivItems.innerHTML = '<p class="text-center w-100">Nincs kiválasztva edzésterv!</p>';
@@ -597,7 +597,7 @@ async function updateActive(id) {
         const obj = {
             active: id
         }
-        const data = await patchFetch('http://127.0.0.1:3000/api/workout/plans/active', obj);
+        const data = await patchFetch('/api/workout/plans/active', obj);
         await getActive();
     } catch (error) {
         console.error(error.message);
@@ -606,7 +606,7 @@ async function updateActive(id) {
 async function loadWorkouts() {
     try {
         const workoutDiv = document.getElementById('personal-items');
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plans');
+        const data = await getFetch('/api/workout/my-plans');
 
         workoutDiv.innerHTML = '';
 
@@ -790,7 +790,7 @@ function renderRecWorkouts(plans){
 }
 async function loadRecWorkouts() {
     try {
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/default-plans');
+        const data = await getFetch('/api/workout/default-plans');
 
         recommendedPlans = data.plans;
 
@@ -805,7 +805,7 @@ async function loadRecWorkouts() {
 }
 async function setRecommendedFiltersFromUserPreferences(){
     try {
-        const pref = await getFetch('http://127.0.0.1:3000/api/workout/user-preferences');
+        const pref = await getFetch('/api/workout/user-preferences');
 
         console.log(pref)
 
@@ -864,7 +864,7 @@ async function loadWorkoutDetail(id) {
         const detailDiv = document.getElementById(`workout-details-${id}`);
         detailDiv.innerHTML = '';
 
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+        const data = await getFetch('/api/workout/my-plan/' + id);
         const details = data.details.days;
 
         for (const day of details) {
@@ -946,7 +946,7 @@ async function loadRecWorkoutDetail(id) {
         const detailDiv = document.getElementById(`workout-details-${id}`);
         detailDiv.innerHTML = '';
 
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/default-plan/' + id);
+        const data = await getFetch('/api/workout/default-plan/' + id);
         const details = data.details.days;
 
         const descDiv = document.createElement('div');
@@ -1001,7 +1001,7 @@ async function loadRecWorkoutDetail(id) {
     }
 }
 async function editWorkout(id) {
-    const data = await getFetch('http://127.0.0.1:3000/api/workout/my-plan/' + id);
+    const data = await getFetch('/api/workout/my-plan/' + id);
 
     await loadExercises();
 

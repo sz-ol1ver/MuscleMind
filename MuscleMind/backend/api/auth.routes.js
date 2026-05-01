@@ -162,7 +162,7 @@ router.post('/request-password', loginMw.requestPassword,async(request, response
         await db.save_token(email, token_hash);
 
         //? link for new password + token in url
-        const resetLink = `http://127.0.0.1:3000/uj-jelszo?token=${token}`;
+        const resetLink = `/uj-jelszo?token=${token}`;
 
         //? brevo POST obj
         const sendObj = {

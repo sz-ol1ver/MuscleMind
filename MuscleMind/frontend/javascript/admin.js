@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
             return;
         }
         try {
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/tickets/all/seen');
+            const data = await patchFetch('/api/admin/tickets/all/seen');
             console.log(data.message);
             loadTickets();
         } catch (error) {
@@ -144,7 +144,7 @@ async function toggleAdminById(){
             return alert('Adj meg érvényes felhasználó ID-t!');
         }
 
-        const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/' + userId);
+        const data = await patchFetch('/api/admin/user/toggle-admin/' + userId);
 
         alert(data.message);
 
@@ -171,7 +171,7 @@ async function loadDash() {
         const todayTicket = document.getElementById('stat-todayTicket');
         const todayWorkout = document.getElementById('stat-todayWorkout');
         const todayError = document.getElementById('stat-todayError');
-        const {dashStats} = await getFetch('http://127.0.0.1:3000/api/admin/dashboard');
+        const {dashStats} = await getFetch('/api/admin/dashboard');
         
         allUser.innerHTML = '';
         newReg.innerHTML = '';
@@ -196,7 +196,7 @@ async function loadTickets() {
     try {
         openT.length = 0;
         closedT.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/tickets/all');
+        const data = await getFetch('/api/admin/tickets/all');
         for(let ticket of data.tickets){
             if(ticket.status == 'open' || ticket.status == 'seen'){
                 openT.push(ticket)
@@ -400,7 +400,7 @@ function renderTickets(tickets, container) {
         closeBtn.id = 'closeBtn';
         closeBtn.addEventListener('click', async()=>{
             try {
-                const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/close/'+ticket.id);
+                const data = await patchFetch('/api/admin/ticket/close/'+ticket.id);
                 alert(data.message);
                 refreshSections();
             } catch (error) {
@@ -448,7 +448,7 @@ function renderTickets(tickets, container) {
                     if(!patchObj.admin_reply){
                         return;
                     }
-                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/answer/'+ticket.id, patchObj);
+                    const data = await patchFetch('/api/admin/ticket/answer/'+ticket.id, patchObj);
                     alert(data.message);
                     adminMessageBox.contentEditable = false;
                     adminMessageBox.blur();
@@ -467,7 +467,7 @@ function renderTickets(tickets, container) {
                         if(!patchObj.admin_reply){
                             return;
                         }
-                        const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/answer/'+ticket.id, patchObj);
+                        const data = await patchFetch('/api/admin/ticket/answer/'+ticket.id, patchObj);
                         alert(data.message);
                         adminMessageBox.contentEditable = false;
                         adminMessageBox.blur();
@@ -482,7 +482,7 @@ function renderTickets(tickets, container) {
                     return;
                 }
                 try {
-                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/ticket/seen/'+ticket.id);
+                    const data = await patchFetch('/api/admin/ticket/seen/'+ticket.id);
                     console.log(data.message);
                     badge.className = 'badge bg-warning text-dark';
                     badge.innerHTML = 'Megtekintve';
@@ -518,7 +518,7 @@ function renderTickets(tickets, container) {
 async function loadUsers(){
     try {
         users.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/users/all');
+        const data = await getFetch('/api/admin/users/all');
         for(let user of data.users){
             users.push(user);
         }
@@ -630,7 +630,7 @@ function renderUsers(users, container) {
 }
 async function userAllData(id, container) {
     try {
-        const user = await getFetch('http://127.0.0.1:3000/api/admin/user/'+id);
+        const user = await getFetch('/api/admin/user/'+id);
         renderUserBody(user.user, container);
     } catch (error) {
         console.error(error.message)
@@ -686,7 +686,7 @@ function renderUserBody(user, container) {
             let patchObj = {
                 new_username: usernameValue.innerText.trim()
             }
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/username/'+user.id, patchObj);
+            const data = await patchFetch('/api/admin/user/username/'+user.id, patchObj);
             alert(data.message);
             usernameValue.blur();
             usernameValue.contentEditable = false;
@@ -712,7 +712,7 @@ function renderUserBody(user, container) {
                 let patchObj = {
                     new_username: usernameValue.innerText.trim()
                 }
-                const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/username/'+user.id, patchObj);
+                const data = await patchFetch('/api/admin/user/username/'+user.id, patchObj);
                 alert(data.message);
                 usernameValue.blur();
                 usernameValue.contentEditable = false;
@@ -760,7 +760,7 @@ function renderUserBody(user, container) {
             let patchObj = {
                 new_email: emailValue.innerText.trim()
             }
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/email/'+user.id, patchObj);
+            const data = await patchFetch('/api/admin/user/email/'+user.id, patchObj);
             alert(data.message);
             emailValue.blur();
             emailValue.contentEditable = false;
@@ -786,7 +786,7 @@ function renderUserBody(user, container) {
                 let patchObj = {
                     new_email: emailValue.innerText.trim()
                 }
-                const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/email/'+user.id, patchObj);
+                const data = await patchFetch('/api/admin/user/email/'+user.id, patchObj);
                 alert(data.message);
                 emailValue.blur();
                 emailValue.contentEditable = false;
@@ -961,7 +961,7 @@ function renderUserBody(user, container) {
             let postObj = {
                 email: user.email
             }
-            const data = await postRequest('http://127.0.0.1:3000/api/auth/request-password', postObj);
+            const data = await postRequest('/api/auth/request-password', postObj);
             alert(data.message);
         } catch (error) {
             console.error(error.message);
@@ -971,7 +971,7 @@ function renderUserBody(user, container) {
 
     adminBtn.addEventListener('click', async() => {
         try {
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-admin/'+user.id);
+            const data = await patchFetch('/api/admin/user/toggle-admin/'+user.id);
             alert(data.message);
             refreshSections();
         } catch (error) {
@@ -985,7 +985,7 @@ function renderUserBody(user, container) {
             let postObj = {
                 active: user.active
             }
-            const data = await patchFetch('http://127.0.0.1:3000/api/admin/user/toggle-block/'+user.id, postObj);
+            const data = await patchFetch('/api/admin/user/toggle-block/'+user.id, postObj);
             alert(data.message);
             refreshSections();
         } catch (error) {
@@ -996,7 +996,7 @@ function renderUserBody(user, container) {
 
     deleteBtn.addEventListener('click', async() => {
         try {
-            const data = await deleteFetch('http://127.0.0.1:3000/api/admin/user/delete/'+user.id);
+            const data = await deleteFetch('/api/admin/user/delete/'+user.id);
             alert(data.message);
             refreshSections();
         } catch (error) {
@@ -1032,7 +1032,7 @@ function renderUserBody(user, container) {
 async function postNewFood() {
     try {
         const newFood = new FormData(newFoodForm)
-        const data = await postForm('http://127.0.0.1:3000/api/admin/foods/new', newFood);
+        const data = await postForm('/api/admin/foods/new', newFood);
         console.log(data);
         alert(data.message);
         setTimeout(() => {
@@ -1047,7 +1047,7 @@ async function postNewFood() {
 async function loadFoods(){
     try {
         resetFilters();
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/foods/all');
+        const data = await getFetch('/api/admin/foods/all');
         renderFoods(data.foods, containerFoods);
     } catch (error) {
         console.error(error.message);
@@ -1407,7 +1407,7 @@ function renderFoodCards(foods, container, prefix){
                     };
 
                     const data = await patchFetch(
-                        'http://127.0.0.1:3000/api/admin/foods/toggle-approved/' + food.id,
+                        '/api/admin/foods/toggle-approved/' + food.id,
                         patchObj
                     );
 
@@ -1434,7 +1434,7 @@ function renderFoodCards(foods, container, prefix){
                 return;
             }
             try {
-                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/foods/delete-food/' + food.id);
+                const data = await deleteFetch('/api/admin/foods/delete-food/' + food.id);
                 alert(data.message);
                 loadFoods();
             } catch (error) {
@@ -1590,7 +1590,7 @@ async function loadWorkouts(){
         filteredAdminWorkouts.length = 0;
         filteredUsersWorkouts.length = 0;
 
-        const data = await getFetch('http://127.0.0.1:3000/api/admin/workouts/all');
+        const data = await getFetch('/api/admin/workouts/all');
 
         for(const workout of data.default){
             adminWorkouts.push(workout);
@@ -1892,7 +1892,7 @@ function renderWorkoutCards(workouts, container, prefix){
             }
 
             try {
-                const data = await deleteFetch('http://127.0.0.1:3000/api/admin/workout/delete/' + workout.planId);
+                const data = await deleteFetch('/api/admin/workout/delete/' + workout.planId);
                 alert(data.message);
                 loadWorkouts();
             } catch (error) {
@@ -1966,7 +1966,7 @@ async function loadExercises(){
     try {
         allExercises.length = 0;
 
-        const data = await getFetch('http://127.0.0.1:3000/api/workout/exercises');
+        const data = await getFetch('/api/workout/exercises');
 
         for(const exercise of data.message){
             allExercises.push(exercise);
@@ -2420,7 +2420,7 @@ async function createAdminWorkout() {
         formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
         formData.append('days', JSON.stringify(workout.days));
 
-        const data = await postForm('http://127.0.0.1:3000/api/admin/workout/new', formData);
+        const data = await postForm('/api/admin/workout/new', formData);
 
         alert(data.message);
         resetWorkoutForm();
@@ -2448,7 +2448,7 @@ async function updateAdminWorkout() {
         formData.append('description', workoutForm.querySelector('[name="description"]').value || '');
         formData.append('days', JSON.stringify(workout.days));
 
-        const data = await putForm('http://127.0.0.1:3000/api/admin/workout/edit/' + editingWorkoutId, formData);
+        const data = await putForm('/api/admin/workout/edit/' + editingWorkoutId, formData);
 
         alert(data.message);
         resetWorkoutForm();

@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                     try {
                         const formDataReg = new FormData(form);
                         formDataReg.delete('pass-confirm');
-                        const data = await registration('http://127.0.0.1:3000/api/auth/registration', formDataReg);
+                        const data = await registration('/api/auth/registration', formDataReg);
                         feedBack.style.color = 'lightgreen';
                         feedBack.innerHTML = data.message;
                         form.reset();
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 try {
                     const formDataReg = new FormData(form);
                     formDataReg.delete('pass-confirm');
-                    const data = await registration('http://127.0.0.1:3000/api/auth/registration', formDataReg);
+                    const data = await registration('/api/auth/registration', formDataReg);
                     feedBack.style.color = 'lightgreen';
                     feedBack.innerHTML = data.message;
                     form.reset();

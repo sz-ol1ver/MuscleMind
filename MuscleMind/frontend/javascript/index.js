@@ -524,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   async function loadWorkoutReminder() {
       try {
-          const data = await getFetch('http://127.0.0.1:3000/api/workout/calendar')
+          const data = await getFetch('/api/workout/calendar')
 
           const dDate = new Date()
           let monthStr = dDate.getMonth() + 1

@@ -133,7 +133,7 @@ async function getStats() {
         userWeights.length = 0;
         exercises.length = 0;
         userPrs.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/stats/me');
+        const data = await getFetch('/api/stats/me');
         //? feltoltesek
         //* global xp
         Object.assign(userGlobal, data.stats.globalXp);

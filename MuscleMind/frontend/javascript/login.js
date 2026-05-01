@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     loginBtn.addEventListener('click', async()=>{
         try {
             const formDataLogin = new FormData(form);
-            const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin)
+            const data = await login('/api/auth/login', formDataLogin)
             feedback.style.color = 'lightgreen';
             feedback.innerHTML = data.message;
             sessionStorage.setItem('showWorkoutReminder', 'true') //login utan dobja csak az emlekeztetot
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if(e.key == 'Enter'){
             try {
                 const formDataLogin = new FormData(form);
-                const data = await login('http://127.0.0.1:3000/api/auth/login', formDataLogin);
+                const data = await login('/api/auth/login', formDataLogin);
                 feedback.style.color = 'lightgreen';
                 feedback.innerHTML = data.message;
                 sessionStorage.setItem('showWorkoutReminder', 'true') //login utan dobja csak az emlekeztetot

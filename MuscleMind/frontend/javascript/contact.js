@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function getEmail() {
     try {
-        const data = await getFetch('http://127.0.0.1:3000/api/tickets/user-email');
+        const data = await getFetch('/api/tickets/user-email');
         form.email.value = data.email;
     } catch (error) {
         console.error(error.message)
@@ -24,7 +24,7 @@ async function getEmail() {
 };
 async function postTicket(formObj) {
     try {
-        const data = await postForm('http://127.0.0.1:3000/api/tickets/new-ticket', formObj);
+        const data = await postForm('/api/tickets/new-ticket', formObj);
         form.reset();
         fb.style.color = 'lightgreen';
         fb.innerHTML = data.message;

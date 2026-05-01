@@ -1,7 +1,7 @@
 ###
-GET http://127.0.0.1:3000/api/testsql
+GET /api/testsql
 ###
-POST http://127.0.0.1:3000/api/auth/login
+POST /api/auth/login
 Content-Type: application/json
 
 {
@@ -9,9 +9,9 @@ Content-Type: application/json
     "pass": "asdasdasd"
 }
 ###
-POST http://127.0.0.1:3000/api/auth/logout
+POST /api/auth/logout
 ###
-POST http://127.0.0.1:3000/api/workout/newPlan
+POST /api/workout/newPlan
 Content-Type: application/json
 
 {
@@ -107,4 +107,4 @@ Content-Type: application/json
 
 
 ###
-GET http://127.0.0.1:3000/api/admin/workouts/all
+GET /api/admin/workouts/all

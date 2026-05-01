@@ -21,7 +21,7 @@ async function getTickets() {
     try {
         openT.length = 0;
         closedT.length = 0;
-        const data = await getFetch('http://127.0.0.1:3000/api/tickets/my-tickets');
+        const data = await getFetch('/api/tickets/my-tickets');
         for(let ticket of data.tickets){
             if(ticket.status == 'open' || ticket.status == 'seen'){
                 openT.push(ticket)

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 
 async function requestSend(value) {
     try {
-        const data = await postRequest('http://127.0.0.1:3000/api/auth/request-password', value);
+        const data = await postRequest('/api/auth/request-password', value);
         feedback.style.color = "lightgreen";
         feedback.innerHTML = data.message;
         setTimeout(() => {
