@@ -1113,8 +1113,8 @@ function renderFoods(foods, container){
     container.appendChild(adminSection);
     container.appendChild(userSection);
 
-    renderFoodCards(approvalFoods, approvalList, 'approval');
     renderFoodCards(adminFoods, adminList, 'admin');
+    renderFoodCards(approvalFoods, approvalList, 'approval');
     renderFoodCards(userFoods, userList, 'user');
 }
 function renderFilteredFoods(container){
@@ -1162,9 +1162,8 @@ function renderFilteredFoods(container){
     container.appendChild(approvalSection);
     container.appendChild(adminSection);
     container.appendChild(userSection);
-
-    renderFoodCards(filteredApprovalFoods, approvalList, 'approval');
-    renderFoodCards(filteredAdminFoods, adminList, 'admin');
+    
+    renderFoodCards(filteredAdminFoods, adminList, 'admin');renderFoodCards(filteredApprovalFoods, approvalList, 'approval');
     renderFoodCards(filteredUserFoods, userList, 'user');
 }
 function renderFoodCards(foods, container, prefix){
