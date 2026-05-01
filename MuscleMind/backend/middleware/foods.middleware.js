@@ -78,6 +78,7 @@ async function validateNewFood(req, res, next) {
                 });
             }
         }
+      
         //? leiras ellenorzes
         if (typeof food.description !== 'string' || !food.description.trim()) {
             return res.status(400).json({

@@ -13,6 +13,7 @@
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
         <link rel="stylesheet" href="../css/workout.css" />
+        <link rel="stylesheet" href="../css/meals.css" />
         <!--!JavaScript-->
         <script type="module" src="../javascript/index.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
@@ -158,21 +159,297 @@
 
                 <!-- Középső blokk -->
                 <div class="col-lg-9 col-xl-10 p-3" id="middle-part">
+                    <div class="row mb-4" id="metrics-row">
+                        <!-- Statisztikák ide jönnek -->
+                        <div class="col-12 d-flex flex-wrap gap-3 justify-content-between" id="metrics-container">
+                            <!-- JS tölti be -->
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="filter-card p-3 rounded">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                                    <button class="btn btn-success fw-bold" data-bs-toggle="modal" data-bs-target="#newRecipeModal">
+                                        + Új recept létrehozása
+                                    </button>
+                                    <div class="flex-grow-1">
+                                        <input type="text" id="search-input" class="form-control bg-dark text-light border-secondary" placeholder="🔍 Recept neve alapján keresés...">
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-2">
+                                        <label class="form-label filter-label">Kategória</label>
+                                        <select id="filter-category" class="form-select bg-dark text-light border-secondary">
+                                            <option value="all">Összes</option>
+                                            <option value="reggeli">Reggeli</option>
+                                            <option value="ebed">Ebéd</option>
+                                            <option value="vacsora">Vacsora</option>
+                                            <option value="snack">Snack</option>
+                                            <option value="desszert">Desszert</option>
+                                            <option value="ital">Ital</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label filter-label">Cél</label>
+                                        <select id="filter-goal" class="form-select bg-dark text-light border-secondary">
+                                            <option value="all">Összes</option>
+                                            <option value="tomegnoveles">Tömegnövelés</option>
+                                            <option value="szalkasitas">Szálkásítás</option>
+                                            <option value="szintentartas">Szintentartás</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label filter-label">Étrend</label>
+                                        <select id="filter-diet" class="form-select bg-dark text-light border-secondary">
+                                            <option value="all">Összes</option>
+                                            <option value="mindenevo">Mindenevő</option>
+                                            <option value="vegetarianus">Vegetáriánus</option>
+                                            <option value="vegan">Vegán</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label filter-label">Nehézség</label>
+                                        <select id="filter-difficulty" class="form-select bg-dark text-light border-secondary">
+                                            <option value="all">Összes</option>
+                                            <option value="konnyu">Könnyű</option>
+                                            <option value="kozepes">Közepes</option>
+                                            <option value="nehez">Nehéz</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label filter-label">Idő</label>
+                                        <select id="filter-time" class="form-select bg-dark text-light border-secondary">
+                                            <option value="all">Összes</option>
+                                            <option value="15">< 15 perc</option>
+                                            <option value="30">< 30 perc</option>
+                                            <option value="60">< 60 perc</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 d-flex align-items-end gap-3 flex-wrap">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-high-protein">
+                                            <label class="form-check-label text-light filter-checkbox-label">Magas fehérje</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-low-carb">
+                                            <label class="form-check-label text-light filter-checkbox-label">Alacsony szénhidrát</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-bulk-friendly">
+                                            <label class="form-check-label text-light filter-checkbox-label">Tömegeléshez</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="filter-cut-friendly">
+                                            <label class="form-check-label text-light filter-checkbox-label">Szálkásításhoz</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-1">
+                                    <div class="col-md-10 d-flex justify-content-between">
+                                        <!-- Sliders (simplified) -->
+                                        <div class="d-flex gap-4 flex-grow-1">
+                                            <div class="flex-grow-1">
+                                                <label class="form-label filter-label">Kalória (kcal)</label>
+                                                <input type="range" class="form-range" id="filter-calories" min="0" max="2000" step="50" value="2000">
+                                                <div class="text-center text-success slider-value" id="val-calories">0-2000+</div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label filter-label">Fehérje (g)</label>
+                                                <input type="range" class="form-range" id="filter-protein" min="0" max="150" step="5" value="150">
+                                                <div class="text-center text-success slider-value" id="val-protein">0-150+</div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label filter-label">Szénhidrát (g)</label>
+                                                <input type="range" class="form-range" id="filter-carbs" min="0" max="200" step="10" value="200">
+                                                <div class="text-center text-success slider-value" id="val-carbs">0-200+</div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <label class="form-label filter-label">Zsír (g)</label>
+                                                <input type="range" class="form-range" id="filter-fat" min="0" max="100" step="5" value="100">
+                                                <div class="text-center text-success slider-value" id="val-fat">0-100+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 d-flex flex-column justify-content-end gap-2">
+                                        <button class="btn btn-outline-secondary btn-sm" id="btn-reset-filters">🔄 Szűrők törlése</button>
+                                        <button class="btn btn-success btn-sm" id="btn-apply-filters">✔ Szűrés alkalmazása</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-12">
-                            <div class="workout-plan">
-                                <div id="recommended-title">Ajánlott étrend <hr></div>
-
+                            <div class="mb-5">
+                                <div class="section-header">
+                                    <h4 class="section-title text-warning">⭐ Ajánlott receptek</h4>
+                                </div>
+                                <p class="section-desc mb-4">Céljaidnak és étrendednek megfelelő, megbízható receptek</p>
+                                <div id="recommended-container" class="recipe-grid">
+                                    <!-- JS render -->
+                                </div>
                             </div>
 
-                            <div class="workout-plan">
+                            <div class="mb-5">
+                                <div class="section-header">
+                                    <h4 class="section-title text-info">👥 Közösségi receptek</h4>
+                                </div>
+                                <p class="section-desc mb-4">Más felhasználók által megosztott és jóváhagyott receptek</p>
+                                <div id="community-container" class="recipe-grid">
+                                    <!-- JS render -->
+                                </div>
+                            </div>
 
-                                <div id="personal-title">Saját étrend <hr></div>
+                            <div class="mb-5">
+                                <div class="section-header">
+                                    <h4 class="section-title text-success">📘 Saját receptjeim</h4>
+                                </div>
+                                <p class="section-desc mb-4">Általad létrehozott receptek</p>
+                                <div id="my-recipes-container" class="recipe-grid">
+                                    <!-- JS render -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </body>
+    <!-- Recipe Details Modal -->
+    <div class="modal fade" id="recipeDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="detail-modal-title">Recept neve</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detail-modal-body">
+                    <!-- JS tölti ki -->
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Recipe Modal -->
+    <div class="modal fade" id="newRecipeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">Új recept hozzáadása</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="food-create-form" class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Étel neve</label>
+                            <input type="text" name="name" class="form-control bg-dark text-light border-secondary" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Kategória</label>
+                            <select name="category" class="form-select bg-dark text-light border-secondary" required>
+                                <option value="">Válassz</option>
+                                <option value="reggeli">Reggeli</option>
+                                <option value="ebed">Ebéd</option>
+                                <option value="vacsora">Vacsora</option>
+                                <option value="snack">Snack</option>
+                                <option value="desszert">Desszert</option>
+                                <option value="ital">Ital</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Elkészítési idő (perc)</label>
+                            <input type="number" name="prep_time_min" class="form-control bg-dark text-light border-secondary" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Leírás / Recept elkészítése</label>
+                            <textarea name="description" class="form-control bg-dark text-light border-secondary" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="col-md-3"><label class="form-label">Kalória</label><input type="number" step="0.01" name="calories_kcal" class="form-control bg-dark text-light border-secondary" required value="0"></div>
+                        <div class="col-md-3"><label class="form-label">Fehérje</label><input type="number" step="0.01" name="protein_g" class="form-control bg-dark text-light border-secondary" required value="0"></div>
+                        <div class="col-md-3"><label class="form-label">Szénhidrát</label><input type="number" step="0.01" name="carbs_g" class="form-control bg-dark text-light border-secondary" required value="0"></div>
+                        <div class="col-md-3"><label class="form-label">Zsír</label><input type="number" step="0.01" name="fat_g" class="form-control bg-dark text-light border-secondary" required value="0"></div>
+                        
+                        <div class="col-md-3"><label class="form-label">Rost</label><input type="number" step="0.01" name="fiber_g" class="form-control bg-dark text-light border-secondary" value="0"></div>
+                        <div class="col-md-3"><label class="form-label">Cukor</label><input type="number" step="0.01" name="sugar_g" class="form-control bg-dark text-light border-secondary" value="0"></div>
+                        <div class="col-md-3"><label class="form-label">Só</label><input type="number" step="0.01" name="salt_g" class="form-control bg-dark text-light border-secondary" value="0"></div>
+                        <div class="col-md-3">
+                            <label class="form-label">Egység</label>
+                            <select name="serving_unit" class="form-select bg-dark text-light border-secondary" required>
+                                <option value="g">g</option>
+                                <option value="ml">ml</option>
+                                <option value="db">db</option>
+                                <option value="adag">adag</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Adag méret</label>
+                            <input type="number" step="0.01" name="serving_size" class="form-control bg-dark text-light border-secondary" required value="100">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Cél</label>
+                            <select name="goal_tag" class="form-select bg-dark text-light border-secondary" required>
+                                <option value="mind">Mind</option>
+                                <option value="tomegnoveles">Tömegnövelés</option>
+                                <option value="szalkasitas">Szálkásítás</option>
+                                <option value="szintentartas">Szintentartás</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Étrend</label>
+                            <select name="diet_tag" class="form-select bg-dark text-light border-secondary" required>
+                                <option value="mindenevo">Mindenevő</option>
+                                <option value="vegetarianus">Vegetáriánus</option>
+                                <option value="vegan">Vegán</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Nehézség</label>
+                            <select name="difficulty" class="form-select bg-dark text-light border-secondary" required>
+                                <option value="konnyu">Könnyű</option>
+                                <option value="kozepes">Közepes</option>
+                                <option value="nehez">Nehéz</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Címkék</label>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <div class="form-check"><input type="checkbox" name="high_protein" class="form-check-input" id="hp"><label class="form-check-label" for="hp">High Protein</label></div>
+                                <div class="form-check"><input type="checkbox" name="low_carb" class="form-check-input" id="lc"><label class="form-check-label" for="lc">Low Carb</label></div>
+                                <div class="form-check"><input type="checkbox" name="bulk_friendly" class="form-check-input" id="bf"><label class="form-check-label" for="bf">Bulk Friendly</label></div>
+                                <div class="form-check"><input type="checkbox" name="cut_friendly" class="form-check-input" id="cf"><label class="form-check-label" for="cf">Cut Friendly</label></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Allergének</label>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <div class="form-check"><input type="checkbox" name="allergens" value="1" class="form-check-input"><label class="form-check-label">Tej</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="2" class="form-check-input"><label class="form-check-label">Tojás</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="3" class="form-check-input"><label class="form-check-label">Glutén</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="4" class="form-check-input"><label class="form-check-label">Mogyoró</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="5" class="form-check-input"><label class="form-check-label">Diófélék</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="6" class="form-check-input"><label class="form-check-label">Magvak</label></div>
+                                <div class="form-check"><input type="checkbox" name="allergens" value="7" class="form-check-input"><label class="form-check-label">Hal</label></div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-end mt-4">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                            <button type="submit" class="btn btn-success">Létrehozás</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../javascript/meals.js" type="module"></script>
+</body>
 </html>

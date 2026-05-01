@@ -1,0 +1,207 @@
+/* etrend oldal stilusai */
+
+:root {
+    --glass-bg: rgba(30, 30, 40, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    --neon-accent: #00d2ff;
+    --neon-accent-secondary: #3a7bd5;
+    --card-hover-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    --transition-speed: 0.3s;
+}
+
+/* fenti statisztika kartyak stilusai */
+.metric-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* szuro sav */
+.filter-card {
+    background: linear-gradient(145deg, rgba(25, 25, 35, 0.8), rgba(15, 15, 20, 0.9)) !important;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 1.5rem !important;
+}
+
+.filter-card select, .filter-card input[type="text"] {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #e0e0e0 !important;
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.filter-card select:focus, .filter-card input[type="text"]:focus {
+    border-color: var(--neon-accent) !important;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.3) !important;
+    outline: none;
+}
+
+/* csuszkak (range) stilusai */
+.form-range::-webkit-slider-thumb {
+    background: var(--neon-accent);
+    box-shadow: 0 0 10px var(--neon-accent);
+    border: none;
+    height: 16px;
+    width: 16px;
+    margin-top: -6px;
+}
+.form-range::-webkit-slider-runnable-track {
+    background: rgba(255, 255, 255, 0.1);
+    height: 6px;
+    border-radius: 3px;
+}
+
+/* recept grid tarolo */
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+/* mar nincs vizszintes gorgetes */
+.recipe-card {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px !important;
+    overflow: hidden;
+    transition: all var(--transition-speed) ease;
+    width: 100% !important; /* felulirja a korabbi fix szelesseget */
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.recipe-card .card-body {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, #fff, #aaa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* makro badge-ek */
+.macro-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.macro-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.macro-cal { background: rgba(255, 193, 7, 0.15); color: #ffc107; border: 1px solid rgba(255, 193, 7, 0.3); }
+.macro-pro { background: rgba(220, 53, 69, 0.15); color: #ff6b81; border: 1px solid rgba(220, 53, 69, 0.3); }
+.macro-car { background: rgba(13, 110, 253, 0.15); color: #70a1ff; border: 1px solid rgba(13, 110, 253, 0.3); }
+.macro-fat { background: rgba(253, 126, 20, 0.15); color: #ffa502; border: 1px solid rgba(253, 126, 20, 0.3); }
+
+.recipe-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #999;
+    font-size: 0.85rem;
+}
+
+/* gombok a recept kartyan */
+.recipe-actions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.recipe-actions .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+/* egyedi checkboxok */
+.form-check-input:checked {
+    background-color: var(--neon-accent);
+    border-color: var(--neon-accent);
+}
+
+/* szekcio cimek */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* szuro cimkek es checkbox labelek */
+.filter-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.filter-checkbox-label {
+    font-size: 0.8rem;
+}
+
+/* csuszka ertek kijelzo */
+.slider-value {
+    font-size: 0.8rem;
+}
+
+/* szekcio leirasa */
+.section-desc {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}

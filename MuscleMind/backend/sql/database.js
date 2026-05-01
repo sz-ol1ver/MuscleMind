@@ -1549,6 +1549,85 @@ async function insertFoodAllergen(foodId, allergenId) {
     const [rows] = await pool.execute(insert, [foodId, allergenId]);
     return rows.insertId;
 }
+
+async function createUserFood(userId, food) {
+    const insert = `
+        INSERT INTO foods (
+            user_id,
+            created_by,
+            name,
+            description,
+            image_url,
+            category,
+            calories_kcal,
+            protein_g,
+            carbs_g,
+            fat_g,
+            fiber_g,
+            sugar_g,
+            salt_g,
+            serving_size,
+            serving_unit,
+            goal_tag,
+            diet_tag,
+            difficulty,
+            prep_time_min,
+            high_protein,
+            low_carb,
+            bulk_friendly,
+            cut_friendly,
+            is_approved
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+    `;
+    const [rows] = await pool.execute(insert, [
+        userId,
+        userId,
+        food.name,
+        food.description,
+        food.url || null,
+        food.category,
+        food.calories_kcal,
+        food.protein_g,
+        food.carbs_g,
+        food.fat_g,
+        food.fiber_g,
+        food.sugar_g,
+        food.salt_g,
+        food.serving_size,
+        food.serving_unit,
+        food.goal_tag,
+        food.diet_tag,
+        food.difficulty,
+        food.prep_time_min,
+        food.high_protein,
+        food.low_carb,
+        food.bulk_friendly,
+        food.cut_friendly,
+        0
+    ]);
+    return rows.insertId;
+}
+
+async function deleteUserFood(id, userId) {
+    const del = 'DELETE FROM foods WHERE id = ? AND user_id = ?';
+    const [rows] = await pool.execute(del, [id, userId]);
+    return rows.affectedRows;
+}
+
+async function createShareTicket(userId, foodId, foodName) {
+    const emailSql = 'SELECT email FROM users WHERE id = ?';
+    const [rowsEmail] = await pool.execute(emailSql, [userId]);
+    const email = rowsEmail[0].email;
+
+    const insert = `
+        INSERT INTO support_requests (
+            user_id, email, category, subject, message
+        ) VALUES (?, ?, ?, ?, ?)
+    `;
+    const message = `Kérlek hagyd jóvá a következő receptemet!\nNév: ${foodName}\nAzonosító (ID): ${foodId}`;
+    const [rows] = await pool.execute(insert, [userId, email, 'idea', 'Új recept jóváhagyása', message]);
+    return rows.insertId;
+}
 //? workouts
 async function getAllUsersPlans(){
     const sql = `
@@ -2471,6 +2550,9 @@ module.exports = {
     getAllExercisesForStats,
     getUserMetrics,
     finalizeWorkoutStats,
+    createUserFood,
+    deleteUserFood,
+    createShareTicket,
     getLeaderboard,
     searchUsers,
     checkExistingFriendship,
