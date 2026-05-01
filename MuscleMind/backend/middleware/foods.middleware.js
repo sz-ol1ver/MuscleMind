@@ -63,16 +63,20 @@ async function validateNewFood(req, res, next) {
             });
         }
         // url ellenorzes
-        if (food.url !== undefined && food.url !== null && typeof food.url !== 'string') {
-            return res.status(400).json({
-                message: 'Érvénytelen url.'
-            });
-        }
-        let urlReg = /^[a-zA-Z0-9]+\.[a-zA-Z0-9]+$/;
-        if(!urlReg.test(food.url)){
-            return res.status(400).json({
-                message: 'Érvénytelen url.'
-            });
+        if (food.url != null && food.url !== '') {
+            if (typeof food.url !== 'string' || food.url.trim() === '') {
+                return res.status(400).json({
+                    message: 'Érvénytelen kép név.'
+                });
+            }
+
+            const fileReg = /^[a-zA-Z0-9_-]+\.(jpg|jpeg|png|webp)$/i;
+
+            if (!fileReg.test(food.url)) {
+                return res.status(400).json({
+                    message: 'Érvénytelen kép formátum.'
+                });
+            }
         }
         //? leiras ellenorzes
         if (typeof food.description !== 'string' || !food.description.trim()) {

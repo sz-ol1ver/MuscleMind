@@ -14,9 +14,11 @@ let containerUsers;
 let containerFoods;
 let adminFoods = [];
 let userFoods = [];
+let approvalFoods = [];
 // szűrt tömbök
 let filteredAdminFoods = [];
 let filteredUserFoods = [];
+let filteredApprovalFoods = [];
 let newFoodForm;
 
 let workoutContainer;
@@ -1056,11 +1058,14 @@ function renderFoods(foods, container){
 
     adminFoods = [];
     userFoods = [];
+    approvalFoods = [];
 
-    for(const food of foods){
-        if(food.user_id === null || food.user_id === undefined){
+    for (const food of foods) {
+        if (food.share === 1 && !food.is_approved) {
+            approvalFoods.push(food);
+        } else if (food.user_id === null || food.user_id === undefined) {
             adminFoods.push(food);
-        }else{
+        } else {
             userFoods.push(food);
         }
     }
@@ -1085,15 +1090,30 @@ function renderFoods(foods, container){
     const userList = document.createElement('div');
     userList.className = 'foods-scroll';
 
+    const approvalSection = document.createElement('div');
+    approvalSection.className = 'foods-split-section';
+
+    const approvalTitle = document.createElement('h6');
+    approvalTitle.className = 'ticket-section-title';
+    approvalTitle.textContent = 'Jóváhagyásra váró receptek';
+
+    const approvalList = document.createElement('div');
+    approvalList.className = 'foods-scroll';
+
+    approvalSection.appendChild(approvalTitle);
+    approvalSection.appendChild(approvalList);
+
     adminSection.appendChild(adminTitle);
     adminSection.appendChild(adminList);
 
     userSection.appendChild(userTitle);
     userSection.appendChild(userList);
 
+    container.appendChild(approvalSection);
     container.appendChild(adminSection);
     container.appendChild(userSection);
 
+    renderFoodCards(approvalFoods, approvalList, 'approval');
     renderFoodCards(adminFoods, adminList, 'admin');
     renderFoodCards(userFoods, userList, 'user');
 }
@@ -1120,15 +1140,30 @@ function renderFilteredFoods(container){
     const userList = document.createElement('div');
     userList.className = 'foods-scroll';
 
+    const approvalSection = document.createElement('div');
+    approvalSection.className = 'foods-split-section';
+
+    const approvalTitle = document.createElement('h6');
+    approvalTitle.className = 'ticket-section-title';
+    approvalTitle.textContent = 'Jóváhagyásra váró receptek';
+
+    const approvalList = document.createElement('div');
+    approvalList.className = 'foods-scroll';
+
+    approvalSection.appendChild(approvalTitle);
+    approvalSection.appendChild(approvalList);
+
     adminSection.appendChild(adminTitle);
     adminSection.appendChild(adminList);
 
     userSection.appendChild(userTitle);
     userSection.appendChild(userList);
 
+    container.appendChild(approvalSection);
     container.appendChild(adminSection);
     container.appendChild(userSection);
 
+    renderFoodCards(filteredApprovalFoods, approvalList, 'approval');
     renderFoodCards(filteredAdminFoods, adminList, 'admin');
     renderFoodCards(filteredUserFoods, userList, 'user');
 }
@@ -1177,16 +1212,21 @@ function renderFoodCards(foods, container, prefix){
         leftTop.appendChild(separator);
         leftTop.appendChild(name);
 
-        const badgeWrap = document.createElement('div');
-        badgeWrap.className = 'd-flex align-items-center gap-2 flex-wrap';
-
-        const approvedBadge = document.createElement('span');
-        approvedBadge.className = food.is_approved ? 'badge bg-success' : 'badge bg-danger';
-        approvedBadge.textContent = food.is_approved ? 'Jóváhagyva' : 'Nincs jóváhagyva';
-        badgeWrap.appendChild(approvedBadge);
-
         headerTop.appendChild(leftTop);
-        headerTop.appendChild(badgeWrap);
+
+        if(prefix === 'approval' || (food.is_approved == 1 && food.user_id !== null)){
+            const badgeWrap = document.createElement('div');
+            badgeWrap.className = 'd-flex align-items-center gap-2 flex-wrap';
+
+            const prefixBadge = document.createElement('span');
+
+            prefixBadge.className = food.is_approved ? 'badge bg-success' : 'badge bg-danger';
+
+            prefixBadge.textContent = food.is_approved ? 'Jóváhagyva' : 'Nincs jóváhagyva';
+
+            badgeWrap.appendChild(prefixBadge);
+            headerTop.appendChild(badgeWrap);
+        }
 
         const createdDate = document.createElement('div');
         createdDate.className = 'card-content-date mt-2';
@@ -1348,18 +1388,30 @@ function renderFoodCards(foods, container, prefix){
         const actionWrap = document.createElement('div');
         actionWrap.className = 'd-flex flex-wrap gap-2';
 
-        if(food.user_id !== null && food.user_id !== undefined){
+        if (prefix === 'approval' || food.is_approved == 1) {
             const approveBtn = document.createElement('button');
-            approveBtn.className = food.is_approved ? 'btn btn-outline-warning' : 'btn btn-outline-success';
-            approveBtn.textContent = food.is_approved ? 'Jóváhagyás visszavonása' : 'Jóváhagyás';
+
+            approveBtn.className = food.is_approved
+                ? 'btn btn-outline-warning'
+                : 'btn btn-outline-success';
+
+            approveBtn.textContent = food.is_approved
+                ? 'Jóváhagyás visszavonása'
+                : 'Jóváhagyás';
 
             approveBtn.addEventListener('click', async(e)=>{
                 e.stopPropagation();
+
                 try {
                     const patchObj = {
                         is_approved: food.is_approved
                     };
-                    const data = await patchFetch('http://127.0.0.1:3000/api/admin/foods/toggle-approved/' + food.id, patchObj);
+
+                    const data = await patchFetch(
+                        'http://127.0.0.1:3000/api/admin/foods/toggle-approved/' + food.id,
+                        patchObj
+                    );
+
                     alert(data.message);
                     loadFoods();
                 } catch (error) {
@@ -1452,6 +1504,7 @@ function applyFilters() {
     // reset
     filteredAdminFoods = [];
     filteredUserFoods = [];
+    filteredApprovalFoods = [];
 
     adminFoods.forEach(food => {
         let match = true;
@@ -1491,6 +1544,26 @@ function applyFilters() {
         // HA MEGFELEL
         if (match) {
             filteredUserFoods.push(food);
+        }
+    });
+    approvalFoods.forEach(food => {
+        let match = true;
+
+        // SELECT SZŰRŐK
+        if (category !== "all" && food.category !== category) match = false;
+        if (diet !== "all" && food.diet_tag !== diet) match = false;
+        if (goal !== "all" && food.goal_tag !== goal) match = false;
+        if (difficulty !== "all" && food.difficulty !== difficulty) match = false;
+
+        // CHECKBOX SZŰRŐK
+        if (highProtein && !food.high_protein) match = false;
+        if (lowCarb && !food.low_carb) match = false;
+        if (bulking && !food.bulk_friendly) match = false;
+        if (cutting && !food.cut_friendly) match = false;
+
+        // HA MEGFELEL
+        if (match) {
+            filteredApprovalFoods.push(food);
         }
     });
     renderFilteredFoods(containerFoods);
