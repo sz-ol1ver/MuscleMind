@@ -45,8 +45,11 @@
 .filter-card select,
 .filter-card input[type="text"],
 #newRecipeModal input,
+#editRecipeModal input,
 #newRecipeModal select,
-#newRecipeModal textarea {
+#editRecipeModal select,
+#newRecipeModal textarea,
+#editRecipeModal textarea {
     background-color: #0f0f17 !important;
     border: 1px solid var(--meals-border) !important;
     color: var(--meals-text) !important;
@@ -56,8 +59,11 @@
 .filter-card select:focus,
 .filter-card input[type="text"]:focus,
 #newRecipeModal input:focus,
+#editRecipeModal input:focus,
 #newRecipeModal select:focus,
-#newRecipeModal textarea:focus {
+#editRecipeModal select:focus,
+#newRecipeModal textarea:focus,
+#editRecipeModal textarea:focus {
     border-color: var(--meals-purple-light) !important;
     box-shadow: 0 0 0 0.18rem rgba(124, 58, 237, 0.25) !important;
     outline: none;
@@ -65,7 +71,9 @@
 
 .filter-card input::placeholder,
 #newRecipeModal textarea::placeholder,
-#newRecipeModal input::placeholder {
+#editRecipeModal textarea::placeholder,
+#newRecipeModal input::placeholder,
+#editRecipeModal input::placeholder {
     color: var(--meals-muted);
 }
 
@@ -211,6 +219,7 @@
 .recipe-actions .btn,
 .filter-card .btn,
 #newRecipeModal .btn,
+#editRecipeModal .btn,
 #recipeDetailsModal .btn {
     border-radius: 10px;
     font-weight: 700;
@@ -269,7 +278,7 @@
     border-color: var(--meals-purple-light);
 }
 
-/* szekciók */
+/* szekciok */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -296,7 +305,8 @@
 
 /* modal */
 #recipeDetailsModal .modal-content,
-#newRecipeModal .modal-content {
+#newRecipeModal .modal-content,
+#editRecipeModal .modal-content {
     background: linear-gradient(145deg, var(--meals-panel), var(--meals-bg)) !important;
     border: 1px solid var(--meals-border) !important;
     color: var(--meals-text);
@@ -304,12 +314,14 @@
 
 #recipeDetailsModal .modal-header,
 #recipeDetailsModal .modal-footer,
-#newRecipeModal .modal-header {
+#newRecipeModal .modal-header,
+#editRecipeModal .modal-header {
     border-color: rgba(167, 139, 250, 0.22) !important;
 }
 
 #detail-modal-title,
-#newRecipeModal .modal-title {
+#newRecipeModal .modal-title,
+#editRecipeModal .modal-title {
     color: var(--meals-purple-light);
     font-weight: 800;
 }
