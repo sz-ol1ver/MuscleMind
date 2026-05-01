@@ -1767,6 +1767,238 @@ async function log_error(action, desc, ip) {
 }
 
 
+// ----
+// STATS 
+// ----
+
+async function finalizeWorkoutStats(userId, logId) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // log betoltese es ellenorzese
+        const [logRows] = await connection.execute(
+            'SELECT status, workout_date FROM workout_calendar_logs WHERE id = ? AND user_id = ?',
+             [logId, userId]
+        );
+
+        if (logRows.length === 0) {
+            throw new Error("Edzés nem található!");
+        }
+        if (logRows[0].status === 'completed') {
+            throw new Error("Ez az edzés már véglegesítve lett (duplikáció védelem)!");
+        }
+
+        const workoutDate = logRows[0].workout_date;
+        const formattedWorkoutDate = new Date(workoutDate).toISOString().split('T')[0];
+
+        // edzes lezarasa  és időtartam kiszámolása. 
+        await connection.execute(
+            "UPDATE workout_calendar_logs SET status = 'completed', workout_time_sec = TIMESTAMPDIFF(SECOND, start_time, NOW()) WHERE id = ?",
+            [logId]
+        );
+
+        // lekerjuk a logbol a friss workout_time_sec adatot
+        const [timeRows] = await connection.execute('SELECT workout_time_sec FROM workout_calendar_logs WHERE id = ?', [logId]);
+        const workoutTimeSec = timeRows.length > 0 ? (timeRows[0].workout_time_sec || 0) : 0;
+
+        // mentett szettek beolvasasa (workout_calendar_sets + exercises.muscle_group)
+        const [sets] = await connection.execute(`
+            SELECT 
+                s.id as set_id, 
+                s.weight_done AS weight,
+                s.reps_done AS reps,
+                e.id as exercise_id, 
+                e.muscle_group 
+            FROM workout_calendar_sets s
+            JOIN workout_calendar_exercises ce ON s.workout_calendar_exercise_id = ce.id
+            JOIN exercises e ON ce.exercise_id = e.id
+            WHERE ce.workout_calendar_log_id = ?
+        `, [logId]);
+
+        // valtozok inicializalasa
+        let workoutTotalVolume = 0;
+        let totalSets = sets.length;
+        let totalReps = 0;
+        let prCount = 0;
+        
+        // izomcsoportonkénti volumen gyujtése
+        const muscleVolume = {};
+        
+        for (const set of sets) {
+            const weightDone = Number(set.weight) || 0;
+            const repsDone = Number(set.reps) || 0;
+            const setVolume = weightDone * repsDone;
+            
+            workoutTotalVolume += setVolume;
+            totalReps += repsDone;
+
+            // izom volumen hozzadasa
+            const muscle = set.muscle_group;
+            if (!muscleVolume[muscle]) muscleVolume[muscle] = 0;
+            muscleVolume[muscle] += setVolume;
+
+            // pr logika megvizsgalasa 
+            const [prRows] = await connection.execute(
+                'SELECT max_weight, best_volume FROM user_exercise_prs WHERE user_id = ? AND exercise_id = ?', 
+                [userId, set.exercise_id]
+            );
+
+            let isPrBroken = false;
+
+            if (prRows.length === 0) {
+                // uj pr sor
+                await connection.execute(
+                    `INSERT INTO user_exercise_prs (user_id, exercise_id, max_weight, max_weight_reps, best_volume, achieved_at) 
+                     VALUES (?, ?, ?, ?, ?, NOW())`,
+                    [userId, set.exercise_id, weightDone, repsDone, setVolume]
+                );
+                isPrBroken = true;
+            } else {
+                const currentMaxWeight = Number(prRows[0].max_weight) || 0;
+                const currentBestVolume = Number(prRows[0].best_volume) || 0;
+                
+                let updates = [];
+                let params = [];
+                
+                if (weightDone > currentMaxWeight) {
+                    updates.push('max_weight = ?, max_weight_reps = ?');
+                    params.push(weightDone, repsDone);
+                    isPrBroken = true;
+                }
+                
+                if (setVolume > currentBestVolume) {
+                    updates.push('best_volume = ?');
+                    params.push(setVolume);
+                    isPrBroken = true;
+                }
+                
+                if (updates.length > 0) {
+                    updates.push('achieved_at = NOW()');
+                    params.push(userId, set.exercise_id);
+                    
+                    await connection.execute(
+                        `UPDATE user_exercise_prs SET ${updates.join(', ')} WHERE user_id = ? AND exercise_id = ?`,
+                        params
+                    );
+                }
+            }
+            
+            if (isPrBroken) {
+                // csak akkor növeljük 1el ha legalabb 1 pr megdolt 
+                prCount = 1;
+            }
+        }
+
+        // xp
+        const workoutXp = Math.floor(workoutTotalVolume / 10);
+        
+        // xp frissites
+        const [globalXpRows] = await connection.execute('SELECT xp FROM user_global_xp WHERE user_id = ?', [userId]);
+        if (globalXpRows.length === 0) {
+            await connection.execute('INSERT INTO user_global_xp (user_id, xp) VALUES (?, ?)', [userId, workoutXp]);
+        } else {
+            await connection.execute('UPDATE user_global_xp SET xp = xp + ? WHERE user_id = ?', [workoutXp, userId]);
+        }
+
+        // izomcsoportonkent xp
+        for (const [muscle, volume] of Object.entries(muscleVolume)) {
+            const muscleXpAmount = Math.floor(volume / 10);
+            const [mXpRows] = await connection.execute('SELECT xp FROM user_muscle_xp WHERE user_id = ? AND muscle_group = ?', [userId, muscle]);
+            
+            if (mXpRows.length === 0) {
+                await connection.execute('INSERT INTO user_muscle_xp (user_id, muscle_group, xp) VALUES (?, ?, ?)', [userId, muscle, muscleXpAmount]);
+            } else {
+                await connection.execute('UPDATE user_muscle_xp SET xp = xp + ? WHERE user_id = ? AND muscle_group = ?', [muscleXpAmount, userId, muscle]);
+            }
+        }
+
+        // --- user_stats frissitese ---
+        console.log(`[FINALIZE] Frissítem a user_stats táblát a user_id: ${userId} számára...`);
+        const [statsRows] = await connection.execute('SELECT * FROM user_stats WHERE user_id = ?', [userId]);
+        
+        if (statsRows.length === 0) {
+            console.log(`[FINALIZE] Nem volt még user_stats, új sor beszúrása...`);
+            await connection.execute(`
+                INSERT INTO user_stats (
+                    user_id, completed_workouts, total_volume, total_sets, total_reps, 
+                    pr_count, total_workout_time_sec
+                ) VALUES (?, 1, ?, ?, ?, ?, ?)`,
+                [
+                    Number(userId), 
+                    Number(workoutTotalVolume.toFixed(2)), 
+                    Number(totalSets), 
+                    Number(totalReps), 
+                    Number(prCount), 
+                    Number(workoutTimeSec)
+                ]
+            );
+            console.log(`[FINALIZE] Új user_stats sikeresen beszúrva!`);
+        } else {
+            console.log(`[FINALIZE] Már van user_stats, frissítés.`);
+            await connection.execute(`
+                UPDATE user_stats SET 
+                    completed_workouts = completed_workouts + 1,
+                    total_volume = total_volume + ?,
+                    total_sets = total_sets + ?,
+                    total_reps = total_reps + ?,
+                    pr_count = pr_count + ?,
+                    total_workout_time_sec = total_workout_time_sec + ?
+                WHERE user_id = ?
+            `, [
+                Number(workoutTotalVolume.toFixed(2)), 
+                Number(totalSets), 
+                Number(totalReps), 
+                Number(prCount), 
+                Number(workoutTimeSec), 
+                Number(userId)
+            ]);
+            console.log(`[FINALIZE] user_stats sikeresen frissítve!`);
+        }
+
+        await connection.commit();
+        console.log(`[FINALIZE] Tranzakció sikeresen kommitálva!`);
+        
+        return {
+            success: true,
+            workout_xp: workoutXp,
+            workout_total_volume: workoutTotalVolume,
+            is_new_pr: prCount > 0
+        };
+
+    } catch (error) {
+        console.error(`[FINALIZE ERROR] Hiba történt a véglegesítés során:`, error);
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+async function getGlobalXp(userId) {
+    const sql = "SELECT * FROM user_global_xp WHERE user_id = ?";
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows.length > 0 ? rows[0] : null;
+}
+
+async function getUserStats(userId) {
+    const sql = "SELECT * FROM user_stats WHERE user_id = ?";
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows.length > 0 ? rows[0] : null;
+}
+
+async function getUserPrs(userId) {
+    const sql = "SELECT * FROM user_exercise_prs WHERE user_id = ?";
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
+async function getUserMuscleXp(userId) {
+    const sql = "SELECT * FROM user_muscle_xp WHERE user_id = ?";
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+}
+
 //!Export
 module.exports = {
     pool,
@@ -1858,5 +2090,10 @@ module.exports = {
     updateAdminWorkoutPlan,
     deleteAdminPlan,
     selectCurrentAdminStatus,
-    saveUserMetrics
+    saveUserMetrics,
+    finalizeWorkoutStats,
+    getGlobalXp,
+    getUserStats,
+    getUserPrs,
+    getUserMuscleXp
 };

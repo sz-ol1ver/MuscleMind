@@ -495,11 +495,14 @@ router.patch('/calendar/finish/:logId', requireAuthApi, async (request, response
         const logId = request.params.logId
         const userId = request.session.user.id
         
-        await db.finishWorkoutCalendarLogStatus(userId, logId)
+        await db.finalizeWorkoutStats(userId, logId)
         
-        return response.status(200).json({ message: 'Edzés lezárva!' })
+        return response.status(200).json({ message: 'Edzés lezárva és statisztikák frissítve!' })
     } catch (error) {
         console.log(error.message)
+        if (error.message.includes('Már véglegesítve lett') || error.message.includes('duplikáció')) {
+            return response.status(400).json({ message: error.message })
+        }
         return response.status(500).json({ message: 'Sikertelen lezárás!' })
     }
 })
