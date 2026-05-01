@@ -658,11 +658,525 @@ async function getActive(id) {
     return rows[0].active_plan;
 }
 
+async function updateActiveNull(userId) {
+    const connection = await pool.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        const today = new Date();
+        const todayString = formatDate(today);
+
+        const [todayRows] = await connection.query(
+            `SELECT status
+             FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date = ?
+             LIMIT 1`,
+            [userId, todayString]
+        );
+
+        let startDate = new Date(today);
+
+        if (todayRows.length && todayRows[0].status === 'completed') {
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const startDateString = formatDate(startDate);
+
+        await connection.query(
+            `UPDATE users
+             SET active_plan = NULL
+             WHERE id = ?`,
+            [userId]
+        );
+
+        await connection.query(
+            `DELETE wce
+             FROM workout_calendar_exercises wce
+             JOIN workout_calendar_logs wcl
+               ON wce.workout_calendar_log_id = wcl.id
+             WHERE wcl.user_id = ?
+               AND wcl.workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        await connection.query(
+            `DELETE FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+async function updateActive(userId, planId) {
+    const connection = await pool.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // 1. Mai dátum
+        const today = new Date();
+        const todayString = formatDate(today);
+
+        // 2. Megnézzük, hogy mára van-e completed edzés
+        const [todayRows] = await connection.query(
+            `SELECT status
+             FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date = ?
+             LIMIT 1`,
+            [userId, todayString]
+        );
+
+        let startDate = new Date(today);
+
+        if (todayRows.length && todayRows[0].status === 'completed') {
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        const startDateString = formatDate(startDate);
+
+        // 3. Active plan frissítése
+        await connection.query(
+            `UPDATE users
+             SET active_plan = ?
+             WHERE id = ?`,
+            [planId, userId]
+        );
+
+        // 4. Az új terv napjainak lekérése
+        const [workoutDays] = await connection.query(
+            `SELECT id, day_number, name, isRestDay
+             FROM workout_days
+             WHERE plan_id = ?
+             ORDER BY day_number ASC`,
+            [planId]
+        );
+
+        // 5. Jövőbeli gyakorlatok törlése a kezdődátumtól
+        await connection.query(
+            `DELETE wce
+             FROM workout_calendar_exercises wce
+             JOIN workout_calendar_logs wcl
+               ON wce.workout_calendar_log_id = wcl.id
+             WHERE wcl.user_id = ?
+               AND wcl.workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        // 6. Jövőbeli logok törlése a kezdődátumtól
+        await connection.query(
+            `DELETE FROM workout_calendar_logs
+             WHERE user_id = ?
+               AND workout_date >= ?`,
+            [userId, startDateString]
+        );
+
+        // 7. Két hónapra előre generálás
+        const currentDate = new Date(startDate);
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 2);
+
+        let dayIndex = 0;
+
+        while (currentDate < endDate) {
+            const workoutDay = workoutDays[dayIndex % workoutDays.length];
+            const workoutDate = formatDate(currentDate);
+            const status = workoutDay.isRestDay ? 'rest' : 'pending';
+
+            // napi log beszúrás
+            const [logResult] = await connection.query(
+                `INSERT INTO workout_calendar_logs
+                (user_id, workout_plan_id, workout_day_id, workout_date, status)
+                VALUES (?, ?, ?, ?, ?)`,
+                [userId, planId, workoutDay.id, workoutDate, status]
+            );
+
+            const calendarLogId = logResult.insertId;
+
+            // ha nem rest day, akkor a gyakorlatokat is másoljuk
+            if (!workoutDay.isRestDay) {
+                const [dayExercises] = await connection.query(
+                    `SELECT exercise_id, exercise_order
+                     FROM day_exercises
+                     WHERE day_id = ?
+                     ORDER BY exercise_order ASC`,
+                    [workoutDay.id]
+                );
+
+                for (const exercise of dayExercises) {
+                    await connection.query(
+                        `INSERT INTO workout_calendar_exercises
+                        (workout_calendar_log_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)`,
+                        [
+                            calendarLogId,
+                            exercise.exercise_id,
+                            exercise.exercise_order
+                        ]
+                    );
+                }
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+            dayIndex++;
+        }
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
 async function updateActive(userId,plan) {
     const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
     const [rows] = await pool.execute(sql, [plan, userId]);
     return rows.affectedRows;
 }
+async function calendarUpToDate(userId) {
+    const connection = await pool.getConnection();
+
+    try {
+        await connection.beginTransaction();
+
+        // 1. active_plan lekérése
+        const [userRows] = await connection.query(
+            `SELECT active_plan
+             FROM users
+             WHERE id = ?`,
+            [userId]
+        );
+
+        const planId = userRows[0]?.active_plan;
+
+        if (!planId) {
+            await connection.commit();
+            return; // nincs aktív terv → nincs teendő
+        }
+
+        // 2. utolsó nap lekérése
+        const [lastDateRows] = await connection.query(
+            `SELECT MAX(workout_date) AS last_date
+             FROM workout_calendar_logs
+             WHERE user_id = ?`,
+            [userId]
+        );
+
+        const lastDate = lastDateRows[0]?.last_date;
+
+        const today = new Date();
+        let daysLeft = 0;
+
+        if (lastDate) {
+            const last = new Date(lastDate);
+            const diffTime = last - today;
+            daysLeft = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // 3. ha van még legalább 7 nap → nincs teendő
+        if (daysLeft >= 7) {
+            await connection.commit();
+            return;
+        }
+
+        // 4. workout_days lekérése
+        const [workoutDays] = await connection.query(
+            `SELECT id, day_number, isRestDay
+             FROM workout_days
+             WHERE plan_id = ?
+             ORDER BY day_number ASC`,
+            [planId]
+        );
+
+        // 5. honnan kezdjük a generálást
+        let startDate;
+
+        if (!lastDate) {
+            // nincs még semmi → mától
+            startDate = new Date(today);
+        } else {
+            // van már → utolsó nap +1
+            startDate = new Date(lastDate);
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        // 6. végdátum = +2 hónap
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + 2);
+
+        // 7. melyik nap jön következőnek?
+        let dayIndex = 0;
+
+        if (lastDate) {
+            const [lastLogRows] = await connection.query(
+                `SELECT workout_day_id
+                 FROM workout_calendar_logs
+                 WHERE user_id = ?
+                 ORDER BY workout_date DESC
+                 LIMIT 1`,
+                [userId]
+            );
+
+            const lastDayId = lastLogRows[0]?.workout_day_id;
+
+            const lastIndex = workoutDays.findIndex(day => day.id === lastDayId);
+            
+            dayIndex = (lastIndex + 1) % workoutDays.length;
+        }
+
+        // 8. generálás
+        const currentDate = new Date(startDate);
+
+        while (currentDate < endDate) {
+            const workoutDay = workoutDays[dayIndex % workoutDays.length];
+            const workoutDate = formatDate(currentDate);
+            const status = workoutDay.isRestDay ? 'rest' : 'pending';
+
+            const [logResult] = await connection.query(
+                `INSERT INTO workout_calendar_logs
+                (user_id, workout_plan_id, workout_day_id, workout_date, status)
+                VALUES (?, ?, ?, ?, ?)`,
+                [userId, planId, workoutDay.id, workoutDate, status]
+            );
+
+            const calendarLogId = logResult.insertId;
+
+            if (!workoutDay.isRestDay) {
+                const [dayExercises] = await connection.query(
+                    `SELECT exercise_id, exercise_order
+                     FROM day_exercises
+                     WHERE day_id = ?
+                     ORDER BY exercise_order ASC`,
+                    [workoutDay.id]
+                );
+
+                for (const exercise of dayExercises) {
+                    await connection.query(
+                        `INSERT INTO workout_calendar_exercises
+                        (workout_calendar_log_id, exercise_id, exercise_order)
+                        VALUES (?, ?, ?)`,
+                        [
+                            calendarLogId,
+                            exercise.exercise_id,
+                            exercise.exercise_order
+                        ]
+                    );
+                }
+            }
+
+            currentDate.setDate(currentDate.getDate() + 1);
+            dayIndex++;
+        }
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+async function getUserCalendar(userId) {
+    const sqlLogs =
+        `SELECT
+            wcl.id AS log_id,
+            wcl.workout_date,
+            wcl.status,
+            wd.name AS day_name,
+            wd.isRestDay
+        FROM workout_calendar_logs wcl
+        INNER JOIN workout_days wd ON wcl.workout_day_id = wd.id
+        WHERE wcl.user_id = ?
+        ORDER BY wcl.workout_date ASC`;
+    const [logs] = await pool.execute(sqlLogs, [userId]);
+
+    const sqlExercises = 
+        `SELECT
+            wcl.id AS log_id,
+            wce.id AS calendar_exercise_id,
+            e.name AS exercise_name,
+            e.muscle_group AS exercise_muscle_group,
+            wce.exercise_order
+        FROM workout_calendar_logs wcl
+        INNER JOIN workout_calendar_exercises wce ON wcl.id = wce.workout_calendar_log_id
+        INNER JOIN exercises e ON wce.exercise_id = e.id
+        WHERE wcl.user_id = ?
+        ORDER BY wce.exercise_order ASC`;
+    const [exercises] = await pool.execute(sqlExercises, [userId]);
+
+    // logok es gyakorlatok osszekapcsolasa a pihenonapok miatt
+    const resultRows = [];
+
+    for (let i = 0; i < logs.length; i++) {
+        let hasExercise = false;
+
+        for (let j = 0; j < exercises.length; j++) {
+            if (logs[i].log_id === exercises[j].log_id) {
+                resultRows.push({
+                    log_id: logs[i].log_id,
+                    workout_date: logs[i].workout_date,
+                    status: logs[i].status,
+                    day_name: logs[i].day_name,
+                    isRestDay: logs[i].isRestDay,
+                    calendar_exercise_id: exercises[j].calendar_exercise_id,
+                    exercise_name: exercises[j].exercise_name,
+                    exercise_muscle_group: exercises[j].exercise_muscle_group,
+                    exercise_order: exercises[j].exercise_order
+                });
+                hasExercise = true;
+            }
+        }
+
+        if (hasExercise === false) {
+            resultRows.push({
+                log_id: logs[i].log_id,
+                workout_date: logs[i].workout_date,
+                status: logs[i].status,
+                day_name: logs[i].day_name,
+                isRestDay: logs[i].isRestDay,
+                calendar_exercise_id: null,
+                exercise_name: null,
+                exercise_muscle_group: null,
+                exercise_order: null
+            });
+        }
+    }
+
+    return resultRows;
+}
+
+async function getCalendarSets(calendarExerciseId) {
+    const sql = `SELECT id, set_number, reps_done, weight_done FROM workout_calendar_sets WHERE workout_calendar_exercise_id = ? ORDER BY set_number ASC`;
+    const [rows] = await pool.execute(sql, [calendarExerciseId]);
+    return rows;
+}
+
+async function saveCalendarSets(calendarExerciseId, sets) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // Előző settek törlése, hogy egyszerűbb legyen az updatelés
+        await connection.execute(
+            `DELETE FROM workout_calendar_sets WHERE workout_calendar_exercise_id = ?`,
+            [calendarExerciseId]
+        );
+
+        for (const set of sets) {
+            await connection.execute(
+                `INSERT INTO workout_calendar_sets (workout_calendar_exercise_id, set_number, reps_done, weight_done) VALUES (?, ?, ?, ?)`,
+                [calendarExerciseId, set.set_number, set.reps_done, set.weight_done]
+            );
+        }
+
+        await connection.commit();
+        return true;
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+async function updateWorkoutCalendarLogStatus(userId, logId, status) {
+    const sql = `UPDATE workout_calendar_logs SET status = ? WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [status, logId, userId]);
+    return result;
+}
+
+async function startWorkoutCalendarLogStatus(userId, logId) {
+    const sql = `UPDATE workout_calendar_logs SET status = 'started', start_time = NOW() WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [logId, userId]);
+    return result;
+}
+
+async function finishWorkoutCalendarLogStatus(userId, logId) {
+    const sql = `UPDATE workout_calendar_logs SET status = 'completed', workout_time_sec = TIMESTAMPDIFF(SECOND, start_time, NOW()) WHERE id = ? AND user_id = ?`;
+    const [result] = await pool.execute(sql, [logId, userId]);
+    return result;
+}
+
+async function postponeWorkoutCalendarLog(userId, logId, newDate) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // lekerjuk a jelenlegi edzest, hogy megtudjuk a datumot
+        const [currentLog] = await connection.execute(
+            `SELECT workout_date FROM workout_calendar_logs WHERE id = ? AND user_id = ?`,
+            [logId, userId]
+        );
+
+        if (currentLog.length === 0) {
+            throw new Error('Nem talalhato az edzes!');
+        }
+
+        const currentDate = formatDate(new Date(currentLog[0].workout_date));
+
+        // megnezzuk van-e a cel datumon masik edzes
+        const [targetLog] = await connection.execute(
+            `SELECT id FROM workout_calendar_logs WHERE user_id = ? AND workout_date = ?`,
+            [userId, newDate]
+        );
+
+        if (targetLog.length > 0) {
+            const targetLogId = targetLog[0].id;
+            
+            // letrehozunk egy ideiglenes datumot ('1000-01-01') a cserelodeshez hogy ne legyen duplicate hiba
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = '1000-01-01' WHERE id = ?`,
+                [targetLogId]
+            );
+
+            // atmozgatjuk a mostani edzest az uj datumra
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [newDate, logId]
+            );
+
+            // vegul a regi datumra tesszuk a masikat
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [currentDate, targetLogId]
+            );
+        } else {
+            // ha nincs a cel datumon semmi, csak siman atallitjuk
+            await connection.execute(
+                `UPDATE workout_calendar_logs SET workout_date = ? WHERE id = ?`,
+                [newDate, logId]
+            );
+        }
+
+        await connection.commit();
+        return true;
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
+//format date for update active
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 // ----
 // token
 // ----
@@ -1396,6 +1910,214 @@ async function log_error(action, desc, ip) {
 }
 
 
+// ----
+// STATS 
+// ----
+
+async function finalizeWorkoutStats(userId, logId) {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
+
+        // log betoltese es ellenorzese
+        const [logRows] = await connection.execute(
+            'SELECT status, workout_date FROM workout_calendar_logs WHERE id = ? AND user_id = ?',
+             [logId, userId]
+        );
+
+        if (logRows.length === 0) {
+            throw new Error("Edzés nem található!");
+        }
+        if (logRows[0].status === 'completed') {
+            throw new Error("Ez az edzés már véglegesítve lett (duplikáció védelem)!");
+        }
+
+        const workoutDate = logRows[0].workout_date;
+        const formattedWorkoutDate = new Date(workoutDate).toISOString().split('T')[0];
+
+        // edzes lezarasa  és időtartam kiszámolása. 
+        await connection.execute(
+            "UPDATE workout_calendar_logs SET status = 'completed', workout_time_sec = TIMESTAMPDIFF(SECOND, start_time, NOW()) WHERE id = ?",
+            [logId]
+        );
+
+        // lekerjuk a logbol a friss workout_time_sec adatot
+        const [timeRows] = await connection.execute('SELECT workout_time_sec FROM workout_calendar_logs WHERE id = ?', [logId]);
+        const workoutTimeSec = timeRows.length > 0 ? (timeRows[0].workout_time_sec || 0) : 0;
+
+        // mentett szettek beolvasasa (workout_calendar_sets + exercises.muscle_group)
+        const [sets] = await connection.execute(`
+            SELECT 
+                s.id as set_id, 
+                s.weight_done AS weight,
+                s.reps_done AS reps,
+                e.id as exercise_id, 
+                e.muscle_group 
+            FROM workout_calendar_sets s
+            JOIN workout_calendar_exercises ce ON s.workout_calendar_exercise_id = ce.id
+            JOIN exercises e ON ce.exercise_id = e.id
+            WHERE ce.workout_calendar_log_id = ?
+        `, [logId]);
+
+        // valtozok inicializalasa
+        let workoutTotalVolume = 0;
+        let totalSets = sets.length;
+        let totalReps = 0;
+        let prCount = 0;
+        
+        // izomcsoportonkénti volumen gyujtése
+        const muscleVolume = {};
+        
+        for (const set of sets) {
+            const weightDone = Number(set.weight) || 0;
+            const repsDone = Number(set.reps) || 0;
+            const setVolume = weightDone * repsDone;
+            
+            workoutTotalVolume += setVolume;
+            totalReps += repsDone;
+
+            // izom volumen hozzadasa
+            const muscle = set.muscle_group;
+            if (!muscleVolume[muscle]) muscleVolume[muscle] = 0;
+            muscleVolume[muscle] += setVolume;
+
+            // pr logika megvizsgalasa 
+            const [prRows] = await connection.execute(
+                'SELECT max_weight, best_volume FROM user_exercise_prs WHERE user_id = ? AND exercise_id = ?', 
+                [userId, set.exercise_id]
+            );
+
+            let isPrBroken = false;
+
+            if (prRows.length === 0) {
+                // uj pr sor
+                await connection.execute(
+                    `INSERT INTO user_exercise_prs (user_id, exercise_id, max_weight, max_weight_reps, best_volume, achieved_at) 
+                     VALUES (?, ?, ?, ?, ?, NOW())`,
+                    [userId, set.exercise_id, weightDone, repsDone, setVolume]
+                );
+                isPrBroken = true;
+            } else {
+                const currentMaxWeight = Number(prRows[0].max_weight) || 0;
+                const currentBestVolume = Number(prRows[0].best_volume) || 0;
+                
+                let updates = [];
+                let params = [];
+                
+                if (weightDone > currentMaxWeight) {
+                    updates.push('max_weight = ?, max_weight_reps = ?');
+                    params.push(weightDone, repsDone);
+                    isPrBroken = true;
+                }
+                
+                if (setVolume > currentBestVolume) {
+                    updates.push('best_volume = ?');
+                    params.push(setVolume);
+                    isPrBroken = true;
+                }
+                
+                if (updates.length > 0) {
+                    updates.push('achieved_at = NOW()');
+                    params.push(userId, set.exercise_id);
+                    
+                    await connection.execute(
+                        `UPDATE user_exercise_prs SET ${updates.join(', ')} WHERE user_id = ? AND exercise_id = ?`,
+                        params
+                    );
+                }
+            }
+            
+            if (isPrBroken) {
+                // csak akkor növeljük 1el ha legalabb 1 pr megdolt 
+                prCount = 1;
+            }
+        }
+
+        // xp
+        const workoutXp = Math.floor(workoutTotalVolume / 10);
+        
+        // xp frissites
+        const [globalXpRows] = await connection.execute('SELECT xp FROM user_global_xp WHERE user_id = ?', [userId]);
+        if (globalXpRows.length === 0) {
+            await connection.execute('INSERT INTO user_global_xp (user_id, xp) VALUES (?, ?)', [userId, workoutXp]);
+        } else {
+            await connection.execute('UPDATE user_global_xp SET xp = xp + ? WHERE user_id = ?', [workoutXp, userId]);
+        }
+
+        // izomcsoportonkent xp
+        for (const [muscle, volume] of Object.entries(muscleVolume)) {
+            const muscleXpAmount = Math.floor(volume / 10);
+            const [mXpRows] = await connection.execute('SELECT xp FROM user_muscle_xp WHERE user_id = ? AND muscle_group = ?', [userId, muscle]);
+            
+            if (mXpRows.length === 0) {
+                await connection.execute('INSERT INTO user_muscle_xp (user_id, muscle_group, xp) VALUES (?, ?, ?)', [userId, muscle, muscleXpAmount]);
+            } else {
+                await connection.execute('UPDATE user_muscle_xp SET xp = xp + ? WHERE user_id = ? AND muscle_group = ?', [muscleXpAmount, userId, muscle]);
+            }
+        }
+
+        // --- user_stats frissitese ---
+        console.log(`[FINALIZE] Frissítem a user_stats táblát a user_id: ${userId} számára...`);
+        const [statsRows] = await connection.execute('SELECT * FROM user_stats WHERE user_id = ?', [userId]);
+        
+        if (statsRows.length === 0) {
+            console.log(`[FINALIZE] Nem volt még user_stats, új sor beszúrása...`);
+            await connection.execute(`
+                INSERT INTO user_stats (
+                    user_id, completed_workouts, total_volume, total_sets, total_reps, 
+                    pr_count, total_workout_time_sec
+                ) VALUES (?, 1, ?, ?, ?, ?, ?)`,
+                [
+                    Number(userId), 
+                    Number(workoutTotalVolume.toFixed(2)), 
+                    Number(totalSets), 
+                    Number(totalReps), 
+                    Number(prCount), 
+                    Number(workoutTimeSec)
+                ]
+            );
+            console.log(`[FINALIZE] Új user_stats sikeresen beszúrva!`);
+        } else {
+            console.log(`[FINALIZE] Már van user_stats, frissítés.`);
+            await connection.execute(`
+                UPDATE user_stats SET 
+                    completed_workouts = completed_workouts + 1,
+                    total_volume = total_volume + ?,
+                    total_sets = total_sets + ?,
+                    total_reps = total_reps + ?,
+                    pr_count = pr_count + ?,
+                    total_workout_time_sec = total_workout_time_sec + ?
+                WHERE user_id = ?
+            `, [
+                Number(workoutTotalVolume.toFixed(2)), 
+                Number(totalSets), 
+                Number(totalReps), 
+                Number(prCount), 
+                Number(workoutTimeSec), 
+                Number(userId)
+            ]);
+            console.log(`[FINALIZE] user_stats sikeresen frissítve!`);
+        }
+
+        await connection.commit();
+        console.log(`[FINALIZE] Tranzakció sikeresen kommitálva!`);
+        
+        return {
+            success: true,
+            workout_xp: workoutXp,
+            workout_total_volume: workoutTotalVolume,
+            is_new_pr: prCount > 0
+        };
+
+    } catch (error) {
+        console.error(`[FINALIZE ERROR] Hiba történt a véglegesítés során:`, error);
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
+
 //!Export
 module.exports = {
     pool,
@@ -1420,7 +2142,6 @@ module.exports = {
     getUserPassword,
     updateUserPassword,
     allExercises,
-    allExercises,
     exerciseExist,
     createWorkoutPlan,
     createWorkoutDay,
@@ -1442,6 +2163,15 @@ module.exports = {
     update_password,
     set_used,
     log_error,
+    updateActiveNull,
+    calendarUpToDate,
+    getUserCalendar,
+    getCalendarSets,
+    saveCalendarSets,
+    updateWorkoutCalendarLogStatus,
+    startWorkoutCalendarLogStatus,
+    finishWorkoutCalendarLogStatus,
+    postponeWorkoutCalendarLog,
     findTicketEmail,
     findPreId,
     createTicket,
@@ -1487,5 +2217,6 @@ module.exports = {
     getUserExercisePrs,
     getUserWeights,
     getAllExercisesForStats,
-    getUserMetrics
+    getUserMetrics,
+    finalizeWorkoutStats
 };

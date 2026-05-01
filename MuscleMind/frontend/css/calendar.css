@@ -1,0 +1,142 @@
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; /*mostmar sikerült (¬_¬) */
+    gap: 10px;
+}
+
+.calendar-header-row {
+    padding-right: 14px !important;
+}
+
+.small-calendar-grid {
+    gap: 4px;
+}
+
+.calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.calendar-day {
+    height: 150px;
+    overflow-y: auto;
+    word-wrap: break-word;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    color: white;
+}
+
+.small-calendar-grid .calendar-day {
+    min-height: 60px;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.small-calendar-grid .calendar-day .date-number {
+    font-size: 14px;
+}
+
+.small-calendar-grid .planned-workout-badge {
+    font-size: 10px;
+    padding: 2px 4px;
+    margin-top: 3px;
+}
+
+.calendar-day:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.calendar-day .date-number {
+    font-size: 19px;
+    font-weight: bold;
+    opacity: 0.8;
+    text-align: center;
+}
+
+.calendar-day.empty-day {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+}
+
+.calendar-day.empty-day:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.today-highlight {
+    border: 2px solid #7c3aed !important;
+    box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+    background-color: rgba(124, 58, 237, 0.15) !important;
+}
+
+.planned-workout-badge {
+    margin-top: 5px;
+    padding: 4px 8px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-size: 13px;
+    text-align: center;
+    display: block;
+}
+
+.calendar-main-card {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 0;
+    overflow: hidden;
+}
+
+.calendar-box {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-grow: 1;
+}
+
+#calendar-days {
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    padding-bottom: 15px;
+}
+
+.calendar-scrollable {
+    overflow-y: auto;
+}
+
+.calendar-modal-content {
+    background-color: #2b2b2b;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#dayDetailsModal .modal-content {
+    background-color: #1e1e1e !important;
+}
+
+#dayDetailsModal .modal-header, #dayDetailsModal .modal-footer {
+    border-color: rgba(255,255,255,0.1);
+}
+
+#workout-list .list-group-item {
+    background-color: rgba(255,255,255,0.05);
+    color: white;
+    border-color: rgba(255,255,255,0.1);
+}

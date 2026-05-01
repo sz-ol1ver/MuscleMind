@@ -68,3 +68,7 @@ hr{
     font-weight: bolder !important;
     color: white !important;
 }
+#date_input{
+    width: 30% !important;
+    color-scheme: dark !important;
+}

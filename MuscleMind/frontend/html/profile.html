@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="../css/index.css" />
         <link rel="stylesheet" href="../css/profile.css" />
         <!--!JavaScript-->
-        <script src="../javascript/index.js"></script>
+        <script type="module" src="../javascript/index.js"></script>
         <script type="module" src="../javascript/profile.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
@@ -79,7 +79,7 @@
                     <ul class="nav flex-column d-flex gap-3" id="mobil-nav-list">
 
                         <li class="nav-item">
-                            <a class="nav-link"  href="/">Főoldal</a>
+                            <a class="nav-link" href="/">Főoldal</a>
                         </li>
 
                         <li class="nav-item">
@@ -91,11 +91,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Naptár</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
+                            <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
 
                         <li class="nav-item">
@@ -140,13 +136,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Naptár</a>
+                            <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
-                        </li>
-
 
                         <li class="nav-item">
                             <a class="nav-link" href="/etrend">Étrend</a>
@@ -195,8 +186,9 @@
                                     </div>
                                     <hr class="line">
 
-                                    <label for="Kor">Életkor:</label>
+                                    <label for="Kor">Születési év:</label>
                                     <input class="form-control" min="1900-01-01" type="date" placeholder="2000-01-01" id="Kor" name="age" disabled>
+
                                     <hr class="line">
 
                                     <label for="Email">Email cím:</label>

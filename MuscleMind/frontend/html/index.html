@@ -12,10 +12,12 @@
         <script src="../bootstrap/js/bootstrap.min.js"></script>
         <!--!CSS-->
         <link rel="stylesheet" href="../css/index.css" />
+        <link rel="stylesheet" href="../css/calendar.css" />
         <!--!JavaScript-->
-        <script src="../javascript/index.js"></script>
+        <script type="module" src="../javascript/index.js"></script>
         <script src="../javascript/user-session.js"></script>
         <script src="../javascript/loading-overlay.js"></script>
+        <script type="module" src="../javascript/calendar.js"></script>
         <script type="module" src="../javascript/global.js"></script>
     </head>
     <body>
@@ -94,11 +96,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Naptár</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
+                            <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
                         
                         <li class="nav-item">
@@ -143,11 +141,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Naptár</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Izom követés</a>
+                            <a class="nav-link" href="/naptar">Naptár</a>
                         </li>
 
                         <li class="nav-item">
@@ -171,7 +165,7 @@
                 <!-- Középső blokk -->
                 <div class="col-12 col-lg-9 col-xl-7 p-3" id="middle-part">
                     <!-- Statisztikák -->
-                    <div id="stats" class="row mx-0">
+                    <div id="stats" class="row mb-0 mx-0">
                         <div class="col-12 px-0">
                             <div id="stat-title" class="mt-2">Statisztikák
                                 <select name="Időtartam" id="timezone">
@@ -255,7 +249,7 @@
 
                     <!-- Ranglista, Naptár -->
                     <div id="ranglist-calendar" class="row p-3 g-3 d-none d-xl-flex">
-                        <div class="col-12 col-xl-7">
+                        <div class="col-12 col-xl-7 h-100">
                             <div id="ranglist" class="mx-0 h-100">
 
                                 <div id="ranglist-title">
@@ -314,39 +308,98 @@
                             </div>
                         </div>
                         
-                        <div class="col-12 col-xl-5">
-                            <div id="calendar" class="mx-0 h-100">Naptár</div>
+                        <div class="col-12 col-xl-5 h-100">
+                            <div id="calendar" class="mx-0 h-100 d-flex flex-column p-3 position-relative calendar-main-card">
+                                <div id="calendar-title">Naptár <hr></div>
+                                <div class="calendar-header mb-2 px-1">
+                                    <button id="prevMonthBtn" class="btn button-sample btn-sm">Előző</button>
+                                    <h6 id="currentMonthYear" class="m-0 text-center flex-grow-1 py-1">Hónap Év</h6>
+                                    <button id="nextMonthBtn" class="btn button-sample btn-sm">Következő</button>
+                                </div>
+                                <div class="calendar-grid small-calendar-grid mb-1 px-1 calendar-header-row">
+                                    <div class="calendar-day-header p-1 fs-6 text-center">H</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">K</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">Sz</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">Cs</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">P</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">Sz</div>
+                                    <div class="calendar-day-header p-1 fs-6 text-center">V</div>
+                                </div>
+                                <div id="calendar-days" class="calendar-grid small-calendar-grid px-1 pb-2 calendar-box pe-1"></div>
+                            </div>
                         </div>
                         
                     </div>
                 </div>
+                
+                <!-- Modal a naptárhoz -->
+                <div class="modal fade" id="dayDetailsModal" tabindex="-1" aria-labelledby="dayDetailsModalLabel" aria-hidden="true" data-bs-theme="dark">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content text-white calendar-modal-content">
+                            <div class="modal-header border-bottom-0">
+                                <h5 class="modal-title" id="dayDetailsModalLabel">Edzés Részletek</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="modal-date-display" class="mb-3 text-muted">Dátum: </div>
+                                <div id="workout-details-container">
+                                    <h6 class="text-success">asdasdasd</h6>
+                                    <ul id="workout-list" class="list-group list-group-flush mb-3"></ul>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-top-0">
+                                <a href="/naptar" class="btn btn-outline-light me-auto">Teljes Naptár</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Vissza</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Jobb oldali blokk/Izom követő -->
-                <div id="muscle-tracker" class="col-3 d-none d-xl-block">
-
-                        <input id="front-back" class="btn button-sample col-2 d-block mx-auto" value="Fordítás" type="button">
-                        
-
-                    <div>
-                        <label for="muscles">Válasszon izmot:</label>
-                        <select class="form-control" name="Izmok" id="muscles">
-                            <option id="chest">Mell</option>
-                            <option id="shoulders">Váll</option>
-                            <option id="thighs">Comb</option>
-                            <option id="calves">Vádli</option>
-                            <option id="back">Hát</option>
-                            <option id="biceps">Bicepsz</option>
-                            <option id="triceps">Tricepsz</option>
-                            <option id="forearm">Alkar</option>
-                            <option id="abs">Has</option>
-                        </select>
+                <div id="muscle-tracker" class="col-3 d-none d-xl-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-center gap-2 w-100">
+                        <h6 id="muscle-tracker-title" class="m-0 fw-bold">Mai izomkövetés</h6>
+                        <input id="front-back" class="btn button-sample" value="Elől / Hátul" type="button">
                     </div>
 
-                    <img id="muscle-picture" src="../images/muscle-tracker/alapelol.png" alt="Izom követő">
-                    <br>
+                    <div id="muscle-status" class="tracker-status">Mai edzés betöltése...</div>
 
+                    <div id="muscle-stage">
+                        <div class="muscle-wrapper">
+                            <img
+                                id="muscle-base-image"
+                                class="muscle-layer muscle-base-layer"
+                                src="../images/muscle-tracker/alapelol.svg"
+                                alt="Izomkövető alap ábra"
+                            >
+                            <div id="muscle-highlight-layer" class="muscle-highlight-layer"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- edzes emlekezteto -->
+        <div class="modal fade" id="workoutReminderModal" tabindex="-1" aria-labelledby="workoutReminderModalLabel" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content custom-modal">
+                    <div class="modal-header custom-modal-header">
+                        <h5 class="modal-title" id="workoutReminderModalLabel">🏋️ Napi Edzésterv Emlékeztető</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                    </div>
+                    <div class="modal-body custom-modal-body" id="workoutReminderBody">
+                        <div class="text-center my-3">
+                            <div class="spinner-border text-primary" role="status" style="color: #7c3aed !important;">
+                                <span class="visually-hidden">Betöltés...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer custom-modal-footer">
+                        <button type="button" class="btn button-sample" data-bs-dismiss="modal">Oksa moksa</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
 </html>

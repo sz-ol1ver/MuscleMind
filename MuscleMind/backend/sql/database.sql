@@ -113,7 +113,7 @@ CREATE TABLE user_metrics (
 );
 
 -- WORKOUT --
--- stats
+-- workout - stats
 CREATE TABLE IF NOT EXISTS user_muscle_xp (
     user_id INT NOT NULL,
 
@@ -192,6 +192,8 @@ CREATE TABLE IF NOT EXISTS user_exercise_prs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- workout - plans
 -- gyakorlatok
 CREATE TABLE IF NOT EXISTS exercises(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -212,6 +214,7 @@ CREATE TABLE IF NOT EXISTS exercises(
         'vádli',
         'teljes_test'
     ) NOT NULL,
+    bodyweight BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -244,14 +247,16 @@ CREATE TABLE IF NOT EXISTS day_exercises(
     exercise_order INT NOT NULL
 );
 
+-- workout - calendar
 CREATE TABLE IF NOT EXISTS workout_calendar_logs(
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     workout_plan_id INT NOT NULL,
     workout_day_id INT NOT NULL,
     workout_date DATE NOT NULL,
+    start_time DATETIME DEFAULT NULL,
     workout_time_sec INT NOT NULL DEFAULT 0,
-    status ENUM('pending', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
+    status ENUM('pending', 'started', 'completed', 'missed', 'rest')NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -601,111 +606,111 @@ ALTER TABLE reset_tokens
     ON DELETE CASCADE;
 
 -- INSERTEK
-INSERT INTO exercises (name, muscle_group)
+INSERT INTO exercises (name, muscle_group, bodyweight)
 VALUES
     -- mell
-    ('Ferde padon csiga tárogatás', 'mell'),
-    ('Lejtős padon csiga mellnyomás', 'mell'),
-    ('Ferde padon rúddal fekvenyomás', 'mell'),
-    ('Fekvenyomás kézisúlyzóval', 'mell'),
-    ('Fekvőtámasz', 'mell'),
-    ('Tolódzkodás mellre döntve', 'mell'),
+    ('Ferde padon csiga tárogatás', 'mell', FALSE),
+    ('Lejtős padon csiga mellnyomás', 'mell', FALSE),
+    ('Ferde padon rúddal fekvenyomás', 'mell', FALSE),
+    ('Fekvenyomás kézisúlyzóval', 'mell', FALSE),
+    ('Fekvőtámasz', 'mell', TRUE),
+    ('Tolódzkodás mellre döntve', 'mell', TRUE),
 
     -- hát
-    ('Csiga lehúzás ferde fogással', 'hát'),
-    ('Ülő evezőgép ferde háttámasz', 'hát'),
-    ('Evezés padon rúddal', 'hát'),
-    ('Egykezes evezés kézisúlyzóval', 'hát'),
-    ('Húzódzkodás', 'hát'),
-    ('Fordított evezés testsúllyal', 'hát'),
+    ('Csiga lehúzás ferde fogással', 'hát', FALSE),
+    ('Ülő evezőgép ferde háttámasz', 'hát', FALSE),
+    ('Evezés padon rúddal', 'hát', FALSE),
+    ('Egykezes evezés kézisúlyzóval', 'hát', FALSE),
+    ('Húzódzkodás', 'hát', TRUE),
+    ('Fordított evezés testsúllyal', 'hát', TRUE),
 
     -- váll
-    ('Ferde padon csiga vállnyomás', 'váll'),
-    ('Hátsó delt csiga ferde ülés', 'váll'),
-    ('Vállból nyomás rúddal', 'váll'),
-    ('Oldalemelés kézisúlyzóval', 'váll'),
-    ('Kézenállás tartás', 'váll'),
-    ('Pike push-up', 'váll'),
+    ('Ferde padon csiga vállnyomás', 'váll', FALSE),
+    ('Hátsó delt csiga ferde ülés', 'váll', FALSE),
+    ('Vállból nyomás rúddal', 'váll', FALSE),
+    ('Oldalemelés kézisúlyzóval', 'váll', FALSE),
+    ('Kézenállás tartás', 'váll', TRUE),
+    ('Pike push-up', 'váll', TRUE),
 
     -- bicepsz
-    ('Csiga bicepsz hajlítás', 'bicepsz'),
-    ('Gépi bicepsz hajlítás', 'bicepsz'),
-    ('Rúddal bicepsz hajlítás', 'bicepsz'),
-    ('Kalapács bicepsz kézisúlyzóval', 'bicepsz'),
-    ('Húzódzkodás szűk fogással', 'bicepsz'),
-    ('Bicepsz tartás testsúllyal', 'bicepsz'),
+    ('Csiga bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Gépi bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Rúddal bicepsz hajlítás', 'bicepsz', FALSE),
+    ('Kalapács bicepsz kézisúlyzóval', 'bicepsz', FALSE),
+    ('Húzódzkodás szűk fogással', 'bicepsz', TRUE),
+    ('Bicepsz tartás testsúllyal', 'bicepsz', TRUE),
 
     -- tricepsz
-    ('Csiga tricepsz letolás', 'tricepsz'),
-    ('Csiga tricepsz nyújtás fej felett', 'tricepsz'),
-    ('Fekvenyomás szűk fogással', 'tricepsz'),
-    ('Tricepsz kickback kézisúlyzóval', 'tricepsz'),
-    ('Tolódzkodás', 'tricepsz'),
-    ('Szűk fekvőtámasz', 'tricepsz'),
+    ('Csiga tricepsz letolás', 'tricepsz', FALSE),
+    ('Csiga tricepsz nyújtás fej felett', 'tricepsz', FALSE),
+    ('Fekvenyomás szűk fogással', 'tricepsz', FALSE),
+    ('Tricepsz kickback kézisúlyzóval', 'tricepsz', FALSE),
+    ('Tolódzkodás', 'tricepsz', TRUE),
+    ('Szűk fekvőtámasz', 'tricepsz', TRUE),
 
     -- alkar
-    ('Csukló hajlítás csigán', 'alkar'),
-    ('Fordított csukló hajlítás csigán', 'alkar'),
-    ('Rúddal csukló hajlítás', 'alkar'),
-    ('Kézisúlyzó tartás', 'alkar'),
-    ('Tárcsa csípés', 'alkar'),
-    ('Rúdon függés', 'alkar'),
+    ('Csukló hajlítás csigán', 'alkar', FALSE),
+    ('Fordított csukló hajlítás csigán', 'alkar', FALSE),
+    ('Rúddal csukló hajlítás', 'alkar', FALSE),
+    ('Kézisúlyzó tartás', 'alkar', FALSE),
+    ('Tárcsa csípés', 'alkar', FALSE),
+    ('Rúdon függés', 'alkar', TRUE),
 
     -- has
-    ('Csiga hasprés', 'has'),
-    ('Csiga lábemelés', 'has'),
-    ('Súlyozott felülés', 'has'),
-    ('Oldalirányú csavarás kézisúlyzóval', 'has'),
-    ('Plank', 'has'),
-    ('Mountain climbers', 'has'),
+    ('Csiga hasprés', 'has', FALSE),
+    ('Csiga lábemelés', 'has', FALSE),
+    ('Súlyozott felülés', 'has', FALSE),
+    ('Oldalirányú csavarás kézisúlyzóval', 'has', FALSE),
+    ('Plank', 'has', TRUE),
+    ('Mountain climbers', 'has', TRUE),
 
     -- ferde has
-    ('Csiga oldalsó csavarás', 'ferde_has'),
-    ('Pallof press', 'ferde_has'),
-    ('Orosz csavar kézisúlyzóval', 'ferde_has'),
-    ('Oldalsó plank súlyzóval', 'ferde_has'),
-    ('Oldalsó plank', 'ferde_has'),
-    ('Ferde has V-emelés', 'ferde_has'),
+    ('Csiga oldalsó csavarás', 'ferde_has', FALSE),
+    ('Pallof press', 'ferde_has', FALSE),
+    ('Orosz csavar kézisúlyzóval', 'ferde_has', FALSE),
+    ('Oldalsó plank súlyzóval', 'ferde_has', FALSE),
+    ('Oldalsó plank', 'ferde_has', TRUE),
+    ('Ferde has V-emelés', 'ferde_has', TRUE),
 
     -- alsó hát
-    ('Hátfeszítés csigán', 'alsó_hát'),
-    ('Ülő csiga hátfeszítés', 'alsó_hát'),
-    ('Román felhúzás rúddal', 'alsó_hát'),
-    ('Good morning kézisúlyzóval', 'alsó_hát'),
-    ('Superman tartás', 'alsó_hát'),
-    ('Bird-Dog', 'alsó_hát'),
+    ('Hátfeszítés csigán', 'alsó_hát', FALSE),
+    ('Ülő csiga hátfeszítés', 'alsó_hát', FALSE),
+    ('Román felhúzás rúddal', 'alsó_hát', FALSE),
+    ('Good morning kézisúlyzóval', 'alsó_hát', FALSE),
+    ('Superman tartás', 'alsó_hát', TRUE),
+    ('Bird-Dog', 'alsó_hát', TRUE),
 
     -- comb elülső
-    ('Lábtolás csigán', 'comb_első'),
-    ('Lábfeszítés csigán', 'comb_első'),
-    ('Rúddal guggolás', 'comb_első'),
-    ('Sétáló kitörés kézisúlyzóval', 'comb_első'),
-    ('Testtömeg guggolás', 'comb_első'),
-    ('Falnál ülés', 'comb_első'),
+    ('Lábtolás csigán', 'comb_első', FALSE),
+    ('Lábfeszítés csigán', 'comb_első', FALSE),
+    ('Rúddal guggolás', 'comb_első', FALSE),
+    ('Sétáló kitörés kézisúlyzóval', 'comb_első', FALSE),
+    ('Testtömeg guggolás', 'comb_első', TRUE),
+    ('Falnál ülés', 'comb_első', TRUE),
 
     -- comb hátsó
-    ('Lábhajlítás csigán ülve', 'comb_hátsó'),
-    ('Lábhajlítás csigán fekve', 'comb_hátsó'),
-    ('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó'),
-    ('Lábhajlítás kézisúlyzóval', 'comb_hátsó'),
-    ('Nordic hamstring curl', 'comb_hátsó'),
-    ('Egylábas farizom emelés testsúllyal', 'comb_hátsó'),
+    ('Lábhajlítás csigán ülve', 'comb_hátsó', FALSE),
+    ('Lábhajlítás csigán fekve', 'comb_hátsó', FALSE),
+    ('Egylábas román felhúzás kézisúlyzóval', 'comb_hátsó', FALSE),
+    ('Lábhajlítás kézisúlyzóval', 'comb_hátsó', FALSE),
+    ('Nordic hamstring curl', 'comb_hátsó', TRUE),
+    ('Egylábas farizom emelés testsúllyal', 'comb_hátsó', TRUE),
 
     -- farizom
-    ('Csípőnyomás csigán', 'farizom'),
-    ('Kickback csigán', 'farizom'),
-    ('Hip thrust rúddal', 'farizom'),
-    ('Lépés padra kézisúlyzóval', 'farizom'),
-    ('Glute bridge testsúllyal', 'farizom'),
-    ('Donkey kicks testsúllyal', 'farizom'),
+    ('Csípőnyomás csigán', 'farizom', FALSE),
+    ('Kickback csigán', 'farizom', FALSE),
+    ('Hip thrust rúddal', 'farizom', FALSE),
+    ('Lépés padra kézisúlyzóval', 'farizom', FALSE),
+    ('Glute bridge testsúllyal', 'farizom', TRUE),
+    ('Donkey kicks testsúllyal', 'farizom', TRUE),
 
     -- vádli
-    ('Ülő vádli csigán', 'vádli'),
-    ('Álló vádli csigán', 'vádli'),
-    ('Álló rúddal vádli emelés', 'vádli'),
-    ('Kézisúlyzóval vádli emelés', 'vádli'),
-    ('Testtömeg vádli emelés', 'vádli'),
-    ('Ugrókötél vádli edzés', 'vádli'),
+    ('Ülő vádli csigán', 'vádli', FALSE),
+    ('Álló vádli csigán', 'vádli', FALSE),
+    ('Álló rúddal vádli emelés', 'vádli', FALSE),
+    ('Kézisúlyzóval vádli emelés', 'vádli', FALSE),
+    ('Testtömeg vádli emelés', 'vádli', TRUE),
+    ('Ugrókötél vádli edzés', 'vádli', TRUE),
 
     -- teljes test
     ('Felhúzás rúddal', 'teljes_test'),
@@ -715,95 +720,6 @@ VALUES
     ('Kettlebell swing', 'teljes_test'),
     ('Farmer walk kézisúlyzóval', 'teljes_test');
 
--- statisztika teszt adatok
--- =========================
--- USER EXERCISE PRs
--- =========================
-INSERT INTO user_exercise_prs (
-    user_id,
-    exercise_id,
-    max_weight,
-    max_weight_reps,
-    best_volume,
-    achieved_at
-) VALUES
--- mell
-(1, 3, 90.00, 5, 1800.00, '2026-04-25 18:00:00'),
-(1, 4, 36.00, 8, 1400.00, '2026-04-25 18:20:00'),
-
--- hát
-(1, 9, 80.00, 6, 2000.00, '2026-04-26 18:10:00'),
-(1, 11, 0.00, 10, 1200.00, '2026-04-26 18:40:00'),
-
--- váll
-(1, 15, 60.00, 5, 1300.00, '2026-04-27 17:50:00'),
-
--- láb
-(1, 57, 120.00, 5, 2500.00, '2026-04-27 18:30:00'),
-(1, 61, 70.00, 8, 1800.00, '2026-04-27 18:50:00'),
-
--- teljes test
-(1, 73, 160.00, 3, 3000.00, '2026-04-27 19:10:00');
-
-
--- =========================
--- USER DAILY STATS
--- =========================
-INSERT INTO user_daily_stats (
-    user_id, stat_date,
-    completed_workouts,
-    total_volume,
-    total_sets,
-    total_reps,
-    total_workout_time_sec,
-    xp_gained,
-    prs_achieved
-) VALUES
-(1, '2026-04-25', 1, 3200, 20, 160, 3600, 320, 2),
-(1, '2026-04-26', 1, 3500, 22, 180, 3800, 350, 1),
-(1, '2026-04-27', 1, 5300, 26, 210, 4200, 530, 2);
-
-
--- =========================
--- USER MUSCLE XP
--- =========================
-INSERT INTO user_muscle_xp (user_id, muscle_group, xp) VALUES
-(1, 'mell', 320),
-(1, 'hát', 320),
-(1, 'váll', 130),
-(1, 'bicepsz', 120),
-(1, 'tricepsz', 150),
-(1, 'alkar', 80),
-(1, 'has', 140),
-(1, 'ferde_has', 90),
-(1, 'alsó_hát', 120),
-(1, 'comb_első', 250),
-(1, 'comb_hátsó', 180),
-(1, 'farizom', 160),
-(1, 'vádli', 100),
-(1, 'teljes_test', 300);
-
-
--- =========================
--- USER GLOBAL XP
--- =========================
-INSERT INTO user_global_xp (user_id, xp) VALUES
-(1, 2085);
-
-
--- =========================
--- USER STATS
--- =========================
-INSERT INTO user_stats (
-    user_id,
-    completed_workouts,
-    total_volume,
-    total_sets,
-    total_reps,
-    pr_count,
-    total_workout_time_sec
-) VALUES
-(1, 3, 12000, 68, 550, 5, 11600);
 
 -- insert allergens
 INSERT INTO allergens (name) VALUES
