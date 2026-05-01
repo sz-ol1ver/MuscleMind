@@ -5,21 +5,37 @@
     margin-bottom: 20px;
 }
 
+.calendar-main-card {
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Vízszintes scroll wrapper */
+.calendar-scroll-x {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Naptár rács */
 .calendar-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr; /*mostmar sikerült (¬_¬) */
+    grid-template-columns: repeat(7, minmax(120px, 1fr));
     gap: 10px;
+    min-width: 900px;
 }
 
-.calendar-header-row {
-    padding-right: 14px !important;
-}
-
-.small-calendar-grid {
-    gap: 4px;
+.calendar-header-grid {
+    margin-bottom: 8px;
 }
 
 .calendar-day-header {
+    min-width: 120px;
+    white-space: nowrap;
     text-align: center;
     font-weight: bold;
     padding: 10px 0;
@@ -27,7 +43,15 @@
     border-radius: 8px;
 }
 
+#calendar-days {
+    overflow-y: auto;
+    overflow-x: visible;
+    min-height: 0;
+    padding-bottom: 15px;
+}
+
 .calendar-day {
+    min-width: 120px;
     height: 150px;
     overflow-y: auto;
     word-wrap: break-word;
@@ -39,22 +63,6 @@
     transition: all 0.2s ease-in-out;
     position: relative;
     color: white;
-}
-
-.small-calendar-grid .calendar-day {
-    min-height: 60px;
-    padding: 5px;
-    border-radius: 6px;
-}
-
-.small-calendar-grid .calendar-day .date-number {
-    font-size: 14px;
-}
-
-.small-calendar-grid .planned-workout-badge {
-    font-size: 10px;
-    padding: 2px 4px;
-    margin-top: 3px;
 }
 
 .calendar-day:hover {
@@ -98,11 +106,33 @@
     display: block;
 }
 
-.calendar-main-card {
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    min-height: 0;
-    overflow: hidden;
+.workout-name {
+    word-break: break-word;
+}
+
+/* Régi small grid támogatás, ha máshol használod */
+.calendar-header-row {
+    padding-right: 14px !important;
+}
+
+.small-calendar-grid {
+    gap: 4px;
+}
+
+.small-calendar-grid .calendar-day {
+    min-height: 60px;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.small-calendar-grid .calendar-day .date-number {
+    font-size: 14px;
+}
+
+.small-calendar-grid .planned-workout-badge {
+    font-size: 10px;
+    padding: 2px 4px;
+    margin-top: 3px;
 }
 
 .calendar-box {
@@ -111,17 +141,11 @@
     flex-grow: 1;
 }
 
-#calendar-days {
-    overflow-y: auto;
-    overflow-x: hidden;
-    min-height: 0;
-    padding-bottom: 15px;
-}
-
 .calendar-scrollable {
     overflow-y: auto;
 }
 
+/* Modal */
 .calendar-modal-content {
     background-color: #2b2b2b;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -131,12 +155,60 @@
     background-color: #1e1e1e !important;
 }
 
-#dayDetailsModal .modal-header, #dayDetailsModal .modal-footer {
-    border-color: rgba(255,255,255,0.1);
+#dayDetailsModal .modal-header,
+#dayDetailsModal .modal-footer {
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 #workout-list .list-group-item {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255, 255, 255, 0.05);
     color: white;
-    border-color: rgba(255,255,255,0.1);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobil / kisebb kijelző */
+@media (max-width: 768px) {
+    .calendar-main-card {
+        width: 100%;
+        padding: 1rem !important;
+        overflow: hidden;
+    }
+
+    .calendar-header {
+        gap: 8px;
+    }
+
+    .calendar-header button {
+        font-size: 0.8rem;
+        padding: 0.45rem 0.6rem;
+    }
+
+    #currentMonthYear {
+        font-size: 1rem;
+    }
+
+    .calendar-grid {
+        grid-template-columns: repeat(7, minmax(105px, 105px));
+        min-width: 805px;
+        gap: 8px;
+    }
+
+    .calendar-day-header,
+    .calendar-day {
+        min-width: 105px;
+    }
+
+    .calendar-day {
+        height: 120px;
+        padding: 8px;
+    }
+
+    .calendar-day .date-number {
+        font-size: 16px;
+    }
+
+    .workout-name {
+        font-size: 12px !important;
+        word-break: break-word;
+    }
 }
