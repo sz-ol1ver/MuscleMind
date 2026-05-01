@@ -81,7 +81,7 @@ const muscleRanks = {
 
 document.addEventListener('DOMContentLoaded', async()=>{
     await getStats();
-
+    console.log(exercises)
     loadSummaryCard();
     loadGlobalRank();
     loadBmiIndicator();
@@ -237,17 +237,25 @@ function loadPeriodStats(period){
 
     let daysToCount = [];
 
-    if (period === 'daily') {
-        daysToCount = userDailyStat.slice(0, 1);
-    } 
-    else if (period === 'weekly') {
-        daysToCount = userDailyStat.slice(0, 7);
-    } 
-    else if (period === 'monthly') {
-        daysToCount = userDailyStat.slice(0, 30);
-    } 
-    else if (period === 'all-time') {
-        daysToCount = userDailyStat;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < userDailyStat.length; i++) {
+        const stat = userDailyStat[i];
+
+        const statDate = new Date(stat.stat_date);
+        statDate.setHours(0, 0, 0, 0);
+
+        const diffDays = (today - statDate) / 86400000;
+
+        if (
+            (period === 'daily' && diffDays === 0) ||
+            (period === 'weekly' && diffDays < 7) ||
+            (period === 'monthly' && diffDays < 30) ||
+            (period === 'all-time')
+        ) {
+            daysToCount.push(stat);
+        }
     }
 
     for (let day of daysToCount) {
@@ -422,8 +430,6 @@ function loadWeightChart(){
     });
 };
 function loadMuscleRanks(){
-    const muscleOverview = document.getElementById('muscle-overview'); // összesített izomcsoport kártyák konténere
-
     const selectedMuscleTitle = document.getElementById('selected-muscle-title'); // kiválasztott izomcsoport neve (cím)
 
     const muscleSelector = document.getElementById('muscle-selector'); // izomcsoport választó dropdown
@@ -438,6 +444,8 @@ function loadMuscleRanks(){
 
     const selectedMuscleProgressBar = document.getElementById('selected-muscle-progress-bar'); // progress bar kitöltése
     const selectedMuscleProgressText = document.getElementById('selected-muscle-progress-text'); // progress százalék szöveg
+
+
 }
 
 //? helper functions
