@@ -72,3 +72,9 @@ hr{
     width: 30% !important;
     color-scheme: dark !important;
 }
+
+@media (max-width: 768px) {
+    #date_input{
+        width: 70% !important;
+    }
+}
