@@ -825,9 +825,9 @@ async function setRecommendedFiltersFromUserPreferences(){
 }
 function levelConv(level){
     switch(level){
-        case 'kezdő (0-6 hónap)':
+        case 'kezdő (0–6 hónap)':
             return 'kezdo';
-        case 'középhaladó (6-24 hónap)':
+        case 'középhaladó (6–24 hónap)':
             return 'kozep';
         case 'haladó (2+ év)':
             return 'halado';
