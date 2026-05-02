@@ -1,5 +1,55 @@
 import { getFetch, postRequest, deleteFetch, postForm, putForm } from './api.js';
 
+function formatCategoryLabel(value) {
+    const labels = {
+        reggeli: 'Reggeli',
+        ebed: 'Ebéd',
+        vacsora: 'Vacsora',
+        snack: 'Snack',
+        desszert: 'Desszert',
+        ital: 'Ital'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatGoalLabel(value) {
+    const labels = {
+        mind: 'Mind',
+        tomegnoveles: 'Tömegnövelés',
+        szalkasitas: 'Szálkásítás',
+        szintentartas: 'Szintentartás'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatDietLabel(value) {
+    const labels = {
+        mindenevo: 'Mindenevő',
+        vegetarianus: 'Vegetáriánus',
+        vegan: 'Vegán'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatDifficultyLabel(value) {
+    const labels = {
+        konnyu: 'Könnyű',
+        kozepes: 'Közepes',
+        nehez: 'Nehéz'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatTagLabel(value) {
+    const labels = {
+        high_protein: 'Magas fehérje',
+        low_carb: 'Alacsony szénhidrát',
+        bulk_friendly: 'Tömegeléshez',
+        cut_friendly: 'Szálkásításhoz'
+    };
+    return labels[value] || value || '-';
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const loadingOverlay = document.getElementById('loading-overlay');
     loadingOverlay.style.display = 'flex';
@@ -393,7 +443,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const diffSpan = document.createElement('span');
             diffSpan.className = 'text-capitalize';
-            diffSpan.textContent = `📊 ${food.difficulty}`;
+            diffSpan.textContent = `📊 ${formatDifficultyLabel(food.difficulty)}`;
 
             metaDiv.appendChild(timeSpan);
             metaDiv.appendChild(diffSpan);
@@ -545,10 +595,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const infoBox = createPanelBox('p-3 rounded h-100');
         infoBox.appendChild(createSectionTitle('\u2139\uFE0F', 'Általános infók'));
 
-        infoBox.appendChild(createInfoRow('Kategória:', food.category, false));
-        infoBox.appendChild(createInfoRow('Étrend:', food.diet_tag, false));
-        infoBox.appendChild(createInfoRow('Cél:', food.goal_tag, false));
-        infoBox.appendChild(createInfoRow('Nehézség:', food.difficulty, false));
+        infoBox.appendChild(createInfoRow('Kategória:', formatCategoryLabel(food.category), false));
+        infoBox.appendChild(createInfoRow('Étrend:', formatDietLabel(food.diet_tag), false));
+        infoBox.appendChild(createInfoRow('Cél:', formatGoalLabel(food.goal_tag), false));
+        infoBox.appendChild(createInfoRow('Nehézség:', formatDifficultyLabel(food.difficulty), false));
         infoBox.appendChild(createInfoRow('Elkészítési idő:', (food.prep_time_min + ' perc'), true));
 
         // cimkek
@@ -565,10 +615,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         tagsWrap.className = 'd-flex flex-wrap gap-1';
 
         const tagNames = [];
-        if (food.high_protein) { tagNames.push('High Protein'); }
-        if (food.low_carb) { tagNames.push('Low Carb'); }
-        if (food.bulk_friendly) { tagNames.push('Bulk Friendly'); }
-        if (food.cut_friendly) { tagNames.push('Cut Friendly'); }
+        if (food.high_protein) { tagNames.push(formatTagLabel('high_protein')); }
+        if (food.low_carb) { tagNames.push(formatTagLabel('low_carb')); }
+        if (food.bulk_friendly) { tagNames.push(formatTagLabel('bulk_friendly')); }
+        if (food.cut_friendly) { tagNames.push(formatTagLabel('cut_friendly')); }
 
         if (tagNames.length > 0) {
             tagNames.forEach(function(t) {
