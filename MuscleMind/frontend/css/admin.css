@@ -420,3 +420,44 @@ option{
         top: auto;
     }
 }
+
+
+.admin-main {
+    width: calc(100% - 260px);
+    max-width: none;
+}
+
+/* Tartalom középre és 95%-ra */
+.admin-main > .topbar,
+.admin-main > .admin-section {
+    width: 95%;
+    max-width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Belső elemek full szélesség */
+.section-card,
+.topbar-card,
+.placeholder-box,
+.admin-card {
+    width: 100%;
+}
+
+/* ===== MOBIL ===== */
+@media (max-width: 991.98px) {
+    .admin-main {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .admin-main > .topbar,
+    .admin-main > .admin-section {
+        width: 95%;
+        max-width: 95%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
