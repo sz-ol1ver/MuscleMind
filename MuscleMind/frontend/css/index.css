@@ -21,11 +21,9 @@
 /* -------------Minden is------------- */
 html,body{
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
     background-color: #0b0b10;
     color: #f5f5ff;
-    /* color: rgb(201, 239, 235); */
-
 }
 
 .container-fluid {
@@ -36,7 +34,6 @@ html,body{
 
 #main-row {
     flex: 1;
-    overflow-y: hidden;
     min-height: 0;
 }
 
@@ -50,35 +47,10 @@ html,body{
     overflow-y: auto;
 }
 
-#middle-part {
-    height: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    margin-left: auto !important;
-    margin-right: auto !important;
-}
-@media (max-width: 991.98px) {
-    #middle-part {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
-
-@media (max-width: 991px) {
-    html, body {
-        overflow-y: auto;
-    }
-    .container-fluid {
-        height: auto;
-    }
-}
-
 a{
     text-decoration: none;
 }
+
 /* Loading overlay ---------------------*/
 .loading-overlay {
     position: fixed;
@@ -130,6 +102,7 @@ a{
     background-color: #0f0f17;
     border-bottom: 1px groove #7c3aed;
 }
+
 #shifting-text1{
     animation: ForTitle1 1s infinite alternate;
 }
@@ -169,7 +142,6 @@ a{
     color: #22192e;
     font-weight: bold;
 }
-
 
 .switch {
   appearance: none;
@@ -224,49 +196,27 @@ a{
 #profile-pic-forced{
     width: 32px;
     height: 32px;
-
 }
 
 @keyframes ForTitle1{
-    from{
-        color: #814fd8;
-    }
-    to{
-        color: white;
-    }
+    from{ color: #814fd8; }
+    to{ color: white; }
 }
 
 @keyframes ForTitle2{
-    from{
-        color: white;
-    }
-    to{
-        color: #814fd8;
-    }
+    from{ color: white; }
+    to{ color: #814fd8; }
 }
 
 @keyframes ForTitleLightTheme1{
-    from{
-        color: #814fd8;
-    }
-    to{
-        color: #2c203b;
-    }
+    from{ color: #814fd8; }
+    to{ color: #2c203b; }
 }
 
 @keyframes ForTitleLightTheme2{
-    from{
-        color: #2c203b;
-    }
-    to{
-        color: #814fd8;
-    }
+    from{ color: #2c203b; }
+    to{ color: #814fd8; }
 }
-
-
-/* Main-row */
-
-
 
 /* Navbar rész  ----------------------------*/
 #side-nav{
@@ -274,6 +224,7 @@ a{
     height: calc(100vh - 70px);
     background-color: #0f0f17;
 }
+
 .nav-item{
     padding: 0;
     border: 2px solid #612eb9;
@@ -283,12 +234,10 @@ a{
     height: 55px;
     color: white;
     box-sizing: border-box;
-    
 }
+
 .nav-item:hover{
     animation: NavSelection 700ms infinite alternate;
-    /* border-left: 10px solid #612eb9;
-    border-bottom: 10px solid #612eb9; */
 }
 
 .nav-link{
@@ -301,6 +250,7 @@ a{
     font-weight: 700;
     color: white;
 }
+
 .nav-link:hover{
     color: white;
 }
@@ -311,130 +261,42 @@ a{
 }
 
 @keyframes NavSelection{
-    
-    from{
-        background-color: #612eb9;
-    }
-    to{
-        background-color: #612eb900;;
-    }
-    
+    from{ background-color: #612eb9; }
+    to{ background-color: #612eb900; }
 }
-
 
 /* Középső rész -------------------------*/
 #middle-part{
     border:1px solid #0b0b10;
 }
 
-#stats{
+#calendar-wrapper {
+    margin-bottom: 1rem;
+}
+
+#calendar {
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 20px;
-    margin: 1px;
     background-color: #6c6c862a;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    flex-shrink: 0;
-}
-#stat-title{
-    font-size: larger ;
-    text-align: center;
-}
-
-.stats-grid {
-    padding-bottom: 20px;
-}
-
-.stat-card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 20px;
-    border-radius: 18px;
-    background: linear-gradient(145deg, #141420, #1b1b2b);
-    border: 1px solid rgba(255,255,255,0.08);
-    position: relative;
-    overflow: hidden;
-}
-
-.stat-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
-    border: 1px solid #7c3aed;
-}
-
-.stat-icon {
-    font-size: 28px;
-    width: 60px;
-    height: 40px;
-    border-radius: 50%;
-    background: rgba(124, 58, 237, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stat-info {
+    width: 100%;
     display: flex;
     flex-direction: column;
-}
-
-.stat-value {
-    font-size: 26px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.stat-label {
-    font-size: 14px;
-    color: #b8b8d4;
-    letter-spacing: 0.5px;
-}
-
-.highlight-card {
-    border: 1px solid #ff7a18;
-    box-shadow: 0 0 20px rgba(255,122,24,0.3);
-}
-
-.highlight-card .stat-icon {
-    background: rgba(255,122,24,0.2);
-}
-
-.danger-card {
-    border: 1px solid #ff3c5f;
-}
-
-.danger-card .stat-icon {
-    background: rgba(255,60,95,0.2);
-}
-
-#timezone{
-    border-radius: 100px;
-    float: right;
-    color-scheme: dark;
-}
-
-#ranglist-calendar{
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    margin: 0;
-}
-
-#calendar{
-    border: 2px solid rgba(255,255,255,.10);
-    border-radius: 20px;
-    background-color: #6c6c862a;
-    width: 100%;
-    height: 100%;
+    padding: 1rem !important;
 }
 
 #calendar-title{
     text-align: center;
     font-size: large;
+    flex-shrink: 0;
+}
+
+#ranglist-wrapper {
+    min-height: 400px;
+}
+
+#ranglist {
+    display: flex;
+    flex-direction: column;
 }
 
 /* Jobb oldali rész --------------------------*/
@@ -445,12 +307,12 @@ a{
     height: 36px;
     font-size: 13px;
 }
+
 #muscle-tracker{
     background-color: #0f0f17;
     border: 2px solid rgba(255,255,255,.10);
     border-radius: 16px;
     margin-bottom: 20px;
-    margin-top: 13px;
     overflow: hidden;
     padding: 12px;
     gap: 10px;
@@ -503,7 +365,6 @@ a{
     inset: 0;
     width: 100%;
     height: 100%;
-
     object-fit: contain;
     object-position: center;
     pointer-events: none;
@@ -534,60 +395,20 @@ a{
 }
 
 @keyframes muscleHighlightIn {
-    to {
-        opacity: 1;
-    }
+    to { opacity: 1; }
 }
 
 .muscle-wrapper{
     position: relative;
     width: 100%;
     height: 100%;
-
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1;
 }
 
-
-
-
-/* Reszponzívitáshoz--------------------- */
-@media (max-width:992px){
-    #middle-part{
-        padding-left:0 !important;
-        padding-right: 0 !important;
-    }
-    #stats{
-        height: auto;
-        margin: 12px;
-    }
-}
-
-@media (min-width:1200px){
-    #main-row{
-        height: calc(100vh - 70px);
-    }
-
-    #middle-part{
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-
-    #stats{
-        margin-bottom: 14px;
-    }
-
-    #ranglist-calendar{
-        flex: 1 1 auto;
-        height: auto;
-        overflow: hidden;
-        min-height: 0;
-    }
-}
-
+/* Offcanvas styles */
 .offcanvas{
     background-color: #0f0f17;
 }
@@ -610,6 +431,73 @@ a{
     opacity: 1;
 }
 
+/* --- RESZPONSZÍV GÖRGETÉS ÉS MÉRETEZÉS --- */
+@media (max-width: 991.98px) {
+    html, body {
+        overflow-y: auto !important; 
+    }
+    .container-fluid {
+        height: auto;
+    }
+    #main-row {
+        overflow-y: visible;
+        height: auto;
+    }
+    #middle-part {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+}
+
+@media (min-width: 992px) {
+    #main-row {
+        height: calc(100vh - 70px);
+        overflow: hidden;
+    }
+    
+    #content-wrapper {
+        height: 100%;
+        overflow-y: auto; 
+        overflow-x: hidden;
+    }
+    
+    #middle-part {
+        height: auto;
+        overflow: visible; 
+    }
+}
+
+@media (min-width: 1200px) {
+    #content-wrapper {
+        overflow-y: hidden; 
+    }
+    
+    #middle-part {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden; 
+    }
+
+    #calendar-wrapper {
+        margin-bottom: 14px;
+        flex: 0 0 50%;
+    }
+
+    #calendar {
+        height: 100%;
+    }
+
+    #ranglist-wrapper {
+        flex: 1;
+        overflow-y: auto; 
+        min-height: 0;
+    }
+}
+
+/* Kisebb mobil nézetek igazításai */
 @media(max-width:576px){
     #theme-switch{
         display: none !important;
@@ -637,5 +525,3 @@ a{
         padding: 0 10px;
     }
 }
-
-

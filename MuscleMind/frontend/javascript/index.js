@@ -35,11 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       document.getElementById('middle-part').style.border = "0"
 
-      // Statisztika box 
-      document.getElementById("stats").style.backgroundColor = "#f1f5f9";
-      document.getElementById("stats").style.border =
-        "1px solid #94a3b8";
-
       // Ranglista + Naptár 
       document.getElementById("ranglist").style.backgroundColor = "#f1f5f9";
       document.getElementById("calendar").style.backgroundColor = "#f1f5f9";
@@ -81,20 +76,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "1px groove #7c3aed";
 
       document.getElementById("main-page-title").style.color = "#ffffff";
-      document.getElementById("stat-title").style.color = "#ffffff";
 
 
-      document.getElementById("stats").style.backgroundColor = "#0f0f17";
       document.getElementById("ranglist").style.backgroundColor = "#0f0f17";
       document.getElementById("calendar").style.backgroundColor = "#0f0f17";
       document.getElementById("muscle-tracker").style.backgroundColor =
         "#0f0f17";
-
-      document.getElementById("stats").style.border =
-        "2px solid rgba(255,255,255,.10)";
-
-      document.getElementById("stats").style.backgroundColor =
-        "#6c6c862a";
 
       document.getElementById("ranglist").style.border =
         "2px solid rgba(255,255,255,.10)";
@@ -111,11 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("muscle-tracker").style.border =
         "2px solid rgba(255,255,255,.10)";
 
-      document.getElementsByClassName("offcanvas").style.backgroundColor = "#0f0f17";
-      document.getElementsByClassName("nav-item").style.borderColor = "#612eb9";
+      const offcanvas = document.querySelector(".offcanvas");
+      if (offcanvas) offcanvas.style.backgroundColor = "#0f0f17";
 
-      document.getElementsByClassName("button-sample").style.backgroundColor =
-        "#2c203b";
+      const navItems = document.querySelectorAll(".nav-item");
+      navItems.forEach(item => item.style.borderColor = "#612eb9");
+
+      const buttons = document.querySelectorAll(".button-sample");
+      buttons.forEach(btn => btn.style.backgroundColor = "#2c203b");
     }
   });
 
