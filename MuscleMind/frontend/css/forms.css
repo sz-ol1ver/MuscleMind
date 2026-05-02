@@ -60,3 +60,128 @@ hr{
 #password-confirm-regist:disabled{
     background-color: rgba(157, 189, 255, 0.496);
 }
+
+html{
+    background-color: rgb(16, 16, 16) !important;
+}
+
+
+/*Auth loading overlay*/
+
+.auth-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at top, rgba(120, 40, 190, 0.35), transparent 35%),
+        linear-gradient(135deg, #05030d 0%, #13091f 45%, #020617 100%);
+
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+
+    transition:
+        opacity 0.45s ease,
+        visibility 0.45s ease;
+}
+
+.auth-loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.auth-loader-card {
+    width: min(90%, 330px);
+    padding: 2rem 1.5rem;
+
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    background: rgba(15, 10, 30, 0.72);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.55),
+        0 0 35px rgba(168, 85, 247, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+
+    text-align: center;
+
+    animation: authLoaderFadeUp 0.45s ease both;
+}
+
+.auth-loader-logo {
+    width: 74px;
+    height: 74px;
+
+    border-radius: 50%;
+    padding: 0.8rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.06);
+}
+
+.auth-loader-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.auth-spinner {
+    width: 48px;
+    height: 48px;
+
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.12);
+    border-top-color: #a855f7;
+    border-right-color: #38bdf8;
+
+    animation: authSpin 0.85s linear infinite;
+}
+
+.auth-loader-card h2 {
+    margin: 0;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.auth-loader-card p {
+    margin: 0;
+    color: #d8b4fe;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+@keyframes authSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes authLoaderFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

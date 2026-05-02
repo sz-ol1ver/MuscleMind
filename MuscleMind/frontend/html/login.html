@@ -13,9 +13,23 @@
         <link rel="stylesheet" href="../css/background-res.css" type="text/css">
         <link rel="stylesheet" href="../css/forms.css" type="text/css">
         <!--js-->
+        <script src="../javascript/auth-loading.js"></script>
         <script type="module" src="../javascript/login.js"></script>
     </head>
     <body id="login">
+        <div id="auth-loading-overlay" class="auth-loading-overlay">
+            <div class="auth-loader-card">
+                <div class="auth-loader-logo">
+                    <img src="../images/dumbbell-icon.png" alt="MuscleMind">
+                </div>
+
+                <div class="auth-spinner"></div>
+
+                <h2>MuscleMind</h2>
+                <p>Az oldal betöltése...</p>
+            </div>
+        </div>
+
         <!-- container: középre igazítás, full screen -->
         <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
             <!-- regisztrációs kártya -->
