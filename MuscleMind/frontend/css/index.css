@@ -476,6 +476,38 @@ a{
     }
 }
 
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    #content-wrapper > .row {
+        align-items: flex-start;
+        height: auto !important;
+    }
+
+    #middle-part {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+        height: auto !important;
+        overflow: visible !important;
+    }
+
+    #content-wrapper > .row > .col-xl-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+        height: auto !important;
+    }
+
+    #muscle-tracker {
+        height: auto !important;
+        min-height: 620px;
+    }
+
+    #calendar,
+    #ranglist {
+        min-height: auto;
+    }
+}
+
 @media (min-width: 1200px) {
     #content-wrapper {
         overflow-y: hidden; 
