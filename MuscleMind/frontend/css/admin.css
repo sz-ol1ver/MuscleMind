@@ -1,3 +1,4 @@
+/* Alap */
 html {
     scroll-behavior: smooth;
 }
@@ -6,8 +7,7 @@ body {
     background: #120f2a;
     color: #e2e8f0;
 }
-
-option {
+option{
     background-color: #2c0049;
     color: #d3d3d3;
 }
@@ -32,14 +32,15 @@ option {
     margin-bottom: 2rem;
 }
 
+/* Sidebar linkek */
 .admin-sidebar .nav-link {
     color: #94a3b8;
     font-weight: 500;
     border-radius: 12px;
     padding: 0.85rem 1rem;
     margin-bottom: 0.4rem;
+    transition: all 0.2s ease;
     border: 2px solid rgba(124, 58, 237, 0.35);
-    transition: 0.2s;
 }
 
 .admin-sidebar .nav-link:hover {
@@ -49,33 +50,29 @@ option {
 
 .admin-sidebar .nav-link.active {
     background: linear-gradient(135deg, #7c3aed, #9333ea);
-    color: #fff;
+    color: #ffffff;
     font-weight: 700;
     box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
 }
 
+/* Logout gomb */
 .logout-btn {
     margin-top: 1rem;
     border-radius: 12px;
 }
 
-/* Main layout */
+/* Main content */
 .admin-main {
     margin-left: 260px;
     padding: 2rem;
-    width: calc(100% - 260px);
-}
-
-.admin-main > .topbar,
-.admin-main > .admin-section {
-    width: 95%;
-    margin: 0 auto;
 }
 
 /* Topbar */
 .topbar {
+    top: 40px;
+    z-index: 1000;
     backdrop-filter: blur(3px);
-    padding: 1.5rem 0;
+    padding: 1.5rem 0 1.5rem 0;
 }
 
 .topbar-card {
@@ -83,7 +80,7 @@ option {
     border: 1px solid #3c3797;
     border-radius: 18px;
     padding: 1rem;
-    box-shadow: 0 0 10px 2px rgba(171, 114, 209, 0.6);
+    box-shadow: 0 0 10px 2px rgba(171, 114, 209, 0.608);
 }
 
 /* Quick links */
@@ -101,7 +98,7 @@ option {
     padding: 0.65rem 1rem;
     border-radius: 12px;
     font-weight: 600;
-    transition: 0.2s;
+    transition: all 0.2s ease;
 }
 
 .quick-links a:hover {
@@ -109,29 +106,116 @@ option {
     transform: translateY(-2px);
 }
 
-/* Sections */
+/* Section */
 .admin-section {
+    scroll-margin-top: 300px;
+    min-height: auto;
     margin-bottom: 2rem;
 }
 
+/* Card */
 .section-card {
     background: #020617;
     border: 1px solid #1e293b;
     border-radius: 20px;
     padding: 1.5rem;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
-    width: 100%;
 }
 
 .section-title {
     font-size: 1.8rem;
     font-weight: 700;
+    color: #e2e8f0;
     margin-bottom: 1rem;
 }
 
-/* Cards */
+/* Placeholder */
+.placeholder-box {
+    height: auto;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #020617, #0f172a);
+    border: 1px dashed #334155;
+    color: #64748b;
+}
+
+/* ===== Mobile topbar ===== */
+.mobile-topbar {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    background: rgba(2, 6, 23, 0.95);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid #1e293b;
+}
+
+/* Hamburger gomb */
+.btn-menu {
+    border: 1px solid #3c3797;
+    color: #e2e8f0;
+    background: #020617;
+    width: 15%;
+    min-width: 50px;
+}
+
+.btn-menu:hover {
+    background: #31425d;
+    color: white;
+}
+
+/* Offcanvas stílus */
+.offcanvas {
+    background: #020617;
+    color: #e2e8f0;
+}
+
+.offcanvas-header {
+    border-bottom: 1px solid #1e293b;
+}
+
+/* ===== Offcanvas nav stílus ===== */
+.offcanvas .nav-link {
+    color: #94a3b8;
+    font-weight: 500;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.4rem;
+    transition: all 0.2s ease;
+    border: 2px solid rgba(124, 58, 237, 0.35);
+}
+
+/* Hover */
+.offcanvas .nav-link:hover {
+    background: #412955;
+    color: #e2e8f0;
+    transform: translateX(4px);
+}
+
+/* Active */
+.offcanvas .nav-link.active {
+    background: linear-gradient(135deg, #7c3aed, #9333ea);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+}
+
+/* Finomabb spacing mobilra */
+.offcanvas .nav {
+    gap: 4px;
+}
+
+@media (max-width: 991.98px) {/* Main igazítás */
+    .admin-main {
+        margin-left: 0;
+        padding-top: 1rem;
+    }
+}
+
+/* Dashboard cards */
 .dashboard-card {
     min-height: 160px;
+    height: 100%;
+
     background: linear-gradient(145deg, #1a1026, #161537);
     border: 1px solid #3a2457;
     border-radius: 16px;
@@ -141,22 +225,26 @@ option {
 
 .dashboard-card-title {
     min-height: 48px;
+    color: #d7c3ff;
     font-size: 1.3rem;
     padding-top: 10%;
 }
 
 .dashboard-card-value {
     margin-top: auto;
-    font-size: 2rem;
+    font-size: 2rem !important;
     font-weight: 700;
+    color: #ffffff;
 }
 
 .admin-card {
+    min-height: auto;
     width: 100%;
-    background: linear-gradient(135deg, #140a1f, #0b0b0f);
+    background: linear-gradient(135deg, #140a1f 0%, #0b0b0f 100%);
     border: 1px solid #3a1f52;
+    color: #f1eaff;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-    transition: 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-card:hover {
@@ -165,39 +253,137 @@ option {
 }
 
 .admin-card-header {
-    background: linear-gradient(135deg, #241133, #111116);
+    background: linear-gradient(135deg, #241133 0%, #111116 100%);
     border-bottom: 1px solid #3a1f52;
+    color: #f8f4ff;
     padding: 1rem 1.25rem;
 }
 
 .admin-card-body {
+    background: transparent;
+    color: #ece6f7;
     padding: 1.25rem;
 }
 
-/* Tickets / lists */
-#open-tickets,
+.ticket-title-wrap {
+    min-width: 0;
+}
+
+.card-content-id {
+    color: #c084fc;
+    white-space: nowrap;
+}
+
+.card-separator {
+    color: #8d78a8;
+}
+
+.card-subject {
+    color: #ffffff;
+    word-break: break-word;
+}
+
+.card-content-date {
+    font-size: 0.9rem;
+    color: #b9aacd;
+}
+
+.ticket-section-title {
+    color: #d8b4fe;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+}
+
+.ticket-message-box {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid #4b2c63;
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    color: #f3edff;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.ticket-empty-message {
+    color: #b8a9c9;
+    font-style: italic;
+}
+
+.ticket-divider {
+    border: 0;
+    border-top: 1px solid #4b2c63;
+    margin: 1.25rem 0 1rem 0;
+    opacity: 1;
+}
+
+.ticket-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    color: #b9aacd;
+}
+
+#open-tickets, 
 #closed-tickets {
     height: 45vh;
     overflow-y: auto;
+    padding: 6px 8px 8px 8px;
 }
 
-.placeholder-box {
-    border-radius: 16px;
-    background: linear-gradient(135deg, #020617, #0f172a);
-    border: 1px dashed #334155;
+#foods-container {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
 }
 
-/* Food form */
+.foods-split-section {
+    height: 45vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.foods-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 8px 8px 8px;
+}
+
+.food-form-wrap {
+    width: 100%;
+}
+
+.food-form-label {
+    color: #d8b4fe;
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+}
+
 .food-form-control {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid #4b2c63;
     border-radius: 10px;
     color: #f3edff;
+    padding: 0.75rem 0.95rem;
 }
 
 .food-form-control:focus {
+    background: rgba(255, 255, 255, 0.07);
     border-color: #a855f7;
+    color: #ffffff;
     box-shadow: 0 0 0 0.2rem rgba(168, 85, 247, 0.2);
+}
+
+.food-form-control::placeholder {
+    color: #9f8ab9;
+}
+
+.food-form-textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
 .food-checkbox-grid {
@@ -210,39 +396,27 @@ option {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    width: auto; /* kulcs */
+    padding: 0.6rem 0.9rem;
 }
 
-/* Mobile */
-.mobile-topbar {
-    display: none;
-    position: sticky;
-    top: 0;
-    z-index: 2000;
-    background: rgba(2, 6, 23, 0.95);
-    border-bottom: 1px solid #1e293b;
+.food-check-item .form-check-input {
+    background-color: #1e1630;
+    border-color: #7c3aed;
 }
 
-.btn-menu {
-    border: 1px solid #3c3797;
-    background: #020617;
-    color: #e2e8f0;
-    min-width: 50px;
+.food-check-item .form-check-input:checked {
+    background-color: #9333ea;
+    border-color: #9333ea;
 }
 
-.btn-menu:hover {
-    background: #31425d;
+.food-check-item .form-check-label {
+    cursor: pointer;
 }
 
-/* Responsive */
 @media (max-width: 991.98px) {
-    .admin-main {
-        margin-left: 0;
-        width: 100%;
-        padding: 1rem 0;
-    }
-
-    .admin-main > .topbar,
-    .admin-main > .admin-section {
-        width: 95%;
+    .topbar {
+        position: relative; /* vagy static */
+        top: auto;
     }
 }
