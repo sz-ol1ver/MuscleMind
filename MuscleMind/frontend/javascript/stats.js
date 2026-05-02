@@ -83,47 +83,68 @@ const muscleRanks = {
 let nextWeightViewAll = true;
 let chartInstance = null;
 
+//? loading overlay
+const loadingOverlay = document.getElementById('loading-overlay');
+function showLoading() {
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('hidden');
+    }
+}
+function hideLoading() {
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', async()=>{
-    await getStats();
+    showLoading();
+    try {
+        await getStats();
 
-    loadSummaryCard();
-    loadGlobalRank();
-    loadBmiIndicator();
-    loadMetrics();
-    loadPeriodStats('daily');
-    loadMuscleChart();
-    loadWeightChart();
-    loadMuscleRanks();
-    loadPr();
-
-    //? period stats
-    const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
-    const periodButtons = statsPeriodTabs.querySelectorAll('.period-tab');
-    for (let button of periodButtons) {
-        button.addEventListener('click', () => {
-
-            // active leszedése
-            for (let btn of periodButtons) {
-                btn.classList.remove('active');
-            }
-
-            // aktuális gomb
-            button.classList.add('active');
-
-            const selectedPeriod = button.dataset.period;
-
-            loadPeriodStats(selectedPeriod);
-        });
-    };
-    //? weight chart btn
-    document.getElementById('toggle-weight').addEventListener('click', () => {
-        nextWeightViewAll = !nextWeightViewAll;
-
-        document.getElementById('toggle-weight').innerText =
-            nextWeightViewAll ? 'Összes' : 'Utolsó 10';
-
+        loadSummaryCard();
+        loadGlobalRank();
+        loadBmiIndicator();
+        loadMetrics();
+        loadPeriodStats('daily');
+        loadMuscleChart();
         loadWeightChart();
-    });
+        loadMuscleRanks();
+        loadPr();
+
+        //? period stats
+        const statsPeriodTabs = document.getElementById('stats-period-tabs'); // időszak választó gombok konténere
+        const periodButtons = statsPeriodTabs.querySelectorAll('.period-tab');
+        for (let button of periodButtons) {
+            button.addEventListener('click', () => {
+
+                // active leszedése
+                for (let btn of periodButtons) {
+                    btn.classList.remove('active');
+                }
+
+                // aktuális gomb
+                button.classList.add('active');
+
+                const selectedPeriod = button.dataset.period;
+
+                loadPeriodStats(selectedPeriod);
+            });
+        };
+        //? weight chart btn
+        document.getElementById('toggle-weight').addEventListener('click', () => {
+            nextWeightViewAll = !nextWeightViewAll;
+
+            document.getElementById('toggle-weight').innerText =
+                nextWeightViewAll ? 'Összes' : 'Utolsó 10';
+
+            loadWeightChart();
+        });
+    } catch (error) {
+        console.error(error.message);
+    }finally{
+        hideLoading();
+    }
+    
 });
 
 async function getStats() {
