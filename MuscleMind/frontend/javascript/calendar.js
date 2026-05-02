@@ -1,6 +1,26 @@
 import { getFetch, postRequest, patchFetch } from './api.js'
 
+// Loader megjelenítése
+function showPageLoader() {
+    const loader = document.getElementById("loading-overlay");
+
+    if (!loader) return;
+
+    loader.classList.add("active");
+}
+
+// Loader elrejtése
+function hidePageLoader() {
+    const loader = document.getElementById("loading-overlay");
+
+    if (!loader) return;
+
+    loader.classList.remove("active");
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    showPageLoader();
+
     let calendarDataMap = {} // naptar adatok letarolasa
     let hasActivePlan = false
 
@@ -586,6 +606,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderCalendar(currentMonth, currentYear)
     })
 
-    // alap generalas
-    renderCalendar(currentMonth, currentYear)
+    // Alap naptár generálás
+    try {
+        renderCalendar(currentMonth, currentYear);
+    } finally {
+        hidePageLoader();
+    }
 })
