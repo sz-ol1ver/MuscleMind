@@ -85,15 +85,20 @@ let chartInstance = null;
 
 //? loading overlay
 const loadingOverlay = document.getElementById('loading-overlay');
+//? loading overlay
 function showLoading() {
-    if (loadingOverlay) {
-        loadingOverlay.classList.remove('hidden');
-    }
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    if (!loadingOverlay) return;
+
+    loadingOverlay.classList.add('active');
 }
 function hideLoading() {
-    if (loadingOverlay) {
-        loadingOverlay.classList.add('hidden');
-    }
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    if (!loadingOverlay) return;
+
+    loadingOverlay.classList.remove('active');
 }
 
 document.addEventListener('DOMContentLoaded', async()=>{
@@ -185,7 +190,8 @@ async function getStats() {
             exercises.push(exercise);
         };
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
+        throw error;
     }
 };
 function loadSummaryCard(){
