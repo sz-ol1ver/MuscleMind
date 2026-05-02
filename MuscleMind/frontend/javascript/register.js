@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                         }
                     }else{
                         feedBack.style.color = 'red';
-                        feedBack.innerHTML = 'Felhasználónév: a-z & 0-9!'
+                        feedBack.innerHTML = 'Felhasználónév: a-z & 0-9 & 3-20 karakter!'
                         userName.style.border = '2px solid red';
                         pass.value = '';
                         passConf.value ='';

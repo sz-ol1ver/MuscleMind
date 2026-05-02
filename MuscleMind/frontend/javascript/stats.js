@@ -84,8 +84,6 @@ let nextWeightViewAll = true;
 let chartInstance = null;
 
 //? loading overlay
-const loadingOverlay = document.getElementById('loading-overlay');
-//? loading overlay
 function showLoading() {
     const loadingOverlay = document.getElementById('loading-overlay');
 
@@ -93,6 +91,7 @@ function showLoading() {
 
     loadingOverlay.classList.add('active');
 }
+
 function hideLoading() {
     const loadingOverlay = document.getElementById('loading-overlay');
 
