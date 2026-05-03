@@ -77,7 +77,7 @@ async function checkIfActive(id) {
 async function ifAdmin(id) {
     const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(userN, [id]);
-    return rows.id;
+    return rows[0].id;
 }
 
 async function registComp(id) {
