@@ -845,11 +845,6 @@ async function updateActive(userId, planId) {
         connection.release();
     }
 }
-async function updateActive(userId,plan) {
-    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
-    const [rows] = await pool.execute(sql, [plan, userId]);
-    return rows.affectedRows;
-}
 async function calendarUpToDate(userId) {
     const connection = await pool.getConnection();
 
