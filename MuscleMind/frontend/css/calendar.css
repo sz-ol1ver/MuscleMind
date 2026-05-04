@@ -294,3 +294,74 @@
         line-height: 1.15;
     }
 }
+
+/* vilagos téma switch*/
+body.light-theme .calendar-main-card {
+    background-color: #ffffff;
+    border-color: #e2e8f0;
+}
+
+body.light-theme .calendar-main-card.bg-dark {
+    background-color: #ffffff !important;
+}
+
+body.light-theme .calendar-main-card.text-white {
+    color: #1f2937 !important;
+}
+
+body.light-theme .calendar-main-card .calendar-header h3 {
+    color: #1f2937;
+}
+
+body.light-theme .calendar-day-header {
+    background-color: #f1f5f9;
+    color: #334155;
+}
+
+body.light-theme .calendar-day {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    color: #1f2937;
+}
+
+body.light-theme .calendar-day:hover {
+    background-color: #e2e8f0;
+    box-shadow: 0 4px 8px rgba(15, 23, 42, 0.12);
+}
+
+body.light-theme .today-highlight {
+    border-color: #7c3aed !important;
+    background-color: rgba(124, 58, 237, 0.12) !important;
+}
+
+body.light-theme .calendar-modal-content,
+body.light-theme #dayDetailsModal .modal-content {
+    background-color: #ffffff !important;
+    border-color: #e2e8f0;
+    color: #1f2937;
+}
+
+body.light-theme #dayDetailsModal .modal-header,
+body.light-theme #dayDetailsModal .modal-footer {
+    border-color: #e2e8f0;
+}
+
+body.light-theme #dayDetailsModal .modal-content.text-white {
+    color: #1f2937 !important;
+}
+
+body.light-theme #dayDetailsModal .text-muted {
+    color: #6b7280 !important;
+}
+
+body.light-theme #workout-list .list-group-item {
+    background-color: #f8fafc;
+    color: #1f2937;
+    border-color: #e2e8f0;
+}
+
+body.light-theme #workout-list .list-group-item.bg-dark {
+    background-color: #f8fafc !important;
+    color: #1f2937 !important;
+    border-color: #e2e8f0 !important;
+}
