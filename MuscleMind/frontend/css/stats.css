@@ -531,3 +531,130 @@
     margin-top: 10px;
     opacity: 0.9;
 }
+
+/* vilagos téma switch*/
+body.light-theme #stats.stats-page {
+    background: linear-gradient(145deg, #ffffff, #f4f6ff);
+    border-color: #e2e8f0;
+    color: #1f2937;
+}
+
+body.light-theme .stats-header p {
+    color: #64748b;
+}
+
+body.light-theme .stats-section {
+    border-bottom-color: #e2e8f0;
+}
+
+body.light-theme .stats-section-title {
+    border-left-color: #7c3aed;
+}
+
+body.light-theme .summary-card,
+body.light-theme .detail-card,
+body.light-theme .stats-card,
+body.light-theme .muscle-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .summary-label,
+body.light-theme .detail-card span,
+body.light-theme .section-label,
+body.light-theme .mini-stat span {
+    color: #6b7280;
+}
+
+body.light-theme .summary-card strong,
+body.light-theme .detail-card strong,
+body.light-theme .mini-stat strong,
+body.light-theme .rank-info h2,
+body.light-theme .rank-info h3 {
+    color: #1f2937;
+}
+
+body.light-theme .rank-image-box {
+    background: #f3e8ff;
+    border-color: #c4b5fd;
+}
+
+body.light-theme .rank-info p {
+    color: #6b7280;
+}
+
+body.light-theme .rank-progress-top {
+    color: #64748b;
+}
+
+body.light-theme .progress-bar-bg {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+body.light-theme .progress-bar-fill {
+    background: linear-gradient(90deg, #7c3aed, #c4b5fd);
+}
+
+body.light-theme .chart-box {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+body.light-theme .mini-stat {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+body.light-theme .muscle-card p {
+    color: #6b7280;
+}
+
+body.light-theme .muscle-select {
+    background-color: #ffffff;
+    color: #1f2937;
+    border-color: #c4b5fd;
+}
+
+body.light-theme .empty-state {
+    background-color: rgba(124, 58, 237, 0.08);
+    color: #4c1d95;
+    border-color: rgba(124, 58, 237, 0.25);
+}
+
+body.light-theme .stats-period-tabs {
+    background-color: #f3f4f6;
+    border-color: #e2e8f0;
+}
+
+body.light-theme .period-tab {
+    color: #6b7280;
+}
+
+body.light-theme .period-tab:hover {
+    background-color: rgba(124, 58, 237, 0.12);
+    color: #4c1d95;
+}
+
+body.light-theme .period-tab.active {
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+    color: #ffffff;
+}
+
+body.light-theme #middle-part::-webkit-scrollbar-track {
+    background: #e2e8f0;
+}
+
+body.light-theme #middle-part::-webkit-scrollbar-thumb {
+    background: linear-gradient(0deg, #7c3aed, #a78bfa);
+    border: 2px solid #f8fafc;
+}
+
+body.light-theme #middle-part::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #6d28d9, #9f7aea);
+}
+
+body.light-theme #middle-part {
+    scrollbar-color: #7c3aed #e2e8f0;
+}

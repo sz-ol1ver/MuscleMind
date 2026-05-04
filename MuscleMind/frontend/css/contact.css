@@ -103,3 +103,62 @@
     color: white;
     border-color: rgba(200, 140, 255, 0.5);
 }
+
+/* vilagos téma switch*/
+body.light-theme .card {
+    background: linear-gradient(180deg, #ffffff, #f5f3ff);
+    border: 1px solid rgba(124, 58, 237, 0.2);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    color: #1f2937;
+}
+
+body.light-theme .card-header {
+    background: linear-gradient(90deg, #f3e8ff, #ede9fe);
+    border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+    color: #2b1d4f;
+}
+
+body.light-theme .card-header p {
+    color: #6b7280;
+}
+
+body.light-theme .form-label {
+    color: #4c1d95;
+}
+
+body.light-theme .contact-input {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(124, 58, 237, 0.25) !important;
+    color: #1f2937 !important;
+}
+
+body.light-theme .contact-input::placeholder {
+    color: #94a3b8;
+}
+
+body.light-theme .contact-input:focus {
+    background-color: #f8fafc !important;
+    border-color: #8b5cf6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.18) !important;
+}
+
+body.light-theme .contact-input[readonly] {
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+}
+
+body.light-theme .card-footer {
+    background: #f5f1ff;
+    border-top: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+body.light-theme .card-footer .btn-outline-secondary {
+    border-color: rgba(124, 58, 237, 0.35);
+    color: #6b21a8;
+}
+
+body.light-theme .card-footer .btn-outline-secondary:hover {
+    background: rgba(124, 58, 237, 0.1);
+    color: #4c1d95;
+    border-color: rgba(124, 58, 237, 0.45);
+}
