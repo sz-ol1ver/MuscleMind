@@ -5,7 +5,7 @@ const fs = require('fs/promises');
 const bcrypt = require('bcrypt'); //! npm install bcrypt
 const crypto = require('crypto'); //! npm install crypto
 const requestIp = require('request-ip'); //! npm install request-ip
-require('dotenv').config(); //! npm install dotenv
+require('dotenv').config({ quiet: true }); //! npm install dotenv
 const apiKey = process.env.BREVO_API_KEY;
 const loginMw = require('../middleware/login.middleware.js');
 const validateRegistration = require('../middleware/registration.middleware.js');
