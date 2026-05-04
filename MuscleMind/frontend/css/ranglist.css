@@ -399,6 +399,13 @@
     width: 8px;
 }
 
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    #middle-part {
+        flex: 0 0 auto !important;
+        width: 75% !important;
+    }
+}
+
 #leaderboard-list::-webkit-scrollbar-thumb,
 #mini-leaderboard-list::-webkit-scrollbar-thumb,
 #friends-list::-webkit-scrollbar-thumb,
