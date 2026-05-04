@@ -33,7 +33,7 @@
         <!-- container: középre igazítás, full screen -->
         <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
             <!-- regisztrációs kártya -->
-            <div class="card card-login text-center mt-2 w-50" id="login-card">
+            <div class="card card-login text-center mt-2 col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4" id="login-card">
                 <!-- fejléc: app név / jelen oldal-->
                 <div class="card-header">
                     <h1 class="fw-bold text-light mt-2" title="Bejelentkezés">MuscleMind</h1>
@@ -49,9 +49,15 @@
                             <label for="email-login" class="text-light">E-mail cím</label>
                         </div>
                         <!--jelszo input-->
-                        <div class="form-floating mb-2">
-                            <input type="password" class="form-control login-inputs" id="password-login" name="pass" placeholder="xxx" required disabled>
-                            <label for="password-login" class="text-light">Jelszó</label>
+                       <div class="input-group mb-2">
+                            <div class="form-floating flex-grow-1">
+                                <input type="password" class="form-control login-inputs" id="password-login" name="pass" placeholder="xxx" required disabled>
+                                <label for="password-login" class="text-light">Jelszó</label>
+                            </div>
+
+                            <button type="button" class="btn btn-outline-light" id="toggle-password-login" aria-label="Jelszó megjelenítése">
+                                Mutat
+                            </button>
                         </div>
                     </form>
 

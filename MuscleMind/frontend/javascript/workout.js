@@ -93,7 +93,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         resetFilters();
     })
     cancel.addEventListener('click', () => {
-        resetWorkoutEditor();
+        if(confirm('Minden nem mentett változás elveszik! Biztosan visszalépsz?')){
+            resetWorkoutEditor();
+        }
     });
     next.addEventListener('click', async () => {
         if(!plan_name.value.trim()){
@@ -599,6 +601,7 @@ async function updateActive(id) {
         }
         const data = await patchFetch('/api/workout/plans/active', obj);
         await getActive();
+        alert('Az edzéstervet sikeresen hozzáadtuk a naptárodhoz!');
     } catch (error) {
         console.error(error.message);
     }
@@ -825,9 +828,9 @@ async function setRecommendedFiltersFromUserPreferences(){
 }
 function levelConv(level){
     switch(level){
-        case 'kezdő (0-6 hónap)':
+        case 'kezdő (0–6 hónap)':
             return 'kezdo';
-        case 'középhaladó (6-24 hónap)':
+        case 'középhaladó (6–24 hónap)':
             return 'kozep';
         case 'haladó (2+ év)':
             return 'halado';

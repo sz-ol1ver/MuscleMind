@@ -1232,3 +1232,82 @@ JOIN (
 JOIN exercises e
     ON e.name = m.exercise_name
 WHERE wd.isRestDay = FALSE;
+
+
+INSERT INTO foods (
+    name, description, image_url, category,
+    created_by, is_approved,
+    calories_kcal, protein_g, carbs_g, fat_g, fiber_g, sugar_g, salt_g,
+    serving_size, serving_unit,
+    goal_tag, diet_tag, difficulty, prep_time_min,
+    high_protein, low_carb, bulk_friendly, cut_friendly
+) VALUES
+('Protein zabpalacsinta', 'Zab + tojás + protein', NULL, 'reggeli', NULL, TRUE, 420, 34, 38, 14, 6, 5, 0.6, 1, 'adag', 'tomegnoveles', 'vegetarianus', 'kozepes', 15, TRUE, FALSE, TRUE, FALSE),
+('Görög joghurt gyümölccsel', 'Magas fehérje', NULL, 'reggeli', NULL, TRUE, 230, 22, 24, 5, 3, 16, 0.2, 1, 'tal', 'szalkasitas', 'vegetarianus', 'konnyu', 5, TRUE, FALSE, FALSE, TRUE),
+('Csirkés bulgur tál', 'Komplex szénhidrát', NULL, 'ebed', NULL, TRUE, 560, 43, 62, 11, 8, 4, 1.1, 1, 'adag', 'tomegnoveles', 'mindenevo', 'kozepes', 30, TRUE, FALSE, TRUE, FALSE),
+('Pulykás édesburgonya', 'Clean meal', NULL, 'ebed', NULL, TRUE, 510, 42, 55, 8, 9, 8, 0.9, 1, 'adag', 'mind', 'mindenevo', 'kozepes', 35, TRUE, FALSE, TRUE, TRUE),
+('Lencse tojással', 'Magas rost', NULL, 'ebed', NULL, TRUE, 430, 24, 50, 13, 14, 5, 1.3, 1, 'tal', 'mind', 'vegetarianus', 'kozepes', 35, TRUE, FALSE, TRUE, TRUE),
+('Csicseriborsó curry', 'Vegán étel', NULL, 'vacsora', NULL, TRUE, 520, 20, 58, 22, 13, 7, 1.4, 1, 'adag', 'mind', 'vegan', 'kozepes', 30, FALSE, FALSE, TRUE, TRUE),
+('Túró alma', 'Gyors snack', NULL, 'snack', NULL, TRUE, 260, 32, 26, 2, 4, 20, 0.4, 1, 'adag', 'szalkasitas', 'vegetarianus', 'konnyu', 5, TRUE, FALSE, FALSE, TRUE),
+('Rizs tonhal', 'Egyszerű meal', NULL, 'ebed', NULL, TRUE, 470, 36, 58, 8, 3, 3, 1.2, 1, 'adag', 'tomegnoveles', 'mindenevo', 'konnyu', 15, TRUE, FALSE, TRUE, FALSE),
+('Omlett', 'Tojás alapú', NULL, 'reggeli', NULL, TRUE, 330, 24, 8, 23, 3, 5, 0.8, 1, 'adag', 'szalkasitas', 'vegetarianus', 'konnyu', 10, TRUE, TRUE, FALSE, TRUE),
+('Marha tészta', 'Magas kalória', NULL, 'vacsora', NULL, TRUE, 650, 39, 70, 22, 5, 6, 1.6, 1, 'adag', 'tomegnoveles', 'mindenevo', 'kozepes', 35, TRUE, FALSE, TRUE, FALSE),
+
+('Protein puding', 'Desszert', NULL, 'desszert', NULL, TRUE, 240, 31, 14, 6, 2, 8, 0.3, 1, 'adag', 'szalkasitas', 'vegetarianus', 'konnyu', 5, TRUE, FALSE, FALSE, TRUE),
+('Banán shake', 'Tömegelő ital', NULL, 'ital', NULL, TRUE, 430, 17, 55, 16, 6, 25, 0.4, 400, 'ml', 'tomegnoveles', 'vegetarianus', 'konnyu', 5, FALSE, FALSE, TRUE, FALSE),
+('Tofu rizs', 'Vegán protein', NULL, 'vacsora', NULL, TRUE, 480, 24, 55, 18, 6, 4, 1.3, 1, 'adag', 'mind', 'vegan', 'kozepes', 25, TRUE, FALSE, TRUE, TRUE),
+('Csirkés wrap', 'Gyors kaja', NULL, 'ebed', NULL, TRUE, 520, 38, 48, 17, 5, 4, 1.5, 1, 'db', 'mind', 'mindenevo', 'konnyu', 20, TRUE, FALSE, TRUE, TRUE),
+('Zab muffin', 'Egészséges édesség', NULL, 'desszert', NULL, TRUE, 310, 12, 48, 8, 7, 18, 0.3, 2, 'db', 'mind', 'vegetarianus', 'kozepes', 25, FALSE, FALSE, TRUE, TRUE),
+('Lazac saláta', 'Low carb', NULL, 'vacsora', NULL, TRUE, 430, 30, 9, 30, 6, 2, 0.9, 1, 'tal', 'szalkasitas', 'mindenevo', 'konnyu', 15, TRUE, TRUE, FALSE, TRUE),
+('Túrógombóc', 'Fehérjés desszert', NULL, 'desszert', NULL, TRUE, 360, 34, 30, 10, 4, 8, 0.5, 1, 'adag', 'tomegnoveles', 'vegetarianus', 'kozepes', 30, TRUE, FALSE, TRUE, FALSE),
+('Pesto csirke tészta', 'Kalóriadús', NULL, 'ebed', NULL, TRUE, 690, 45, 72, 22, 5, 5, 1.4, 1, 'adag', 'tomegnoveles', 'mindenevo', 'kozepes', 30, TRUE, FALSE, TRUE, FALSE),
+('Zöld smoothie', 'Fit ital', NULL, 'ital', NULL, TRUE, 260, 27, 31, 2, 4, 15, 0.2, 350, 'ml', 'szalkasitas', 'vegetarianus', 'konnyu', 5, TRUE, FALSE, FALSE, TRUE),
+('Quinoa zöldség', 'Vegán bowl', NULL, 'vacsora', NULL, TRUE, 440, 14, 58, 16, 9, 6, 0.8, 1, 'adag', 'mind', 'vegan', 'kozepes', 30, FALSE, FALSE, TRUE, TRUE);
+
+
+INSERT INTO food_allergens (food_id, allergen_id)
+SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Protein zabpalacsinta'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tojas' WHERE f.name='Protein zabpalacsinta'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tej' WHERE f.name='Protein zabpalacsinta'
+
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tej' WHERE f.name='Görög joghurt gyümölccsel'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Csirkés bulgur tál'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tojas' WHERE f.name='Lencse tojással'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='hal' WHERE f.name='Rizs tonhal'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tojas' WHERE f.name='Omlett'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tej' WHERE f.name='Protein puding'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='mogyoro' WHERE f.name='Banán shake'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Csirkés wrap'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Zab muffin'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tojas' WHERE f.name='Zab muffin'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='hal' WHERE f.name='Lazac saláta'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tej' WHERE f.name='Túrógombóc'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tojas' WHERE f.name='Túrógombóc'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Túrógombóc'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='gluten' WHERE f.name='Pesto csirke tészta'
+UNION ALL SELECT f.id, a.id FROM foods f JOIN allergens a ON a.name='tej' WHERE f.name='Zöld smoothie';
+
+
+INSERT INTO workout_plans (
+    user_id, name, level, location, goal, description, is_public, days_count
+) VALUES
+(NULL,'Kezdő FB 3','kezdo','gym','szintentartas','Alap teljes testes',TRUE,3),
+(NULL,'Kezdő otthon 3','kezdo','home_bodyweight','szalkasitas','Testsúlyos',TRUE,3),
+(NULL,'Kezdő súlyzó 4','kezdo','home_weights','tomeg','Otthoni súlyzó',TRUE,4),
+(NULL,'Közep PPL','kozep','gym','tomeg','Push pull legs',TRUE,3),
+(NULL,'Közep UL','kozep','gym','szintentartas','Upper lower',TRUE,4),
+(NULL,'Közep otthon 5','kozep','home_weights','tomeg','Volumen',TRUE,5),
+(NULL,'Közep BW','kozep','home_bodyweight','szalkasitas','Testsúlyos',TRUE,4),
+(NULL,'Haladó PPL','halado','gym','tomeg','6 napos',TRUE,6),
+(NULL,'Haladó erő','halado','gym','tomeg','Erő fókusz',TRUE,5),
+(NULL,'Haladó cut','halado','gym','szalkasitas','Szálkásító',TRUE,5),
+(NULL,'Női kezdő','kezdo','gym','szintentartas','Kezdő női',TRUE,3),
+(NULL,'Glute fókusz','kozep','gym','tomeg','Farizom',TRUE,4),
+(NULL,'Core 2 nap','kezdo','home_bodyweight','szintentartas','Core',TRUE,2),
+(NULL,'Gyors 2 nap','kezdo','home_bodyweight','szalkasitas','Rövid',TRUE,2),
+(NULL,'Felsőtest otthon','kozep','home_weights','tomeg','Upper',TRUE,3),
+(NULL,'Alsótest otthon','kozep','home_weights','tomeg','Lower',TRUE,3),
+(NULL,'Szintentartó gym','kozep','gym','szintentartas','Balance',TRUE,3),
+(NULL,'Full haladó','halado','gym','szintentartas','4 nap',TRUE,4),
+(NULL,'BW haladó','halado','home_bodyweight','szalkasitas','Testsúly',TRUE,5),
+(NULL,'Minimal 2 nap','kezdo','gym','szintentartas','Minimalista',TRUE,2);

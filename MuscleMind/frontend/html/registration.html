@@ -34,7 +34,7 @@
         <div class="container-fluid d-flex vh-100 vw-100 align-items-center justify-content-center">
 
             <!-- regisztrációs kártya -->
-            <div class="card card-registration text-center mt-2 w-50" id="registration-card">
+            <div class="card card-registration text-center mt-2 col-11 col-sm-10 col-md-9 col-lg-7 col-xl-6" id="registration-card">
 
                 <!-- fejléc: app név / jelen oldal-->
                 <div class="card-header">
@@ -70,15 +70,31 @@
                         </div>
 
                         <!-- jelszó -->
-                        <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                            <input type="password" class="form-control regist-inputs" id="password-regist" name="pass" placeholder="Jelszó" min="8" max="64">
-                            <label for="password-regist" class="text-light ms-2">Jelszó</label>
+                        <div class="mb-2 col-lg-6 col-md-6 col-sm-6">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input type="password" class="form-control regist-inputs" id="password-regist" name="pass" placeholder="Jelszó" min="8" max="64">
+                                    <label for="password-regist" class="text-light ms-2">Jelszó</label>
+                                </div>
+
+                                <button type="button" class="btn btn-outline-light" id="toggle-password-regist" aria-label="Jelszó megjelenítése">
+                                    Mutat
+                                </button>
+                            </div>
                         </div>
 
                         <!-- jelszó megerősítés -->
-                        <div class="form-floating mb-2 col-lg-6 col-md-6 col-sm-6">
-                            <input type="password" class="form-control regist-inputs" id="password-confirm-regist" name="pass-confirm" placeholder="Jelszó" disabled>
-                            <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
+                        <div class="mb-2 col-lg-6 col-md-6 col-sm-6">
+                            <div class="input-group">
+                                <div class="form-floating flex-grow-1">
+                                    <input type="password" class="form-control regist-inputs" id="password-confirm-regist" name="pass-confirm" placeholder="Jelszó" disabled>
+                                    <label for="password-confirm-regist" class="text-light ms-2">Jelszó megerősítés</label>
+                                </div>
+
+                                <button type="button" class="btn btn-outline-light" id="toggle-password-confirm-regist" aria-label="Jelszó megjelenítése">
+                                    Mutat
+                                </button>
+                            </div>
                         </div>
                     </form>
 

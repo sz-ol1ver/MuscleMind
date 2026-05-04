@@ -63,15 +63,109 @@ document.addEventListener('DOMContentLoaded',()=>{
     const registBtn = document.getElementById('regist-in');
 
     //? Nev megengedett karakterei
-    const patterName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]*$/;
+    const patterName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+(-[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+)*$/;
     //? Felhasznalonev megengedett karakterei
-    const patterUser = /^[a-z0-9]{3,20}$/;
+    const patterUser = /^(?=.{3,20}$)[a-z0-9áéíóöőúüű]+(-[a-z0-9áéíóöőúüű]+)*$/;
     //? Jelszo megengedett karakterei
-    const patterPass = /^[a-zA-Z0-9#?!$._*:\-!@%^&()+=<>[\]{}|\\,./~`]{8,64}$/;
+    const patterPass = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ0-9#?!$._*:\-!@%^&()+=<>\[\]{}|\\,./~`]{8,64}$/;
+
+    //! Azonnali input validáció az első 4 mezőre
+
+    function normalizeNames() {
+        lastN.value = lastN.value.trim();
+        firstN.value = firstN.value.trim();
+    }
+
+    lastN.addEventListener('input', () => {
+        lastN.value = lastN.value.trim();
+        if (lastN.value.trim() === '') {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva vezetéknév!';
+            lastN.style.border = '2px solid red';
+        } else if (patterName.test(lastN.value) === false) {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'A vezetéknév csak betűkből és ékezetes karakterekből állhat.';
+            lastN.style.border = '2px solid red';
+        } else {
+            lastN.style.border = '1px solid white';
+            feedBack.innerHTML = '';
+        }
+    });
+
+    firstN.addEventListener('input', () => {
+        firstN.value = firstN.value.trim();
+        if (firstN.value.trim() === '') {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva keresztnév!';
+            firstN.style.border = '2px solid red';
+        } else if (patterName.test(firstN.value) === false) {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'A keresztnév csak betűkből és ékezetes karakterekből állhat.';
+            firstN.style.border = '2px solid red';
+        } else {
+            firstN.style.border = '1px solid white';
+            feedBack.innerHTML = '';
+        }
+    });
+
+    userName.addEventListener('input', () => {
+        if (userName.value.trim() === '') {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva felhasználónév!';
+            userName.style.border = '2px solid red';
+        } else if (patterUser.test(userName.value) === false) {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Felhasználónév: a-z & 0-9 & 3-20 karakter!';
+            userName.style.border = '2px solid red';
+        } else {
+            userName.style.border = '1px solid white';
+            feedBack.innerHTML = '';
+        }
+    });
+
+    email.addEventListener('input', () => {
+        if (email.value.trim() === '') {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Nincs megadva e-mail cím!';
+            email.style.border = '2px solid red';
+        } else if (email.checkValidity() === false) {
+            feedBack.style.color = 'red';
+            feedBack.innerHTML = 'Helytelen e-mail cím megadás!';
+            email.style.border = '2px solid red';
+        } else {
+            email.style.border = '1px solid white';
+            feedBack.innerHTML = '';
+        }
+    });
+
+    const togglePasswordRegist = document.getElementById('toggle-password-regist');
+    const togglePasswordConfirmRegist = document.getElementById('toggle-password-confirm-regist');
+
+    function passwordToggle(input, button) {
+        button.addEventListener('click', () => {
+            if (input.disabled) {
+                return;
+            }
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerText = 'Elrejt';
+                button.setAttribute('aria-label', 'Jelszó elrejtése');
+            } else {
+                input.type = 'password';
+                button.innerText = 'Mutat';
+                button.setAttribute('aria-label', 'Jelszó megjelenítése');
+            }
+        });
+    }
+
+    passwordToggle(pass, togglePasswordRegist);
+    passwordToggle(passConf, togglePasswordConfirmRegist);
     
     //! jelszo ill. jelszo elotti mezok vizsgalata
     // folyamatos ellenőrzés minden karakter után a jelszo mezoben
     pass.addEventListener('input', ()=>{
+        normalizeNames();
         //* Vezeteknev - Keresztnev ures-e
         if(lastN.value != '' && firstN.value !=''){
             feedBack.innerHTML='';
@@ -168,6 +262,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     //! jelszo megerosito folyamatos vizsgalata
     passConf.addEventListener('input', ()=>{
+        normalizeNames();
         //* Ures-e barmelyik jelszo elotti mezo
         if(lastN.value == '' || firstN.value=='' || userName.value=='' || email.value==''){
             passConf.value = '';
@@ -214,6 +309,7 @@ document.addEventListener('DOMContentLoaded',()=>{
             }else{
                 const postData = async()=>{
                     try {
+                        normalizeNames();
                         const formDataReg = new FormData(form);
                         formDataReg.delete('pass-confirm');
                         const data = await registration('/api/auth/registration', formDataReg);
@@ -346,6 +442,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         }else{
             const postData = async()=>{
                 try {
+                    normalizeNames();
                     const formDataReg = new FormData(form);
                     formDataReg.delete('pass-confirm');
                     const data = await registration('/api/auth/registration', formDataReg);

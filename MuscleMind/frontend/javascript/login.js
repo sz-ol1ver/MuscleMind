@@ -13,6 +13,28 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const loginBtn = document.getElementById('login-in');
     const feedback = document.getElementById('password-feedback');
 
+    const togglePasswordLogin = document.getElementById('toggle-password-login');
+
+    function passwordToggle(input, button) {
+        button.addEventListener('click', () => {
+            if (input.disabled) {
+                return;
+            }
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                button.innerText = 'Elrejt';
+                button.setAttribute('aria-label', 'Jelszó elrejtése');
+            } else {
+                input.type = 'password';
+                button.innerText = 'Mutat';
+                button.setAttribute('aria-label', 'Jelszó megjelenítése');
+            }
+        });
+    }
+
+    passwordToggle(password, togglePasswordLogin);
+
     //! login btn tiltas / aktivalas
     // folyamatos ellenőrzés minden karakter után 
     password.addEventListener('input', ()=>{

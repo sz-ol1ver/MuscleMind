@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
     //!admin btn
     checkAdmin();
 
+    //!theme switch
+    initThemeSwitch();
+
     //!logout
     const logoutBtn = document.getElementById('logout');
     logoutBtn.addEventListener('click', ()=>{
@@ -16,6 +19,64 @@ document.addEventListener('DOMContentLoaded', ()=>{
         logout();
     });
 });
+
+function initThemeSwitch() {
+    const themeSwitch = document.getElementById('theme-switch');
+
+    if (!themeSwitch) {
+        return;
+    }
+
+    const root = document.documentElement;
+    const body = document.body;
+
+    function updateTitleAnimation(isLight) {
+        let title1Id = 'shifting-textForLightTheme1';
+        let title2Id = 'shifting-textForLightTheme2';
+        let nextTitle1Id = 'shifting-text1';
+        let nextTitle2Id = 'shifting-text2';
+
+        if (isLight) {
+            title1Id = 'shifting-text1';
+            title2Id = 'shifting-text2';
+            nextTitle1Id = 'shifting-textForLightTheme1';
+            nextTitle2Id = 'shifting-textForLightTheme2';
+        }
+
+        const title1 = document.getElementById(title1Id);
+        const title2 = document.getElementById(title2Id);
+
+        if (title1) {
+            title1.id = nextTitle1Id;
+        }
+
+        if (title2) {
+            title2.id = nextTitle2Id;
+        }
+    }
+
+    function applyTheme(isLight) {
+        root.classList.toggle('light-theme', isLight);
+        body.classList.toggle('light-theme', isLight);
+        updateTitleAnimation(isLight);
+    }
+
+    const savedTheme = localStorage.getItem('mm-theme');
+    const isLight = savedTheme === 'light';
+
+    themeSwitch.checked = isLight;
+    applyTheme(isLight);
+
+    themeSwitch.addEventListener('change', (event) => {
+        const enableLight = event.target.checked;
+        if (enableLight) {
+            localStorage.setItem('mm-theme', 'light');
+        } else {
+            localStorage.setItem('mm-theme', 'dark');
+        }
+        applyTheme(enableLight);
+    });
+}
 async function logout() {
     try {
         const data = await postLogout('/api/auth/logout');

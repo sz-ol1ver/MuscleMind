@@ -22,8 +22,7 @@ const path = require('path');
 4️⃣ Anchors:
    - ^ and $ ensure the entire string matches*/
 const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
-//? Jelszo megengedett karakterei
-const patternPass = /^[a-zA-Z0-9#?!$._*:\-!@%^&()+=<>[\]{}|\\,./~`]{8,64}$/;
+const patternPass = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ0-9#?!$._*:\-!@%^&()+=<>\[\]{}|\\,./~`]{8,64}$/;
 
 async function validateLogin(req, res, next) {
     try {

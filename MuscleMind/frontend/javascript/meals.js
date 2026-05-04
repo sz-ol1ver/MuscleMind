@@ -1,4 +1,54 @@
-import { getFetch, postRequest, deleteFetch, postForm } from './api.js';
+import { getFetch, postRequest, deleteFetch, postForm, putForm } from './api.js';
+
+function formatCategoryLabel(value) {
+    const labels = {
+        reggeli: 'Reggeli',
+        ebed: 'Ebéd',
+        vacsora: 'Vacsora',
+        snack: 'Snack',
+        desszert: 'Desszert',
+        ital: 'Ital'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatGoalLabel(value) {
+    const labels = {
+        mind: 'Mind',
+        tomegnoveles: 'Tömegnövelés',
+        szalkasitas: 'Szálkásítás',
+        szintentartas: 'Szintentartás'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatDietLabel(value) {
+    const labels = {
+        mindenevo: 'Mindenevő',
+        vegetarianus: 'Vegetáriánus',
+        vegan: 'Vegán'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatDifficultyLabel(value) {
+    const labels = {
+        konnyu: 'Könnyű',
+        kozepes: 'Közepes',
+        nehez: 'Nehéz'
+    };
+    return labels[value] || value || '-';
+}
+
+function formatTagLabel(value) {
+    const labels = {
+        high_protein: 'Magas fehérje',
+        low_carb: 'Alacsony szénhidrát',
+        bulk_friendly: 'Tömegeléshez',
+        cut_friendly: 'Szálkásításhoz'
+    };
+    return labels[value] || value || '-';
+}
 
 function formatCategoryLabel(value) {
     const labels = {
@@ -198,7 +248,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             loadingOverlay.style.display = 'flex';
             const formData = new FormData(e.target);
             try {
-                const res = await postForm('/api/meals/new', formData);
+                const res = await postForm('/api/meals/new', formData)
+                if (res) {
+                    alert('Sikeres létrehozás!')
+                    location.reload()
+                }
+            } catch(e) {
+                alert(e.message || 'Szerver hiba')
+            } finally {
+                loadingOverlay.style.display = 'none'
+            }
+        })
+        document.getElementById('food-edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault()
+            const id = document.getElementById('edit-food-id').value
+            loadingOverlay.style.display = 'flex'
+            const formData = new FormData(e.target)
+            try {
+                const res = await putForm('/api/meals/edit/' + id, formData)
                 if (res) {
                     alert('Sikeres létrehozás!');
                     location.reload();
@@ -452,6 +519,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 });
                 actionDiv.appendChild(delBtn);
 
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-outline-warning flex-grow-1';
+                editBtn.textContent = 'Szerkesztés';
+                editBtn.addEventListener('click', () => {
+                    openEditModal(food);
+                });
+                actionDiv.appendChild(editBtn);
+
                 if (food.is_approved === 0) {
                     const shareBtn = document.createElement('button');
                     shareBtn.className = 'btn btn-outline-info flex-grow-1 mt-2';
@@ -666,6 +741,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const detailsModal = new bootstrap.Modal(document.getElementById('recipeDetailsModal'));
         detailsModal.show();
+    }
+
+    function openEditModal(food) {
+        document.getElementById('edit-food-id').value = food.id
+        document.getElementById('edit-food-name').value = food.name
+        document.getElementById('edit-food-category').value = food.category
+        document.getElementById('edit-food-time').value = food.prep_time_min
+        document.getElementById('edit-food-desc').value = food.description
+        document.getElementById('edit-food-cal').value = food.calories_kcal
+        document.getElementById('edit-food-pro').value = food.protein_g
+        document.getElementById('edit-food-car').value = food.carbs_g
+        document.getElementById('edit-food-fat').value = food.fat_g
+        document.getElementById('edit-food-fiber').value = food.fiber_g || 0
+        document.getElementById('edit-food-sugar').value = food.sugar_g || 0
+        document.getElementById('edit-food-salt').value = food.salt_g || 0
+        document.getElementById('edit-food-unit').value = food.serving_unit
+        document.getElementById('edit-food-size').value = food.serving_size
+        document.getElementById('edit-food-goal').value = food.goal_tag
+        document.getElementById('edit-food-diet').value = food.diet_tag
+        document.getElementById('edit-food-diff').value = food.difficulty
+
+        document.getElementById('edit-hp').checked = !!food.high_protein
+        document.getElementById('edit-lc').checked = !!food.low_carb
+        document.getElementById('edit-bf').checked = !!food.bulk_friendly
+        document.getElementById('edit-cf').checked = !!food.cut_friendly
+
+        // allergenek
+        const allergenIds = food.allergens ? food.allergens.map(a => a.id) : []
+        for (let i = 1; i <= 7; i++) {
+            const cb = document.getElementById('edit-alg-' + i)
+            if (cb) {
+                cb.checked = allergenIds.includes(i)
+            }
+        }
+
+        const editModal = new bootstrap.Modal(document.getElementById('editRecipeModal'))
+        editModal.show()
     }
 
 });

@@ -81,7 +81,11 @@ async function checkIfActive(id) {
 async function ifAdmin(id) {
     const userN = 'SELECT id FROM users WHERE id = ? AND admin = 1';
     const [rows] = await pool.execute(userN, [id]);
-    return rows.id;
+    if(rows.length>0){
+        return 1;
+    }else{
+        return 0;
+    }
 }
 
 async function registComp(id) {
@@ -849,11 +853,6 @@ async function updateActive(userId, planId) {
         connection.release();
     }
 }
-async function updateActive(userId,plan) {
-    const sql = 'UPDATE users SET active_plan = ? WHERE id = ?';
-    const [rows] = await pool.execute(sql, [plan, userId]);
-    return rows.affectedRows;
-}
 async function calendarUpToDate(userId) {
     const connection = await pool.getConnection();
 
@@ -1558,7 +1557,6 @@ async function createUserFood(userId, food) {
     const insert = `
         INSERT INTO foods (
             user_id,
-            created_by,
             name,
             description,
             image_url,
@@ -1581,10 +1579,9 @@ async function createUserFood(userId, food) {
             bulk_friendly,
             cut_friendly,
             is_approved
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
     `;
     const [rows] = await pool.execute(insert, [
-        userId,
         userId,
         food.name,
         food.description,
@@ -1613,15 +1610,78 @@ async function createUserFood(userId, food) {
 }
 
 async function deleteUserFood(id, userId) {
-    const del = 'DELETE FROM foods WHERE id = ? AND user_id = ?';
-    const [rows] = await pool.execute(del, [id, userId]);
-    return rows.affectedRows;
+    const del = 'DELETE FROM foods WHERE id = ? AND user_id = ?'
+    const [rows] = await pool.execute(del, [id, userId])
+    return rows.affectedRows
+}
+
+async function deleteFoodAllergens(foodId) {
+    const del = 'DELETE FROM food_allergens WHERE food_id = ?'
+    const [rows] = await pool.execute(del, [foodId])
+    return rows.affectedRows
+}
+
+async function updateUserFood(userId, foodId, food) {
+    const update = `
+        UPDATE foods SET
+            name = ?,
+            description = ?,
+            category = ?,
+            calories_kcal = ?,
+            protein_g = ?,
+            carbs_g = ?,
+            fat_g = ?,
+            fiber_g = ?,
+            sugar_g = ?,
+            salt_g = ?,
+            serving_size = ?,
+            serving_unit = ?,
+            goal_tag = ?,
+            diet_tag = ?,
+            difficulty = ?,
+            prep_time_min = ?,
+            high_protein = ?,
+            low_carb = ?,
+            bulk_friendly = ?,
+            cut_friendly = ?,
+            is_approved = 0,
+            share = 0
+        WHERE id = ? AND user_id = ?
+    `
+    const [rows] = await pool.execute(update, [
+        food.name,
+        food.description,
+        food.category,
+        food.calories_kcal,
+        food.protein_g,
+        food.carbs_g,
+        food.fat_g,
+        food.fiber_g,
+        food.sugar_g,
+        food.salt_g,
+        food.serving_size,
+        food.serving_unit,
+        food.goal_tag,
+        food.diet_tag,
+        food.difficulty,
+        food.prep_time_min,
+        food.high_protein,
+        food.low_carb,
+        food.bulk_friendly,
+        food.cut_friendly,
+        foodId,
+        userId
+    ])
+    return rows.affectedRows
 }
 
 async function createShareTicket(userId, foodId, foodName) {
     const emailSql = 'SELECT email FROM users WHERE id = ?';
     const [rowsEmail] = await pool.execute(emailSql, [userId]);
     const email = rowsEmail[0].email;
+
+    const updateSql = 'UPDATE foods SET share = 1 WHERE id = ? AND user_id = ?';
+    await pool.execute(updateSql, [foodId, userId]);
 
     const insert = `
         INSERT INTO support_requests (
@@ -2556,6 +2616,8 @@ module.exports = {
     finalizeWorkoutStats,
     createUserFood,
     deleteUserFood,
+    deleteFoodAllergens,
+    updateUserFood,
     createShareTicket,
     getLeaderboard,
     searchUsers,
