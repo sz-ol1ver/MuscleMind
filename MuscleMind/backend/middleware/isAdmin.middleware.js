@@ -3,7 +3,9 @@ const path = require('path');
 
 async function requireAdmin(req, res, next) {
     try {
-        const isAdmin = req.session.user.admin;
+        const currentAdminStatus = await db.ifAdmin(req.session.user.id);
+        req.session?.user?.admin = currentAdminStatus;
+        const isAdmin = req.session?.user?.admin;
         if (isAdmin != 1) {
             return res.sendFile(path.join(__dirname, '../views/403.html'))
         }

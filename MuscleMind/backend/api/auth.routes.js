@@ -21,10 +21,9 @@ router.post('/registration',upload.none() , validateRegistration, async(request,
         const hashed = await bcrypt.hash(data.pass, saltRounds);
         const insert = Number(await db.registration_insert(data.firstN, data.lastN, data.userN, data.email, hashed));
         await db.log_id(insert, 'registration', 'registration 1/2',ip);
-        const admin = await db.ifAdmin(insert);
         request.session.user = {
             id: insert,
-            admin: admin
+            admin: 0
         }
         response.status(201).json({
             message: 'Sikeres regisztráció'
@@ -373,6 +372,8 @@ router.post('/new-password', loginMw.newPassword, async(request, response)=>{
 
 router.get('/is-admin', loginMw.requireAuthApi, async(request, response)=>{
     try {
+        const currentAdminStatus = await db.ifAdmin(request.session.user.id);
+        req.session.user.admin = currentAdminStatus;
         return response.status(200).json({
             admin: request.session.user.admin
         });
