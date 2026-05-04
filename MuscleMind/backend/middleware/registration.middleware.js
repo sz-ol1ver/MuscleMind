@@ -22,11 +22,11 @@ const db = require('../sql/database.js');
    - ^ and $ ensure the entire string matches*/
 const patternEmail = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
 //? Felhasznalonev megengedett karakterei
-const patterUser = /^(?=.{3,20}$)[a-z0-9áéíóöőúüű]+(-[a-z0-9áéíóöőúüű]+)*$/;
+const patternUser = /^(?=.{3,20}$)[a-z0-9áéíóöőúüű]+(-[a-z0-9áéíóöőúüű]+)*$/;
 //? Nev megengedett karakterei
-const patterName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+(-[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+)*$/;
+const patternName = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+(-[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ]+)*$/;
 //? Jelszo megengedett karakterei
-const patterPass = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ0-9#?!$._*:\-!@%^&()+=<>\[\]{}|\\,./~`]{8,64}$/;
+const patternPass = /^[a-zA-ZáéíóöőúüűÁÉÍÓÖŐÚÜŰ0-9#?!$._*:\-!@%^&()+=<>\[\]{}|\\,./~`]{8,64}$/;
 
 async function validateRegistration(req, res, next) {
     try {
