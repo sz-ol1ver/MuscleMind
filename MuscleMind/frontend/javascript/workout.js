@@ -93,7 +93,9 @@ document.addEventListener('DOMContentLoaded', ()=>{
         resetFilters();
     })
     cancel.addEventListener('click', () => {
-        resetWorkoutEditor();
+        if(confirm('Minden nem mentett változás elveszik! Biztosan visszalépsz?')){
+            resetWorkoutEditor();
+        }
     });
     next.addEventListener('click', async () => {
         if(!plan_name.value.trim()){
@@ -599,6 +601,7 @@ async function updateActive(id) {
         }
         const data = await patchFetch('http://127.0.0.1:3000/api/workout/plans/active', obj);
         await getActive();
+        alert('Az edzéstervet sikeresen hozzáadtuk a naptárodhoz!');
     } catch (error) {
         console.error(error.message);
     }

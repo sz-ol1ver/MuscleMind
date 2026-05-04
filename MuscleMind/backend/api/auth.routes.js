@@ -373,7 +373,7 @@ router.post('/new-password', loginMw.newPassword, async(request, response)=>{
 router.get('/is-admin', loginMw.requireAuthApi, async(request, response)=>{
     try {
         const currentAdminStatus = await db.ifAdmin(request.session.user.id);
-        req.session.user.admin = currentAdminStatus;
+        request.session.user.admin = currentAdminStatus;
         return response.status(200).json({
             admin: request.session.user.admin
         });
