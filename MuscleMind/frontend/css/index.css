@@ -483,11 +483,9 @@ a{
     }
 
     #middle-part {
-        flex: 0 0 100%;
-        max-width: 100%;
-        width: 100%;
-        height: auto !important;
-        overflow: visible !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
     }
 
     #content-wrapper > .row > .col-xl-4 {
