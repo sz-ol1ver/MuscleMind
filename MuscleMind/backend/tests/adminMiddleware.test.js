@@ -10,14 +10,14 @@ function createResponse() {
 
 describe('Admin middleware', () => {
     // Pozitív teszt: admin továbbengedése
-    test('Allows admin user to proceed', () => {
+    test('Allows admin user to proceed', async() => {
         // Admin session
-        const req = { session: { user: { admin: 1 } } };
+        const req = { session: { user: { id:1,admin: 1 } } };
         const res = createResponse();
         const next = jest.fn();
 
         // Middleware futtatása
-        requireAdmin(req, res, next);
+        await requireAdmin(req, res, next);
 
         // Továbbengedés ellenőrzése
         expect(next).toHaveBeenCalled();
@@ -25,14 +25,14 @@ describe('Admin middleware', () => {
     });
 
     // Negatív teszt: nem-admin felhasználó tiltása
-    test('Blocks non-admin user with 403 page', () => {
+    test('Blocks non-admin user with 403 page', async() => {
         // Nem admin session
-        const req = { session: { user: { admin: 0 } } };
+        const req = { session: { user: { id:2, admin: 0 } } };
         const res = createResponse();
         const next = jest.fn();
 
         // Middleware futtatása
-        requireAdmin(req, res, next);
+        await requireAdmin(req, res, next);
 
         // Elvárt eredmény: 403 oldal
         expect(res.sendFile).toHaveBeenCalledWith(path.join(__dirname, '..', 'views', '403.html'));
@@ -40,14 +40,14 @@ describe('Admin middleware', () => {
     });
 
     // Negatív teszt: session nélküli kérés hibakezelése
-    test('Session-less request is passed to error handler', () => {
+    test('Session-less request is passed to error handler', async() => {
         // Üres request
         const req = {};
         const res = createResponse();
         const next = jest.fn();
 
         // Middleware futtatása
-        requireAdmin(req, res, next);
+        await requireAdmin(req, res, next);
 
         // Elvárt eredmény: hibával hívott next
         expect(next).toHaveBeenCalled();
